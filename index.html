@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regalbuto Heritage - Scopri il nostro patrimonio</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/marzipano@0.10.2/build/marzipano.js"></script>
+</head>
+<body>
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="app-logo">
+                    <img src="logo-comune-regalbuto.jpg" alt="Comune di Regalbuto" class="logo-img">
+                </div>
+                <div class="app-title">
+                    <h1>Regalbuto Heritage</h1>
+                    <p>Itinerario Turistico</p>
+                </div>
+            </div>
+            <button class="header-menu" onclick="toggleMenu()">
+                <i data-feather="menu"></i>
+            </button>
+        </div>
+        
+        <!-- Dropdown Menu -->
+        <div id="dropdown-menu" class="dropdown-menu">
+            <div class="menu-items">
+                <button class="menu-item" onclick="switchTab('home'); closeMenu()">
+                    <i data-feather="home"></i>
+                    <span>Home</span>
+                </button>
+                <button class="menu-item" onclick="switchTab('mappa'); closeMenu()">
+                    <i data-feather="map"></i>
+                    <span>Mappa</span>
+                </button>
+                <button class="menu-item" onclick="switchTab('monumenti'); closeMenu()">
+                    <i data-feather="camera"></i>
+                    <span>Monumenti</span>
+                </button>
+                <button class="menu-item" onclick="switchTab('didattica'); closeMenu()">
+                    <i data-feather="book"></i>
+                    <span>Didattica</span>
+                </button>
+                <button class="menu-item" onclick="switchTab('virtual-tour'); closeMenu()">
+                    <i data-feather="eye"></i>
+                    <span>Virtual Tour</span>
+                </button>
+                <button class="menu-item" onclick="switchTab('info'); closeMenu()">
+                    <i data-feather="info"></i>
+                    <span>Info</span>
+                </button>
+                <div class="menu-divider"></div>
+                <button class="menu-item" onclick="startQRScanner(); closeMenu()">
+                    <i data-feather="camera"></i>
+                    <span>Scansiona QR</span>
+                </button>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content Container -->
+    <main id="main-content">
+        <!-- HOME SECTION -->
+        <section id="home" class="section active">
+            <div class="hero-section">
+                <div class="hero-overlay">
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="startTour()">
+                            <i data-feather="play-circle"></i>
+                            Inizia il Tour
+                        </button>
+                        <button class="btn btn-secondary" onclick="switchTab('mappa')">
+                            <i data-feather="map"></i>
+                            Visualizza Mappa
+                        </button>
+                        <button class="btn btn-warning" onclick="startQRScanner()">
+                            <i data-feather="camera"></i>
+                            Scansiona QR Code
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="welcome-text">
+                    <h2>Benvenuti a Regalbuto</h2>
+                    <p>Esplora il nostro ricco patrimonio storico</p>
+                </div>
+                
+                <h2 class="section-title">In Evidenza</h2>
+                <div class="featured-highlight">
+                    <p>Scopri i luoghi più suggestivi e significativi del nostro territorio</p>
+                </div>
+                
+                <!-- Categoria Separata: Natura e Paesaggio -->
+                <div class="category-section">
+                    <h4 class="category-subtitle">
+                        <i data-feather="sun"></i>
+                        Natura e Paesaggio
+                    </h4>
+                    
+                    <!-- Lago Pozzillo -->
+                    <div class="featured-card" onclick="toggleFeaturedCard('lago-pozzillo')">
+                        <div class="card-header">
+                            <div class="card-thumbnail">
+                                <img src="lago-pozzillo.webp" alt="Lago Pozzillo">
+                            </div>
+                            <div class="card-content">
+                                <div class="card-category-badge">Natura</div>
+                                <h4>Lago Pozzillo</h4>
+                                <p>Un'oasi di tranquillità circondata da colline verdi</p>
+                                <div class="card-distance">
+                                    <i data-feather="map-pin"></i>
+                                    <span>2.1 km</span>
+                                </div>
+                            </div>
+                            <button class="card-expand-btn" id="expand-lago-pozzillo">
+                                <i data-feather="chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="card-expanded-info" id="expanded-lago-pozzillo">
+                            <p>Il Lago Pozzillo è un bacino artificiale creato negli anni '80 che ha trasformato il paesaggio della zona, diventando un'importante risorsa idrica e un'area di grande valore naturalistico e ricreativo.</p>
+                            <p>Le acque del lago, circondate da colline coperte di macchia mediterranea, ospitano diverse specie di uccelli acquatici e costituiscono un ecosistema ricco di biodiversità.</p>
+                            <p><strong>Attività:</strong> Pesca sportiva, canottaggio, birdwatching e escursioni naturalistiche guidate.</p>
+                            <div class="card-actions">
+                                <button class="btn btn-primary" onclick="event.stopPropagation(); playAudioGuide('lago-pozzillo')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('lago-pozzillo')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parco Avventura Pozzillo -->
+                    <div class="featured-card" onclick="toggleFeaturedCard('parco-avventura')">
+                        <div class="card-header">
+                            <div class="card-thumbnail">
+                                <img src="parco-avventura.webp" alt="Parco Avventura Pozzillo">
+                            </div>
+                            <div class="card-content">
+                                <div class="card-category-badge">Natura</div>
+                                <h4>Parco Avventura Pozzillo</h4>
+                                <p>Avventure nella natura per tutta la famiglia</p>
+                                <div class="card-distance">
+                                    <i data-feather="map-pin"></i>
+                                    <span>2.3 km</span>
+                                </div>
+                            </div>
+                            <button class="card-expand-btn" id="expand-parco-avventura">
+                                <i data-feather="chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="card-expanded-info" id="expanded-parco-avventura">
+                            <p>Il Parco Avventura Pozzillo è una struttura ricreativa immersa nella natura che offre percorsi acrobatici tra gli alberi, attività outdoor e esperienze di educazione ambientale per visitatori di tutte le età.</p>
+                            <p><strong>Percorsi disponibili:</strong> Baby Park (3-6 anni), Junior Park (7-11 anni), Adventure Park (dai 12 anni), percorsi per famiglie e per team building aziendali.</p>
+                            <div class="card-actions">
+                                <button class="btn btn-primary" onclick="event.stopPropagation(); playAudioGuide('parco-avventura')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('parco-avventura')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+                <!-- Categoria Separata: Cultura e Storia -->
+                <div class="category-section">
+                    <h4 class="category-subtitle">
+                        <i data-feather="bookmark"></i>
+                        Cultura e Storia
+                    </h4>
+                    
+                    <!-- Chiesa Madre di San Basilio -->
+                    <div class="featured-card" onclick="toggleFeaturedCard('san-basilio')">
+                        <div class="card-header">
+                            <div class="card-thumbnail">
+                                <img src="chiesa-san-basilio.jpg" alt="Chiesa di San Basilio">
+                            </div>
+                            <div class="card-content">
+                                <div class="card-category-badge">Religioso</div>
+                                <h4>Chiesa di San Basilio</h4>
+                                <p>Antica chiesa risalente al XVI secolo, esempio di architettura barocca</p>
+                                <div class="card-distance">
+                                    <i data-feather="map-pin"></i>
+                                    <span>0.5 km</span>
+                                </div>
+                            </div>
+                            <button class="card-expand-btn" id="expand-san-basilio">
+                                <i data-feather="chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="card-expanded-info" id="expanded-san-basilio">
+                            <p>La Chiesa Madre, dedicata a San Basilio Magno, rappresenta il cuore spirituale di Regalbuto. Costruita nel XVIII secolo su un precedente edificio di culto, la chiesa presenta una facciata imponente in stile barocco siciliano.</p>
+                            <p>All'interno, l'edificio conserva preziose opere d'arte sacra tra cui dipinti settecenteschi, statue lignee policrome e affreschi di grande valore artistico.</p>
+                            <p><strong>Particolarità:</strong> Durante i lavori di restauro sono stati rinvenuti resti di mosaici bizantini che testimoniano l'antica presenza cristiana sul territorio.</p>
+                            <div class="card-actions">
+                                <button class="btn btn-primary" onclick="event.stopPropagation(); playAudioGuide('san-basilio')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('san-basilio')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Convento di Sant'Antonio -->
+                    <div class="featured-card" onclick="toggleFeaturedCard('santantonio')">
+                        <div class="card-header">
+                            <div class="card-thumbnail">
+                                <img src="convento-santantonio.avif" alt="Convento di Sant'Antonio">
+                            </div>
+                            <div class="card-content">
+                                <div class="card-category-badge">Religioso</div>
+                                <h4>Convento di Sant'Antonio</h4>
+                                <p>Architettura sacra e storia millenaria</p>
+                                <div class="card-distance">
+                                    <i data-feather="map-pin"></i>
+                                    <span>1.2 km</span>
+                                </div>
+                            </div>
+                            <button class="card-expand-btn" id="expand-santantonio">
+                                <i data-feather="chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="card-expanded-info" id="expanded-santantonio">
+                            <p>Il Convento di Sant'Antonio è un complesso monastico del XVI secolo che domina il paesaggio circostante da una posizione panoramica privilegiata. L'architettura combina elementi rinascimentali e barocchi.</p>
+                            <p>Il chiostro interno, con i suoi archi a tutto sesto e il pozzo centrale, rappresenta un esempio perfetto dell'architettura monastica siciliana.</p>
+                            <p><strong>Storia:</strong> Fondato dai frati francescani, il convento ha svolto un ruolo cruciale nella vita religiosa e culturale della comunità per oltre quattro secoli.</p>
+                            <div class="card-actions">
+                                <button class="btn btn-primary" onclick="event.stopPropagation(); playAudioGuide('santantonio')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('santantonio')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chiesa del Purgatorio -->
+                    <div class="featured-card" onclick="toggleFeaturedCard('purgatorio')">
+                        <div class="card-header">
+                            <div class="card-thumbnail">
+                                <img src="chiesa-purgatorio.webp" alt="Chiesa del Purgatorio">
+                            </div>
+                            <div class="card-content">
+                                <div class="card-category-badge">Religioso</div>
+                                <h4>Chiesa del Purgatorio</h4>
+                                <p>Arte barocca e devozione popolare</p>
+                                <div class="card-distance">
+                                    <i data-feather="map-pin"></i>
+                                    <span>0.8 km</span>
+                                </div>
+                            </div>
+                            <button class="card-expand-btn" id="expand-purgatorio">
+                                <i data-feather="chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="card-expanded-info" id="expanded-purgatorio">
+                            <p>La Chiesa del Purgatorio è una piccola ma preziosa chiesa barocca caratterizzata da decorazioni elaborate e affreschi dedicati alle anime del purgatorio.</p>
+                            <p>La facciata presenta elementi decorativi tipici del barocco siciliano con motivi floreali e angeli scolpiti. L'interno è arricchito da stucchi policromi e dipinti murali.</p>
+                            <p><strong>Tradizioni:</strong> La chiesa è particolarmente cara ai reggalbuttesi per le celebrazioni legate al culto delle anime del purgatorio.</p>
+                            <div class="card-actions">
+                                <button class="btn btn-primary" onclick="event.stopPropagation(); playAudioGuide('purgatorio')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('purgatorio')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categoria Separata: Tecnologia -->
+                <div class="category-section">
+                    <h4 class="category-subtitle">
+                        <i data-feather="cpu"></i>
+                        Tecnologia
+                    </h4>
+                    
+                    <!-- Tecnopolo Magnetico -->
+                    <div class="featured-card" onclick="toggleFeaturedCard('tecnopolo')">
+                        <div class="card-header">
+                            <div class="card-thumbnail">
+                                <img src="tecnopolo-logo.png" alt="Tecnopolo Magnetico">
+                            </div>
+                            <div class="card-content">
+                                <div class="card-category-badge">Tecnologia</div>
+                                <h4>Tecnopolo Magnetico</h4>
+                                <p>Lab formativo e spazio di co-working ICT</p>
+                                <div class="card-distance">
+                                    <i data-feather="map-pin"></i>
+                                    <span>0.8 km</span>
+                                </div>
+                            </div>
+                            <button class="card-expand-btn" id="expand-tecnopolo">
+                                <i data-feather="chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="card-expanded-info" id="expanded-tecnopolo">
+                            <p>Il Tecnopolo Magnetico è un innovativo laboratorio formativo e spazio di co-working dedicato alle tecnologie dell'informazione e della comunicazione (ICT), nato per favorire lo sviluppo digitale e l'innovazione nel territorio di Regalbuto.</p>
+                            <p>La struttura ospita corsi di formazione professionale, workshop tecnici e iniziative dedicate ai giovani e alla comunità locale, con l'obiettivo di ridurre il divario digitale e promuovere nuove competenze tecnologiche.</p>
+                            <p><strong>Servizi offerti:</strong> Corsi di programmazione, web design, digital marketing, robotica educativa, stampa 3D e making digitale.</p>
+                            <div class="card-actions">
+                                <button class="btn btn-primary" onclick="event.stopPropagation(); playAudioGuide('tecnopolo')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('tecnopolo')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                                <button class="btn btn-outline" onclick="event.stopPropagation(); window.open('https://www.magnetico.cloud', '_blank')">
+                                    <i data-feather="external-link"></i>
+                                    Sito Web
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MAPPA SECTION -->
+        <section id="mappa" class="section">
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i data-feather="map"></i>
+                    Mappa Interattiva
+                </h2>
+                
+                <!-- Map Filter Buttons -->
+                <div class="map-filters">
+                    <h3>Punti di Interesse</h3>
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" onclick="filterMapLocations('all')" data-category="all">
+                            <i data-feather="map-pin"></i>
+                            Tutti i luoghi
+                        </button>
+                        <button class="filter-btn" onclick="filterMapLocations('natura')" data-category="natura">
+                            <i data-feather="sun"></i>
+                            Natura e Paesaggio
+                        </button>
+                        <button class="filter-btn" onclick="filterMapLocations('cultura')" data-category="cultura">
+                            <i data-feather="bookmark"></i>
+                            Cultura e Storia
+                        </button>
+                        <button class="filter-btn" onclick="filterMapLocations('tecnologia')" data-category="tecnologia">
+                            <i data-feather="cpu"></i>
+                            Tecnologia
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="map-container">
+                    <iframe 
+                        id="map-iframe"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25158!2d14.6351!3d37.6395!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x131a8e6e0b9f3f9d%3A0x9e9e9e9e9e9e9e9e!2sRegalbuto%2C%20EN!5e0!3m2!1sit!2sit!4v1234567890"
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                
+                <!-- Interactive Location List -->
+                <div class="location-list">
+                    <div class="location-card natura" data-category="natura">
+                        <div class="location-info">
+                            <h4>Lago Pozzillo</h4>
+                            <p>Bacino artificiale con attività ricreative</p>
+                            <span class="location-distance">2.1 km dal centro</span>
+                        </div>
+                        <button class="location-btn" onclick="openMapLocation('lago-pozzillo')">
+                            <i data-feather="navigation"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="location-card natura" data-category="natura">
+                        <div class="location-info">
+                            <h4>Parco Avventura Pozzillo</h4>
+                            <p>Percorsi acrobatici nella natura</p>
+                            <span class="location-distance">2.3 km dal centro</span>
+                        </div>
+                        <button class="location-btn" onclick="openMapLocation('parco-avventura')">
+                            <i data-feather="navigation"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="location-card natura" data-category="natura">
+                        <div class="location-info">
+                            <h4>Area di Sosta San Calogero</h4>
+                            <p>Area picnic e relax</p>
+                            <span class="location-distance">3.1 km dal centro</span>
+                        </div>
+                        <button class="location-btn" onclick="openMapLocation('san-calogero')">
+                            <i data-feather="navigation"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="location-card cultura" data-category="cultura">
+                        <div class="location-info">
+                            <h4>Chiesa Madre di San Basilio</h4>
+                            <p>Principale edificio religioso della città</p>
+                            <span class="location-distance">Centro storico</span>
+                        </div>
+                        <button class="location-btn" onclick="openMapLocation('san-basilio')">
+                            <i data-feather="navigation"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="location-card cultura" data-category="cultura">
+                        <div class="location-info">
+                            <h4>Convento di Sant'Antonio</h4>
+                            <p>Antico convento in zona rurale</p>
+                            <span class="location-distance">1.8 km dal centro</span>
+                        </div>
+                        <button class="location-btn" onclick="openMapLocation('sant-antonio')">
+                            <i data-feather="navigation"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="location-card cultura" data-category="cultura">
+                        <div class="location-info">
+                            <h4>Monte Calvario</h4>
+                            <p>Sito religioso con vista panoramica</p>
+                            <span class="location-distance">1.2 km dal centro</span>
+                        </div>
+                        <button class="location-btn" onclick="openMapLocation('calvario')">
+                            <i data-feather="navigation"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="location-card tecnologia" data-category="tecnologia">
+                        <div class="location-info">
+                            <h4>Tecnopolo Magnetico</h4>
+                            <p>Centro di innovazione e formazione ICT</p>
+                            <span class="location-distance">0.8 km dal centro</span>
+                        </div>
+                        <button class="location-btn" onclick="openMapLocation('tecnopolo')">
+                            <i data-feather="navigation"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MONUMENTI SECTION -->
+        <section id="monumenti" class="section">
+            <div class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Monumenti</h2>
+                    <button class="qr-scan-btn" onclick="startQRScanner()">
+                        <i data-feather="camera"></i>
+                        Scansiona QR
+                    </button>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <div class="search-bar">
+                        <i data-feather="search"></i>
+                        <input type="text" placeholder="Cerca monumenti..." id="monument-search" onkeyup="filterMonuments()">
+                    </div>
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="filter-tabs">
+                    <button class="filter-tab active" onclick="filterByCategory('all')" data-category="all">Tutti</button>
+                    <button class="filter-tab" onclick="filterByCategory('religioso')" data-category="religioso">Religioso</button>
+                    <button class="filter-tab" onclick="filterByCategory('natura')" data-category="natura">Natura</button>
+                    <button class="filter-tab" onclick="filterByCategory('cultura')" data-category="cultura">Cultura</button>
+                    <button class="filter-tab" onclick="filterByCategory('tecnologia')" data-category="tecnologia">Tecnologia</button>
+                </div>
+
+                <!-- Results Count -->
+                <div class="results-count">
+                    <span id="results-text">12 monumenti trovati</span>
+                </div>
+                
+                <!-- Cultura e Storia -->
+                <div class="monuments-category" data-category-section="cultura-storia">
+                    <h3 class="category-title">
+                        <i data-feather="bookmark"></i>
+                        Cultura e Storia
+                    </h3>
+                    
+                    <!-- Chiesa Madre di San Basilio -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="chiesa-san-basilio.jpg" alt="Chiesa Madre di San Basilio">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa di San Basilio</h4>
+                            <p class="monument-description">Antica chiesa risalente al XVI secolo, esempio di architettura barocca...</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.5 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('san-basilio')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-san-basilio">
+                            <div class="monument-description">
+                                <p>La Chiesa Madre, dedicata a San Basilio Magno, rappresenta il cuore spirituale di Regalbuto. Costruita nel XVIII secolo su un precedente edificio di culto, la chiesa presenta una facciata imponente in stile barocco siciliano.</p>
+                                <p>All'interno, l'edificio conserva preziose opere d'arte sacra tra cui dipinti settecenteschi, statue lignee policrome e affreschi di grande valore artistico. Il campanile, visibile da tutta la città, è diventato nel tempo un simbolo di Regalbuto.</p>
+                                <p><strong>Particolarità:</strong> Durante i lavori di restauro sono stati rinvenuti resti di mosaici bizantini che testimoniano l'antica presenza cristiana sul territorio.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('san-basilio')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('san-basilio')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Convento di Sant'Antonio -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="convento-santantonio.avif" alt="Convento di Sant'Antonio">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Convento di Sant'Antonio</h4>
+                            <p class="monument-description">Architettura sacra e storia millenaria</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.8 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('santantonio')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-santantonio">
+                            <div class="monument-description">
+                                <p>Il Convento di Sant'Antonio (Eremo di San Antonio Abate extra mura) è un complesso monastico del XVI secolo che domina il paesaggio urbano di Regalbuto. Fondato dai frati francescani, il convento ha rappresentato per secoli un importante centro di cultura e spiritualità.</p>
+                                <p>La struttura architettonica presenta un chiostro centrale circondato da celle monastiche, una biblioteca storica e una chiesa conventuale decorata con affreschi dell'epoca. Dal convento si gode di una vista panoramica eccezionale sulla valle dell'Enna.</p>
+                                <p><strong>Accesso:</strong> Il convento è attualmente inaccessibile al pubblico per motivi di sicurezza e conservazione.</p>
+                                <p><strong>Tour Virtuale:</strong> È disponibile un'esperienza immersiva a 360° che permette di esplorare virtualmente gli ambienti conventuali.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('santantonio')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('convento')">
+                                    <i data-feather="eye"></i>
+                                    Tour Virtuale 360°
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chiesa del Purgatorio -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="chiesa-purgatorio.webp" alt="Chiesa del Purgatorio">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa del Purgatorio</h4>
+                            <p class="monument-description">Arte barocca e devozione popolare</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.3 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('purgatorio')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-purgatorio">
+                            <div class="monument-description">
+                                <p>La Chiesa del Purgatorio è una piccola ma preziosa chiesa barocca caratterizzata da decorazioni elaborate e affreschi dedicati alle anime del purgatorio. Costruita nel XVII secolo, rappresenta un esempio significativo della devozione popolare siciliana.</p>
+                                <p>La facciata, pur di dimensioni contenute, presenta elementi decorativi tipici del barocco siciliano con motivi floreali e angeli scolpiti. L'interno è arricchito da stucchi policromi e dipinti murali che narrano episodi della tradizione cristiana.</p>
+                                <p><strong>Tradizioni:</strong> La chiesa è particolarmente cara ai reggalbuttesi per le celebrazioni legate al culto delle anime del purgatorio, con processioni e riti che si tramandano da generazioni.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('purgatorio')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('purgatorio')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+                </div>
+
+                <!-- Natura e Paesaggio -->
+                <div class="monuments-category" data-category-section="natura-paesaggio">
+                    <h3 class="category-title">
+                        <i data-feather="sun"></i>
+                        Natura e Paesaggio
+                    </h3>
+                    
+                    <!-- Lago Pozzillo -->
+                    <div class="monument-card" data-category="natura">
+                        <div class="monument-image">
+                            <img src="lago-pozzillo.webp" alt="Lago Pozzillo">
+                            <div class="monument-category-badge">Natura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Lago Pozzillo</h4>
+                            <p class="monument-description">Un'oasi di tranquillità circondata da colline verdi</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    2.1 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('lago-pozzillo')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-expanded-content" id="content-lago-pozzillo">
+                            <div class="monument-description">
+                                <p>Il Lago Pozzillo è un bacino artificiale creato negli anni '80 che ha trasformato il paesaggio della zona, diventando un'importante risorsa idrica e un'area di grande valore naturalistico e ricreativo.</p>
+                                <p>Le acque del lago, circondate da colline coperte di macchia mediterranea, ospitano diverse specie di uccelli acquatici e costituiscono un ecosistema ricco di biodiversità. Il perimetro del lago offre sentieri naturalistici per il trekking e la mountain bike.</p>
+                                <p><strong>Attività:</strong> Pesca sportiva, canottaggio, birdwatching e escursioni naturalistiche guidate.</p>
+                                <p><strong>Flora e Fauna:</strong> Presenza di aironi, germani reali, martin pescatore e diverse specie di rapaci. La vegetazione circostante include lentisco, rosmarino, timo e altre essenze tipiche della macchia siciliana.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('lago-pozzillo')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('lago-pozzillo')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parco Avventura Pozzillo -->
+                    <div class="monument-card" data-category="natura">
+                        <div class="monument-image">
+                            <img src="parco-avventura.webp" alt="Parco Avventura Pozzillo">
+                            <div class="monument-category-badge">Natura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Parco Avventura Pozzillo</h4>
+                            <p class="monument-description">Avventure nella natura per tutta la famiglia</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    2.3 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('parco-avventura')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-expanded-content" id="content-parco-avventura">
+                            <div class="monument-description">
+                                <p>Il Parco Avventura Pozzillo è una struttura ricreativa immersa nella natura che offre percorsi acrobatici tra gli alberi, attività outdoor e esperienze di educazione ambientale per visitatori di tutte le età.</p>
+                                <p>Situato nelle vicinanze del Lago Pozzillo, il parco presenta diversi percorsi di difficoltà crescente, dalla passerella per bambini ai percorsi più impegnativi per adulti esperti, tutti realizzati nel massimo rispetto dell'ambiente naturale.</p>
+                                <p><strong>Percorsi disponibili:</strong> Baby Park (3-6 anni), Junior Park (7-11 anni), Adventure Park (dai 12 anni), percorsi per famiglie e per team building aziendali.</p>
+                                <p><strong>Servizi:</strong> Area picnic attrezzata, noleggio mountain bike, visite guidate naturalistiche e laboratori di educazione ambientale per le scuole.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('parco-avventura')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('parco-avventura')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!-- Tecnologia -->
+                <div class="monuments-category" data-category-section="tecnologia">
+                    <h3 class="category-title">
+                        <i data-feather="cpu"></i>
+                        Tecnologia
+                    </h3>
+                    
+                    <!-- Tecnopolo Magnetico -->
+                    <div class="monument-card" data-category="tecnologia">
+                        <div class="monument-image">
+                            <img src="tecnopolo-logo.png" alt="Tecnopolo Magnetico">
+                            <div class="monument-category-badge">Tecnologia</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Tecnopolo Magnetico</h4>
+                            <p class="monument-description">Lab formativo e spazio di co-working ICT</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.8 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('tecnopolo')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-expanded-content" id="content-tecnopolo">
+                            <div class="monument-description">
+                                <p>Il Tecnopolo Magnetico è un innovativo laboratorio formativo e spazio di co-working dedicato alle tecnologie dell'informazione e della comunicazione (ICT), nato per favorire lo sviluppo digitale e l'innovazione nel territorio di Regalbuto.</p>
+                                <p>La struttura ospita corsi di formazione professionale, workshop tecnici e iniziative dedicate ai giovani e alla comunità locale, con l'obiettivo di ridurre il divario digitale e promuovere nuove competenze tecnologiche.</p>
+                                <p><strong>Servizi offerti:</strong> Corsi di programmazione, web design, digital marketing, robotica educativa, stampa 3D e making digitale.</p>
+                                <p><strong>Spazi disponibili:</strong> Aule multimediali, laboratorio di prototipazione, area co-working, sala conferenze e biblioteca digitale.</p>
+                                <p><strong>Iniziative:</strong> Startup weekend, hackathon, corsi per senior, laboratori per bambini e programmi di alternanza scuola-lavoro con le scuole del territorio.</p>
+                                <p><strong>Partnership:</strong> Collaborazioni con università, aziende tecnologiche e centri di ricerca per promuovere l'innovazione e l'imprenditorialità giovanile.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('tecnopolo')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('tecnopolo')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                                <button class="btn btn-outline" onclick="window.open('https://www.magnetico.cloud', '_blank')">
+                                    <i data-feather="external-link"></i>
+                                    Sito Web
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- DIDATTICA SECTION -->
+        <section id="didattica" class="section">
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i data-feather="book"></i>
+                    Sezione Didattica
+                </h2>
+
+                <!-- Quiz Section -->
+                <div class="educational-block">
+                    <div id="quiz-intro" class="quiz-intro">
+                        <h3>Quiz: Scopri quanto conosci Regalbuto</h3>
+                        <p>Metti alla prova le tue conoscenze sulla storia, la cultura e il territorio di Regalbuto con questo quiz di 10 domande.</p>
+                        <button class="btn btn-primary" onclick="startQuiz()">
+                            <i data-feather="play"></i>
+                            Avvia il Quiz
+                        </button>
+                    </div>
+                    
+                    <div id="quiz-container" style="display: none;">
+                        <div class="quiz-question active" data-question="1">
+                            <h4>Domanda 1/10</h4>
+                            <p>In quale provincia si trova Regalbuto?</p>
+                            <div class="quiz-options">
+                                <label>
+                                    <input type="radio" name="q1" value="a">
+                                    Palermo
+                                </label>
+                                <label>
+                                    <input type="radio" name="q1" value="b">
+                                    Enna
+                                </label>
+                                <label>
+                                    <input type="radio" name="q1" value="c">
+                                    Catania
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-question="2">
+                            <h4>Domanda 2/10</h4>
+                            <p>Qual è il nome del lago artificiale vicino a Regalbuto?</p>
+                            <div class="quiz-options">
+                                <label>
+                                    <input type="radio" name="q2" value="a">
+                                    Lago di Pergusa
+                                </label>
+                                <label>
+                                    <input type="radio" name="q2" value="b">
+                                    Lago Pozzillo
+                                </label>
+                                <label>
+                                    <input type="radio" name="q2" value="c">
+                                    Lago Arancio
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-question="3">
+                            <h4>Domanda 3/10</h4>
+                            <p>Quale importante edificio religioso si trova nel centro di Regalbuto?</p>
+                            <div class="quiz-options">
+                                <label>
+                                    <input type="radio" name="q3" value="a">
+                                    Duomo di San Giorgio
+                                </label>
+                                <label>
+                                    <input type="radio" name="q3" value="b">
+                                    Chiesa Madre di San Basilio Magno
+                                </label>
+                                <label>
+                                    <input type="radio" name="q3" value="c">
+                                    Santuario di Tindari
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-question="4">
+                            <h4>Domanda 4/10</h4>
+                            <p>In quale secolo fu fondato Regalbuto?</p>
+                            <div class="quiz-options">
+                                <label>
+                                    <input type="radio" name="q4" value="a">
+                                    XI secolo
+                                </label>
+                                <label>
+                                    <input type="radio" name="q4" value="b">
+                                    XIV secolo
+                                </label>
+                                <label>
+                                    <input type="radio" name="q4" value="c">
+                                    XVII secolo
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-question="5">
+                            <h4>Domanda 5/10</h4>
+                            <p>Qual è la caratteristica principale del Convento di Sant'Antonio?</p>
+                            <div class="quiz-options">
+                                <label>
+                                    <input type="radio" name="q5" value="a">
+                                    È costruito interamente in marmo
+                                </label>
+                                <label>
+                                    <input type="radio" name="q5" value="b">
+                                    È inaccessibile e si trova in una zona rurale
+                                </label>
+                                <label>
+                                    <input type="radio" name="q5" value="c">
+                                    Ospita un museo d'arte moderna
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-question="6">
+                            <h4>Domanda 6/10</h4>
+                            <p>Qual è la principale festa religiosa celebrata a Regalbuto?</p>
+                            <div class="quiz-options">
+                                <label>
+                                    <input type="radio" name="q6" value="a">
+                                    Festa di San Sebastiano
+                                </label>
+                                <label>
+                                    <input type="radio" name="q6" value="b">
+                                    Festa del Patrono San Vito
+                                </label>
+                                <label>
+                                    <input type="radio" name="q6" value="c">
+                                    Festa della Madonna del Carmelo
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-question="7">
+                            <h4>Domanda 7/10</h4>
+                            <p>Cosa significa il nome "Regalbuto"?</p>
+                            <div class="quiz-options">
+                                <label>
+                                    <input type="radio" name="q7" value="a">
+                                    Paese reale
+                                </label>
+                                <label>
+                                    <input type="radio" name="q7" value="b">
+                                    Campo del re
+                                </label>
+                                <label>
+                                    <input type="radio" name="q7" value="c">
+                                    Fortezza del re
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-question="8">
+                            <h4>Domanda 8/10</h4>
+                            <p>Quale importante struttura medievale sorgeva sulla collina di Regalbuto?</p>
+                            <div class="quiz-options">
+                                <label>
+                                    <input type="radio" name="q8" value="a">
+                                    Una torre normanna
+                                </label>
+                                <label>
+                                    <input type="radio" name="q8" value="b">
+                                    Un castello
+                                </label>
+                                <label>
+                                    <input type="radio" name="q8" value="c">
+                                    Un monastero templare
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-question="9">
+                            <h4>Domanda 9/10</h4>
+                            <p>Regalbuto è situata lungo quale importante fiume siciliano?</p>
+                            <div class="quiz-options">
+                                <label>
+                                    <input type="radio" name="q9" value="a">
+                                    Fiume Alcantara
+                                </label>
+                                <label>
+                                    <input type="radio" name="q9" value="b">
+                                    Fiume Simeto
+                                </label>
+                                <label>
+                                    <input type="radio" name="q9" value="c">
+                                    Fiume Belice
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-question" data-question="10">
+                            <h4>Domanda 10/10</h4>
+                            <p>Quale prodotto tipico è legato alla tradizione agricola di Regalbuto?</p>
+                            <div class="quiz-options">
+                                <label>
+                                    <input type="radio" name="q10" value="a">
+                                    Lenticchie
+                                </label>
+                                <label>
+                                    <input type="radio" name="q10" value="b">
+                                    Mandorle
+                                </label>
+                                <label>
+                                    <input type="radio" name="q10" value="c">
+                                    Olive
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="quiz-navigation">
+                            <button id="prev-btn" class="btn btn-outline" onclick="previousQuestion()" style="display: none;">
+                                <i data-feather="chevron-left"></i>
+                                Precedente
+                            </button>
+                            <button id="next-btn" class="btn btn-primary" onclick="nextQuestion()">
+                                Successiva
+                                <i data-feather="chevron-right"></i>
+                            </button>
+                            <button id="submit-btn" class="btn btn-primary" onclick="submitQuiz()" style="display: none;">
+                                <i data-feather="check"></i>
+                                Invia Quiz
+                            </button>
+                        </div>
+
+                    </div>
+                    
+                    <div id="quiz-result" class="quiz-result" style="display: none;">
+                        <h4>Risultato Quiz</h4>
+                        <p id="quiz-score"></p>
+                        <button class="btn btn-secondary" onclick="restartQuiz()">
+                            <i data-feather="refresh-cw"></i>
+                            Riprova
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Educational Materials -->
+                <div class="educational-block">
+                    <h3>Materiali Didattici</h3>
+                    <div class="materials-grid">
+                        <div class="material-card">
+                            <div class="material-icon">📖</div>
+                            <h4>Storia di Regalbuto</h4>
+                            <p>Guida completa alla storia della città dalle origini ai giorni nostri</p>
+                            <a href="storia-regalbuto.pdf" download="Storia-di-Regalbuto.pdf" class="btn btn-outline">
+                                <i data-feather="download"></i>
+                                Scarica PDF
+                            </a>
+                        </div>
+                        <div class="material-card">
+                            <div class="material-icon">🏛️</div>
+                            <h4>Architettura Sacra</h4>
+                            <p>Approfondimento sulle chiese e i conventi del territorio</p>
+                            <a href="regalbuto-guida.pdf" download="Guida-Architettura-Sacra-Regalbuto.pdf" class="btn btn-outline">
+                                <i data-feather="download"></i>
+                                Scarica PDF
+                            </a>
+                        </div>
+                        <div class="material-card">
+                            <div class="material-icon">🌿</div>
+                            <h4>Natura e Ambiente</h4>
+                            <p>Flora, fauna e caratteristiche geografiche del territorio</p>
+                            <a href="natura-ambiente-pozzillo.pdf" download="Natura-Ambiente-Lago-Pozzillo.pdf" class="btn btn-outline">
+                                <i data-feather="download"></i>
+                                Scarica PDF
+                            </a>
+                        </div>
+                        <div class="material-card">
+                            <div class="material-icon">🎭</div>
+                            <h4>Tradizioni e Folklore</h4>
+                            <p>Feste, tradizioni e cultura popolare di Regalbuto</p>
+                            <button class="btn btn-outline">
+                                <i data-feather="download"></i>
+                                Scarica PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIRTUAL TOUR SECTION -->
+        <section id="virtual-tour" class="section">
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i data-feather="camera"></i>
+                    Tour Virtuale
+                </h2>
+                
+                <div class="tour-intro">
+                    <h3>Scopri il Convento di Sant'Antonio e altri luoghi storici attraverso la realtà virtuale</h3>
+                    <p>Esplora il Convento di Sant'Antonio in un'esperienza immersiva a 360°, anche in realtà virtuale</p>
+                </div>
+
+                <div class="virtual-tour-container">
+                    <!-- Main 360° Viewer -->
+                    <div id="pano-viewer" class="pano-viewer">
+                        <iframe 
+                            src="https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=0&sd=1&thumbs=1" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+
+                    <!-- Tour Controls -->
+                    <div class="tour-controls">
+                        <button class="btn btn-primary" onclick="toggleFullscreen()">
+                            <i data-feather="maximize"></i>
+                            Schermo Intero
+                        </button>
+                        <button class="btn btn-outline" onclick="toggleVRMode()">
+                            <i data-feather="eye"></i>
+                            Modalità VR
+                        </button>
+                        <button class="btn btn-outline" onclick="resetView()">
+                            <i data-feather="rotate-ccw"></i>
+                            Reset Vista
+                        </button>
+                    </div>
+
+                    <!-- Tour Hotspots -->
+                    <div class="tour-locations">
+                        <h4>Luoghi Disponibili</h4>
+                        <div class="location-grid">
+                            <div class="location-card active" onclick="loadLocation('convento')">
+                                <div class="location-thumb">🏛️</div>
+                                <h5>Convento di Sant'Antonio</h5>
+                                <p>Chiostro principale</p>
+                            </div>
+                            <div class="location-card" onclick="loadLocation('chiesa-madre')">
+                                <div class="location-thumb">⛪</div>
+                                <h5>Chiesa Madre</h5>
+                                <p>Navata centrale</p>
+                            </div>
+                            <div class="location-card" onclick="loadLocation('panorama')">
+                                <div class="location-thumb">🏔️</div>
+                                <h5>Vista Panoramica</h5>
+                                <p>Dalle colline di Regalbuto</p>
+                            </div>
+                            <div class="location-card" onclick="loadLocation('piazza')">
+                                <div class="location-thumb">🏛️</div>
+                                <h5>Piazza Repubblica</h5>
+                                <p>Centro storico</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VR Instructions -->
+                <div class="vr-instructions">
+                    <h4>Come usare la modalità VR</h4>
+                    <div class="instruction-steps">
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <p>Attiva la modalità VR cliccando il pulsante sopra</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <p>Inserisci il telefono in un visore VR compatibile</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <p>Muovi la testa per esplorare l'ambiente a 360°</p>
+                        </div>
+                        <div class="step">
+                            <span class="step-number">4</span>
+                            <p>Fissa lo sguardo sui punti di interesse per navigare</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- INFO SECTION -->
+        <section id="info" class="section">
+            <div class="content-section">
+                <h2 class="section-title">
+                    <i data-feather="info"></i>
+                    Informazioni Turistiche
+                </h2>
+
+                <!-- Municipal Info Card -->
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3>🏛️ Comune di Regalbuto</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="contact-grid">
+                            <div class="contact-row">
+                                <i data-feather="map-pin"></i>
+                                <div>
+                                    <strong>Indirizzo</strong><br>
+                                    Piazza della Repubblica, 1 - 94017 Regalbuto (EN)
+                                </div>
+                            </div>
+                            <div class="contact-row">
+                                <i data-feather="file-text"></i>
+                                <div>
+                                    <strong>Codice Fiscale</strong><br>
+                                    80000660862
+                                </div>
+                            </div>
+                            <div class="contact-row">
+                                <i data-feather="hash"></i>
+                                <div>
+                                    <strong>Partita IVA</strong><br>
+                                    00421370867
+                                </div>
+                            </div>
+                            <div class="contact-row">
+                                <i data-feather="phone"></i>
+                                <div>
+                                    <strong>Telefono</strong><br>
+                                    <a href="tel:+390935911311">0935 911311</a>
+                                </div>
+                            </div>
+                            <div class="contact-row">
+                                <i data-feather="mail"></i>
+                                <div>
+                                    <strong>Email</strong><br>
+                                    <a href="mailto:urp@comune.regalbuto.en.it">urp@comune.regalbuto.en.it</a>
+                                </div>
+                            </div>
+                            <div class="contact-row">
+                                <i data-feather="globe"></i>
+                                <div>
+                                    <strong>Sito Web</strong><br>
+                                    <a href="https://www.comune.regalbuto.en.it" target="_blank">www.comune.regalbuto.en.it</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Opening Hours -->
+                <div class="info-block">
+                    <h3>🕒 Orari Monumenti</h3>
+                    <div class="schedule-grid">
+                        <div class="schedule-item">
+                            <strong>Chiesa di San Basilio</strong><br>
+                            Lunedì-Venerdì: 9:00-17:00<br>
+                            Sabato-Domenica: 10:00-18:00
+                        </div>
+
+                        <div class="schedule-note">
+                            <em>Gli orari sono soggetti a variazioni durante le festività</em>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tourist Info -->
+                <div class="info-block">
+                    <h3>📌 Info Turistiche</h3>
+                    <div class="tourist-services">
+                        <div class="service-item">
+                            <i data-feather="users"></i>
+                            <span>Visite guidate su prenotazione</span>
+                        </div>
+                        <div class="service-item">
+                            <i data-feather="globe"></i>
+                            <span>Info in italiano e inglese</span>
+                        </div>
+                        <div class="service-item">
+                            <i data-feather="heart"></i>
+                            <span>Accessibilità disabili</span>
+                        </div>
+                        <div class="service-item">
+                            <i data-feather="truck"></i>
+                            <span>Parcheggio gratuito</span>
+                        </div>
+                        <div class="service-item">
+                            <i data-feather="coffee"></i>
+                            <span>Area picnic a San Calogero</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How to Reach -->
+                <div class="info-block">
+                    <h3>🚗 Come Arrivare</h3>
+                    <div class="transport-options">
+                        <div class="transport-item">
+                            <div class="transport-icon">🚗</div>
+                            <div>
+                                <strong>In Auto</strong><br>
+                                A19 Palermo-Catania, uscita Catenanuova
+                            </div>
+                        </div>
+                        <div class="transport-item">
+                            <div class="transport-icon">🚂</div>
+                            <div>
+                                <strong>In Treno</strong><br>
+                                Stazione di Catenanuova + bus
+                            </div>
+                        </div>
+                        <div class="transport-item">
+                            <div class="transport-icon">🚌</div>
+                            <div>
+                                <strong>In Bus</strong><br>
+                                Linee SAIS da Catania/Enna
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Credits Card -->
+                <div class="info-card">
+                    <div class="card-header">
+                        <h3>👥 Crediti</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="contact-grid">
+                            <div class="contact-row">
+                                <i data-feather="briefcase"></i>
+                                <div>
+                                    <strong>Committente</strong><br>
+                                    Comune di Regalbuto - Assessorato al Turismo
+                                </div>
+                            </div>
+                            <div class="contact-row">
+                                <i data-feather="code"></i>
+                                <div>
+                                    <strong>Sviluppo applicazione</strong><br>
+                                    Magnetico Associazione Culturale
+                                </div>
+                            </div>
+                            <div class="contact-row">
+                                <i data-feather="mail"></i>
+                                <div>
+                                    <strong>Email</strong><br>
+                                    <a href="mailto:info@magnetico.cloud">info@magnetico.cloud</a>
+                                </div>
+                            </div>
+                            <div class="contact-row">
+                                <i data-feather="phone"></i>
+                                <div>
+                                    <strong>Numero verde</strong><br>
+                                    <a href="tel:800662508">800 66 25 08</a>
+                                </div>
+                            </div>
+                            <div class="contact-row">
+                                <i data-feather="file-text"></i>
+                                <div>
+                                    <strong>Contenuti</strong><br>
+                                    Comune di Regalbuto - Archivio Comunale
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy and Security -->
+                <div class="info-block">
+                    <h3>🔒 Privacy e Sicurezza</h3>
+                    <div class="privacy-content">
+                        <h4>Utilizzo dei Dati</h4>
+                        <p>L'applicazione utilizza la geolocalizzazione solo quando richiesto dall'utente per fornire indicazioni sui percorsi turistici. I dati di posizione non vengono memorizzati sui nostri server.</p>
+                        
+                        <h4>Cookies e Storage</h4>
+                        <p>L'app memorizza localmente solo le preferenze dell'utente e i progressi nei quiz educativi per migliorare l'esperienza d'uso.</p>
+                        
+                        <h4>Fotocamera</h4>
+                        <p>L'accesso alla fotocamera è richiesto esclusivamente per la funzionalità di scansione QR code e non vengono salvate immagini.</p>
+                        
+                        <div class="privacy-link">
+                            <button class="btn btn-outline" onclick="showNotification('Informativa completa disponibile sul sito del Comune', 'info')">
+                                <i data-feather="shield"></i>
+                                Leggi l'informativa completa sulla privacy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Support Section -->
+                <div class="info-block">
+                    <h3>💝 Supporta il Progetto</h3>
+                    <div class="support-content">
+                        <p>Aiutaci a migliorare l'esperienza turistica di Regalbuto. Il tuo contributo è prezioso per preservare e valorizzare il nostro patrimonio culturale.</p>
+                        <div class="support-actions">
+                            <button class="btn btn-primary" onclick="showNotification('Grazie per il tuo interesse! Contatta il Comune per maggiori informazioni.', 'success')">
+                                <i data-feather="star"></i>
+                                ⭐ Recensione
+                            </button>
+                            <button class="btn btn-secondary" onclick="showNotification('Il tuo feedback è importante! Scrivi a info@magnetico.cloud', 'info')">
+                                <i data-feather="message-circle"></i>
+                                💬 Feedback
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Final Credits -->
+                <div class="simple-credits">
+                    <h4>Regalbuto Heritage v1.0.0</h4>
+                    <p>© 2025 Comune di Regalbuto - Tutti i diritti riservati</p>
+                    <p>Sviluppato con ❤️ per la valorizzazione del patrimonio culturale siciliano</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- QR Scanner Modal (Global) -->
+    <div id="qr-modal" class="modal" onclick="if(event.target === this) closeQRScanner()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>Scansiona QR Code</h3>
+                <button id="qr-close-btn" class="close-btn" type="button" onclick="document.getElementById('qr-modal').style.display='none';" ontouchstart="document.getElementById('qr-modal').style.display='none';">
+                    ✕
+                </button>
+            </div>
+            <div id="qr-reader"></div>
+            <div id="qr-result"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchTab('home')" data-tab="home">
+            <i data-feather="home"></i>
+            <span>Home</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('mappa')" data-tab="mappa">
+            <i data-feather="map"></i>
+            <span>Mappa</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('monumenti')" data-tab="monumenti">
+            <i data-feather="camera"></i>
+            <span>Monumenti</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('virtual-tour')" data-tab="virtual-tour">
+            <i data-feather="eye"></i>
+            <span>Virtual Tour</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('didattica')" data-tab="didattica">
+            <i data-feather="book"></i>
+            <span>Didattica</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('info')" data-tab="info">
+            <i data-feather="info"></i>
+            <span>Info</span>
+        </button>
+    </nav>
+
+    <!-- Audio Element for Audio Guides -->
+    <audio id="audio-player" controls style="display: none;">
+        <source src="" type="audio/mpeg">
+        Il tuo browser non supporta l'elemento audio.
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
