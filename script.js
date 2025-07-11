@@ -958,6 +958,7 @@ function loadLocation(locationId) {
     // Location URLs for virtual tours (placeholders)
     const locations = {
         'convento': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=0&sd=1&thumbs=1',
+        'santa-maria-croce': 'https://kuula.co/share/hdWFx?logo=1&info=1&fs=1&vr=0&zoom=1&autorotate=0.22&thumbs=1&inst=it',
         'chiesa-madre': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=0&sd=1&thumbs=1',
         'panorama': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=0&sd=1&thumbs=1',
         'piazza': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=0&sd=1&thumbs=1'

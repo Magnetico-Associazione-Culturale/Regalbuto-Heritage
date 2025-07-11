@@ -263,6 +263,46 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Chiesa di Santa Maria della Croce -->
+                    <div class="featured-card" onclick="toggleFeaturedCard('santa-maria-croce')">
+                        <div class="card-header">
+                            <div class="card-thumbnail">
+                                <img src="src/imgs/flat/DJI_20250711100218_0035_D.JPG" alt="Chiesa di Santa Maria della Croce">
+                            </div>
+                            <div class="card-content">
+                                <div class="card-category-badge">Religioso</div>
+                                <h4>Chiesa di Santa Maria della Croce</h4>
+                                <p>Antica chiesa ricca di storia e tradizione</p>
+                                <div class="card-distance">
+                                    <i data-feather="map-pin"></i>
+                                    <span>0.6 km</span>
+                                </div>
+                            </div>
+                            <button class="card-expand-btn" id="expand-santa-maria-croce">
+                                <i data-feather="chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="card-expanded-info" id="expanded-santa-maria-croce">
+                            <p>La Chiesa di Santa Maria della Croce è un importante edificio religioso che testimonia la ricca tradizione spirituale di Regalbuto. La sua architettura rappresenta un esempio significativo dell'arte sacra siciliana.</p>
+                            <p>La chiesa conserva al suo interno preziose opere d'arte e arredi sacri che raccontano secoli di devozione e fede della comunità locale.</p>
+                            <p><strong>Tradizioni:</strong> La chiesa è centro di importanti celebrazioni religiose che coinvolgono l'intera comunità di Regalbuto, mantenendo vive le tradizioni secolari del territorio.</p>
+                            <div class="card-actions">
+                                <button class="btn btn-primary" onclick="event.stopPropagation(); playAudioGuide('santa-maria-croce')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('santa-maria-croce')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                                <button class="btn btn-secondary" onclick="event.stopPropagation(); switchTab('virtual-tour'); loadLocation('santa-maria-croce')">
+                                    <i data-feather="eye"></i>
+                                    Tour Virtuale 360°
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Categoria Separata: Tecnologia -->
@@ -587,12 +627,47 @@
                         </div>
                     </div>
 
-
-
-
-
-
-
+                    <!-- Chiesa di Santa Maria della Croce -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/DJI_20250711100218_0035_D.JPG" alt="Chiesa di Santa Maria della Croce">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa di Santa Maria della Croce</h4>
+                            <p class="monument-description">Antica chiesa ricca di storia e tradizione</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.6 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('santa-maria-croce')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-santa-maria-croce">
+                            <div class="monument-description">
+                                <p>La Chiesa di Santa Maria della Croce è un importante edificio religioso che testimonia la ricca tradizione spirituale di Regalbuto. La sua architettura rappresenta un esempio significativo dell'arte sacra siciliana.</p>
+                                <p>La chiesa conserva al suo interno preziose opere d'arte e arredi sacri che raccontano secoli di devozione e fede della comunità locale. La facciata presenta elementi decorativi tipici dell'architettura religiosa siciliana.</p>
+                                <p><strong>Tradizioni:</strong> La chiesa è centro di importanti celebrazioni religiose che coinvolgono l'intera comunità di Regalbuto, mantenendo vive le tradizioni secolari del territorio.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('santa-maria-croce')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('santa-maria-croce')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                                <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('santa-maria-croce')">
+                                    <i data-feather="eye"></i>
+                                    Tour Virtuale 360°
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
 
@@ -1032,7 +1107,7 @@
                 
                 <div class="tour-intro">
                     <h3>Scopri il Convento di Sant'Antonio e altri luoghi storici attraverso la realtà virtuale</h3>
-                    <p>Esplora il Convento di Sant'Antonio in un'esperienza immersiva a 360°, anche in realtà virtuale</p>
+                    <p>Esplora il Convento di Sant'Antonio, la Chiesa di Santa Maria della Croce e altri luoghi storici in un'esperienza immersiva a 360°, anche in realtà virtuale</p>
                 </div>
 
                 <div class="virtual-tour-container">
@@ -1071,6 +1146,11 @@
                                 <div class="location-thumb">🏛️</div>
                                 <h5>Convento di Sant'Antonio</h5>
                                 <p>Chiostro principale</p>
+                            </div>
+                            <div class="location-card" onclick="loadLocation('santa-maria-croce')">
+                                <div class="location-thumb">⛪</div>
+                                <h5>Chiesa di Santa Maria della Croce</h5>
+                                <p>Tour virtuale 360°</p>
                             </div>
                             <div class="location-card" onclick="loadLocation('chiesa-madre')">
                                 <div class="location-thumb">⛪</div>
