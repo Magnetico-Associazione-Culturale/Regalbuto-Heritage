@@ -219,7 +219,7 @@ p {
 .hero-section {
     height: 60vh;
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
-                url('regalbuto-plaza.jpg') center/cover;
+                url('src/imgs/flat/regalbuto-plaza.jpg') center/cover;
     display: flex;
     align-items: center;
     justify-content: center;
