@@ -579,13 +579,60 @@ function initializeMap() {
 
 function createMap() {
     // Create map centered on Regalbuto
-    map = L.map('osm-map').setView([37.6395, 14.6351], 13);
+    map = L.map('osm-map', {
+        // Disable scroll zoom by default to prevent conflicts
+        scrollWheelZoom: false,
+        // Enable zoom on map focus
+        zoomControl: true,
+        // Smooth zoom animation
+        zoomAnimation: true,
+        // Prevent map from capturing all scroll events
+        touchZoom: 'center'
+    }).setView([37.6395, 14.6351], 13);
     
     // Add OpenStreetMap tiles
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 18
     }).addTo(map);
+    
+    // Get the hint element
+    const hint = document.querySelector('.map-interaction-hint');
+    
+    // Enable scroll zoom when map is focused
+    map.on('focus', function() {
+        map.scrollWheelZoom.enable();
+        if (hint) hint.style.opacity = '0';
+    });
+    
+    // Disable scroll zoom when map loses focus
+    map.on('blur', function() {
+        map.scrollWheelZoom.disable();
+    });
+    
+    // Enable scroll zoom on click and hide hint
+    map.on('click', function() {
+        map.scrollWheelZoom.enable();
+        if (hint) {
+            hint.style.opacity = '0';
+            setTimeout(() => {
+                if (hint) hint.style.display = 'none';
+            }, 300);
+        }
+        setTimeout(() => {
+            map.scrollWheelZoom.disable();
+        }, 5000); // Disable after 5 seconds
+    });
+    
+    // Hide hint on any map interaction
+    map.on('zoomstart movestart', function() {
+        if (hint) {
+            hint.style.opacity = '0';
+            setTimeout(() => {
+                if (hint) hint.style.display = 'none';
+            }, 300);
+        }
+    });
     
     // Add all markers initially
     addAllMarkers();
@@ -992,17 +1039,41 @@ function toggleFullscreen() {
 
 function toggleVRMode() {
     const iframe = document.querySelector('#pano-viewer iframe');
+    const vrBtn = document.querySelector('.btn[onclick="toggleVRMode()"]');
+    
     if (iframe) {
-        // Add VR parameter to the URL
         let src = iframe.src;
-        if (src.includes('vr=0')) {
-            src = src.replace('vr=0', 'vr=1');
-            showNotification('Modalità VR attivata! Usa un visore compatibile.', 'success');
-        } else {
+        let isVRMode = src.includes('vr=1');
+        
+        if (isVRMode) {
+            // Disable VR mode
             src = src.replace('vr=1', 'vr=0');
+            if (vrBtn) {
+                vrBtn.innerHTML = '<i data-feather="eye"></i> Modalità VR';
+                vrBtn.classList.remove('btn-primary');
+                vrBtn.classList.add('btn-outline');
+            }
             showNotification('Modalità VR disattivata', 'info');
+        } else {
+            // Enable VR mode
+            src = src.replace('vr=0', 'vr=1');
+            if (vrBtn) {
+                vrBtn.innerHTML = '<i data-feather="eye"></i> VR Attiva';
+                vrBtn.classList.remove('btn-outline');
+                vrBtn.classList.add('btn-primary');
+            }
+            showNotification('Modalità VR attivata! Cerca l\'icona VR nel tour.', 'success');
         }
-        iframe.src = src;
+        
+        // Force iframe reload by temporarily changing src
+        iframe.src = 'about:blank';
+        setTimeout(() => {
+            iframe.src = src;
+            // Re-initialize feather icons for the updated button
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+        }, 100);
     }
 }
 
