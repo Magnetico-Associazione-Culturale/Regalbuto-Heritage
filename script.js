@@ -18,27 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Regalbuto Heritage App initialized');
 });
 
-// Menu Functions
-function toggleMenu() {
-    const menu = document.getElementById('dropdown-menu');
-    menu.classList.toggle('active');
-}
-
-function closeMenu() {
-    const menu = document.getElementById('dropdown-menu');
-    menu.classList.remove('active');
-}
-
-// Close menu when clicking outside
-document.addEventListener('click', function(event) {
-    const menu = document.getElementById('dropdown-menu');
-    const menuButton = document.querySelector('.header-menu');
-    
-    if (menu && !menu.contains(event.target) && !menuButton.contains(event.target)) {
-        menu.classList.remove('active');
-    }
-});
-
 // Search and Filter Functions
 function filterMonuments() {
     const searchTerm = document.getElementById('monument-search').value.toLowerCase();
