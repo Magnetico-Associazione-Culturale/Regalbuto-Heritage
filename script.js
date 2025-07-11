@@ -3,6 +3,8 @@ let currentQuizQuestion = 1;
 let quizAnswers = {};
 let qrScanner = null;
 let currentFilter = 'all';
+let map = null; // Leaflet map instance
+let markers = []; // Array to store map markers
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -14,6 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize quiz
     initializeQuiz();
+    
+    // Initialize map when in map section
+    initializeMap();
     
     console.log('Regalbuto Heritage App initialized');
 });
@@ -128,6 +133,16 @@ function switchTab(tabName) {
     // Refresh icons after tab switch
     setTimeout(() => {
         feather.replace();
+        
+        // Initialize map if switching to map tab
+        if (tabName === 'mappa') {
+            if (!map) {
+                initializeMap();
+            } else {
+                // Resize map to fix display issues when switching tabs
+                map.invalidateSize();
+            }
+        }
     }, 100);
     
     console.log(`Switched to tab: ${tabName}`);
@@ -547,6 +562,160 @@ function playAudioGuide(monumentId) {
     }
 }
 
+// Map Initialization and Management Functions
+function initializeMap() {
+    // Initialize map only when needed to avoid loading issues
+    setTimeout(() => {
+        if (!map && document.getElementById('osm-map')) {
+            try {
+                createMap();
+            } catch (error) {
+                console.error('Error initializing map:', error);
+                showNotification('Errore nel caricamento della mappa', 'warning');
+            }
+        }
+    }, 100);
+}
+
+function createMap() {
+    // Create map centered on Regalbuto
+    map = L.map('osm-map').setView([37.6395, 14.6351], 13);
+    
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18
+    }).addTo(map);
+    
+    // Add all markers initially
+    addAllMarkers();
+    
+    console.log('Map initialized successfully');
+}
+
+function addAllMarkers() {
+    // Clear existing markers
+    clearMarkers();
+    
+    // Define locations with coordinates and categories
+    const locations = [
+        {
+            id: 'lago-pozzillo',
+            name: 'Lago Pozzillo',
+            coords: [37.6587117, 14.5975772],
+            category: 'natura',
+            description: 'Bacino artificiale con attività ricreative',
+            icon: '🏞️'
+        },
+        {
+            id: 'parco-avventura',
+            name: 'Parco Avventura Pozzillo',
+            coords: [37.6589778, 14.6188852],
+            category: 'natura',
+            description: 'Percorsi acrobatici nella natura',
+            icon: '🌲'
+        },
+        {
+            id: 'san-basilio',
+            name: 'Chiesa di San Basilio',
+            coords: [37.6526434, 14.6408936],
+            category: 'cultura',
+            description: 'Principale edificio religioso della città',
+            icon: '⛪'
+        },
+        {
+            id: 'santantonio',
+            name: 'Convento di Sant\'Antonio',
+            coords: [37.6731697, 14.6452891],
+            category: 'cultura',
+            description: 'Antico convento in zona rurale',
+            icon: '🏛️'
+        },
+        {
+            id: 'purgatorio',
+            name: 'Chiesa del Purgatorio',
+            coords: [37.6526434, 14.6408936],
+            category: 'cultura',
+            description: 'Arte barocca e devozione popolare',
+            icon: '⛪'
+        },
+        {
+            id: 'tecnopolo',
+            name: 'Tecnopolo Magnetico',
+            coords: [37.6555295, 14.6282223],
+            category: 'tecnologia',
+            description: 'Centro di innovazione e formazione ICT',
+            icon: '💻'
+        },
+        {
+            id: 'calvario',
+            name: 'Monte Calvario',
+            coords: [37.6264741, 14.7434425],
+            category: 'cultura',
+            description: 'Sito religioso con vista panoramica',
+            icon: '⛰️'
+        }
+    ];
+    
+    // Add markers for each location
+    locations.forEach(location => {
+        const marker = L.marker(location.coords)
+            .bindPopup(`
+                <div style="text-align: center; min-width: 200px;">
+                    <h4 style="margin: 0 0 8px 0; color: #2c3e50;">${location.icon} ${location.name}</h4>
+                    <p style="margin: 0 0 12px 0; color: #666; font-size: 14px;">${location.description}</p>
+                    <button onclick="openMapLocation('${location.id}')" 
+                            style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">
+                        🗺️ Portami lì
+                    </button>
+                </div>
+            `)
+            .addTo(map);
+        
+        // Store marker with its category for filtering
+        marker.category = location.category;
+        marker.locationId = location.id;
+        markers.push(marker);
+    });
+}
+
+function clearMarkers() {
+    markers.forEach(marker => {
+        map.removeLayer(marker);
+    });
+    markers = [];
+}
+
+function filterMarkersBy(category) {
+    if (!map || !markers) return;
+    
+    markers.forEach(marker => {
+        if (category === 'all' || marker.category === category) {
+            if (!map.hasLayer(marker)) {
+                marker.addTo(map);
+            }
+        } else {
+            if (map.hasLayer(marker)) {
+                map.removeLayer(marker);
+            }
+        }
+    });
+    
+    // Adjust map view based on visible markers
+    if (category !== 'all') {
+        const visibleMarkers = markers.filter(marker => 
+            marker.category === category && map.hasLayer(marker)
+        );
+        if (visibleMarkers.length > 0) {
+            const group = new L.featureGroup(visibleMarkers);
+            map.fitBounds(group.getBounds().pad(0.1));
+        }
+    } else {
+        // Show all markers - reset to default view
+        map.setView([37.6395, 14.6351], 13);
+    }
+}
+
 // Map Location Functions
 function filterMapLocations(category) {
     // Update active filter button
@@ -567,24 +736,12 @@ function filterMapLocations(category) {
         }
     });
     
-    // Update map iframe source based on category
-    updateMapByCategory(category);
+    // Filter map markers
+    if (map) {
+        filterMarkersBy(category);
+    }
     
     showNotification(`Filtro applicato: ${getCategoryDisplayName(category)}`, 'success');
-}
-
-function updateMapByCategory(category) {
-    const mapIframe = document.getElementById('map-iframe');
-    
-    // Define proper Google Maps embed URLs for each category
-    const mapUrls = {
-        'all': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25158!2d14.6351!3d37.6395!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x131135e185e8ac8b%3A0xa78d22528c9e46e9!2sRegalbuto%2C%20EN!5e0!3m2!1sit!2sit!4v1234567890',
-        'natura': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25158!2d14.6040!3d37.6587!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x131134246a8cb2d1%3A0x11e270f0c16a5b55!2sLago%20Pozzillo!5e0!3m2!1sit!2sit!4v1234567891',
-        'cultura': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25158!2d14.6383!3d37.6526!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x131135e185e8ac8b%3A0xa78d22528c9e46e9!2sChiesa%20madre%20di%20San%20Basilio!5e0!3m2!1sit!2sit!4v1234567892',
-        'tecnologia': 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d25158!2d14.6256!3d37.6555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x131135004bd582e3%3A0xcdd4146a12d3cf67!2sTecnopolo%20Magnetico!5e0!3m2!1sit!2sit!4v1234567893'
-    };
-    
-    mapIframe.src = mapUrls[category];
 }
 
 function getCategoryDisplayName(category) {
