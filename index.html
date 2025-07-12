@@ -426,7 +426,7 @@
 
                 <!-- Results Count -->
                 <div class="results-count">
-                    <span id="results-text">12 monumenti trovati</span>
+                    <span id="results-text">13 monumenti trovati</span>
                 </div>
                 
                 <!-- Cultura e Storia -->
@@ -586,6 +586,49 @@
                                     Portami lì
                                 </button>
                                 <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('santa-maria-croce')">
+                                    <i data-feather="eye"></i>
+                                    Tour Virtuale 360°
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monumento ai Caduti -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/cadutiflat.png" alt="Monumento ai Caduti">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Monumento ai Caduti</h4>
+                            <p class="monument-description">Memoria storica e commemorazione degli eroi</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.4 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('monumento-caduti')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-monumento-caduti">
+                            <div class="monument-description">
+                                <p>Il Monumento ai Caduti di Regalbuto è un'opera commemorativa dedicata alla memoria dei cittadini che hanno sacrificato la loro vita per la patria durante le guerre del XX secolo. Situato in una posizione centrale e simbolica della città, rappresenta un luogo di raccoglimento e memoria storica.</p>
+                                <p>Il monumento, caratterizzato da un'architettura sobria ma solenne, presenta elementi scultorei che richiamano i valori del sacrificio, dell'onore e della memoria. Le iscrizioni incise nella pietra ricordano i nomi dei caduti e le date significative della storia italiana.</p>
+                                <p><strong>Significato storico:</strong> Testimonia l'importante contributo di Regalbuto agli eventi storici nazionali e mantiene viva la memoria delle generazioni passate.</p>
+                                <p><strong>Commemorazioni:</strong> Ogni anno, in occasione delle ricorrenze nazionali, il monumento ospita cerimonie ufficiali e deposizioni di corone d'alloro.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('monumento-caduti')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('monumento-caduti')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                                <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('monumento-caduti')">
                                     <i data-feather="eye"></i>
                                     Tour Virtuale 360°
                                 </button>
@@ -1090,6 +1133,11 @@
                                 <div class="location-thumb">🏛️</div>
                                 <h5>Piazza Repubblica</h5>
                                 <p>Centro storico</p>
+                            </div>
+                            <div class="location-card" onclick="loadLocation('monumento-caduti')">
+                                <div class="location-thumb">🕊️</div>
+                                <h5>Monumento ai Caduti</h5>
+                                <p>Memoria e commemorazione</p>
                             </div>
                         </div>
                     </div>

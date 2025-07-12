@@ -543,7 +543,8 @@ function playAudioGuide(monumentId) {
         'parco-avventura': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
         'punto-panoramico': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
         'san-calogero': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'tecnopolo': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
+        'tecnopolo': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+        'monumento-caduti': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
     };
     
     const audioUrl = audioGuides[monumentId];
@@ -811,6 +812,7 @@ function openMapLocation(monumentId) {
         'calvario': 'https://maps.google.com/maps?q=37.6264741,14.7434425&ll=37.6264741,14.7434425&z=15',
         'tecnopolo': 'https://maps.google.com/maps?q=37.6555295,14.6282223&ll=37.6555295,14.6282223&z=17',
         'purgatorio': 'https://maps.google.com/maps?q=37.6526434,14.6408936&ll=37.6526434,14.6408936&z=17',
+        'monumento-caduti': 'https://maps.google.com/maps?q=37.6520000,14.6410000&ll=37.6520000,14.6410000&z=17',
         'default': 'https://maps.google.com/maps?q=37.6395,14.6351&ll=37.6395,14.6351&z=14'
     };
     
@@ -1008,7 +1010,8 @@ function loadLocation(locationId) {
         'santa-maria-croce': 'https://kuula.co/share/hdWFx?logo=1&info=1&fs=1&vr=1&zoom=1&autorotate=0.22&thumbs=1&inst=it&gyro=1&cc=1',
         'chiesa-madre': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
         'panorama': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
-        'piazza': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1'
+        'piazza': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
+        'monumento-caduti': 'panoramas/panorama.html?img=https://tecnopanoramas.blob.core.windows.net/panoramas/caduti.jpg'
     };
     
     const iframe = document.querySelector('#pano-viewer iframe');

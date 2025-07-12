@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Virtual Tour</title>
+    <link rel="stylesheet" type="text/css" href="../assets/pannellum.css">
+    <script type="text/javascript" src="../assets/pannellum.js"></script>
+    <style>
+        html, body { margin: 0; height: 100%; }
+        #panorama { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <div id="panorama"></div>
+
+    <script>
+        function getQueryParam(param) {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        var imgUrl = getQueryParam("img");
+        if (!imgUrl) {
+            alert("No image URL provided!");
+        } else {
+            pannellum.viewer('panorama', {
+                "type": "equirectangular",
+                "panorama": imgUrl,
+                "autoLoad": true,
+                "showControls": true,
+                "showFullscreenCtrl": true,
+                "showZoomCtrl": true,
+                "vr": true
+            });
+        }
+    </script>
+</body>
+</html>
