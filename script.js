@@ -812,7 +812,7 @@ function openMapLocation(monumentId) {
         'calvario': 'https://maps.google.com/maps?q=37.6264741,14.7434425&ll=37.6264741,14.7434425&z=15',
         'tecnopolo': 'https://maps.google.com/maps?q=37.6555295,14.6282223&ll=37.6555295,14.6282223&z=17',
         'purgatorio': 'https://maps.google.com/maps?q=37.6526434,14.6408936&ll=37.6526434,14.6408936&z=17',
-        'monumento-caduti': 'https://maps.google.com/maps?q=37.6520000,14.6410000&ll=37.6520000,14.6410000&z=17',
+        'monumento-caduti': 'https://maps.google.com/maps?q=37.6496168,14.6407503&ll=37.6496168,14.6407503&z=17',
         'default': 'https://maps.google.com/maps?q=37.6395,14.6351&ll=37.6395,14.6351&z=14'
     };
     
