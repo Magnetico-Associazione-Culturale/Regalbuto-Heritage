@@ -90,12 +90,18 @@
             const panoramaImg = document.getElementById('panorama');
             const sky = document.getElementById('sky');
             
-            const imageUrl = getImageParameter();
+            let imageUrl = getImageParameter();
             
             if (!imageUrl) {
                 console.error('Nessun parametro img fornito');
                 loadingScreen.innerHTML = '<span style="color: red;">Errore: Nessuna immagine specificata</span>';
                 return;
+            }
+            
+            // Se il percorso non inizia con http:// o https:// e non inizia con ../
+            // aggiungi ../ per tornare alla root del sito
+            if (!imageUrl.startsWith('http') && !imageUrl.startsWith('../')) {
+                imageUrl = '../' + imageUrl;
             }
             
             console.log('Caricamento immagine:', imageUrl);

@@ -1013,7 +1013,7 @@ function loadLocation(locationId) {
         'chiesa-madre': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
         'panorama': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
         'piazza': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
-        'monumento-caduti': 'panoramas/panorama.html?img=caduti.JPG'
+        'monumento-caduti': 'panoramas/panorama.html?img=src/imgs/360/caduti.JPG'
     };
     
     const iframe = document.querySelector('#pano-viewer iframe');
@@ -1042,156 +1042,191 @@ function toggleFullscreen() {
     const viewer = document.getElementById('pano-viewer');
     const iframe = viewer ? viewer.querySelector('iframe') : null;
     
-    console.log('toggleFullscreen chiamata, iframe src:', iframe ? iframe.src : 'no iframe');
+    console.log('toggleFullscreen chiamata');
+    console.log('Viewer:', viewer);
+    console.log('Iframe src:', iframe ? iframe.src : 'no iframe');
     
-    // Se l'iframe è il panorama A-Frame, usa le sue funzioni
-    if (iframe && iframe.src.includes('panorama.html')) {
-        try {
-            // Su mobile, prova prima un approccio diverso
-            if (isMobileDevice()) {
-                console.log('Dispositivo mobile rilevato, usando approccio alternativo');
-                
-                // Prova a mandare un messaggio postMessage all'iframe
-                iframe.contentWindow.postMessage({ action: 'toggleFullscreen' }, '*');
-                
-                // Fallback dopo un breve timeout
-                setTimeout(() => {
-                    if (!document.fullscreenElement) {
-                        viewer.requestFullscreen().then(() => {
-                            showNotification('Modalità schermo intero attivata', 'info');
-                        }).catch(err => {
-                            console.log('Fullscreen fallback failed:', err);
-                            showNotification('Schermo intero non supportato su questo dispositivo', 'warning');
-                        });
-                    }
-                }, 100);
+    if (!viewer) {
+        console.error('Viewer non trovato');
+        showNotification('Errore: viewer non trovato', 'error');
+        return;
+    }
+
+    try {
+        if (!document.fullscreenElement) {
+            // Richiedi fullscreen sul viewer container
+            if (viewer.requestFullscreen) {
+                viewer.requestFullscreen();
+            } else if (viewer.webkitRequestFullscreen) {
+                viewer.webkitRequestFullscreen();
+            } else if (viewer.mozRequestFullScreen) {
+                viewer.mozRequestFullScreen();
+            } else if (viewer.msRequestFullscreen) {
+                viewer.msRequestFullscreen();
             } else {
-                // Su desktop, usa il metodo diretto
-                iframe.contentWindow.toggleFullscreen();
+                console.log('Fullscreen API non supportato');
+                showNotification('Fullscreen non supportato su questo browser', 'warning');
+                return;
             }
             
-            showNotification('Modalità schermo intero attivata', 'info');
-        } catch (err) {
-            console.log('Errore chiamata iframe fullscreen:', err);
-            // Fallback al metodo tradizionale
-            if (!document.fullscreenElement) {
-                viewer.requestFullscreen().then(() => {
-                    showNotification('Modalità schermo intero attivata', 'info');
-                }).catch(err => {
-                    console.log('Fullscreen failed:', err);
-                    showNotification('Impossibile attivare schermo intero', 'error');
-                });
-            } else {
-                document.exitFullscreen().then(() => {
-                    showNotification('Schermo intero disattivato', 'info');
-                });
-            }
-        }
-    } else {
-        // Metodo tradizionale per altri iframe
-        if (!document.fullscreenElement) {
-            viewer.requestFullscreen().then(() => {
-                showNotification('Modalità schermo intero attivata', 'info');
-            }).catch(err => {
-                console.log('Fullscreen failed:', err);
-                showNotification('Impossibile attivare schermo intero', 'error');
-            });
+            console.log('Fullscreen richiesto');
+            showNotification('Modalità schermo intero attivata', 'success');
+            
         } else {
-            document.exitFullscreen().then(() => {
-                showNotification('Schermo intero disattivato', 'info');
-            });
+            // Esci da fullscreen
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+            
+            console.log('Fullscreen disattivato');
+            showNotification('Schermo intero disattivato', 'info');
         }
+    } catch (err) {
+        console.error('Errore fullscreen:', err);
+        showNotification('Errore nell\'attivazione fullscreen: ' + err.message, 'error');
     }
 }
 
 function toggleVRMode() {
-    const iframe = document.querySelector('#pano-viewer iframe');
-    const vrBtn = document.querySelector('.btn[onclick="toggleVRMode()"]');
+    const viewer = document.getElementById('pano-viewer');
+    const iframe = viewer ? viewer.querySelector('iframe') : null;
     
-    console.log('toggleVRMode chiamata, iframe src:', iframe ? iframe.src : 'no iframe');
+    console.log('toggleVRMode chiamata');
+    console.log('Viewer:', viewer);
+    console.log('Iframe src:', iframe ? iframe.src : 'no iframe');
     
-    if (iframe) {
-        // Se l'iframe è il panorama A-Frame, usa le sue funzioni VR
-        if (iframe.src.includes('panorama.html')) {
-            try {
-                // Su mobile, usa postMessage
-                if (isMobileDevice()) {
-                    console.log('Dispositivo mobile rilevato per VR, usando postMessage');
-                    
-                    // Manda messaggio all'iframe per attivare VR
-                    iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
-                    
-                    if (vrBtn) {
-                        vrBtn.innerHTML = '<i data-feather="eye"></i> VR Attiva';
-                        vrBtn.classList.remove('btn-outline');
-                        vrBtn.classList.add('btn-primary');
-                    }
-                    
-                    showNotification('Modalità VR attivata! Muovi il dispositivo per guardare intorno.', 'success');
-                } else {
-                    // Su desktop, usa il metodo diretto
-                    iframe.contentWindow.enterVR();
-                    
-                    if (vrBtn) {
-                        vrBtn.innerHTML = '<i data-feather="eye"></i> VR Attiva';
-                        vrBtn.classList.remove('btn-outline');
-                        vrBtn.classList.add('btn-primary');
-                    }
-                    
-                    showNotification('Modalità VR attivata! Muovi il dispositivo per guardare intorno.', 'success');
-                }
-                
-                // Re-initialize feather icons for the updated button
-                if (typeof feather !== 'undefined') {
-                    feather.replace();
-                }
-            } catch (err) {
-                console.log('Errore chiamata iframe VR:', err);
-                showNotification('Errore attivazione VR', 'error');
-            }
-        } else {
-            // Metodo tradizionale per iframe Kuula
-            let src = iframe.src;
-            let isVRMode = src.includes('vr=1');
-            
-            // Check if it's a single tour (Santa Maria della Croce)
-            let isSingleTour = src.includes('hdWFx');
-            
-            if (isVRMode) {
-                // Disable VR mode
-                src = src.replace('vr=1', 'vr=0');
-                if (vrBtn) {
-                    vrBtn.innerHTML = '<i data-feather="eye"></i> Modalità VR';
-                    vrBtn.classList.remove('btn-primary');
-                    vrBtn.classList.add('btn-outline');
-                }
-                showNotification('Modalità VR disattivata', 'info');
-            } else {
-                // Enable VR mode
-                src = src.replace('vr=0', 'vr=1');
-                if (vrBtn) {
-                    vrBtn.innerHTML = '<i data-feather="eye"></i> VR Attiva';
-                    vrBtn.classList.remove('btn-outline');
-                    vrBtn.classList.add('btn-primary');
-                }
-                
-                if (isSingleTour) {
-                    showNotification('Modalità VR attivata! Cerca l\'icona VR nell\'angolo in basso a destra del tour.', 'success');
-                } else {
-                    showNotification('Modalità VR attivata! Cerca l\'icona VR nel tour.', 'success');
-                }
-            }
-            
-            // Force iframe reload by temporarily changing src
-            iframe.src = 'about:blank';
-            setTimeout(() => {
-                iframe.src = src;
-                // Re-initialize feather icons for the updated button
-                if (typeof feather !== 'undefined') {
-                    feather.replace();
-                }
-            }, 100);
+    if (!iframe) {
+        console.error('Iframe non trovato');
+        showNotification('Errore: panorama non caricato', 'error');
+        return;
+    }
+
+    // Verifica se è un panorama A-Frame
+    if (iframe.src.includes('panorama.html')) {
+        console.log('Panorama A-Frame rilevato');
+        
+        // Crea un div overlay per VR
+        let vrOverlay = document.getElementById('vr-overlay');
+        if (!vrOverlay) {
+            vrOverlay = document.createElement('div');
+            vrOverlay.id = 'vr-overlay';
+            vrOverlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #000;
+                z-index: 9999;
+                display: none;
+            `;
+            document.body.appendChild(vrOverlay);
         }
+        
+        // Clona l'iframe per la modalità VR
+        const vrIframe = iframe.cloneNode(true);
+        vrIframe.style.cssText = `
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+        `;
+        
+        vrOverlay.innerHTML = '';
+        vrOverlay.appendChild(vrIframe);
+        
+        // Pulsante di uscita VR
+        const exitButton = document.createElement('button');
+        exitButton.innerHTML = '× Esci VR';
+        exitButton.style.cssText = `
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 10000;
+            font-size: 16px;
+        `;
+        
+        exitButton.onclick = () => {
+            vrOverlay.style.display = 'none';
+            document.exitFullscreen().catch(() => {});
+            showNotification('Modalità VR disattivata', 'info');
+        };
+        
+        vrOverlay.appendChild(exitButton);
+        
+        // Attiva la modalità VR
+        vrOverlay.style.display = 'block';
+        
+        // Richiedi fullscreen per l'overlay
+        if (vrOverlay.requestFullscreen) {
+            vrOverlay.requestFullscreen();
+        } else if (vrOverlay.webkitRequestFullscreen) {
+            vrOverlay.webkitRequestFullscreen();
+        } else if (vrOverlay.mozRequestFullScreen) {
+            vrOverlay.mozRequestFullScreen();
+        } else if (vrOverlay.msRequestFullscreen) {
+            vrOverlay.msRequestFullscreen();
+        }
+        
+        console.log('Modalità VR attivata');
+        showNotification('Modalità VR attivata - Muovi il dispositivo per guardare intorno', 'success');
+        
+    } else {
+        // Metodo tradizionale per iframe Kuula
+        let src = iframe.src;
+        let isVRMode = src.includes('vr=1');
+        
+        // Check if it's a single tour (Santa Maria della Croce)
+        let isSingleTour = src.includes('hdWFx');
+        
+        if (isVRMode) {
+            // Disable VR mode
+            src = src.replace('vr=1', 'vr=0');
+            const vrBtn = document.querySelector('.btn[onclick="toggleVRMode()"]');
+            if (vrBtn) {
+                vrBtn.innerHTML = '<i data-feather="eye"></i> Modalità VR';
+                vrBtn.classList.remove('btn-primary');
+                vrBtn.classList.add('btn-outline');
+            }
+            showNotification('Modalità VR disattivata', 'info');
+        } else {
+            // Enable VR mode
+            src = src.replace('vr=0', 'vr=1');
+            const vrBtn = document.querySelector('.btn[onclick="toggleVRMode()"]');
+            if (vrBtn) {
+                vrBtn.innerHTML = '<i data-feather="eye"></i> VR Attiva';
+                vrBtn.classList.remove('btn-outline');
+                vrBtn.classList.add('btn-primary');
+            }
+            
+            if (isSingleTour) {
+                showNotification('Modalità VR attivata! Cerca l\'icona VR nell\'angolo in basso a destra del tour.', 'success');
+            } else {
+                showNotification('Modalità VR attivata! Cerca l\'icona VR nel tour.', 'success');
+            }
+        }
+        
+        // Force iframe reload by temporarily changing src
+        iframe.src = 'about:blank';
+        setTimeout(() => {
+            iframe.src = src;
+            // Re-initialize feather icons for the updated button
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+        }, 100);
     }
 }
 
