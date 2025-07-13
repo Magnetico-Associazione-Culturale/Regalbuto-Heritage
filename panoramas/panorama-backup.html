@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <title>Panorama VR - Regalbuto Heritage</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <style>
+      html, body { 
+        margin: 0; 
+        height: 100%; 
+        overflow: hidden; 
+        background: #000;
+      }
+      
+      /* Nasconde i pulsanti VR nativi di A-Frame */
+      .a-enter-vr {
+        display: none !important;
+      }
+      
+      .a-orientation-modal {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <a-scene id="scene" 
+             vr-mode-ui="enabled: true" 
+             device-orientation-permission-ui="enabled: true"
+             embedded
+             background="color: #000000"
+             loading-screen="enabled: false">
+      <a-sky id="image-360" 
+             rotation="0 -130 0" 
+             material="side: back"
+             geometry="radius: 500"></a-sky>
+      
+      <!-- Camera con controlli -->
+      <a-camera look-controls="enabled: true; reverseMouseDrag: false"
+                wasd-controls="enabled: false"
+                position="0 1.6 0">
+      </a-camera>
+    </a-scene>
+
+    <script>
+      console.log('Panorama.html caricato');
+      
+      const params = new URLSearchParams(window.location.search);
+      const imgName = params.get("img");
+      let scene;
+
+      console.log('Parametro img ricevuto:', imgName);
+
+      if (imgName) {
+        // Prova diversi percorsi possibili
+        const possiblePaths = [
+          "../src/imgs/360/" + imgName,
+          "src/imgs/360/" + imgName,
+          "./src/imgs/360/" + imgName,
+          "../../src/imgs/360/" + imgName
+        ];
+        
+        console.log('Caricamento immagine, nome file:', imgName);
+        
+        const skyElement = document.getElementById("image-360");
+        if (skyElement) {
+          // Prova il primo percorso
+          const fullPath = possiblePaths[0];
+          console.log('Tentativo caricamento immagine:', fullPath);
+          
+          skyElement.setAttribute("src", fullPath);
+          console.log('Immagine impostata su a-sky');
+          
+          // Aspetta che l'immagine sia caricata
+          skyElement.addEventListener('materialtextureloaded', function() {
+            console.log('Immagine 360° caricata con successo:', fullPath);
+          });
+          
+          skyElement.addEventListener('error', function(e) {
+            console.error('Errore caricamento immagine:', fullPath, e);
+            // Prova il secondo percorso
+            console.log('Tentativo con percorso alternativo:', possiblePaths[1]);
+            skyElement.setAttribute("src", possiblePaths[1]);
+          });
+        }
+      } else {
+        console.warn('Nessun parametro img fornito');
+        // Carica immagine di default
+        const skyElement = document.getElementById("image-360");
+        if (skyElement) {
+          skyElement.setAttribute("src", "../src/imgs/360/caduti.JPG");
+          console.log('Caricata immagine di default');
+        }
+      }
+
+      // Inizializza la scena quando è pronta
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM caricato');
+        scene = document.querySelector('a-scene');
+        
+        if (scene) {
+          console.log('Scena A-Frame trovata');
+          
+          // Evento quando la scena è caricata
+          scene.addEventListener('loaded', function() {
+            console.log('Scena A-Frame caricata completamente');
+          });
+          
+          // Gestisci eventi VR
+          scene.addEventListener('enter-vr', function() {
+            console.log('Entrato in modalità VR');
+          });
+          
+          scene.addEventListener('exit-vr', function() {
+            console.log('Uscito da modalità VR');
+          });
+        } else {
+          console.error('Scena A-Frame non trovata!');
+        }
+      });
+
+      // Listener per messaggi postMessage dal parent frame
+      window.addEventListener('message', function(event) {
+        console.log('Messaggio ricevuto:', event.data);
+        
+        if (event.data && event.data.action) {
+          switch(event.data.action) {
+            case 'toggleFullscreen':
+              console.log('Eseguendo toggleFullscreen da postMessage');
+              toggleFullscreen();
+              break;
+            case 'enterVR':
+              console.log('Eseguendo enterVR da postMessage');
+              enterVR();
+              break;
+            default:
+              console.log('Azione non riconosciuta:', event.data.action);
+          }
+        }
+      });
+
+      // Funzioni esposte per i pulsanti dell'applicazione principale
+      
+      // Funzione per attivare/disattivare fullscreen
+      function toggleFullscreen() {
+        console.log('toggleFullscreen chiamata');
+        try {
+          if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().then(() => {
+              console.log('Fullscreen attivato dal pulsante esterno');
+            }).catch(err => {
+              console.log('Errore fullscreen:', err);
+            });
+          } else {
+            document.exitFullscreen().then(() => {
+              console.log('Fullscreen disattivato dal pulsante esterno');
+            }).catch(err => {
+              console.log('Errore exit fullscreen:', err);
+            });
+          }
+        } catch (e) {
+          console.log('Errore funzione fullscreen:', e);
+        }
+      }
+      
+      // Funzione per entrare in VR
+      function enterVR() {
+        console.log('enterVR chiamata');
+        try {
+          // Richiedi permessi per orientamento del dispositivo (iOS 13+)
+          if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            DeviceOrientationEvent.requestPermission().then(response => {
+              if (response === 'granted') {
+                console.log('Permesso orientamento concesso');
+                activateVR();
+              } else {
+                console.log('Permesso orientamento negato');
+                activateVR(); // Prova comunque
+              }
+            }).catch(err => {
+              console.log('Errore permesso orientamento:', err);
+              activateVR(); // Prova comunque
+            });
+          } else {
+            activateVR();
+          }
+        } catch (e) {
+          console.log('Errore funzione VR:', e);
+          activateVR();
+        }
+      }
+      
+      // Funzione per attivare VR
+      function activateVR() {
+        console.log('activateVR chiamata');
+        if (scene && scene.hasAttribute('vr-mode-ui')) {
+          // Su dispositivi mobili, attiva VR direttamente senza fullscreen
+          const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+          
+          if (isMobile) {
+            console.log('Dispositivo mobile: attivazione VR diretta');
+            scene.enterVR();
+          } else {
+            // Su desktop, prima attiva fullscreen
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen().then(() => {
+                console.log('Fullscreen attivato per VR dal pulsante esterno');
+                // Poi entra in VR
+                setTimeout(() => {
+                  scene.enterVR();
+                }, 200);
+              }).catch(err => {
+                console.log('Errore fullscreen per VR:', err);
+                // Prova comunque VR
+                scene.enterVR();
+              });
+            } else {
+              scene.enterVR();
+            }
+          }
+        } else {
+          console.log('VR non supportato');
+        }
+      }
+
+      // Rende le funzioni disponibili globalmente per essere chiamate dall'applicazione principale
+      window.toggleFullscreen = toggleFullscreen;
+      window.enterVR = enterVR;
+      window.activateVR = activateVR;
+      
+      console.log('Funzioni VR esposte globalmente');
+    </script>
+  </body>
+</html>

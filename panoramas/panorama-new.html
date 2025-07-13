@@ -45,6 +45,36 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .control-btn {
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: rgba(0,0,0,0.9);
+            transform: scale(1.05);
+        }
+        
+        .control-btn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body>
@@ -73,6 +103,12 @@
         </a-camera>
     </a-scene>
 
+    <div class="controls">
+        <button class="control-btn" onclick="resetView()">🎯 Centra Vista</button>
+        <button class="control-btn" onclick="toggleFullscreen()">⛶ Schermo Intero</button>
+        <button class="control-btn" onclick="enterVR()">🥽 Modalità VR</button>
+    </div>
+
     <script>
         let panoramaLoaded = false;
         
@@ -100,57 +136,16 @@
             
             console.log('Caricamento immagine:', imageUrl);
             
-            // Timeout di sicurezza
-            const loadTimeout = setTimeout(() => {
-                if (!panoramaLoaded) {
-                    console.error('Timeout nel caricamento dell\'immagine');
-                    loadingScreen.innerHTML = `
-                        <div style="text-align: center; color: white;">
-                            <div style="color: orange; font-size: 20px; margin-bottom: 10px;">⏱️ Timeout</div>
-                            <div style="margin-bottom: 10px;">Il caricamento sta impiegando troppo tempo</div>
-                            <div style="font-size: 14px; opacity: 0.8; word-break: break-all;">${imageUrl}</div>
-                            <button onclick="location.reload()" style="
-                                margin-top: 15px;
-                                padding: 10px 20px;
-                                background: #FF9800;
-                                color: white;
-                                border: none;
-                                border-radius: 5px;
-                                cursor: pointer;
-                            ">🔄 Riprova</button>
-                        </div>
-                    `;
-                }
-            }, 15000); // 15 secondi di timeout
-            
             panoramaImg.onload = function() {
-                clearTimeout(loadTimeout);
                 console.log('Immagine caricata con successo');
-                console.log('Dimensioni immagine:', this.naturalWidth, 'x', this.naturalHeight);
                 sky.setAttribute('src', '#panorama');
                 loadingScreen.style.display = 'none';
                 panoramaLoaded = true;
             };
             
             panoramaImg.onerror = function() {
-                clearTimeout(loadTimeout);
-                console.error('Errore nel caricamento dell\'immagine:', imageUrl);
-                loadingScreen.innerHTML = `
-                    <div style="text-align: center; color: white;">
-                        <div style="color: red; font-size: 20px; margin-bottom: 10px;">⚠️ Errore Caricamento</div>
-                        <div style="margin-bottom: 10px;">Impossibile caricare l'immagine panoramica</div>
-                        <div style="font-size: 14px; opacity: 0.8; word-break: break-all;">${imageUrl}</div>
-                        <button onclick="location.reload()" style="
-                            margin-top: 15px;
-                            padding: 10px 20px;
-                            background: #4CAF50;
-                            color: white;
-                            border: none;
-                            border-radius: 5px;
-                            cursor: pointer;
-                        ">🔄 Riprova</button>
-                    </div>
-                `;
+                console.error('Errore nel caricamento dell\'immagine');
+                loadingScreen.innerHTML = '<span style="color: red;">Errore nel caricamento dell\'immagine</span>';
             };
             
             panoramaImg.src = imageUrl;
