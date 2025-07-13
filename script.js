@@ -1136,6 +1136,103 @@ function simulateFullscreen() {
     
     showNotification('Schermo intero simulato attivato', 'info');
     createExitButton();
+    
+    // Aggiungi controlli touch per mobile
+    addMobileExitControls(viewer);
+}
+
+function addMobileExitControls(viewer) {
+    let tapCount = 0;
+    let tapTimer = null;
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    
+    // Rimuovi eventuali listener esistenti
+    removeMobileExitControls(viewer);
+    
+    // Aggiungi listener per tasto Escape
+    const escapeHandler = (e) => {
+        if (e.key === 'Escape' || e.keyCode === 27) {
+            console.log('Tasto Escape premuto - uscita da fullscreen');
+            exitFullscreenMode();
+        }
+    };
+    
+    // Doppio tap per uscire
+    const doubleTapHandler = (e) => {
+        tapCount++;
+        console.log('Tap rilevato, count:', tapCount);
+        
+        if (tapCount === 1) {
+            tapTimer = setTimeout(() => {
+                tapCount = 0;
+            }, 300); // Reset dopo 300ms
+        } else if (tapCount === 2) {
+            clearTimeout(tapTimer);
+            tapCount = 0;
+            console.log('Doppio tap rilevato - uscita da fullscreen');
+            showNotification('Doppio tap rilevato - uscita da fullscreen', 'info');
+            exitFullscreenMode();
+        }
+    };
+    
+    // Swipe down dall'alto per uscire
+    const touchStartHandler = (e) => {
+        const touch = e.touches[0];
+        touchStartY = touch.clientY;
+        touchStartTime = Date.now();
+        console.log('Touch start at Y:', touchStartY);
+    };
+    
+    const touchEndHandler = (e) => {
+        const touch = e.changedTouches[0];
+        const touchEndY = touch.clientY;
+        const touchDuration = Date.now() - touchStartTime;
+        const swipeDistance = touchEndY - touchStartY;
+        
+        console.log('Touch end - Start Y:', touchStartY, 'End Y:', touchEndY, 'Distance:', swipeDistance, 'Duration:', touchDuration);
+        
+        // Swipe down dall'alto dello schermo (primi 100px)
+        if (touchStartY < 100 && swipeDistance > 150 && touchDuration < 1000) {
+            console.log('Swipe down dall\'alto rilevato - uscita da fullscreen');
+            showNotification('Swipe rilevato - uscita da fullscreen', 'info');
+            exitFullscreenMode();
+        }
+    };
+    
+    // Aggiungi i listener
+    document.addEventListener('keydown', escapeHandler);
+    viewer.addEventListener('click', doubleTapHandler);
+    viewer.addEventListener('touchstart', touchStartHandler, { passive: true });
+    viewer.addEventListener('touchend', touchEndHandler, { passive: true });
+    
+    // Salva i riferimenti per poterli rimuovere dopo
+    viewer._mobileExitHandlers = {
+        escape: escapeHandler,
+        doubleTap: doubleTapHandler,
+        touchStart: touchStartHandler,
+        touchEnd: touchEndHandler
+    };
+    
+    console.log('Controlli mobile aggiunti per uscita fullscreen');
+    
+    // Mostra istruzioni per mobile
+    setTimeout(() => {
+        if (isMobileDevice()) {
+            showNotification('Tocca la X rossa, doppio tap o swipe dall\'alto per uscire', 'info');
+        }
+    }, 2000);
+}
+
+function removeMobileExitControls(viewer) {
+    if (viewer._mobileExitHandlers) {
+        document.removeEventListener('keydown', viewer._mobileExitHandlers.escape);
+        viewer.removeEventListener('click', viewer._mobileExitHandlers.doubleTap);
+        viewer.removeEventListener('touchstart', viewer._mobileExitHandlers.touchStart);
+        viewer.removeEventListener('touchend', viewer._mobileExitHandlers.touchEnd);
+        delete viewer._mobileExitHandlers;
+        console.log('Controlli mobile rimossi');
+    }
 }
 
 function exitFullscreenMode() {
@@ -1143,6 +1240,9 @@ function exitFullscreenMode() {
     const isSimulated = viewer.getAttribute('data-simulated-fullscreen') === 'true';
     
     if (isSimulated) {
+        // Rimuovi i controlli mobile prima di uscire
+        removeMobileExitControls(viewer);
+        
         // Uscita dalla modalità simulata
         viewer.style.position = '';
         viewer.style.top = '';
@@ -1203,7 +1303,9 @@ function createExitButton() {
     exitButton.id = 'fullscreen-exit-btn';
     exitButton.innerHTML = '×';
     exitButton.title = 'Esci dallo schermo intero';
-    exitButton.style.cssText = `
+    
+    // Stili base
+    const baseStyles = `
         position: fixed;
         top: 20px;
         right: 20px;
@@ -1226,15 +1328,39 @@ function createExitButton() {
         font-family: Arial, sans-serif;
     `;
     
+    // Stili aggiuntivi per mobile
+    const mobileStyles = `
+        width: 60px;
+        height: 60px;
+        font-size: 32px;
+        top: 15px;
+        right: 15px;
+        background: rgba(255, 0, 0, 0.8);
+        border: 3px solid rgba(255, 255, 255, 0.8);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+    `;
+    
+    // Applica stili in base al dispositivo
+    if (isMobileDevice()) {
+        exitButton.style.cssText = baseStyles + mobileStyles;
+        console.log('Pulsante X ottimizzato per mobile');
+    } else {
+        exitButton.style.cssText = baseStyles;
+    }
+    
     // Effetti hover/touch
     exitButton.addEventListener('mouseenter', () => {
-        exitButton.style.background = 'rgba(255, 0, 0, 0.8)';
-        exitButton.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+        exitButton.style.background = 'rgba(255, 0, 0, 0.9)';
+        exitButton.style.borderColor = 'rgba(255, 255, 255, 0.8)';
         exitButton.style.transform = 'scale(1.1)';
     });
     
     exitButton.addEventListener('mouseleave', () => {
-        exitButton.style.background = 'rgba(0, 0, 0, 0.7)';
+        if (isMobileDevice()) {
+            exitButton.style.background = 'rgba(255, 0, 0, 0.8)';
+        } else {
+            exitButton.style.background = 'rgba(0, 0, 0, 0.7)';
+        }
         exitButton.style.borderColor = 'rgba(255, 255, 255, 0.3)';
         exitButton.style.transform = 'scale(1)';
     });
@@ -1242,14 +1368,18 @@ function createExitButton() {
     // Supporto touch per mobile
     exitButton.addEventListener('touchstart', (e) => {
         e.preventDefault();
-        exitButton.style.background = 'rgba(255, 0, 0, 0.8)';
-        exitButton.style.transform = 'scale(1.1)';
+        e.stopPropagation();
+        exitButton.style.background = 'rgba(255, 0, 0, 1)';
+        exitButton.style.transform = 'scale(1.2)';
+        console.log('Touch start su pulsante X');
     });
     
     exitButton.addEventListener('touchend', (e) => {
         e.preventDefault();
-        exitButton.style.background = 'rgba(0, 0, 0, 0.7)';
+        e.stopPropagation();
+        exitButton.style.background = 'rgba(255, 0, 0, 0.8)';
         exitButton.style.transform = 'scale(1)';
+        console.log('Touch end su pulsante X');
     });
     
     // Click handler
@@ -1262,6 +1392,36 @@ function createExitButton() {
     
     document.body.appendChild(exitButton);
     console.log('Pulsante di uscita fullscreen creato');
+    
+    // Per mobile, crea anche un'area touch più grande per facilitare l'interazione
+    if (isMobileDevice()) {
+        createMobileTouchArea();
+    }
+}
+
+function createMobileTouchArea() {
+    const touchArea = document.createElement('div');
+    touchArea.id = 'mobile-exit-area';
+    touchArea.style.cssText = `
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100px;
+        z-index: 10000;
+        background: transparent;
+        touch-action: manipulation;
+    `;
+    
+    touchArea.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Touch area attivata');
+        showNotification('Tocca la X per uscire', 'info');
+    });
+    
+    document.body.appendChild(touchArea);
+    console.log('Area touch mobile creata');
 }
 
 function removeExitButton() {
@@ -1269,6 +1429,12 @@ function removeExitButton() {
     if (existingButton) {
         existingButton.remove();
         console.log('Pulsante di uscita fullscreen rimosso');
+    }
+    
+    const existingTouchArea = document.getElementById('mobile-exit-area');
+    if (existingTouchArea) {
+        existingTouchArea.remove();
+        console.log('Area touch mobile rimossa');
     }
 }
 
