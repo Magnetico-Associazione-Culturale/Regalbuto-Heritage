@@ -1011,7 +1011,7 @@ function loadLocation(locationId) {
         'chiesa-madre': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
         'panorama': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
         'piazza': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
-        'monumento-caduti': 'panoramas/panorama.html?img=https://tecnopanoramas.blob.core.windows.net/panoramas/caduti.jpg'
+        'monumento-caduti': 'panoramas/panorama.html?img=caduti.JPG'
     };
     
     const iframe = document.querySelector('#pano-viewer iframe');
