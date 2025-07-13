@@ -118,6 +118,26 @@
         }
       });
 
+      // Listener per messaggi postMessage dal parent frame
+      window.addEventListener('message', function(event) {
+        console.log('Messaggio ricevuto:', event.data);
+        
+        if (event.data && event.data.action) {
+          switch(event.data.action) {
+            case 'toggleFullscreen':
+              console.log('Eseguendo toggleFullscreen da postMessage');
+              toggleFullscreen();
+              break;
+            case 'enterVR':
+              console.log('Eseguendo enterVR da postMessage');
+              enterVR();
+              break;
+            default:
+              console.log('Azione non riconosciuta:', event.data.action);
+          }
+        }
+      });
+
       // Funzioni esposte per i pulsanti dell'applicazione principale
       
       // Funzione per attivare/disattivare fullscreen
@@ -173,21 +193,29 @@
       function activateVR() {
         console.log('activateVR chiamata');
         if (scene && scene.hasAttribute('vr-mode-ui')) {
-          // Prima attiva fullscreen
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().then(() => {
-              console.log('Fullscreen attivato per VR dal pulsante esterno');
-              // Poi entra in VR
-              setTimeout(() => {
-                scene.enterVR();
-              }, 200);
-            }).catch(err => {
-              console.log('Errore fullscreen per VR:', err);
-              // Prova comunque VR
-              scene.enterVR();
-            });
-          } else {
+          // Su dispositivi mobili, attiva VR direttamente senza fullscreen
+          const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+          
+          if (isMobile) {
+            console.log('Dispositivo mobile: attivazione VR diretta');
             scene.enterVR();
+          } else {
+            // Su desktop, prima attiva fullscreen
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen().then(() => {
+                console.log('Fullscreen attivato per VR dal pulsante esterno');
+                // Poi entra in VR
+                setTimeout(() => {
+                  scene.enterVR();
+                }, 200);
+              }).catch(err => {
+                console.log('Errore fullscreen per VR:', err);
+                // Prova comunque VR
+                scene.enterVR();
+              });
+            } else {
+              scene.enterVR();
+            }
           }
         } else {
           console.log('VR non supportato');

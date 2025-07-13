@@ -1042,11 +1042,34 @@ function toggleFullscreen() {
     const viewer = document.getElementById('pano-viewer');
     const iframe = viewer ? viewer.querySelector('iframe') : null;
     
+    console.log('toggleFullscreen chiamata, iframe src:', iframe ? iframe.src : 'no iframe');
+    
     // Se l'iframe è il panorama A-Frame, usa le sue funzioni
     if (iframe && iframe.src.includes('panorama.html')) {
         try {
-            // Chiama la funzione toggleFullscreen nell'iframe
-            iframe.contentWindow.toggleFullscreen();
+            // Su mobile, prova prima un approccio diverso
+            if (isMobileDevice()) {
+                console.log('Dispositivo mobile rilevato, usando approccio alternativo');
+                
+                // Prova a mandare un messaggio postMessage all'iframe
+                iframe.contentWindow.postMessage({ action: 'toggleFullscreen' }, '*');
+                
+                // Fallback dopo un breve timeout
+                setTimeout(() => {
+                    if (!document.fullscreenElement) {
+                        viewer.requestFullscreen().then(() => {
+                            showNotification('Modalità schermo intero attivata', 'info');
+                        }).catch(err => {
+                            console.log('Fullscreen fallback failed:', err);
+                            showNotification('Schermo intero non supportato su questo dispositivo', 'warning');
+                        });
+                    }
+                }, 100);
+            } else {
+                // Su desktop, usa il metodo diretto
+                iframe.contentWindow.toggleFullscreen();
+            }
+            
             showNotification('Modalità schermo intero attivata', 'info');
         } catch (err) {
             console.log('Errore chiamata iframe fullscreen:', err);
@@ -1085,20 +1108,38 @@ function toggleVRMode() {
     const iframe = document.querySelector('#pano-viewer iframe');
     const vrBtn = document.querySelector('.btn[onclick="toggleVRMode()"]');
     
+    console.log('toggleVRMode chiamata, iframe src:', iframe ? iframe.src : 'no iframe');
+    
     if (iframe) {
         // Se l'iframe è il panorama A-Frame, usa le sue funzioni VR
         if (iframe.src.includes('panorama.html')) {
             try {
-                // Chiama la funzione enterVR nell'iframe
-                iframe.contentWindow.enterVR();
-                
-                if (vrBtn) {
-                    vrBtn.innerHTML = '<i data-feather="eye"></i> VR Attiva';
-                    vrBtn.classList.remove('btn-outline');
-                    vrBtn.classList.add('btn-primary');
+                // Su mobile, usa postMessage
+                if (isMobileDevice()) {
+                    console.log('Dispositivo mobile rilevato per VR, usando postMessage');
+                    
+                    // Manda messaggio all'iframe per attivare VR
+                    iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
+                    
+                    if (vrBtn) {
+                        vrBtn.innerHTML = '<i data-feather="eye"></i> VR Attiva';
+                        vrBtn.classList.remove('btn-outline');
+                        vrBtn.classList.add('btn-primary');
+                    }
+                    
+                    showNotification('Modalità VR attivata! Muovi il dispositivo per guardare intorno.', 'success');
+                } else {
+                    // Su desktop, usa il metodo diretto
+                    iframe.contentWindow.enterVR();
+                    
+                    if (vrBtn) {
+                        vrBtn.innerHTML = '<i data-feather="eye"></i> VR Attiva';
+                        vrBtn.classList.remove('btn-outline');
+                        vrBtn.classList.add('btn-primary');
+                    }
+                    
+                    showNotification('Modalità VR attivata! Muovi il dispositivo per guardare intorno.', 'success');
                 }
-                
-                showNotification('Modalità VR attivata! Muovi il dispositivo per guardare intorno.', 'success');
                 
                 // Re-initialize feather icons for the updated button
                 if (typeof feather !== 'undefined') {
@@ -1168,6 +1209,11 @@ function resetView() {
 }
 
 // Utility Functions
+function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+           (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
+}
+
 function showNotification(message, type = 'info') {
     // Create notification element
     const notification = document.createElement('div');
