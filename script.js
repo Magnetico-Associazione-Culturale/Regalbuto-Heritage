@@ -1052,44 +1052,126 @@ function toggleFullscreen() {
         return;
     }
 
+    // Verifica se siamo già in fullscreen (nativo o simulato)
+    const isFullscreen = document.fullscreenElement || 
+                        document.webkitFullscreenElement || 
+                        document.mozFullScreenElement || 
+                        document.msFullscreenElement ||
+                        viewer.getAttribute('data-simulated-fullscreen') === 'true';
+    
+    if (isFullscreen) {
+        exitFullscreenMode();
+    } else {
+        enterFullscreenMode();
+    }
+}
+
+function enterFullscreenMode() {
+    const viewer = document.getElementById('pano-viewer');
+    const iframe = viewer ? viewer.querySelector('iframe') : null;
+    
     try {
-        if (!document.fullscreenElement) {
-            // Richiedi fullscreen sul viewer container
-            let fullscreenPromise;
-            
-            if (viewer.requestFullscreen) {
-                fullscreenPromise = viewer.requestFullscreen();
-            } else if (viewer.webkitRequestFullscreen) {
-                fullscreenPromise = viewer.webkitRequestFullscreen();
-            } else if (viewer.mozRequestFullScreen) {
-                fullscreenPromise = viewer.mozRequestFullScreen();
-            } else if (viewer.msRequestFullscreen) {
-                fullscreenPromise = viewer.msRequestFullscreen();
-            }
-            
-            if (fullscreenPromise) {
-                fullscreenPromise.then(() => {
-                    console.log('Fullscreen attivato con successo');
-                    showNotification('Modalità schermo intero attivata', 'success');
-                }).catch((err) => {
-                    console.log('Errore fullscreen:', err);
-                    // Su mobile, spesso il fullscreen deve essere attivato diversamente
-                    showNotification('Schermo intero attivato (formato mobile)', 'info');
-                });
-            } else {
-                console.log('Metodi fullscreen non disponibili, uso approccio alternativo');
-                // Fallback per dispositivi che non supportano fullscreen API
-                viewer.style.position = 'fixed';
-                viewer.style.top = '0';
-                viewer.style.left = '0';
-                viewer.style.width = '100vw';
-                viewer.style.height = '100vh';
-                viewer.style.zIndex = '9999';
-                showNotification('Schermo intero simulato attivato', 'info');
-            }
-            
+        // Prova prima il fullscreen nativo
+        let fullscreenPromise;
+        
+        if (viewer.requestFullscreen) {
+            fullscreenPromise = viewer.requestFullscreen();
+        } else if (viewer.webkitRequestFullscreen) {
+            fullscreenPromise = viewer.webkitRequestFullscreen();
+        } else if (viewer.mozRequestFullScreen) {
+            fullscreenPromise = viewer.mozRequestFullScreen();
+        } else if (viewer.msRequestFullscreen) {
+            fullscreenPromise = viewer.msRequestFullscreen();
+        }
+        
+        if (fullscreenPromise) {
+            fullscreenPromise.then(() => {
+                console.log('Fullscreen nativo attivato con successo');
+                showNotification('Modalità schermo intero attivata', 'success');
+                createExitButton();
+            }).catch((err) => {
+                console.log('Errore fullscreen nativo:', err);
+                // Fallback per mobile
+                simulateFullscreen();
+            });
         } else {
-            // Esci da fullscreen
+            console.log('API fullscreen non supportata, uso simulazione');
+            simulateFullscreen();
+        }
+        
+    } catch (err) {
+        console.error('Errore fullscreen:', err);
+        simulateFullscreen();
+    }
+}
+
+function simulateFullscreen() {
+    const viewer = document.getElementById('pano-viewer');
+    const iframe = viewer ? viewer.querySelector('iframe') : null;
+    
+    console.log('Attivazione fullscreen simulato');
+    
+    // Applica stili per simulare fullscreen
+    viewer.style.position = 'fixed';
+    viewer.style.top = '0';
+    viewer.style.left = '0';
+    viewer.style.width = '100vw';
+    viewer.style.height = '100vh';
+    viewer.style.zIndex = '9999';
+    viewer.style.background = '#000';
+    
+    if (iframe) {
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+    }
+    
+    // Nascondi il contenuto principale
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+        mainContent.style.overflow = 'hidden';
+    }
+    
+    // Segna come modalità simulata
+    viewer.setAttribute('data-simulated-fullscreen', 'true');
+    
+    showNotification('Schermo intero simulato attivato', 'info');
+    createExitButton();
+}
+
+function exitFullscreenMode() {
+    const viewer = document.getElementById('pano-viewer');
+    const isSimulated = viewer.getAttribute('data-simulated-fullscreen') === 'true';
+    
+    if (isSimulated) {
+        // Uscita dalla modalità simulata
+        viewer.style.position = '';
+        viewer.style.top = '';
+        viewer.style.left = '';
+        viewer.style.width = '';
+        viewer.style.height = '';
+        viewer.style.zIndex = '';
+        viewer.style.background = '';
+        
+        const iframe = viewer.querySelector('iframe');
+        if (iframe) {
+            iframe.style.width = '';
+            iframe.style.height = '';
+        }
+        
+        // Ripristina il main content
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) {
+            mainContent.style.overflow = '';
+        }
+        
+        viewer.removeAttribute('data-simulated-fullscreen');
+        
+        console.log('Fullscreen simulato disattivato');
+        showNotification('Schermo intero disattivato', 'info');
+        
+    } else {
+        // Uscita dalla modalità fullscreen nativa
+        try {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
             } else if (document.webkitExitFullscreen) {
@@ -1100,20 +1182,93 @@ function toggleFullscreen() {
                 document.msExitFullscreen();
             }
             
-            // Ripristina stili del viewer se era in modalità simulata
-            viewer.style.position = '';
-            viewer.style.top = '';
-            viewer.style.left = '';
-            viewer.style.width = '';
-            viewer.style.height = '';
-            viewer.style.zIndex = '';
+            console.log('Fullscreen nativo disattivato');
+            showNotification('Schermo intero disattivato', 'info');
             
-            console.log('Fullscreen disattivato');
+        } catch (err) {
+            console.error('Errore uscita fullscreen:', err);
             showNotification('Schermo intero disattivato', 'info');
         }
-    } catch (err) {
-        console.error('Errore fullscreen:', err);
-        showNotification('Errore nell\'attivazione fullscreen: ' + err.message, 'error');
+    }
+    
+    // Rimuovi sempre il pulsante di uscita
+    removeExitButton();
+}
+
+function createExitButton() {
+    // Rimuovi eventuali pulsanti esistenti
+    removeExitButton();
+    
+    const exitButton = document.createElement('button');
+    exitButton.id = 'fullscreen-exit-btn';
+    exitButton.innerHTML = '×';
+    exitButton.title = 'Esci dallo schermo intero';
+    exitButton.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 10001;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.4);
+        transition: all 0.3s ease;
+        line-height: 1;
+        font-family: Arial, sans-serif;
+    `;
+    
+    // Effetti hover/touch
+    exitButton.addEventListener('mouseenter', () => {
+        exitButton.style.background = 'rgba(255, 0, 0, 0.8)';
+        exitButton.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+        exitButton.style.transform = 'scale(1.1)';
+    });
+    
+    exitButton.addEventListener('mouseleave', () => {
+        exitButton.style.background = 'rgba(0, 0, 0, 0.7)';
+        exitButton.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+        exitButton.style.transform = 'scale(1)';
+    });
+    
+    // Supporto touch per mobile
+    exitButton.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        exitButton.style.background = 'rgba(255, 0, 0, 0.8)';
+        exitButton.style.transform = 'scale(1.1)';
+    });
+    
+    exitButton.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        exitButton.style.background = 'rgba(0, 0, 0, 0.7)';
+        exitButton.style.transform = 'scale(1)';
+    });
+    
+    // Click handler
+    exitButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Pulsante X cliccato - uscita da fullscreen');
+        exitFullscreenMode();
+    });
+    
+    document.body.appendChild(exitButton);
+    console.log('Pulsante di uscita fullscreen creato');
+}
+
+function removeExitButton() {
+    const existingButton = document.getElementById('fullscreen-exit-btn');
+    if (existingButton) {
+        existingButton.remove();
+        console.log('Pulsante di uscita fullscreen rimosso');
     }
 }
 
@@ -1129,6 +1284,35 @@ window.addEventListener('message', function(event) {
             console.error('Errore VR nell\'iframe:', event.data.error);
             showNotification('Errore modalità VR: ' + (event.data.error || 'Dispositivo non compatibile'), 'error');
         }
+    }
+});
+
+// Gestione eventi fullscreen per rimuovere il pulsante X quando si esce con ESC
+document.addEventListener('fullscreenchange', function() {
+    if (!document.fullscreenElement) {
+        console.log('Uscita da fullscreen rilevata (ESC o altro)');
+        removeExitButton();
+    }
+});
+
+document.addEventListener('webkitfullscreenchange', function() {
+    if (!document.webkitFullscreenElement) {
+        console.log('Uscita da webkit fullscreen rilevata');
+        removeExitButton();
+    }
+});
+
+document.addEventListener('mozfullscreenchange', function() {
+    if (!document.mozFullScreenElement) {
+        console.log('Uscita da moz fullscreen rilevata');
+        removeExitButton();
+    }
+});
+
+document.addEventListener('msfullscreenchange', function() {
+    if (!document.msFullscreenElement) {
+        console.log('Uscita da ms fullscreen rilevata');
+        removeExitButton();
     }
 });
 
