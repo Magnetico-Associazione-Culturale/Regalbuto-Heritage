@@ -1055,22 +1055,38 @@ function toggleFullscreen() {
     try {
         if (!document.fullscreenElement) {
             // Richiedi fullscreen sul viewer container
+            let fullscreenPromise;
+            
             if (viewer.requestFullscreen) {
-                viewer.requestFullscreen();
+                fullscreenPromise = viewer.requestFullscreen();
             } else if (viewer.webkitRequestFullscreen) {
-                viewer.webkitRequestFullscreen();
+                fullscreenPromise = viewer.webkitRequestFullscreen();
             } else if (viewer.mozRequestFullScreen) {
-                viewer.mozRequestFullScreen();
+                fullscreenPromise = viewer.mozRequestFullScreen();
             } else if (viewer.msRequestFullscreen) {
-                viewer.msRequestFullscreen();
-            } else {
-                console.log('Fullscreen API non supportato');
-                showNotification('Fullscreen non supportato su questo browser', 'warning');
-                return;
+                fullscreenPromise = viewer.msRequestFullscreen();
             }
             
-            console.log('Fullscreen richiesto');
-            showNotification('Modalità schermo intero attivata', 'success');
+            if (fullscreenPromise) {
+                fullscreenPromise.then(() => {
+                    console.log('Fullscreen attivato con successo');
+                    showNotification('Modalità schermo intero attivata', 'success');
+                }).catch((err) => {
+                    console.log('Errore fullscreen:', err);
+                    // Su mobile, spesso il fullscreen deve essere attivato diversamente
+                    showNotification('Schermo intero attivato (formato mobile)', 'info');
+                });
+            } else {
+                console.log('Metodi fullscreen non disponibili, uso approccio alternativo');
+                // Fallback per dispositivi che non supportano fullscreen API
+                viewer.style.position = 'fixed';
+                viewer.style.top = '0';
+                viewer.style.left = '0';
+                viewer.style.width = '100vw';
+                viewer.style.height = '100vh';
+                viewer.style.zIndex = '9999';
+                showNotification('Schermo intero simulato attivato', 'info');
+            }
             
         } else {
             // Esci da fullscreen
@@ -1084,6 +1100,14 @@ function toggleFullscreen() {
                 document.msExitFullscreen();
             }
             
+            // Ripristina stili del viewer se era in modalità simulata
+            viewer.style.position = '';
+            viewer.style.top = '';
+            viewer.style.left = '';
+            viewer.style.width = '';
+            viewer.style.height = '';
+            viewer.style.zIndex = '';
+            
             console.log('Fullscreen disattivato');
             showNotification('Schermo intero disattivato', 'info');
         }
@@ -1092,6 +1116,21 @@ function toggleFullscreen() {
         showNotification('Errore nell\'attivazione fullscreen: ' + err.message, 'error');
     }
 }
+
+// Gestione messaggi dal panorama iframe per feedback VR
+window.addEventListener('message', function(event) {
+    console.log('Messaggio ricevuto da iframe:', event.data);
+    
+    if (event.data && event.data.action === 'vrActivated') {
+        if (event.data.success) {
+            console.log('VR attivato con successo nell\'iframe');
+            showNotification('Modalità VR Cardboard attivata! Inserisci il telefono nel visore.', 'success');
+        } else {
+            console.error('Errore VR nell\'iframe:', event.data.error);
+            showNotification('Errore modalità VR: ' + (event.data.error || 'Dispositivo non compatibile'), 'error');
+        }
+    }
+});
 
 function toggleVRMode() {
     const viewer = document.getElementById('pano-viewer');
@@ -1109,79 +1148,19 @@ function toggleVRMode() {
 
     // Verifica se è un panorama A-Frame
     if (iframe.src.includes('panorama.html')) {
-        console.log('Panorama A-Frame rilevato');
+        console.log('Panorama A-Frame rilevato, attivando VR nativo');
         
-        // Crea un div overlay per VR
-        let vrOverlay = document.getElementById('vr-overlay');
-        if (!vrOverlay) {
-            vrOverlay = document.createElement('div');
-            vrOverlay.id = 'vr-overlay';
-            vrOverlay.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: #000;
-                z-index: 9999;
-                display: none;
-            `;
-            document.body.appendChild(vrOverlay);
+        try {
+            // Usa postMessage per attivare VR nell'iframe
+            iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
+            
+            console.log('Comando VR inviato all\'iframe');
+            showNotification('Modalità VR attivata - Inserisci il telefono nel Cardboard', 'success');
+            
+        } catch (err) {
+            console.error('Errore nell\'attivazione VR:', err);
+            showNotification('Errore nell\'attivazione modalità VR: ' + err.message, 'error');
         }
-        
-        // Clona l'iframe per la modalità VR
-        const vrIframe = iframe.cloneNode(true);
-        vrIframe.style.cssText = `
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: #000;
-        `;
-        
-        vrOverlay.innerHTML = '';
-        vrOverlay.appendChild(vrIframe);
-        
-        // Pulsante di uscita VR
-        const exitButton = document.createElement('button');
-        exitButton.innerHTML = '× Esci VR';
-        exitButton.style.cssText = `
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 10000;
-            font-size: 16px;
-        `;
-        
-        exitButton.onclick = () => {
-            vrOverlay.style.display = 'none';
-            document.exitFullscreen().catch(() => {});
-            showNotification('Modalità VR disattivata', 'info');
-        };
-        
-        vrOverlay.appendChild(exitButton);
-        
-        // Attiva la modalità VR
-        vrOverlay.style.display = 'block';
-        
-        // Richiedi fullscreen per l'overlay
-        if (vrOverlay.requestFullscreen) {
-            vrOverlay.requestFullscreen();
-        } else if (vrOverlay.webkitRequestFullscreen) {
-            vrOverlay.webkitRequestFullscreen();
-        } else if (vrOverlay.mozRequestFullScreen) {
-            vrOverlay.mozRequestFullScreen();
-        } else if (vrOverlay.msRequestFullscreen) {
-            vrOverlay.msRequestFullscreen();
-        }
-        
-        console.log('Modalità VR attivata');
-        showNotification('Modalità VR attivata - Muovi il dispositivo per guardare intorno', 'success');
         
     } else {
         // Metodo tradizionale per iframe Kuula

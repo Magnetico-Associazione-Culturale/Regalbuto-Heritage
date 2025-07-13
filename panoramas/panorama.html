@@ -202,9 +202,68 @@
             console.log('Modalità VR richiesta');
             const scene = document.querySelector('a-scene');
             if (scene && scene.enterVR) {
-                scene.enterVR();
+                console.log('Attivazione VR nativa A-Frame...');
+                
+                // Per iOS, richiedi permessi per i sensori di movimento
+                if (typeof DeviceOrientationEvent !== 'undefined' && 
+                    typeof DeviceOrientationEvent.requestPermission === 'function') {
+                    
+                    DeviceOrientationEvent.requestPermission()
+                        .then(permissionState => {
+                            console.log('Stato permessi iOS:', permissionState);
+                            if (permissionState === 'granted') {
+                                // Attiva VR dopo aver ottenuto i permessi
+                                scene.enterVR().then(() => {
+                                    console.log('VR attivato con successo');
+                                    // Notifica il parent del successo
+                                    window.parent.postMessage({ 
+                                        action: 'vrActivated', 
+                                        success: true 
+                                    }, '*');
+                                }).catch(error => {
+                                    console.error('Errore attivazione VR:', error);
+                                    window.parent.postMessage({ 
+                                        action: 'vrActivated', 
+                                        success: false, 
+                                        error: error.message 
+                                    }, '*');
+                                });
+                            } else {
+                                console.log('Permessi iOS negati, tentativo VR senza permessi');
+                                scene.enterVR();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Errore richiesta permessi iOS:', error);
+                            // Prova comunque ad attivare VR
+                            scene.enterVR();
+                        });
+                        
+                } else {
+                    // Non iOS o permessi non necessari
+                    scene.enterVR().then(() => {
+                        console.log('VR attivato con successo');
+                        window.parent.postMessage({ 
+                            action: 'vrActivated', 
+                            success: true 
+                        }, '*');
+                    }).catch(error => {
+                        console.error('Errore attivazione VR:', error);
+                        window.parent.postMessage({ 
+                            action: 'vrActivated', 
+                            success: false, 
+                            error: error.message 
+                        }, '*');
+                    });
+                }
+                
             } else {
                 console.log('VR non supportato o non disponibile');
+                window.parent.postMessage({ 
+                    action: 'vrActivated', 
+                    success: false, 
+                    error: 'VR non supportato su questo dispositivo' 
+                }, '*');
             }
         };
         
@@ -225,6 +284,7 @@
                         break;
                     case 'enterVR':
                     case 'toggleVRMode':
+                        console.log('Comando VR ricevuto dal parent');
                         enterVR();
                         break;
                     case 'resetView':
