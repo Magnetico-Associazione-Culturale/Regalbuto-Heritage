@@ -6,12 +6,78 @@
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <style>
       html, body { margin: 0; height: 100%; overflow: hidden; }
+      
+      /* Controlli VR personalizzati */
+      .vr-controls {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 9999;
+        display: flex;
+        gap: 10px;
+      }
+      
+      .vr-btn {
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background 0.3s;
+      }
+      
+      .vr-btn:hover {
+        background: rgba(0, 0, 0, 0.9);
+      }
+      
+      .vr-btn:active {
+        transform: scale(0.95);
+      }
+      
+      .fullscreen-btn {
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background 0.3s;
+      }
+      
+      .fullscreen-btn:hover {
+        background: rgba(0, 0, 0, 0.9);
+      }
+      
+      .fullscreen-btn:active {
+        transform: scale(0.95);
+      }
     </style>
   </head>
   <body>
-    <a-scene>
+    <a-scene id="scene" vr-mode-ui="enabled: true" device-orientation-permission-ui="enabled: true">
       <a-sky id="image-360" rotation="0 -130 0"></a-sky>
     </a-scene>
+
+    <!-- Controlli personalizzati -->
+    <div class="vr-controls">
+      <button class="fullscreen-btn" onclick="toggleFullscreen()" title="Schermo intero">
+        ⛶
+      </button>
+      <button class="vr-btn" onclick="enterVR()" title="Modalità VR">
+        🥽
+      </button>
+    </div>
 
     <script>
       const params = new URLSearchParams(window.location.search);
@@ -22,6 +88,47 @@
         document.getElementById("image-360").setAttribute("src", fullPath);
       } else {
         alert("⚠️ Nessuna immagine specificata!");
+      }
+
+      // Funzione per entrare in modalità VR
+      function enterVR() {
+        const scene = document.querySelector('a-scene');
+        if (scene.hasAttribute('device-orientation-permission-ui')) {
+          scene.enterVR();
+        } else {
+          // Fallback per dispositivi che non supportano WebXR
+          if (navigator.getVRDisplays) {
+            navigator.getVRDisplays().then(function(displays) {
+              if (displays.length > 0) {
+                scene.enterVR();
+              } else {
+                alert('VR non supportato su questo dispositivo');
+              }
+            });
+          } else {
+            alert('VR non supportato su questo browser');
+          }
+        }
+      }
+
+      // Funzione per il fullscreen
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(err => {
+            console.log('Errore fullscreen:', err);
+          });
+        } else {
+          document.exitFullscreen();
+        }
+      }
+
+      // Richiedi permessi giroscopio su iOS
+      if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+          .then(response => {
+            console.log('Permesso giroscopio:', response);
+          })
+          .catch(console.error);
       }
     </script>
   </body>
