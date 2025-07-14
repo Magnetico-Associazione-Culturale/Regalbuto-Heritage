@@ -298,6 +298,25 @@
         document.querySelector('a-scene').addEventListener('loaded', function() {
             console.log('A-Frame scene caricata');
             console.log('VR supportato:', AFRAME.utils.device.checkHeadsetConnected());
+            
+            // Aggiungi listener per entrata e uscita VR
+            const scene = document.querySelector('a-scene');
+            
+            scene.addEventListener('enter-vr', function() {
+                console.log('Entrato in modalità VR');
+                window.parent.postMessage({ 
+                    action: 'vrEntered',
+                    inVR: true 
+                }, '*');
+            });
+            
+            scene.addEventListener('exit-vr', function() {
+                console.log('Uscito dalla modalità VR');
+                window.parent.postMessage({ 
+                    action: 'vrExited',
+                    inVR: false 
+                }, '*');
+            });
         });
     </script>
 </body>

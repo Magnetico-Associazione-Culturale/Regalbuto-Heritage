@@ -1450,6 +1450,23 @@ window.addEventListener('message', function(event) {
             showNotification('Errore modalità VR: ' + (event.data.error || 'Dispositivo non compatibile'), 'error');
         }
     }
+    
+    // Gestione entrata in modalità VR
+    if (event.data && event.data.action === 'vrEntered') {
+        console.log('Entrato in modalità VR - device ora in VR mode');
+        showNotification('Modalità VR attiva! Ruota il telefono in orizzontale.', 'success');
+    }
+    
+    // Gestione uscita dalla modalità VR
+    if (event.data && event.data.action === 'vrExited') {
+        console.log('Uscito dalla modalità VR - uscendo anche dal fullscreen');
+        // Quando si esce dal VR, esci automaticamente dal fullscreen
+        if (document.fullscreenElement || document.webkitFullscreenElement || 
+            document.mozFullScreenElement || document.msFullscreenElement) {
+            exitFullscreenMode();
+            showNotification('Uscita dalla modalità VR', 'info');
+        }
+    }
 });
 
 // Gestione eventi fullscreen per rimuovere il pulsante X quando si esce con ESC
@@ -1497,14 +1514,26 @@ function toggleVRMode() {
 
     // Verifica se è un panorama A-Frame
     if (iframe.src.includes('panorama.html')) {
-        console.log('Panorama A-Frame rilevato, attivando VR nativo');
+        console.log('Panorama A-Frame rilevato, attivando VR nativo con fullscreen');
         
         try {
-            // Usa postMessage per attivare VR nell'iframe
-            iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
-            
-            console.log('Comando VR inviato all\'iframe');
-            showNotification('Modalità VR attivata - Inserisci il telefono nel Cardboard', 'success');
+            // Prima entriamo in fullscreen
+            console.log('VR: Attivando fullscreen prima del VR');
+            toggleFullscreen().then(() => {
+                console.log('VR: Fullscreen attivato, ora attivando VR');
+                // Poi attiviamo la modalità VR nativa di A-Frame
+                setTimeout(() => {
+                    iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
+                    console.log('Comando VR inviato all\'iframe dopo fullscreen');
+                    showNotification('Modalità VR attivata - Inserisci il telefono nel Cardboard', 'success');
+                }, 500); // Piccolo delay per assicurarsi che il fullscreen sia attivo
+            }).catch(error => {
+                console.log('Fullscreen non disponibile, attivando VR senza fullscreen:', error);
+                // Se il fullscreen fallisce, attiviamo comunque il VR
+                iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
+                console.log('Comando VR inviato all\'iframe senza fullscreen');
+                showNotification('Modalità VR attivata - Inserisci il telefono nel Cardboard', 'success');
+            });
             
         } catch (err) {
             console.error('Errore nell\'attivazione VR:', err);
