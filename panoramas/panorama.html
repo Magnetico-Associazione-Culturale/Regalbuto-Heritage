@@ -220,6 +220,8 @@
         window.enterVR = function() {
             console.log('Modalità VR richiesta');
             const scene = document.querySelector('a-scene');
+            const sky = document.getElementById('sky');
+            const panoramaImg = document.getElementById('panorama');
             
             if (!scene || !scene.enterVR) {
                 console.error('A-Frame scene o VR non disponibile');
@@ -231,96 +233,155 @@
                 return;
             }
             
-            // Verifica se l'immagine è caricata
-            if (!panoramaLoaded) {
-                console.log('Immagine non ancora caricata, attendo...');
-                window.parent.postMessage({ 
-                    action: 'vrActivated', 
-                    success: false, 
-                    error: 'Attendere il caricamento dell\'immagine panoramica...' 
-                }, '*');
+            // Verifica rigorosa della disponibilità della texture
+            console.log('Controllo stato texture per VR...');
+            console.log('panoramaLoaded:', panoramaLoaded);
+            console.log('Image complete:', panoramaImg.complete);
+            console.log('Sky src:', sky.getAttribute('src'));
+            
+            // Funzione per verificare se la texture è effettivamente pronta
+            function isTextureReady() {
+                const skyMaterial = sky.components.material;
+                return panoramaLoaded && 
+                       panoramaImg.complete && 
+                       sky.getAttribute('src') === '#panorama' &&
+                       skyMaterial && 
+                       skyMaterial.material && 
+                       skyMaterial.material.map;
+            }
+            
+            // Se la texture non è pronta, forza il ricaricamento
+            if (!isTextureReady()) {
+                console.log('Texture non pronta, forzo ricaricamento completo...');
                 
-                // Attendi che l'immagine sia caricata prima di provare il VR
-                const checkLoaded = setInterval(() => {
-                    if (panoramaLoaded) {
-                        clearInterval(checkLoaded);
-                        console.log('Immagine ora caricata, attivando VR...');
-                        attemptVRActivation(scene);
-                    }
-                }, 500);
+                // Reset e ricarica la texture
+                sky.removeAttribute('src');
                 
-                // Timeout di sicurezza
                 setTimeout(() => {
-                    clearInterval(checkLoaded);
-                    if (!panoramaLoaded) {
-                        console.error('Timeout: immagine non caricata');
+                    // Assicura che l'immagine sia in cache
+                    const tempImg = new Image();
+                    tempImg.crossOrigin = 'anonymous';
+                    tempImg.onload = function() {
+                        console.log('Immagine ricaricata in cache per VR');
+                        
+                        // Riapplica la texture
+                        sky.setAttribute('src', '#panorama');
+                        
+                        // Attendi che A-Frame processi la texture
+                        setTimeout(() => {
+                            console.log('Verifica finale texture prima VR...');
+                            if (isTextureReady()) {
+                                console.log('Texture verificata, attivando VR...');
+                                attemptVRActivation(scene);
+                            } else {
+                                console.error('Texture ancora non pronta dopo ricaricamento');
+                                window.parent.postMessage({ 
+                                    action: 'vrActivated', 
+                                    success: false, 
+                                    error: 'Errore preparazione texture per VR' 
+                                }, '*');
+                            }
+                        }, 2000);
+                    };
+                    tempImg.onerror = function() {
+                        console.error('Errore ricaricamento immagine per VR');
                         window.parent.postMessage({ 
                             action: 'vrActivated', 
                             success: false, 
-                            error: 'Timeout nel caricamento dell\'immagine' 
+                            error: 'Errore ricaricamento immagine per VR' 
                         }, '*');
-                    }
-                }, 10000);
+                    };
+                    tempImg.src = panoramaImg.src;
+                }, 100);
                 
                 return;
             }
             
-            // Se l'immagine è già caricata, attiva direttamente il VR
+            // Se la texture è pronta, attiva direttamente il VR
+            console.log('Texture pronta, attivando VR immediatamente...');
             attemptVRActivation(scene);
         };
         
         function attemptVRActivation(scene) {
             console.log('Attivazione VR nativa A-Frame...');
             
+            // Controllo finale pre-VR
+            const sky = document.getElementById('sky');
+            const panoramaImg = document.getElementById('panorama');
+            
+            console.log('Controlli pre-VR:');
+            console.log('- Scene ready:', !!scene);
+            console.log('- Sky element:', !!sky);
+            console.log('- Panorama image:', !!panoramaImg);
+            console.log('- Image src:', panoramaImg.src);
+            console.log('- Image complete:', panoramaImg.complete);
+            console.log('- Sky src attribute:', sky.getAttribute('src'));
+            
+            // Verifica materiale A-Frame
+            const skyComponent = sky.components.material;
+            if (skyComponent && skyComponent.material) {
+                console.log('- Material exists:', !!skyComponent.material);
+                console.log('- Texture map exists:', !!skyComponent.material.map);
+                if (skyComponent.material.map) {
+                    console.log('- Texture image:', skyComponent.material.map.image);
+                }
+            }
+            
             // Per iOS, richiedi permessi per i sensori di movimento
             if (typeof DeviceOrientationEvent !== 'undefined' && 
                 typeof DeviceOrientationEvent.requestPermission === 'function') {
                 
+                console.log('Richiesta permessi iOS per VR...');
                 DeviceOrientationEvent.requestPermission()
                     .then(permissionState => {
                         console.log('Stato permessi iOS:', permissionState);
                         if (permissionState === 'granted') {
+                            console.log('Permessi concessi, attivando VR...');
                             // Attiva VR dopo aver ottenuto i permessi
                             scene.enterVR().then(() => {
-                                console.log('VR attivato con successo');
-                                // Notifica il parent del successo
+                                console.log('✅ VR attivato con successo su iOS');
                                 window.parent.postMessage({ 
                                     action: 'vrActivated', 
                                     success: true 
                                 }, '*');
                             }).catch(error => {
-                                console.error('Errore attivazione VR:', error);
+                                console.error('❌ Errore attivazione VR iOS:', error);
                                 window.parent.postMessage({ 
                                     action: 'vrActivated', 
                                     success: false, 
-                                    error: error.message 
+                                    error: 'Errore VR iOS: ' + error.message 
                                 }, '*');
                             });
                         } else {
-                            console.log('Permessi iOS negati, tentativo VR senza permessi');
-                            scene.enterVR();
+                            console.log('Permessi iOS negati, tentativo VR senza permessi...');
+                            scene.enterVR().catch(error => {
+                                console.error('❌ VR fallito senza permessi iOS:', error);
+                            });
                         }
                     })
                     .catch(error => {
                         console.error('Errore richiesta permessi iOS:', error);
                         // Prova comunque ad attivare VR
-                        scene.enterVR();
+                        scene.enterVR().catch(vrError => {
+                            console.error('❌ VR fallito dopo errore permessi:', vrError);
+                        });
                     });
                     
             } else {
                 // Non iOS o permessi non necessari
+                console.log('Attivando VR su dispositivo non-iOS...');
                 scene.enterVR().then(() => {
-                    console.log('VR attivato con successo');
+                    console.log('✅ VR attivato con successo');
                     window.parent.postMessage({ 
                         action: 'vrActivated', 
                         success: true 
                     }, '*');
                 }).catch(error => {
-                    console.error('Errore attivazione VR:', error);
+                    console.error('❌ Errore attivazione VR:', error);
                     window.parent.postMessage({ 
                         action: 'vrActivated', 
                         success: false, 
-                        error: error.message 
+                        error: 'Errore VR: ' + error.message 
                     }, '*');
                 });
             }
@@ -363,7 +424,7 @@
             const scene = document.querySelector('a-scene');
             
             scene.addEventListener('enter-vr', function() {
-                console.log('Entrato in modalità VR');
+                console.log('🕶️ Entrato in modalità VR');
                 
                 // Debug texture in VR
                 const sky = document.getElementById('sky');
@@ -374,14 +435,45 @@
                 console.log('Image loaded in VR:', panoramaImg.complete);
                 console.log('Sky src attribute in VR:', sky.getAttribute('src'));
                 
-                // Verifica materiale
+                // WORKAROUND: Forza refresh texture in VR
                 setTimeout(() => {
-                    const skyComponent = sky.components.material;
-                    if (skyComponent && skyComponent.material) {
-                        console.log('Material in VR:', skyComponent.material);
-                        console.log('Texture map in VR:', skyComponent.material.map);
-                    }
-                }, 1000);
+                    console.log('🔄 Forzando refresh texture in VR...');
+                    
+                    // Rimuovi e riapplica la texture
+                    const currentSrc = sky.getAttribute('src');
+                    sky.removeAttribute('src');
+                    
+                    setTimeout(() => {
+                        sky.setAttribute('src', currentSrc);
+                        console.log('✅ Texture riapplicata in modalità VR');
+                        
+                        // Verifica che sia stata applicata
+                        setTimeout(() => {
+                            const skyComponent = sky.components.material;
+                            if (skyComponent && skyComponent.material) {
+                                console.log('Material dopo refresh VR:', skyComponent.material);
+                                console.log('Texture map dopo refresh VR:', skyComponent.material.map);
+                                
+                                if (!skyComponent.material.map) {
+                                    console.error('❌ Texture ancora mancante dopo refresh!');
+                                    // Ultimo tentativo con forza bruta
+                                    const canvas = panoramaImg.ownerDocument.createElement('canvas');
+                                    const ctx = canvas.getContext('2d');
+                                    canvas.width = panoramaImg.naturalWidth || 2048;
+                                    canvas.height = panoramaImg.naturalHeight || 1024;
+                                    ctx.drawImage(panoramaImg, 0, 0);
+                                    
+                                    const dataURL = canvas.toDataURL('image/jpeg', 0.8);
+                                    sky.setAttribute('src', dataURL);
+                                    console.log('🎯 Applicata texture via canvas dataURL');
+                                } else {
+                                    console.log('✅ Texture correttamente caricata in VR!');
+                                }
+                            }
+                        }, 1500);
+                        
+                    }, 100);
+                }, 500);
                 
                 window.parent.postMessage({ 
                     action: 'vrEntered',
