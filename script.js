@@ -1131,6 +1131,12 @@ function simulateFullscreen() {
         mainContent.style.overflow = 'hidden';
     }
     
+    // Nascondi overflow del body e HTML
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.documentElement.style.overflow = 'hidden';
+    document.documentElement.style.position = 'fixed';
+    
     // Segna come modalità simulata
     viewer.setAttribute('data-simulated-fullscreen', 'true');
     
@@ -1236,8 +1242,10 @@ function removeMobileExitControls(viewer) {
 }
 
 function exitFullscreenMode() {
+    console.log('exitFullscreenMode called');
+    
     const viewer = document.getElementById('pano-viewer');
-    const isSimulated = viewer.getAttribute('data-simulated-fullscreen') === 'true';
+    const isSimulated = viewer && viewer.getAttribute('data-simulated-fullscreen') === 'true';
     
     if (isSimulated) {
         // Rimuovi i controlli mobile prima di uscire
@@ -1264,6 +1272,14 @@ function exitFullscreenMode() {
             mainContent.style.overflow = '';
         }
         
+        // Ripristina il body
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        
+        // Ripristina l'HTML
+        document.documentElement.style.overflow = '';
+        document.documentElement.style.position = '';
+        
         viewer.removeAttribute('data-simulated-fullscreen');
         
         console.log('Fullscreen simulato disattivato');
@@ -1273,17 +1289,25 @@ function exitFullscreenMode() {
         // Uscita dalla modalità fullscreen nativa
         try {
             if (document.exitFullscreen) {
-                document.exitFullscreen();
+                document.exitFullscreen().then(() => {
+                    console.log('Fullscreen nativo disattivato');
+                    showNotification('Schermo intero disattivato', 'info');
+                }).catch(err => {
+                    console.log('Errore uscita fullscreen nativo:', err);
+                    showNotification('Schermo intero disattivato', 'info');
+                });
             } else if (document.webkitExitFullscreen) {
                 document.webkitExitFullscreen();
+                showNotification('Schermo intero disattivato', 'info');
             } else if (document.mozCancelFullScreen) {
                 document.mozCancelFullScreen();
+                showNotification('Schermo intero disattivato', 'info');
             } else if (document.msExitFullscreen) {
                 document.msExitFullscreen();
+                showNotification('Schermo intero disattivato', 'info');
             }
             
             console.log('Fullscreen nativo disattivato');
-            showNotification('Schermo intero disattivato', 'info');
             
         } catch (err) {
             console.error('Errore uscita fullscreen:', err);
@@ -1299,109 +1323,74 @@ function createExitButton() {
     // Rimuovi eventuali pulsanti esistenti
     removeExitButton();
     
-    const exitButton = document.createElement('button');
-    exitButton.id = 'fullscreen-exit-btn';
-    exitButton.innerHTML = '×';
-    exitButton.title = 'Esci dallo schermo intero';
-    
-    // Stili base
-    const baseStyles = `
+    const exitBtn = document.createElement('button');
+    exitBtn.id = 'fullscreen-exit-btn';
+    exitBtn.innerHTML = '×';
+    exitBtn.title = 'Esci dallo schermo intero';
+    exitBtn.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
-        width: 50px;
-        height: 50px;
-        background: rgba(0, 0, 0, 0.7);
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 0, 0, 0.8);
         color: white;
-        border: 2px solid rgba(255, 255, 255, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.5);
         border-radius: 50%;
-        font-size: 28px;
+        font-size: 32px;
         font-weight: bold;
         cursor: pointer;
         z-index: 10001;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.4);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         transition: all 0.3s ease;
         line-height: 1;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
         font-family: Arial, sans-serif;
     `;
     
-    // Stili aggiuntivi per mobile
-    const mobileStyles = `
-        width: 60px;
-        height: 60px;
-        font-size: 32px;
-        top: 15px;
-        right: 15px;
-        background: rgba(255, 0, 0, 0.8);
-        border: 3px solid rgba(255, 255, 255, 0.8);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.6);
-    `;
+    // Event handler semplificato per massima compatibilità
+    exitBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Exit button clicked - onclick');
+        exitFullscreenMode();
+    };
     
-    // Applica stili in base al dispositivo
-    if (isMobileDevice()) {
-        exitButton.style.cssText = baseStyles + mobileStyles;
-        console.log('Pulsante X ottimizzato per mobile');
-    } else {
-        exitButton.style.cssText = baseStyles;
-    }
+    // Aggiungi anche addEventListener per sicurezza
+    exitBtn.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Exit button touched - touchstart');
+        exitFullscreenMode();
+    }, { passive: false });
     
     // Effetti hover/touch
-    exitButton.addEventListener('mouseenter', () => {
-        exitButton.style.background = 'rgba(255, 0, 0, 0.9)';
-        exitButton.style.borderColor = 'rgba(255, 255, 255, 0.8)';
-        exitButton.style.transform = 'scale(1.1)';
+    exitBtn.addEventListener('mouseenter', function() {
+        this.style.background = 'rgba(255, 0, 0, 1)';
+        this.style.transform = 'scale(1.1)';
     });
     
-    exitButton.addEventListener('mouseleave', () => {
-        if (isMobileDevice()) {
-            exitButton.style.background = 'rgba(255, 0, 0, 0.8)';
-        } else {
-            exitButton.style.background = 'rgba(0, 0, 0, 0.7)';
-        }
-        exitButton.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-        exitButton.style.transform = 'scale(1)';
+    exitBtn.addEventListener('mouseleave', function() {
+        this.style.background = 'rgba(255, 0, 0, 0.8)';
+        this.style.transform = 'scale(1)';
     });
     
-    // Supporto touch per mobile
-    exitButton.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        exitButton.style.background = 'rgba(255, 0, 0, 1)';
-        exitButton.style.transform = 'scale(1.2)';
-        console.log('Touch start su pulsante X');
+    exitBtn.addEventListener('touchstart', function() {
+        this.style.background = 'rgba(255, 0, 0, 1)';
+        this.style.transform = 'scale(1.1)';
     });
     
-    exitButton.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        exitButton.style.background = 'rgba(255, 0, 0, 0.8)';
-        exitButton.style.transform = 'scale(1)';
-        console.log('Touch end su pulsante X');
-    });
+    document.body.appendChild(exitBtn);
     
-    // Click handler
-    exitButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('Pulsante X cliccato - uscita da fullscreen');
-        exitFullscreenMode();
-    });
-    
-    document.body.appendChild(exitButton);
-    console.log('Pulsante di uscita fullscreen creato');
-    
-    // Per mobile, crea anche un'area touch più grande per facilitare l'interazione
-    if (isMobileDevice()) {
-        createMobileTouchArea();
-    }
-}
-
-function createMobileTouchArea() {
+    // Crea anche l'area touch più grande per facilitare il tocco
     const touchArea = document.createElement('div');
-    touchArea.id = 'mobile-exit-area';
+    touchArea.id = 'fullscreen-touch-area';
     touchArea.style.cssText = `
         position: fixed;
         top: 0;
@@ -1410,31 +1399,41 @@ function createMobileTouchArea() {
         height: 100px;
         z-index: 10000;
         background: transparent;
+        cursor: pointer;
         touch-action: manipulation;
     `;
     
-    touchArea.addEventListener('touchstart', (e) => {
+    touchArea.onclick = function(e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('Touch area attivata');
-        showNotification('Tocca la X per uscire', 'info');
-    });
+        console.log('Touch area clicked');
+        exitFullscreenMode();
+    };
+    
+    touchArea.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Touch area touched');
+        exitFullscreenMode();
+    }, { passive: false });
     
     document.body.appendChild(touchArea);
-    console.log('Area touch mobile creata');
+    
+    console.log('Exit button and touch area created');
 }
 
 function removeExitButton() {
-    const existingButton = document.getElementById('fullscreen-exit-btn');
-    if (existingButton) {
-        existingButton.remove();
-        console.log('Pulsante di uscita fullscreen rimosso');
+    const exitBtn = document.getElementById('fullscreen-exit-btn');
+    const touchArea = document.getElementById('fullscreen-touch-area');
+    
+    if (exitBtn) {
+        exitBtn.remove();
+        console.log('Exit button removed');
     }
     
-    const existingTouchArea = document.getElementById('mobile-exit-area');
-    if (existingTouchArea) {
-        existingTouchArea.remove();
-        console.log('Area touch mobile rimossa');
+    if (touchArea) {
+        touchArea.remove();
+        console.log('Touch area removed');
     }
 }
 
