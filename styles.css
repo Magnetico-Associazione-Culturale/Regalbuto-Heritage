@@ -1811,3 +1811,22 @@ button:focus,
     background-color: var(--primary-color);
     color: white;
 }
+
+/* Mobile-only controls */
+.mobile-only {
+    display: inline-flex;
+}
+
+/* Hide VR button on desktop */
+@media (min-width: 769px) {
+    .mobile-only {
+        display: none !important;
+    }
+}
+
+/* Show VR button only on mobile */
+@media (max-width: 768px) {
+    .mobile-only {
+        display: inline-flex !important;
+    }
+}

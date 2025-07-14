@@ -1049,7 +1049,7 @@ function toggleFullscreen() {
     if (!viewer) {
         console.error('Viewer non trovato');
         showNotification('Errore: viewer non trovato', 'error');
-        return;
+        return Promise.reject(new Error('Viewer non trovato'));
     }
 
     // Verifica se siamo già in fullscreen (nativo o simulato)
@@ -1061,8 +1061,9 @@ function toggleFullscreen() {
     
     if (isFullscreen) {
         exitFullscreenMode();
+        return Promise.resolve('fullscreen disabled');
     } else {
-        enterFullscreenMode();
+        return enterFullscreenMode();
     }
 }
 
@@ -1070,39 +1071,45 @@ function enterFullscreenMode() {
     const viewer = document.getElementById('pano-viewer');
     const iframe = viewer ? viewer.querySelector('iframe') : null;
     
-    try {
-        // Prova prima il fullscreen nativo
-        let fullscreenPromise;
-        
-        if (viewer.requestFullscreen) {
-            fullscreenPromise = viewer.requestFullscreen();
-        } else if (viewer.webkitRequestFullscreen) {
-            fullscreenPromise = viewer.webkitRequestFullscreen();
-        } else if (viewer.mozRequestFullScreen) {
-            fullscreenPromise = viewer.mozRequestFullScreen();
-        } else if (viewer.msRequestFullscreen) {
-            fullscreenPromise = viewer.msRequestFullscreen();
-        }
-        
-        if (fullscreenPromise) {
-            fullscreenPromise.then(() => {
-                console.log('Fullscreen nativo attivato con successo');
-                showNotification('Modalità schermo intero attivata', 'success');
-                createExitButton();
-            }).catch((err) => {
-                console.log('Errore fullscreen nativo:', err);
-                // Fallback per mobile
+    return new Promise((resolve, reject) => {
+        try {
+            // Prova prima il fullscreen nativo
+            let fullscreenPromise;
+            
+            if (viewer.requestFullscreen) {
+                fullscreenPromise = viewer.requestFullscreen();
+            } else if (viewer.webkitRequestFullscreen) {
+                fullscreenPromise = viewer.webkitRequestFullscreen();
+            } else if (viewer.mozRequestFullScreen) {
+                fullscreenPromise = viewer.mozRequestFullScreen();
+            } else if (viewer.msRequestFullscreen) {
+                fullscreenPromise = viewer.msRequestFullscreen();
+            }
+            
+            if (fullscreenPromise && fullscreenPromise.then) {
+                fullscreenPromise.then(() => {
+                    console.log('Fullscreen nativo attivato con successo');
+                    showNotification('Modalità schermo intero attivata', 'success');
+                    createExitButton();
+                    resolve('native fullscreen activated');
+                }).catch((err) => {
+                    console.log('Errore fullscreen nativo:', err);
+                    // Fallback per mobile
+                    simulateFullscreen();
+                    resolve('simulated fullscreen activated');
+                });
+            } else {
+                console.log('API fullscreen non supportata, uso simulazione');
                 simulateFullscreen();
-            });
-        } else {
-            console.log('API fullscreen non supportata, uso simulazione');
+                resolve('simulated fullscreen activated');
+            }
+            
+        } catch (err) {
+            console.error('Errore fullscreen:', err);
             simulateFullscreen();
+            resolve('simulated fullscreen activated');
         }
-        
-    } catch (err) {
-        console.error('Errore fullscreen:', err);
-        simulateFullscreen();
-    }
+    });
 }
 
 function simulateFullscreen() {
@@ -1514,26 +1521,40 @@ function toggleVRMode() {
 
     // Verifica se è un panorama A-Frame
     if (iframe.src.includes('panorama.html')) {
-        console.log('Panorama A-Frame rilevato, attivando VR nativo con fullscreen');
+        console.log('Panorama A-Frame rilevato');
+        
+        // Controlla se siamo su dispositivo mobile
+        if (!isMobileDevice()) {
+            console.log('Dispositivo desktop rilevato - VR non supportato');
+            showNotification('La modalità VR è disponibile solo su dispositivi mobili', 'warning');
+            return;
+        }
+        
+        console.log('Dispositivo mobile rilevato - attivando VR con fullscreen automatico');
         
         try {
-            // Prima entriamo in fullscreen
-            console.log('VR: Attivando fullscreen prima del VR');
-            toggleFullscreen().then(() => {
-                console.log('VR: Fullscreen attivato, ora attivando VR');
-                // Poi attiviamo la modalità VR nativa di A-Frame
-                setTimeout(() => {
-                    iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
-                    console.log('Comando VR inviato all\'iframe dopo fullscreen');
-                    showNotification('Modalità VR attivata - Inserisci il telefono nel Cardboard', 'success');
-                }, 500); // Piccolo delay per assicurarsi che il fullscreen sia attivo
-            }).catch(error => {
-                console.log('Fullscreen non disponibile, attivando VR senza fullscreen:', error);
-                // Se il fullscreen fallisce, attiviamo comunque il VR
-                iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
-                console.log('Comando VR inviato all\'iframe senza fullscreen');
-                showNotification('Modalità VR attivata - Inserisci il telefono nel Cardboard', 'success');
-            });
+            // Prima attiviamo la modalità VR
+            console.log('VR: Attivando VR prima del fullscreen');
+            iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
+            
+            // Poi proviamo ad attivare il fullscreen (ma non è critico se fallisce)
+            setTimeout(() => {
+                console.log('VR: Tentativo fullscreen dopo VR');
+                const fullscreenResult = toggleFullscreen();
+                
+                if (fullscreenResult && fullscreenResult.then) {
+                    fullscreenResult.then(() => {
+                        console.log('VR: Fullscreen attivato dopo VR');
+                        showNotification('Modalità VR a schermo intero attivata', 'success');
+                    }).catch(error => {
+                        console.log('VR: Fullscreen fallito ma VR attivo:', error);
+                        showNotification('Modalità VR attivata (senza fullscreen)', 'success');
+                    });
+                } else {
+                    console.log('VR: toggleFullscreen non ha restituito Promise');
+                    showNotification('Modalità VR attivata', 'success');
+                }
+            }, 200); // Piccolo delay per permettere al VR di attivarsi
             
         } catch (err) {
             console.error('Errore nell\'attivazione VR:', err);
@@ -1758,6 +1779,23 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof feather !== 'undefined') {
         feather.replace();
     }
+    
+    // Controlla e gestisci la visibilità del pulsante VR
+    manageVRButtonVisibility();
 });
+
+// Funzione per gestire la visibilità del pulsante VR
+function manageVRButtonVisibility() {
+    const vrButton = document.getElementById('vr-mode-btn');
+    if (vrButton) {
+        if (isMobileDevice()) {
+            vrButton.style.display = 'inline-flex';
+            console.log('Dispositivo mobile rilevato: pulsante VR visibile');
+        } else {
+            vrButton.style.display = 'none';
+            console.log('Dispositivo desktop rilevato: pulsante VR nascosto');
+        }
+    }
+}
 
 console.log('Regalbuto Heritage - Script loaded successfully');
