@@ -110,6 +110,13 @@ function switchTab(tabName) {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
     
+    // Manage header visibility for home section
+    if (tabName === 'home') {
+        document.body.classList.add('home-active');
+    } else {
+        document.body.classList.remove('home-active');
+    }
+    
     // Hide all sections
     const sections = document.querySelectorAll('.section');
     sections.forEach(section => {
@@ -689,10 +696,10 @@ function addAllMarkers() {
         },
         {
             id: 'purgatorio',
-            name: 'Chiesa del Purgatorio',
+            name: 'Chiesa di San Rocco',
             coords: [37.6526434, 14.6408936],
             category: 'cultura',
-            description: 'Arte barocca e devozione popolare',
+            description: 'Arte barocca e devozione popolare (anche detta Chiesa del Purgatorio)',
             icon: '⛪'
         },
         {

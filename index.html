@@ -41,9 +41,20 @@
     <main id="main-content">
         <!-- HOME SECTION -->
         <section id="home" class="section active">
+            <!-- Hero Section with Background Image -->
             <div class="hero-section">
                 <div class="hero-overlay">
-                    <div class="hero-buttons">
+                    <div class="hero-title-container">
+                        <div class="hero-title-with-logo">
+                            <img src="src/imgs/flat/logo-comune-regalbuto.jpg" alt="Comune di Regalbuto" class="hero-logo">
+                            <div class="hero-title-text">
+                                <h1 class="hero-title">Regalbuto Heritage</h1>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons inside hero section -->
+                    <div class="hero-actions">
                         <button class="btn btn-primary" onclick="startTour()">
                             <i data-feather="play-circle"></i>
                             Inizia il Tour
@@ -54,22 +65,20 @@
                         </button>
                         <button class="btn btn-warning" onclick="startQRScanner()">
                             <i data-feather="camera"></i>
-                            Scansiona QR Code
+                            Scansiona QR
                         </button>
                     </div>
+                </div>
+                <!-- Info button in top right of hero section -->
+                <div class="hero-info-btn">
+                    <button class="hero-info-button" onclick="switchTab('info')" data-tab="info">
+                        <i data-feather="info"></i>
+                    </button>
                 </div>
             </div>
 
             <div class="content-section">
-                <div class="welcome-text">
-                    <h2>Benvenuti a Regalbuto</h2>
-                    <p>Esplora il nostro ricco patrimonio storico</p>
-                </div>
-                
                 <h2 class="section-title">In Evidenza</h2>
-                <div class="featured-highlight">
-                    <p>Scopri i luoghi più suggestivi e significativi del nostro territorio</p>
-                </div>
                 
                 <!-- Categoria Separata: Natura e Paesaggio -->
                 <div class="category-section">
@@ -84,18 +93,20 @@
                             <div class="card-thumbnail">
                                 <img src="src/imgs/flat/lago-pozzillo.webp" alt="Lago Pozzillo">
                             </div>
-                            <div class="card-content">
-                                <div class="card-category-badge">Natura</div>
-                                <h4>Lago Pozzillo</h4>
-                                <p>Un'oasi di tranquillità circondata da colline verdi</p>
+                            <div class="card-category-badge">Natura</div>
+                        </div>
+                        <div class="card-content">
+                            <h4>Lago Pozzillo</h4>
+                            <p>Un'oasi di tranquillità circondata da colline verdi</p>
+                            <div class="monument-details">
                                 <div class="card-distance">
                                     <i data-feather="map-pin"></i>
                                     <span>2.1 km</span>
                                 </div>
+                                <button class="card-expand-btn" id="expand-lago-pozzillo">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
                             </div>
-                            <button class="card-expand-btn" id="expand-lago-pozzillo">
-                                <i data-feather="chevron-right"></i>
-                            </button>
                         </div>
                         <div class="card-expanded-info" id="expanded-lago-pozzillo">
                             <p>Il Lago Pozzillo è un bacino artificiale creato negli anni '80 che ha trasformato il paesaggio della zona, diventando un'importante risorsa idrica e un'area di grande valore naturalistico e ricreativo.</p>
@@ -120,18 +131,20 @@
                             <div class="card-thumbnail">
                                 <img src="src/imgs/flat/parco-avventura.webp" alt="Parco Avventura Pozzillo">
                             </div>
-                            <div class="card-content">
-                                <div class="card-category-badge">Natura</div>
-                                <h4>Parco Avventura Pozzillo</h4>
-                                <p>Avventure nella natura per tutta la famiglia</p>
+                            <div class="card-category-badge">Natura</div>
+                        </div>
+                        <div class="card-content">
+                            <h4>Parco Avventura Pozzillo</h4>
+                            <p>Avventure nella natura per tutta la famiglia</p>
+                            <div class="monument-details">
                                 <div class="card-distance">
                                     <i data-feather="map-pin"></i>
                                     <span>2.3 km</span>
                                 </div>
+                                <button class="card-expand-btn" id="expand-parco-avventura">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
                             </div>
-                            <button class="card-expand-btn" id="expand-parco-avventura">
-                                <i data-feather="chevron-right"></i>
-                            </button>
                         </div>
                         <div class="card-expanded-info" id="expanded-parco-avventura">
                             <p>Il Parco Avventura Pozzillo è una struttura ricreativa immersa nella natura che offre percorsi acrobatici tra gli alberi, attività outdoor e esperienze di educazione ambientale per visitatori di tutte le età.</p>
@@ -167,18 +180,20 @@
                             <div class="card-thumbnail">
                                 <img src="src/imgs/flat/chiesa-san-basilio.jpg" alt="Chiesa di San Basilio">
                             </div>
-                            <div class="card-content">
-                                <div class="card-category-badge">Religioso</div>
-                                <h4>Chiesa di San Basilio</h4>
-                                <p>Antica chiesa risalente al XVI secolo, esempio di architettura barocca</p>
+                            <div class="card-category-badge">Religioso</div>
+                        </div>
+                        <div class="card-content">
+                            <h4>Chiesa di San Basilio</h4>
+                            <p>Antica chiesa risalente al XVI secolo, esempio di architettura barocca</p>
+                            <div class="monument-details">
                                 <div class="card-distance">
                                     <i data-feather="map-pin"></i>
                                     <span>0.5 km</span>
                                 </div>
+                                <button class="card-expand-btn" id="expand-san-basilio">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
                             </div>
-                            <button class="card-expand-btn" id="expand-san-basilio">
-                                <i data-feather="chevron-right"></i>
-                            </button>
                         </div>
                         <div class="card-expanded-info" id="expanded-san-basilio">
                             <p>La Chiesa Madre, dedicata a San Basilio Magno, rappresenta il cuore spirituale di Regalbuto. Costruita nel XVIII secolo su un precedente edificio di culto, la chiesa presenta una facciata imponente in stile barocco siciliano.</p>
@@ -203,18 +218,20 @@
                             <div class="card-thumbnail">
                                 <img src="src/imgs/flat/convento-santantonio.avif" alt="Convento di Sant'Antonio">
                             </div>
-                            <div class="card-content">
-                                <div class="card-category-badge">Religioso</div>
-                                <h4>Convento di Sant'Antonio</h4>
-                                <p>Architettura sacra e storia millenaria</p>
+                            <div class="card-category-badge">Religioso</div>
+                        </div>
+                        <div class="card-content">
+                            <h4>Convento di Sant'Antonio</h4>
+                            <p>Architettura sacra e storia millenaria</p>
+                            <div class="monument-details">
                                 <div class="card-distance">
                                     <i data-feather="map-pin"></i>
                                     <span>1.2 km</span>
                                 </div>
+                                <button class="card-expand-btn" id="expand-santantonio">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
                             </div>
-                            <button class="card-expand-btn" id="expand-santantonio">
-                                <i data-feather="chevron-right"></i>
-                            </button>
                         </div>
                         <div class="card-expanded-info" id="expanded-santantonio">
                             <p>Il Convento di Sant'Antonio è un complesso monastico del XVI secolo che domina il paesaggio circostante da una posizione panoramica privilegiata. L'architettura combina elementi rinascimentali e barocchi.</p>
@@ -233,27 +250,29 @@
                         </div>
                     </div>
 
-                    <!-- Chiesa del Purgatorio -->
+                    <!-- Chiesa di San Rocco -->
                     <div class="featured-card" onclick="toggleFeaturedCard('purgatorio')">
                         <div class="card-header">
                             <div class="card-thumbnail">
-                                <img src="src/imgs/flat/chiesa-purgatorio.webp" alt="Chiesa del Purgatorio">
+                                <img src="src/imgs/flat/srocco-flat.png" alt="Chiesa di San Rocco">
                             </div>
-                            <div class="card-content">
-                                <div class="card-category-badge">Religioso</div>
-                                <h4>Chiesa del Purgatorio</h4>
-                                <p>Arte barocca e devozione popolare</p>
+                            <div class="card-category-badge">Religioso</div>
+                        </div>
+                        <div class="card-content">
+                            <h4>Chiesa di San Rocco</h4>
+                            <p>Arte barocca e devozione popolare (anche detta Chiesa del Purgatorio)</p>
+                            <div class="monument-details">
                                 <div class="card-distance">
                                     <i data-feather="map-pin"></i>
                                     <span>0.8 km</span>
                                 </div>
+                                <button class="card-expand-btn" id="expand-purgatorio">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
                             </div>
-                            <button class="card-expand-btn" id="expand-purgatorio">
-                                <i data-feather="chevron-right"></i>
-                            </button>
                         </div>
                         <div class="card-expanded-info" id="expanded-purgatorio">
-                            <p>La Chiesa del Purgatorio è una piccola ma preziosa chiesa barocca caratterizzata da decorazioni elaborate e affreschi dedicati alle anime del purgatorio.</p>
+                            <p>La Chiesa di San Rocco, conosciuta anche come Chiesa del Purgatorio, è una piccola ma preziosa chiesa barocca caratterizzata da decorazioni elaborate e affreschi dedicati alle anime del purgatorio.</p>
                             <p>La facciata presenta elementi decorativi tipici del barocco siciliano con motivi floreali e angeli scolpiti. L'interno è arricchito da stucchi policromi e dipinti murali.</p>
                             <p><strong>Tradizioni:</strong> La chiesa è particolarmente cara ai reggalbuttesi per le celebrazioni legate al culto delle anime del purgatorio.</p>
                             <div class="card-actions">
@@ -275,18 +294,20 @@
                             <div class="card-thumbnail">
                                 <img src="src/imgs/flat/DJI_20250711100218_0035_D.JPG" alt="Chiesa di Santa Maria della Croce">
                             </div>
-                            <div class="card-content">
-                                <div class="card-category-badge">Religioso</div>
-                                <h4>Chiesa di Santa Maria della Croce</h4>
-                                <p>Antica chiesa ricca di storia e tradizione</p>
+                            <div class="card-category-badge">Religioso</div>
+                        </div>
+                        <div class="card-content">
+                            <h4>Chiesa di Santa Maria della Croce</h4>
+                            <p>Antica chiesa ricca di storia e tradizione</p>
+                            <div class="monument-details">
                                 <div class="card-distance">
                                     <i data-feather="map-pin"></i>
                                     <span>0.6 km</span>
                                 </div>
+                                <button class="card-expand-btn" id="expand-santa-maria-croce">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
                             </div>
-                            <button class="card-expand-btn" id="expand-santa-maria-croce">
-                                <i data-feather="chevron-right"></i>
-                            </button>
                         </div>
                         <div class="card-expanded-info" id="expanded-santa-maria-croce">
                             <p>La Chiesa di Santa Maria della Croce è un importante edificio religioso che testimonia la ricca tradizione spirituale di Regalbuto. La sua architettura rappresenta un esempio significativo dell'arte sacra siciliana.</p>
@@ -323,18 +344,20 @@
                             <div class="card-thumbnail">
                                 <img src="src/imgs/flat/tecnopolo-logo.png" alt="Tecnopolo Magnetico">
                             </div>
-                            <div class="card-content">
-                                <div class="card-category-badge">Tecnologia</div>
-                                <h4>Tecnopolo Magnetico</h4>
-                                <p>Lab formativo e spazio di co-working ICT</p>
+                            <div class="card-category-badge">Tecnologia</div>
+                        </div>
+                        <div class="card-content">
+                            <h4>Tecnopolo Magnetico</h4>
+                            <p>Lab formativo e spazio di co-working ICT</p>
+                            <div class="monument-details">
                                 <div class="card-distance">
                                     <i data-feather="map-pin"></i>
                                     <span>0.8 km</span>
                                 </div>
+                                <button class="card-expand-btn" id="expand-tecnopolo">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
                             </div>
-                            <button class="card-expand-btn" id="expand-tecnopolo">
-                                <i data-feather="chevron-right"></i>
-                            </button>
                         </div>
                         <div class="card-expanded-info" id="expanded-tecnopolo">
                             <p>Il Tecnopolo Magnetico è un innovativo laboratorio formativo e spazio di co-working dedicato alle tecnologie dell'informazione e della comunicazione (ICT), nato per favorire lo sviluppo digitale e l'innovazione nel territorio di Regalbuto.</p>
@@ -405,7 +428,10 @@
         <section id="monumenti" class="section">
             <div class="content-section">
                 <div class="section-header">
-                    <h2 class="section-title">Monumenti</h2>
+                    <h2 class="section-title">
+                        <i data-feather="camera"></i>
+                        Monumenti
+                    </h2>
                     <button class="qr-scan-btn" onclick="startQRScanner()">
                         <i data-feather="camera"></i>
                         Scansiona QR
@@ -518,15 +544,15 @@
                         </div>
                     </div>
 
-                    <!-- Chiesa del Purgatorio -->
+                    <!-- Chiesa di San Rocco -->
                     <div class="monument-card" data-category="religioso">
                         <div class="monument-image">
-                            <img src="src/imgs/flat/chiesa-purgatorio.webp" alt="Chiesa del Purgatorio">
+                            <img src="src/imgs/flat/srocco-flat.png" alt="Chiesa di San Rocco">
                             <div class="monument-category-badge">Religioso</div>
                         </div>
                         <div class="monument-info">
-                            <h4>Chiesa del Purgatorio</h4>
-                            <p class="monument-description">Arte barocca e devozione popolare</p>
+                            <h4>Chiesa di San Rocco</h4>
+                            <p class="monument-description">Arte barocca e devozione popolare (anche detta Chiesa del Purgatorio)</p>
                             <div class="monument-details">
                                 <span class="distance">
                                     <i data-feather="map-pin"></i>
@@ -539,7 +565,7 @@
                         </div>
                         <div class="monument-content" id="content-purgatorio">
                             <div class="monument-description">
-                                <p>La Chiesa del Purgatorio è una piccola ma preziosa chiesa barocca caratterizzata da decorazioni elaborate e affreschi dedicati alle anime del purgatorio. Costruita nel XVII secolo, rappresenta un esempio significativo della devozione popolare siciliana.</p>
+                                <p>La Chiesa di San Rocco, conosciuta anche come Chiesa del Purgatorio, è una piccola ma preziosa chiesa barocca caratterizzata da decorazioni elaborate e affreschi dedicati alle anime del purgatorio. Costruita nel XVII secolo, rappresenta un esempio significativo della devozione popolare siciliana.</p>
                                 <p>La facciata, pur di dimensioni contenute, presenta elementi decorativi tipici del barocco siciliano con motivi floreali e angeli scolpiti. L'interno è arricchito da stucchi policromi e dipinti murali che narrano episodi della tradizione cristiana.</p>
                                 <p><strong>Tradizioni:</strong> La chiesa è particolarmente cara ai reggalbuttesi per le celebrazioni legate al culto delle anime del purgatorio, con processioni e riti che si tramandano da generazioni.</p>
                             </div>
@@ -1073,7 +1099,7 @@
         <section id="virtual-tour" class="section">
             <div class="content-section">
                 <h2 class="section-title">
-                    <i data-feather="camera"></i>
+                    <i data-feather="eye"></i>
                     Tour Virtuale
                 </h2>
                 

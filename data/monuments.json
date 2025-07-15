@@ -122,21 +122,21 @@
         ]
     },
     {
-        "name": "Chiesa del Purgatorio",
-        "id": "chiesa-del-purgatorio",
-        "short_description": "Chiesa dedicata alle anime del Purgatorio, caratteristico esempio di architettura religiosa popolare",
+        "name": "Chiesa di San Rocco",
+        "id": "chiesa-san-rocco",
+        "short_description": "Chiesa dedicata a San Rocco, conosciuta anche come Chiesa del Purgatorio, caratteristico esempio di architettura religiosa popolare",
         "category": "church",
         "lat": 37.6465,
         "lon": 14.6365,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+del+Purgatorio,+Regalbuto/@37.6465,14.6365,17z",
+        "maps_url": "https://www.google.com/maps/place/Chiesa+di+San+Rocco,+Regalbuto/@37.6465,14.6365,17z",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Chiesa del Purgatorio",
-                "description": "Vista della Chiesa del Purgatorio",
+                "title": "Chiesa di San Rocco",
+                "description": "Vista della Chiesa di San Rocco (anche detta Chiesa del Purgatorio)",
                 "format": "standard",
-                "path": "src/imgs/flat/chiesa-purgatorio.webp",
-                "alt": "Chiesa del Purgatorio"
+                "path": "src/imgs/flat/srocco-flat.png",
+                "alt": "Chiesa di San Rocco"
             }
         ],
         "history": [
