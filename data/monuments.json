@@ -1,0 +1,821 @@
+[
+    {
+        "name": "Chiesa Maria S.S. della Croce",
+        "id": "chiesa-maria-ss-della-croce",
+        "short_description": "Chiesa principale dedicata a Maria Santissima della Croce, importante luogo di culto del centro storico",
+        "category": "church",
+        "lat": 37.6461,
+        "lon": 14.6369,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+Maria+SS+della+Croce,+Regalbuto/@37.6461,14.6369,17z",
+        "address": "Via Roma, Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa Maria S.S. della Croce - Interno",
+                "description": "Vista dell'interno della chiesa con l'altare principale",
+                "format": "360",
+                "path": "src/imgs/360/smaria-ingresso.JPG",
+                "alt": "Vista panoramica 360° dell'interno della Chiesa Maria S.S. della Croce"
+            },
+            {
+                "title": "Chiesa Maria S.S. della Croce - Altare",
+                "description": "Altare principale della chiesa",
+                "format": "360",
+                "path": "src/imgs/360/smaria-altare.JPG",
+                "alt": "Vista panoramica 360° dell'altare principale"
+            },
+            {
+                "title": "Chiesa Maria S.S. della Croce - Lato destro",
+                "description": "Vista del lato destro della chiesa",
+                "format": "360",
+                "path": "src/imgs/360/smaria-dx.JPG",
+                "alt": "Vista panoramica 360° del lato destro della chiesa"
+            },
+            {
+                "title": "Chiesa Maria S.S. della Croce - Lato sinistro",
+                "description": "Vista del lato sinistro della chiesa",
+                "format": "360",
+                "path": "src/imgs/360/smaria-sx.JPG",
+                "alt": "Vista panoramica 360° del lato sinistro della chiesa"
+            }
+        ],
+        "history": [
+            {
+                "title": "Fondazione originaria",
+                "description": "La chiesa fu fondata come luogo di culto principale del centro abitato",
+                "period": {
+                    "start": "1600",
+                    "end": "1650"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Chiesa S. Giovanni",
+        "id": "chiesa-san-giovanni",
+        "short_description": "Chiesa dedicata a San Giovanni, importante edificio religioso del patrimonio locale",
+        "category": "church",
+        "lat": 37.6455,
+        "lon": 14.6375,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Giovanni,+Regalbuto/@37.6455,14.6375,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa S. Giovanni",
+                "description": "Vista esterna della Chiesa di San Giovanni",
+                "format": "standard",
+                "path": "src/imgs/flat/chiesa-san-basilio.jpg",
+                "alt": "Chiesa di San Giovanni"
+            }
+        ],
+        "history": [
+            {
+                "title": "Costruzione originaria",
+                "description": "Edificazione della chiesa in stile tradizionale siciliano",
+                "period": {
+                    "start": "1650",
+                    "end": "1700"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Chiesa S. Basilio",
+        "id": "chiesa-san-basilio",
+        "short_description": "Chiesa dedicata a San Basilio, importante testimonianza dell'architettura religiosa locale",
+        "category": "church",
+        "lat": 37.6450,
+        "lon": 14.6380,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Basilio,+Regalbuto/@37.6450,14.6380,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa S. Basilio - Ingresso",
+                "description": "Vista dell'ingresso principale della Chiesa di San Basilio",
+                "format": "360",
+                "path": "src/imgs/360/sbasilio-ingresso.JPG",
+                "alt": "Vista panoramica 360° dell'ingresso della Chiesa di San Basilio"
+            },
+            {
+                "title": "Chiesa S. Basilio - Altare",
+                "description": "Altare principale della Chiesa di San Basilio",
+                "format": "360",
+                "path": "src/imgs/360/sbasilio-altare.JPG",
+                "alt": "Vista panoramica 360° dell'altare della Chiesa di San Basilio"
+            },
+            {
+                "title": "Chiesa S. Basilio - Esterno",
+                "description": "Vista esterna della Chiesa di San Basilio",
+                "format": "standard",
+                "path": "src/imgs/flat/chiesa-san-basilio.jpg",
+                "alt": "Chiesa di San Basilio vista esterna"
+            }
+        ],
+        "history": [
+            {
+                "title": "Fondazione medievale",
+                "description": "La chiesa fu fondata nel periodo medievale come luogo di culto dedicato a San Basilio",
+                "period": {
+                    "start": "1200",
+                    "end": "1300"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Chiesa del Purgatorio",
+        "id": "chiesa-del-purgatorio",
+        "short_description": "Chiesa dedicata alle anime del Purgatorio, caratteristico esempio di architettura religiosa popolare",
+        "category": "church",
+        "lat": 37.6465,
+        "lon": 14.6365,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+del+Purgatorio,+Regalbuto/@37.6465,14.6365,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa del Purgatorio",
+                "description": "Vista della Chiesa del Purgatorio",
+                "format": "standard",
+                "path": "src/imgs/flat/chiesa-purgatorio.webp",
+                "alt": "Chiesa del Purgatorio"
+            }
+        ],
+        "history": [
+            {
+                "title": "Costruzione barocca",
+                "description": "Edificazione della chiesa in stile barocco siciliano",
+                "period": {
+                    "start": "1700",
+                    "end": "1750"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Chiesa del Collegio",
+        "id": "chiesa-del-collegio",
+        "short_description": "Chiesa annessa al collegio, importante centro di formazione religiosa e culturale",
+        "category": "church",
+        "lat": 37.6470,
+        "lon": 14.6360,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+del+Collegio,+Regalbuto/@37.6470,14.6360,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa del Collegio",
+                "description": "Vista della Chiesa del Collegio",
+                "format": "standard",
+                "path": "src/imgs/flat/convento-santantonio.avif",
+                "alt": "Chiesa del Collegio"
+            }
+        ],
+        "history": [
+            {
+                "title": "Fondazione collegiale",
+                "description": "Costruzione della chiesa come parte del complesso collegiale per l'educazione religiosa",
+                "period": {
+                    "start": "1650",
+                    "end": "1700"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Chiesa Madonna del Carmelo",
+        "id": "chiesa-madonna-del-carmelo",
+        "short_description": "Chiesa dedicata alla Madonna del Carmelo, importante devozione mariana locale",
+        "category": "church",
+        "lat": 37.6445,
+        "lon": 14.6385,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+Madonna+del+Carmelo,+Regalbuto/@37.6445,14.6385,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa Madonna del Carmelo",
+                "description": "Vista della Chiesa Madonna del Carmelo",
+                "format": "standard",
+                "path": "src/imgs/flat/chiesa-purgatorio.webp",
+                "alt": "Chiesa Madonna del Carmelo"
+            }
+        ],
+        "history": [
+            {
+                "title": "Devozione carmelitana",
+                "description": "Edificazione della chiesa per la devozione alla Madonna del Carmelo",
+                "period": {
+                    "start": "1600",
+                    "end": "1650"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Chiesa S. Domenico",
+        "id": "chiesa-san-domenico",
+        "short_description": "Chiesa dedicata a San Domenico, parte del patrimonio domenicano locale",
+        "category": "church",
+        "lat": 37.6440,
+        "lon": 14.6390,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Domenico,+Regalbuto/@37.6440,14.6390,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa S. Domenico",
+                "description": "Vista della Chiesa di San Domenico",
+                "format": "standard",
+                "path": "src/imgs/flat/chiesa-san-basilio.jpg",
+                "alt": "Chiesa di San Domenico"
+            }
+        ],
+        "history": [
+            {
+                "title": "Ordine domenicano",
+                "description": "Costruzione della chiesa dall'ordine dei Domenicani",
+                "period": {
+                    "start": "1500",
+                    "end": "1600"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Chiesa S. Sebastiano",
+        "id": "chiesa-san-sebastiano",
+        "short_description": "Chiesa dedicata a San Sebastiano, protettore dalla peste e dalle epidemie",
+        "category": "church",
+        "lat": 37.6475,
+        "lon": 14.6355,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Sebastiano,+Regalbuto/@37.6475,14.6355,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa S. Sebastiano",
+                "description": "Vista della Chiesa di San Sebastiano",
+                "format": "standard",
+                "path": "src/imgs/flat/chiesa-purgatorio.webp",
+                "alt": "Chiesa di San Sebastiano"
+            }
+        ],
+        "history": [
+            {
+                "title": "Devozione pestilenziale",
+                "description": "Edificazione della chiesa come voto durante un'epidemia di peste",
+                "period": {
+                    "start": "1650",
+                    "end": "1680"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Chiesa S. Francesco d'Assisi",
+        "id": "chiesa-san-francesco-assisi",
+        "short_description": "Chiesa dedicata a San Francesco d'Assisi, testimonianza dell'ordine francescano",
+        "category": "church",
+        "lat": 37.6435,
+        "lon": 14.6395,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Francesco,+Regalbuto/@37.6435,14.6395,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa S. Francesco d'Assisi",
+                "description": "Vista della Chiesa di San Francesco d'Assisi",
+                "format": "standard",
+                "path": "src/imgs/flat/convento-santantonio.avif",
+                "alt": "Chiesa di San Francesco d'Assisi"
+            }
+        ],
+        "history": [
+            {
+                "title": "Fondazione francescana",
+                "description": "Costruzione della chiesa dall'ordine dei Frati Minori Francescani",
+                "period": {
+                    "start": "1400",
+                    "end": "1500"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Chiesa S.M. delle Grazie e Convento Annesso",
+        "id": "chiesa-sm-delle-grazie-convento",
+        "short_description": "Chiesa di Santa Maria delle Grazie con convento annesso, sede dell'Istituto Femminile S. Giuseppe",
+        "category": "church",
+        "lat": 37.6480,
+        "lon": 14.6350,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+SM+delle+Grazie,+Regalbuto/@37.6480,14.6350,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa S.M. delle Grazie",
+                "description": "Vista della Chiesa di Santa Maria delle Grazie",
+                "format": "standard",
+                "path": "src/imgs/flat/convento-santantonio.avif",
+                "alt": "Chiesa di Santa Maria delle Grazie"
+            }
+        ],
+        "history": [
+            {
+                "title": "Complesso conventuale",
+                "description": "Costruzione del complesso chiesa-convento per l'educazione femminile",
+                "period": {
+                    "start": "1700",
+                    "end": "1750"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Chiesa S. Antonio da Padova",
+        "id": "chiesa-sant-antonio-padova",
+        "short_description": "Chiesa dedicata a Sant'Antonio da Padova, importante centro di devozione antoniana",
+        "category": "church",
+        "lat": 37.6485,
+        "lon": 14.6345,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+Sant+Antonio,+Regalbuto/@37.6485,14.6345,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa S. Antonio da Padova",
+                "description": "Vista della Chiesa di Sant'Antonio da Padova",
+                "format": "standard",
+                "path": "src/imgs/flat/convento-santantonio.avif",
+                "alt": "Chiesa di Sant'Antonio da Padova"
+            }
+        ],
+        "history": [
+            {
+                "title": "Devozione antoniana",
+                "description": "Edificazione della chiesa per la devozione a Sant'Antonio da Padova",
+                "period": {
+                    "start": "1600",
+                    "end": "1650"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Caserma C.C. (ex Convento S. Domenico)",
+        "id": "caserma-cc-ex-convento-san-domenico",
+        "short_description": "Edificio che ospita la Caserma dei Carabinieri, originariamente Convento di San Domenico",
+        "category": "civic",
+        "lat": 37.6460,
+        "lon": 14.6370,
+        "maps_url": "https://www.google.com/maps/place/Caserma+Carabinieri,+Regalbuto/@37.6460,14.6370,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Caserma C.C. (ex Convento S. Domenico)",
+                "description": "Vista dell'edificio che ospita la Caserma dei Carabinieri",
+                "format": "standard",
+                "path": "src/imgs/flat/convento-santantonio.avif",
+                "alt": "Caserma Carabinieri ex Convento San Domenico"
+            }
+        ],
+        "history": [
+            {
+                "title": "Convento domenicano",
+                "description": "Costruzione originaria come convento dell'ordine domenicano",
+                "period": {
+                    "start": "1500",
+                    "end": "1600"
+                }
+            },
+            {
+                "title": "Trasformazione in caserma",
+                "description": "Adattamento dell'edificio conventuale a sede della Caserma dei Carabinieri",
+                "period": {
+                    "start": "1900",
+                    "end": "1950"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Chiesa rurale San Calogero",
+        "id": "chiesa-rurale-san-calogero",
+        "short_description": "Chiesa rurale dedicata a San Calogero, situata nel territorio agricolo circostante",
+        "category": "church",
+        "lat": 37.6500,
+        "lon": 14.6300,
+        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Calogero,+Regalbuto/@37.6500,14.6300,17z",
+        "address": "Contrada San Calogero, Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Chiesa rurale San Calogero",
+                "description": "Vista della Chiesa rurale di San Calogero",
+                "format": "standard",
+                "path": "src/imgs/flat/chiesa-san-basilio.jpg",
+                "alt": "Chiesa rurale di San Calogero"
+            }
+        ],
+        "history": [
+            {
+                "title": "Fondazione rurale",
+                "description": "Costruzione della chiesa come punto di riferimento religioso per le campagne circostanti",
+                "period": {
+                    "start": "1600",
+                    "end": "1700"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Convento S. Agostino",
+        "id": "convento-sant-agostino",
+        "short_description": "Convento dedicato a Sant'Agostino, importante complesso monastico agostiniano",
+        "category": "convent",
+        "lat": 37.6430,
+        "lon": 14.6400,
+        "maps_url": "https://www.google.com/maps/place/Convento+Sant+Agostino,+Regalbuto/@37.6430,14.6400,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Convento S. Agostino - Ingresso",
+                "description": "Vista dell'ingresso del Convento di Sant'Agostino",
+                "format": "360",
+                "path": "src/imgs/360/sagostino-ingresso.JPG",
+                "alt": "Vista panoramica 360° dell'ingresso del Convento di Sant'Agostino"
+            },
+            {
+                "title": "Convento S. Agostino - Altare",
+                "description": "Altare principale del Convento di Sant'Agostino",
+                "format": "360",
+                "path": "src/imgs/360/sagostino-altare.JPG",
+                "alt": "Vista panoramica 360° dell'altare del Convento di Sant'Agostino"
+            },
+            {
+                "title": "Convento S. Agostino - Esterno",
+                "description": "Vista esterna del Convento di Sant'Agostino",
+                "format": "standard",
+                "path": "src/imgs/flat/convento-santantonio.avif",
+                "alt": "Convento di Sant'Agostino vista esterna"
+            }
+        ],
+        "history": [
+            {
+                "title": "Fondazione agostiniana",
+                "description": "Costruzione del convento dall'ordine degli Agostiniani",
+                "period": {
+                    "start": "1400",
+                    "end": "1500"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Collegio di Maria",
+        "id": "collegio-di-maria",
+        "short_description": "Istituto educativo femminile dedicato alla formazione religiosa e culturale",
+        "category": "educational",
+        "lat": 37.6475,
+        "lon": 14.6355,
+        "maps_url": "https://www.google.com/maps/place/Collegio+di+Maria,+Regalbuto/@37.6475,14.6355,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Collegio di Maria",
+                "description": "Vista del Collegio di Maria",
+                "format": "standard",
+                "path": "src/imgs/flat/convento-santantonio.avif",
+                "alt": "Collegio di Maria"
+            }
+        ],
+        "history": [
+            {
+                "title": "Fondazione educativa",
+                "description": "Istituzione del collegio per l'educazione femminile cattolica",
+                "period": {
+                    "start": "1800",
+                    "end": "1850"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Monumento ai Caduti",
+        "id": "monumento-ai-caduti",
+        "short_description": "Monumento commemorativo dedicato ai caduti delle guerre, simbolo della memoria storica locale",
+        "category": "monument",
+        "lat": 37.6465,
+        "lon": 14.6365,
+        "maps_url": "https://www.google.com/maps/place/Monumento+ai+Caduti,+Regalbuto/@37.6465,14.6365,17z",
+        "address": "Piazza Centrale, Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Monumento ai Caduti",
+                "description": "Vista del Monumento ai Caduti nella piazza principale",
+                "format": "360",
+                "path": "src/imgs/360/caduti.JPG",
+                "alt": "Vista panoramica 360° del Monumento ai Caduti"
+            },
+            {
+                "title": "Monumento ai Caduti - Vista frontale",
+                "description": "Vista frontale del Monumento ai Caduti",
+                "format": "standard",
+                "path": "src/imgs/flat/cadutiflat.png",
+                "alt": "Monumento ai Caduti vista frontale"
+            }
+        ],
+        "history": [
+            {
+                "title": "Commemorazione bellica",
+                "description": "Erezione del monumento in memoria dei caduti della Prima Guerra Mondiale",
+                "period": {
+                    "start": "1920",
+                    "end": "1925"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Cine Teatro Urania",
+        "id": "cine-teatro-urania",
+        "short_description": "Teatro comunale e cinema, importante centro culturale e di intrattenimento locale",
+        "category": "theater",
+        "lat": 37.6470,
+        "lon": 14.6360,
+        "maps_url": "https://www.google.com/maps/place/Teatro+Urania,+Regalbuto/@37.6470,14.6360,17z",
+        "address": "Via Teatro, Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Cine Teatro Urania",
+                "description": "Vista del Cine Teatro Urania",
+                "format": "360",
+                "path": "src/imgs/360/teatro.JPG",
+                "alt": "Vista panoramica 360° del Teatro Urania"
+            }
+        ],
+        "history": [
+            {
+                "title": "Costruzione teatrale",
+                "description": "Edificazione del teatro come centro culturale della comunità",
+                "period": {
+                    "start": "1920",
+                    "end": "1930"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Istituto di Credito Cooperativo \"La Riscossa\"",
+        "id": "istituto-credito-cooperativo-la-riscossa",
+        "short_description": "Storico istituto bancario cooperativo, importante per l'economia locale",
+        "category": "financial",
+        "lat": 37.6455,
+        "lon": 14.6375,
+        "maps_url": "https://www.google.com/maps/place/Banca+La+Riscossa,+Regalbuto/@37.6455,14.6375,17z",
+        "address": "Via Principale, Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Istituto di Credito Cooperativo \"La Riscossa\"",
+                "description": "Vista dell'Istituto di Credito Cooperativo La Riscossa",
+                "format": "standard",
+                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "alt": "Istituto di Credito Cooperativo La Riscossa"
+            }
+        ],
+        "history": [
+            {
+                "title": "Fondazione cooperativa",
+                "description": "Istituzione della banca cooperativa per sostenere l'economia locale",
+                "period": {
+                    "start": "1900",
+                    "end": "1920"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Istituto Intesa S. Paolo",
+        "id": "istituto-intesa-san-paolo",
+        "short_description": "Sede locale dell'Istituto Bancario Intesa San Paolo",
+        "category": "financial",
+        "lat": 37.6450,
+        "lon": 14.6380,
+        "maps_url": "https://www.google.com/maps/place/Intesa+San+Paolo,+Regalbuto/@37.6450,14.6380,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Istituto Intesa S. Paolo",
+                "description": "Vista dell'Istituto Intesa San Paolo",
+                "format": "standard",
+                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "alt": "Istituto Intesa San Paolo"
+            }
+        ],
+        "history": [
+            {
+                "title": "Espansione bancaria",
+                "description": "Apertura della filiale locale del grande istituto bancario nazionale",
+                "period": {
+                    "start": "1960",
+                    "end": "1970"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Palazzo Marletta",
+        "id": "palazzo-marletta",
+        "short_description": "Palazzo storico della famiglia Marletta, esempio di architettura nobiliare locale",
+        "category": "palace",
+        "lat": 37.6445,
+        "lon": 14.6385,
+        "maps_url": "https://www.google.com/maps/place/Palazzo+Marletta,+Regalbuto/@37.6445,14.6385,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Palazzo Marletta",
+                "description": "Vista del Palazzo Marletta",
+                "format": "standard",
+                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "alt": "Palazzo Marletta"
+            }
+        ],
+        "history": [
+            {
+                "title": "Residenza nobiliare",
+                "description": "Costruzione del palazzo come residenza della famiglia Marletta",
+                "period": {
+                    "start": "1700",
+                    "end": "1800"
+                },
+                "agents": [
+                    {
+                        "role": "committente",
+                        "name": "Famiglia Marletta"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Palazzo Falcone",
+        "id": "palazzo-falcone",
+        "short_description": "Palazzo storico della famiglia Falcone, testimonianza dell'architettura signorile",
+        "category": "palace",
+        "lat": 37.6440,
+        "lon": 14.6390,
+        "maps_url": "https://www.google.com/maps/place/Palazzo+Falcone,+Regalbuto/@37.6440,14.6390,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Palazzo Falcone",
+                "description": "Vista del Palazzo Falcone",
+                "format": "standard",
+                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "alt": "Palazzo Falcone"
+            }
+        ],
+        "history": [
+            {
+                "title": "Dimora signorile",
+                "description": "Edificazione del palazzo come dimora della famiglia Falcone",
+                "period": {
+                    "start": "1650",
+                    "end": "1750"
+                },
+                "agents": [
+                    {
+                        "role": "committente",
+                        "name": "Famiglia Falcone"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Palazzo Gerardi",
+        "id": "palazzo-gerardi",
+        "short_description": "Palazzo storico della famiglia Gerardi, importante esempio di architettura civile",
+        "category": "palace",
+        "lat": 37.6435,
+        "lon": 14.6395,
+        "maps_url": "https://www.google.com/maps/place/Palazzo+Gerardi,+Regalbuto/@37.6435,14.6395,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Palazzo Gerardi",
+                "description": "Vista del Palazzo Gerardi",
+                "format": "standard",
+                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "alt": "Palazzo Gerardi"
+            }
+        ],
+        "history": [
+            {
+                "title": "Architettura civile",
+                "description": "Costruzione del palazzo come residenza della famiglia Gerardi",
+                "period": {
+                    "start": "1600",
+                    "end": "1700"
+                },
+                "agents": [
+                    {
+                        "role": "committente",
+                        "name": "Famiglia Gerardi"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Palazzo Comunale",
+        "id": "palazzo-comunale",
+        "short_description": "Sede del Municipio di Regalbuto, centro amministrativo della città",
+        "category": "civic",
+        "lat": 37.6465,
+        "lon": 14.6365,
+        "maps_url": "https://www.google.com/maps/place/Municipio+Regalbuto/@37.6465,14.6365,17z",
+        "address": "Piazza Municipio, Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Palazzo Comunale",
+                "description": "Vista del Palazzo Comunale di Regalbuto",
+                "format": "standard",
+                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "alt": "Palazzo Comunale di Regalbuto"
+            }
+        ],
+        "history": [
+            {
+                "title": "Sede municipale",
+                "description": "Adattamento o costruzione dell'edificio come sede del governo locale",
+                "period": {
+                    "start": "1800",
+                    "end": "1900"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Palazzo Maccarrone",
+        "id": "palazzo-maccarrone",
+        "short_description": "Palazzo storico della famiglia Maccarrone, esempio di architettura residenziale nobiliare",
+        "category": "palace",
+        "lat": 37.6475,
+        "lon": 14.6355,
+        "maps_url": "https://www.google.com/maps/place/Palazzo+Maccarrone,+Regalbuto/@37.6475,14.6355,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Palazzo Maccarrone",
+                "description": "Vista del Palazzo Maccarrone",
+                "format": "standard",
+                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "alt": "Palazzo Maccarrone"
+            }
+        ],
+        "history": [
+            {
+                "title": "Residenza nobiliare",
+                "description": "Costruzione del palazzo come residenza della famiglia Maccarrone",
+                "period": {
+                    "start": "1700",
+                    "end": "1800"
+                },
+                "agents": [
+                    {
+                        "role": "committente",
+                        "name": "Famiglia Maccarrone"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Palazzo Barone Carchiolo",
+        "id": "palazzo-barone-carchiolo",
+        "short_description": "Palazzo baronale della famiglia Carchiolo, importante residenza aristocratica",
+        "category": "palace",
+        "lat": 37.6480,
+        "lon": 14.6350,
+        "maps_url": "https://www.google.com/maps/place/Palazzo+Barone+Carchiolo,+Regalbuto/@37.6480,14.6350,17z",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Palazzo Barone Carchiolo",
+                "description": "Vista del Palazzo Barone Carchiolo",
+                "format": "standard",
+                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "alt": "Palazzo Barone Carchiolo"
+            }
+        ],
+        "history": [
+            {
+                "title": "Residenza baronale",
+                "description": "Edificazione del palazzo come residenza del Barone Carchiolo",
+                "period": {
+                    "start": "1650",
+                    "end": "1750"
+                },
+                "agents": [
+                    {
+                        "role": "committente",
+                        "name": "Barone Carchiolo"
+                    }
+                ]
+            }
+        ]
+    }
+]
