@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test iPhone Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .result {
+            font-weight: bold;
+            color: #2e8b57;
+        }
+        .error {
+            color: red;
+        }
+        .info {
+            color: #666;
+            font-size: 14px;
+        }
+        .button {
+            background-color: #2e8b57;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .button.hidden {
+            display: none;
+        }
+        .button.hide-on-iphone {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test iPhone Detection</h1>
+    
+    <div class="test-box">
+        <h2>User Agent Information</h2>
+        <p><strong>User Agent:</strong></p>
+        <p class="info" id="userAgent"></p>
+    </div>
+    
+    <div class="test-box">
+        <h2>Device Detection Results</h2>
+        <p><strong>isMobileDevice():</strong> <span id="isMobile" class="result"></span></p>
+        <p><strong>isIPhone():</strong> <span id="isIPhone" class="result"></span></p>
+    </div>
+    
+    <div class="test-box">
+        <h2>VR Button Visibility Test</h2>
+        <p>These buttons simulate the VR button behavior:</p>
+        <button class="button mobile-only" id="vr-btn-1">VR Button (mobile-only)</button>
+        <button class="button mobile-only" id="vr-btn-2">VR Button 2 (mobile-only)</button>
+        <p><strong>VR Button Status:</strong> <span id="vrStatus" class="result"></span></p>
+    </div>
+    
+    <div class="test-box">
+        <h2>CSS Media Query Test</h2>
+        <p>Screen width: <span id="screenWidth"></span>px</p>
+        <p>Is Mobile by CSS: <span id="isMobileCSS"></span></p>
+    </div>
+
+    <script>
+        // Function definitions from your script
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                   (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
+        }
+
+        function isIPhone() {
+            return /iPhone/i.test(navigator.userAgent);
+        }
+
+        function manageVRButtonVisibility() {
+            const vrButtons = document.querySelectorAll('.mobile-only');
+            
+            vrButtons.forEach(button => {
+                if (isIPhone()) {
+                    // Hide VR button on iPhone
+                    button.classList.add('hide-on-iphone');
+                    console.log('VR button hidden on iPhone');
+                } else {
+                    // Remove class if not iPhone
+                    button.classList.remove('hide-on-iphone');
+                }
+            });
+        }
+
+        // Run tests
+        document.addEventListener('DOMContentLoaded', function() {
+            // Display user agent
+            document.getElementById('userAgent').textContent = navigator.userAgent;
+            
+            // Test device detection
+            const isMobile = isMobileDevice();
+            const isIPhoneDevice = isIPhone();
+            
+            document.getElementById('isMobile').textContent = isMobile;
+            document.getElementById('isIPhone').textContent = isIPhoneDevice;
+            
+            // Test VR button visibility
+            manageVRButtonVisibility();
+            
+            const vrBtn1 = document.getElementById('vr-btn-1');
+            const vrBtn2 = document.getElementById('vr-btn-2');
+            
+            let vrStatus = '';
+            if (isIPhoneDevice) {
+                vrStatus = 'Hidden on iPhone';
+            } else if (isMobile) {
+                vrStatus = 'Visible on mobile (non-iPhone)';
+            } else {
+                vrStatus = 'Hidden on desktop';
+            }
+            
+            document.getElementById('vrStatus').textContent = vrStatus;
+            
+            // Screen width test
+            document.getElementById('screenWidth').textContent = window.innerWidth;
+            
+            // CSS media query test
+            const isMobileCSS = window.innerWidth <= 768;
+            document.getElementById('isMobileCSS').textContent = isMobileCSS ? 'Yes' : 'No';
+            
+            // Log results
+            console.log('=== iPhone Detection Test ===');
+            console.log('User Agent:', navigator.userAgent);
+            console.log('isMobileDevice():', isMobile);
+            console.log('isIPhone():', isIPhoneDevice);
+            console.log('Screen width:', window.innerWidth);
+            console.log('VR buttons found:', document.querySelectorAll('.mobile-only').length);
+            console.log('VR Status:', vrStatus);
+        });
+    </script>
+</body>
+</html>

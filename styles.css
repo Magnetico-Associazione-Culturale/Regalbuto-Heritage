@@ -1830,3 +1830,8 @@ button:focus,
         display: inline-flex !important;
     }
 }
+
+/* Hide VR button on iPhone specifically */
+.mobile-only.hide-on-iphone {
+    display: none !important;
+}

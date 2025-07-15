@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize quiz
     initializeQuiz();
     
+    // Manage VR button visibility
+    manageVRButtonVisibility();
+    
     // Initialize map when in map section
     initializeMap();
     
@@ -142,6 +145,11 @@ function switchTab(tabName) {
                 // Resize map to fix display issues when switching tabs
                 map.invalidateSize();
             }
+        }
+        
+        // Manage VR button visibility when switching to virtual tour
+        if (tabName === 'virtual-tour') {
+            manageVRButtonVisibility();
         }
     }, 100);
     
@@ -1444,6 +1452,154 @@ function removeExitButton() {
     }
 }
 
+// Funzioni per il pulsante X di uscita dal VR
+function createVRExitButton() {
+    // Rimuovi eventuali pulsanti VR esistenti
+    removeVRExitButton();
+    
+    const vrExitBtn = document.createElement('button');
+    vrExitBtn.id = 'vr-exit-btn';
+    vrExitBtn.innerHTML = '×';
+    vrExitBtn.title = 'Esci dalla modalità VR';
+    vrExitBtn.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 0, 0, 0.9);
+        color: white;
+        border: 3px solid rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        font-size: 32px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 10002;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        transition: all 0.3s ease;
+        line-height: 1;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+        font-family: Arial, sans-serif;
+        backdrop-filter: blur(10px);
+    `;
+    
+    // Funzione per uscire dal VR
+    function exitVRMode() {
+        console.log('Uscita dal VR tramite pulsante X');
+        
+        // Invia messaggio all'iframe per uscire dal VR
+        const iframe = document.querySelector('#pano-viewer iframe');
+        if (iframe) {
+            iframe.contentWindow.postMessage({ action: 'exitVR' }, '*');
+        }
+        
+        // Rimuovi il pulsante
+        removeVRExitButton();
+        
+        // Mostra notifica
+        showNotification('Uscita dalla modalità VR', 'info');
+        
+        // Se siamo in fullscreen, esci anche da quello
+        if (document.fullscreenElement || document.webkitFullscreenElement || 
+            document.mozFullScreenElement || document.msFullscreenElement) {
+            exitFullscreenMode();
+        }
+    }
+    
+    // Event handler per il click
+    vrExitBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('VR exit button clicked - onclick');
+        exitVRMode();
+    };
+    
+    // Event handler per il touch
+    vrExitBtn.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('VR exit button touched - touchstart');
+        exitVRMode();
+    }, { passive: false });
+    
+    // Effetti hover/touch
+    vrExitBtn.addEventListener('mouseenter', function() {
+        this.style.background = 'rgba(255, 0, 0, 1)';
+        this.style.transform = 'scale(1.1)';
+    });
+    
+    vrExitBtn.addEventListener('mouseleave', function() {
+        this.style.background = 'rgba(255, 0, 0, 0.9)';
+        this.style.transform = 'scale(1)';
+    });
+    
+    vrExitBtn.addEventListener('touchstart', function() {
+        this.style.background = 'rgba(255, 0, 0, 1)';
+        this.style.transform = 'scale(1.1)';
+    });
+    
+    vrExitBtn.addEventListener('touchend', function() {
+        this.style.background = 'rgba(255, 0, 0, 0.9)';
+        this.style.transform = 'scale(1)';
+    });
+    
+    document.body.appendChild(vrExitBtn);
+    
+    // Crea anche un'area touch più grande per facilitare il tocco
+    const vrTouchArea = document.createElement('div');
+    vrTouchArea.id = 'vr-touch-area';
+    vrTouchArea.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100px;
+        height: 100px;
+        z-index: 10001;
+        background: transparent;
+        cursor: pointer;
+        touch-action: manipulation;
+    `;
+    
+    vrTouchArea.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('VR touch area clicked');
+        exitVRMode();
+    };
+    
+    vrTouchArea.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('VR touch area touched');
+        exitVRMode();
+    }, { passive: false });
+    
+    document.body.appendChild(vrTouchArea);
+    
+    console.log('VR exit button and touch area created');
+}
+
+function removeVRExitButton() {
+    const vrExitBtn = document.getElementById('vr-exit-btn');
+    const vrTouchArea = document.getElementById('vr-touch-area');
+    
+    if (vrExitBtn) {
+        vrExitBtn.remove();
+        console.log('VR exit button removed');
+    }
+    
+    if (vrTouchArea) {
+        vrTouchArea.remove();
+        console.log('VR touch area removed');
+    }
+}
+
 // Gestione messaggi dal panorama iframe per feedback VR
 window.addEventListener('message', function(event) {
     console.log('Messaggio ricevuto da iframe:', event.data);
@@ -1452,6 +1608,7 @@ window.addEventListener('message', function(event) {
         if (event.data.success) {
             console.log('VR attivato con successo nell\'iframe');
             showNotification('Modalità VR Cardboard attivata! Inserisci il telefono nel visore.', 'success');
+            createVRExitButton(); // Crea il pulsante X per uscire dal VR
         } else {
             console.error('Errore VR nell\'iframe:', event.data.error);
             showNotification('Errore modalità VR: ' + (event.data.error || 'Dispositivo non compatibile'), 'error');
@@ -1462,11 +1619,13 @@ window.addEventListener('message', function(event) {
     if (event.data && event.data.action === 'vrEntered') {
         console.log('Entrato in modalità VR - device ora in VR mode');
         showNotification('Modalità VR attiva! Ruota il telefono in orizzontale.', 'success');
+        createVRExitButton(); // Assicurati che il pulsante X sia presente
     }
     
     // Gestione uscita dalla modalità VR
     if (event.data && event.data.action === 'vrExited') {
         console.log('Uscito dalla modalità VR - uscendo anche dal fullscreen');
+        removeVRExitButton(); // Rimuovi il pulsante X del VR
         // Quando si esce dal VR, esci automaticamente dal fullscreen
         if (document.fullscreenElement || document.webkitFullscreenElement || 
             document.mozFullScreenElement || document.msFullscreenElement) {
@@ -1481,6 +1640,7 @@ document.addEventListener('fullscreenchange', function() {
     if (!document.fullscreenElement) {
         console.log('Uscita da fullscreen rilevata (ESC o altro)');
         removeExitButton();
+        removeVRExitButton(); // Rimuovi anche il pulsante VR
     }
 });
 
@@ -1488,6 +1648,7 @@ document.addEventListener('webkitfullscreenchange', function() {
     if (!document.webkitFullscreenElement) {
         console.log('Uscita da webkit fullscreen rilevata');
         removeExitButton();
+        removeVRExitButton(); // Rimuovi anche il pulsante VR
     }
 });
 
@@ -1495,6 +1656,7 @@ document.addEventListener('mozfullscreenchange', function() {
     if (!document.mozFullScreenElement) {
         console.log('Uscita da moz fullscreen rilevata');
         removeExitButton();
+        removeVRExitButton(); // Rimuovi anche il pulsante VR
     }
 });
 
@@ -1502,6 +1664,7 @@ document.addEventListener('msfullscreenchange', function() {
     if (!document.msFullscreenElement) {
         console.log('Uscita da ms fullscreen rilevata');
         removeExitButton();
+        removeVRExitButton(); // Rimuovi anche il pulsante VR
     }
 });
 
@@ -1512,6 +1675,13 @@ function toggleVRMode() {
     console.log('toggleVRMode chiamata');
     console.log('Viewer:', viewer);
     console.log('Iframe src:', iframe ? iframe.src : 'no iframe');
+    
+    // Verifica se siamo su iPhone
+    if (isIPhone()) {
+        console.log('iPhone rilevato - VR non supportato');
+        showNotification('La modalità VR non è supportata su iPhone', 'warning');
+        return;
+    }
     
     if (!iframe) {
         console.error('Iframe non trovato');
@@ -1578,6 +1748,7 @@ function toggleVRMode() {
                 vrBtn.classList.remove('btn-primary');
                 vrBtn.classList.add('btn-outline');
             }
+            removeVRExitButton(); // Rimuovi il pulsante X del VR
             showNotification('Modalità VR disattivata', 'info');
         } else {
             // Enable VR mode
@@ -1588,6 +1759,11 @@ function toggleVRMode() {
                 vrBtn.classList.remove('btn-outline');
                 vrBtn.classList.add('btn-primary');
             }
+            
+            // Crea il pulsante X per uscire dal VR dopo un delay
+            setTimeout(() => {
+                createVRExitButton();
+            }, 1000); // Delay per permettere al VR di attivarsi
             
             if (isSingleTour) {
                 showNotification('Modalità VR attivata! Cerca l\'icona VR nell\'angolo in basso a destra del tour.', 'success');
@@ -1625,6 +1801,25 @@ function resetView() {
 function isMobileDevice() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
            (navigator.maxTouchPoints && navigator.maxTouchPoints > 2 && /MacIntel/.test(navigator.platform));
+}
+
+function isIPhone() {
+    return /iPhone/i.test(navigator.userAgent);
+}
+
+function manageVRButtonVisibility() {
+    const vrButtons = document.querySelectorAll('.mobile-only');
+    
+    vrButtons.forEach(button => {
+        if (isIPhone()) {
+            // Nascondi il pulsante VR su iPhone
+            button.classList.add('hide-on-iphone');
+            console.log('VR button nascosto su iPhone');
+        } else {
+            // Rimuovi la classe se non è iPhone
+            button.classList.remove('hide-on-iphone');
+        }
+    });
 }
 
 function showNotification(message, type = 'info') {
@@ -1783,19 +1978,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Controlla e gestisci la visibilità del pulsante VR
     manageVRButtonVisibility();
 });
-
-// Funzione per gestire la visibilità del pulsante VR
-function manageVRButtonVisibility() {
-    const vrButton = document.getElementById('vr-mode-btn');
-    if (vrButton) {
-        if (isMobileDevice()) {
-            vrButton.style.display = 'inline-flex';
-            console.log('Dispositivo mobile rilevato: pulsante VR visibile');
-        } else {
-            vrButton.style.display = 'none';
-            console.log('Dispositivo desktop rilevato: pulsante VR nascosto');
-        }
-    }
-}
 
 console.log('Regalbuto Heritage - Script loaded successfully');

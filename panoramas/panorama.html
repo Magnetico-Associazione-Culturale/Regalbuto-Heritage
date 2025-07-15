@@ -387,6 +387,40 @@
             }
         };
         
+        window.exitVR = function() {
+            console.log('Uscita dalla modalità VR richiesta');
+            const scene = document.querySelector('a-scene');
+            
+            if (!scene) {
+                console.error('A-Frame scene non disponibile');
+                return;
+            }
+            
+            try {
+                // Controlla se siamo in modalità VR
+                if (scene.is('vr-mode')) {
+                    console.log('Uscita dalla modalità VR...');
+                    scene.exitVR();
+                } else {
+                    console.log('Non in modalità VR, nessuna azione richiesta');
+                }
+                
+                // Invia messaggio al parent per confermare l'uscita
+                window.parent.postMessage({ 
+                    action: 'vrExited', 
+                    success: true 
+                }, '*');
+                
+            } catch (error) {
+                console.error('Errore durante l\'uscita dal VR:', error);
+                window.parent.postMessage({ 
+                    action: 'vrExited', 
+                    success: false, 
+                    error: error.message 
+                }, '*');
+            }
+        };
+        
         // Inizializza al caricamento della pagina
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM caricato, inizializzazione panorama');
@@ -406,6 +440,10 @@
                     case 'toggleVRMode':
                         console.log('Comando VR ricevuto dal parent');
                         enterVR();
+                        break;
+                    case 'exitVR':
+                        console.log('Comando uscita VR ricevuto dal parent');
+                        exitVR();
                         break;
                     case 'resetView':
                         resetView();
