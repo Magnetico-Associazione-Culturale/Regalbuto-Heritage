@@ -411,6 +411,10 @@
                             <i data-feather="cpu"></i>
                             Tecnologia
                         </button>
+                        <button class="filter-btn" onclick="filterMapLocations('sport')" data-category="sport">
+                            <i data-feather="activity"></i>
+                            Svago e Sport
+                        </button>
                     </div>
                 </div>
                 
@@ -453,6 +457,7 @@
                     <button class="filter-tab" onclick="filterByCategory('natura')" data-category="natura">Natura</button>
                     <button class="filter-tab" onclick="filterByCategory('cultura')" data-category="cultura">Cultura</button>
                     <button class="filter-tab" onclick="filterByCategory('tecnologia')" data-category="tecnologia">Tecnologia</button>
+                    <button class="filter-tab" onclick="filterByCategory('sport')" data-category="sport">Svago e Sport</button>
                 </div>
 
                 <!-- Results Count -->
@@ -758,6 +763,48 @@
                                     Portami lì
                                 </button>
                                 <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('teatro-urania')">
+                                    <i data-feather="eye"></i>
+                                    Tour Virtuale 360°
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chiesa Maria S.S. della Croce -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/chiesa-purgatorio.webp" alt="Chiesa Maria S.S. della Croce">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa Maria S.S. della Croce</h4>
+                            <p class="monument-description">Chiesa di Santa Maria la Croce, importante punto di culto locale</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.4 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('chiesa-maria-ss-della-croce')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-chiesa-maria-ss-della-croce">
+                            <div class="monument-description">
+                                <p>La Chiesa di Maria Santissima della Croce è un importante luogo di culto che rappresenta una delle principali testimonianze del patrimonio religioso di Regalbuto, dedicata alla Madonna della Croce.</p>
+                                <p>L'edificio sacro custodisce tradizioni devozionali profondamente radicate nella comunità locale e costituisce un punto di riferimento spirituale per i fedeli del territorio.</p>
+                                <p><strong>Devozione mariana:</strong> La chiesa è centro di particolare venerazione per la Madonna della Croce, con celebrazioni e riti tradizionali che coinvolgono l'intera comunità.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('chiesa-maria-ss-della-croce')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('chiesa-maria-ss-della-croce')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                                <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('chiesa-maria-ss-della-croce')">
                                     <i data-feather="eye"></i>
                                     Tour Virtuale 360°
                                 </button>
@@ -1266,10 +1313,350 @@
                                     <i data-feather="map-pin"></i>
                                     Portami lì
                                 </button>
+                            </div>                        </div>
+                    </div>
+
+                    <!-- Palazzo Marletta -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/regalbuto-plaza.jpg" alt="Palazzo Marletta">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Palazzo Marletta</h4>
+                            <p class="monument-description">Palazzo storico della nobile famiglia Marletta, esempio di architettura civile</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.4 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('palazzo-marletta')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-palazzo-marletta">
+                            <div class="monument-description">
+                                <p>Il Palazzo Marletta è una delle più importanti testimonianze dell'architettura civile nobiliare di Regalbuto, appartenuto alla storica famiglia Marletta che ha avuto un ruolo significativo nella storia locale.</p>
+                                <p>L'edificio rappresenta un esempio caratteristico dell'architettura nobiliare siciliana, con elementi decorativi e strutturali che testimoniano il prestigio e l'importanza sociale della famiglia proprietaria.</p>
+                                <p><strong>Architettura nobiliare:</strong> Il palazzo conserva elementi architettonici tipici delle residenze nobiliari siciliane del XVIII-XIX secolo.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('palazzo-marletta')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('palazzo-marletta')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Palazzo Falcone -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/regalbuto-plaza.jpg" alt="Palazzo Falcone">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Palazzo Falcone</h4>
+                            <p class="monument-description">Palazzo storico della famiglia Falcone, importante edificio civile del centro storico</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.5 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('palazzo-falcone')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-palazzo-falcone">
+                            <div class="monument-description">
+                                <p>Il Palazzo Falcone è un importante esempio di architettura civile che testimonia la presenza di famiglie influenti nel tessuto sociale ed economico di Regalbuto nei secoli passati.</p>
+                                <p>L'edificio, appartenuto alla famiglia Falcone, rappresenta un significativo esempio dell'architettura residenziale borghese siciliana, con caratteristiche tipiche dell'epoca di costruzione.</p>
+                                <p><strong>Patrimonio architettonico:</strong> Il palazzo conserva elementi originali che testimoniano le tradizioni costruttive locali e il gusto dell'epoca.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('palazzo-falcone')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('palazzo-falcone')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Palazzo Gerardi -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/regalbuto-plaza.jpg" alt="Palazzo Gerardi">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Palazzo Gerardi</h4>
+                            <p class="monument-description">Storico palazzo della famiglia Gerardi, testimonianza dell'architettura civile locale</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.6 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('palazzo-gerardi')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-palazzo-gerardi">
+                            <div class="monument-description">
+                                <p>Il Palazzo Gerardi rappresenta un importante tassello del patrimonio architettonico di Regalbuto, testimonianza della presenza di famiglie influenti che hanno contribuito allo sviluppo sociale ed economico della comunità.</p>
+                                <p>L'edificio, appartenuto alla famiglia Gerardi, conserva caratteristiche architettoniche tipiche dell'edilizia civile siciliana, rappresentando un esempio significativo dell'architettura residenziale del passato.</p>
+                                <p><strong>Valore storico:</strong> Il palazzo testimonia l'evoluzione urbanistica e sociale del centro storico di Regalbuto.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('palazzo-gerardi')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('palazzo-gerardi')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chiesa rurale San Calogero -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/chiesa-san-basilio.jpg" alt="Chiesa rurale San Calogero">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa rurale San Calogero</h4>
+                            <p class="monument-description">Chiesa rurale dedicata a San Calogero, importante punto di culto nell'area rurale</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    3.2 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('chiesa-rurale-san-calogero')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-chiesa-rurale-san-calogero">
+                            <div class="monument-description">
+                                <p>La Chiesa rurale di San Calogero è un importante luogo di culto situato nell'area rurale di Regalbuto, dedicata a San Calogero, santo molto venerato nella tradizione siciliana.</p>
+                                <p>Questa chiesa rappresenta un esempio significativo dell'architettura religiosa rurale, testimoniando la devozione delle comunità contadine verso questo santo protettore.</p>
+                                <p><strong>Tradizione rurale:</strong> La chiesa è punto di riferimento per le comunità rurali circostanti, con celebrazioni e riti tradizionali legati al mondo agricolo.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('chiesa-rurale-san-calogero')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('chiesa-rurale-san-calogero')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Caserma C.C. (ex Convento S. Domenico) -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/regalbuto-plaza.jpg" alt="Caserma C.C.">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Caserma C.C.</h4>
+                            <p class="monument-description">Ex Convento San Domenico, oggi sede dei Carabinieri, testimonianza di riconversione architettonica</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.5 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('caserma-cc-ex-convento-san-domenico')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-caserma-cc-ex-convento-san-domenico">
+                            <div class="monument-description">
+                                <p>L'attuale Caserma dei Carabinieri di Regalbuto è ospitata in un edificio che un tempo fu il Convento di San Domenico, rappresentando un interessante esempio di riconversione architettonica.</p>
+                                <p>L'edificio conserva parte della sua struttura conventuale originaria, testimoniando la trasformazione storica degli spazi sacri in strutture al servizio della comunità civile.</p>
+                                <p><strong>Riconversione storica:</strong> Il passaggio da convento domenicano a caserma rappresenta l'evoluzione delle esigenze sociali e istituzionali del territorio.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('caserma-cc-ex-convento-san-domenico')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('caserma-cc-ex-convento-san-domenico')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Istituto di Credito Cooperativo "La Riscossa" -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/regalbuto-plaza.jpg" alt="Istituto di Credito Cooperativo La Riscossa">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Istituto di Credito Cooperativo "La Riscossa"</h4>
+                            <p class="monument-description">Storica banca cooperativa locale, importante istituzione economica del territorio</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.3 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('istituto-credito-cooperativo-la-riscossa')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-istituto-credito-cooperativo-la-riscossa">
+                            <div class="monument-description">
+                                <p>L'Istituto di Credito Cooperativo "La Riscossa" rappresenta una delle più importanti istituzioni economiche locali, nata dalla volontà della comunità di creare un sistema bancario cooperativo al servizio del territorio.</p>
+                                <p>La banca cooperativa ha sostenuto lo sviluppo economico di Regalbuto e del territorio circostante, finanziando attività agricole, artigianali e commerciali locali.</p>
+                                <p><strong>Cooperazione:</strong> L'istituto rappresenta un esempio di economia cooperativa che ha contribuito al benessere della comunità locale.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('istituto-credito-cooperativo-la-riscossa')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('istituto-credito-cooperativo-la-riscossa')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Istituto Intesa San Paolo -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/regalbuto-plaza.jpg" alt="Istituto Intesa San Paolo">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Istituto Intesa San Paolo</h4>
+                            <p class="monument-description">Filiale bancaria di un importante gruppo finanziario nazionale</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.4 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('istituto-intesa-san-paolo')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-istituto-intesa-san-paolo">
+                            <div class="monument-description">
+                                <p>L'Istituto Intesa San Paolo rappresenta la presenza nel territorio di uno dei principali gruppi bancari italiani, offrendo servizi finanziari moderni alla comunità locale.</p>
+                                <p>La filiale rappresenta un importante punto di riferimento per i servizi bancari e finanziari, collegando l'economia locale ai circuiti finanziari nazionali.</p>
+                                <p><strong>Servizi bancari:</strong> L'istituto offre una gamma completa di servizi bancari e finanziari per privati e imprese.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('istituto-intesa-san-paolo')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('istituto-intesa-san-paolo')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Palazzo Maccarrone -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/regalbuto-plaza.jpg" alt="Palazzo Maccarrone">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Palazzo Maccarrone</h4>
+                            <p class="monument-description">Palazzo storico della famiglia Maccarrone, esempio di architettura civile tradizionale</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.7 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('palazzo-maccarrone')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-palazzo-maccarrone">
+                            <div class="monument-description">
+                                <p>Il Palazzo Maccarrone è un importante esempio di architettura civile che testimonia la presenza di famiglie storiche nel tessuto sociale di Regalbuto, rappresentando un significativo elemento del patrimonio architettonico locale.</p>
+                                <p>L'edificio, appartenuto alla famiglia Maccarrone, conserva le caratteristiche tipiche dell'architettura residenziale siciliana, con elementi decorativi e strutturali che riflettono il gusto e lo status sociale dell'epoca.</p>
+                                <p><strong>Tradizione familiare:</strong> Il palazzo è testimonianza delle tradizioni e della storia della famiglia Maccarrone nel contesto sociale di Regalbuto.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('palazzo-maccarrone')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('palazzo-maccarrone')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Palazzo Barone Carchiolo -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/regalbuto-plaza.jpg" alt="Palazzo Barone Carchiolo">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Palazzo Barone Carchiolo</h4>
+                            <p class="monument-description">Palazzo baronale della famiglia Carchiolo, importante residenza aristocratica</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.5 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('palazzo-barone-carchiolo')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-palazzo-barone-carchiolo">
+                            <div class="monument-description">
+                                <p>Il Palazzo Barone Carchiolo rappresenta una delle più importanti testimonianze dell'architettura aristocratica di Regalbuto, testimoniando la presenza di famiglie nobiliari che hanno influenzato la storia locale.</p>
+                                <p>L'edificio, costruito come residenza del Barone Carchiolo, conserva le caratteristiche architettoniche tipiche dei palazzi baronali siciliani, con elementi decorativi e strutturali che riflettono il prestigio sociale della famiglia.</p>
+                                <p><strong>Architettura baronale:</strong> Il palazzo è un esempio significativo dell'architettura aristocratica siciliana tra il XVII e XVIII secolo.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('palazzo-barone-carchiolo')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('palazzo-barone-carchiolo')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
 

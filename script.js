@@ -38,7 +38,16 @@ function filterMonuments() {
         const category = monument.getAttribute('data-category');
         
         const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
-        const matchesFilter = currentFilter === 'all' || category === currentFilter;
+        let matchesFilter = false;
+        
+        if (currentFilter === 'all') {
+            matchesFilter = true;
+        } else if (currentFilter === 'sport') {
+            // Include both sport and svago categories
+            matchesFilter = category === 'sport' || category === 'svago';
+        } else {
+            matchesFilter = category === currentFilter;
+        }
         
         if (matchesSearch && matchesFilter) {
             monument.style.display = 'block';
@@ -76,7 +85,9 @@ function scrollToCategorySection(category) {
     const categoryMap = {
         'religioso': 'cultura-storia',
         'natura': 'natura-paesaggio', 
-        'cultura': 'cultura-storia'
+        'cultura': 'cultura-storia',
+        'sport': 'svago-sport',
+        'tecnologia': 'tecnologia'
     };
     
     const targetCategory = categoryMap[category] || category;
@@ -679,8 +690,9 @@ function addAllMarkers() {
     // Clear existing markers
     clearMarkers();
     
-    // Define locations with coordinates and categories
+    // Define locations with coordinates and categories based on monuments.json
     const locations = [
+        // Natura e Paesaggio
         {
             id: 'lago-pozzillo',
             name: 'Lago Pozzillo',
@@ -689,38 +701,18 @@ function addAllMarkers() {
             description: 'Bacino artificiale con attività ricreative',
             icon: '🏞️'
         },
+        
+        // Svago e Sport
         {
             id: 'parco-avventura',
             name: 'Parco Avventura Pozzillo',
             coords: [37.6589778, 14.6188852],
-            category: 'natura',
+            category: 'sport',
             description: 'Percorsi acrobatici nella natura',
             icon: '🌲'
         },
-        {
-            id: 'san-basilio',
-            name: 'Chiesa di San Basilio',
-            coords: [37.6526434, 14.6408936],
-            category: 'cultura',
-            description: 'Principale edificio religioso della città',
-            icon: '⛪'
-        },
-        {
-            id: 'santantonio',
-            name: 'Convento di Sant\'Antonio',
-            coords: [37.6731697, 14.6452891],
-            category: 'cultura',
-            description: 'Antico convento in zona rurale',
-            icon: '🏛️'
-        },
-        {
-            id: 'purgatorio',
-            name: 'Chiesa di San Rocco',
-            coords: [37.6526434, 14.6408936],
-            category: 'cultura',
-            description: 'Arte barocca e devozione popolare (anche detta Chiesa del Purgatorio)',
-            icon: '⛪'
-        },
+        
+        // Tecnologia
         {
             id: 'tecnopolo',
             name: 'Tecnopolo Magnetico',
@@ -729,13 +721,195 @@ function addAllMarkers() {
             description: 'Centro di innovazione e formazione ICT',
             icon: '💻'
         },
+        
+        // Cultura e Storia - Chiese
         {
-            id: 'calvario',
-            name: 'Monte Calvario',
-            coords: [37.6264741, 14.7434425],
+            id: 'chiesa-maria-ss-della-croce',
+            name: 'Chiesa Maria S.S. della Croce',
+            coords: [37.649969, 14.640583],
             category: 'cultura',
-            description: 'Sito religioso con vista panoramica',
-            icon: '⛰️'
+            description: 'Chiesa di Santa Maria la Croce, importante punto di culto locale',
+            icon: '⛪'
+        },
+        {
+            id: 'chiesa-san-giovanni',
+            name: 'Chiesa S. Giovanni',
+            coords: [37.649732, 14.640482],
+            category: 'cultura',
+            description: 'Chiesa dedicata a San Giovanni, importante edificio religioso',
+            icon: '⛪'
+        },
+        {
+            id: 'chiesa-san-basilio',
+            name: 'Chiesa S. Basilio',
+            coords: [37.652803, 14.639812],
+            category: 'cultura',
+            description: 'Chiesa dedicata a San Basilio, importante testimonianza religiosa',
+            icon: '⛪'
+        },
+        {
+            id: 'chiesa-san-rocco',
+            name: 'Chiesa di San Rocco',
+            coords: [37.652933, 14.640170],
+            category: 'cultura',
+            description: 'Chiesa del Purgatorio, arte barocca e devozione popolare',
+            icon: '⛪'
+        },
+        {
+            id: 'chiesa-del-collegio',
+            name: 'Chiesa del Collegio',
+            coords: [37.650658, 14.640722],
+            category: 'cultura',
+            description: 'Chiesa annessa al collegio, centro di formazione religiosa',
+            icon: '⛪'
+        },
+        {
+            id: 'chiesa-madonna-del-carmelo',
+            name: 'Chiesa Madonna del Carmelo',
+            coords: [37.650585, 14.644247],
+            category: 'cultura',
+            description: 'Chiesa dedicata alla Madonna del Carmelo',
+            icon: '⛪'
+        },
+        {
+            id: 'chiesa-san-domenico',
+            name: 'Chiesa S. Domenico',
+            coords: [37.654306, 14.638889],
+            category: 'cultura',
+            description: 'Chiesa dedicata a San Domenico',
+            icon: '⛪'
+        },
+        {
+            id: 'chiesa-san-sebastiano',
+            name: 'Chiesa S. Sebastiano',
+            coords: [37.654191, 14.636747],
+            category: 'cultura',
+            description: 'Chiesa dedicata a San Sebastiano',
+            icon: '⛪'
+        },
+        {
+            id: 'chiesa-san-francesco-assisi',
+            name: 'Chiesa S. Francesco d\'Assisi',
+            coords: [37.653628, 14.634098],
+            category: 'cultura',
+            description: 'Chiesa dedicata a San Francesco d\'Assisi',
+            icon: '⛪'
+        },
+        {
+            id: 'chiesa-sm-delle-grazie-convento',
+            name: 'Chiesa S.M. delle Grazie',
+            coords: [37.650709, 14.641753],
+            category: 'cultura',
+            description: 'Chiesa di Santa Maria delle Grazie con convento',
+            icon: '⛪'
+        },
+        {
+            id: 'chiesa-sant-antonio-padova',
+            name: 'Chiesa S. Antonio da Padova',
+            coords: [37.650606, 14.642021],
+            category: 'cultura',
+            description: 'Chiesa dedicata a Sant\'Antonio da Padova',
+            icon: '⛪'
+        },
+        {
+            id: 'chiesa-rurale-san-calogero',
+            name: 'Chiesa rurale San Calogero',
+            coords: [37.649874, 14.646600],
+            category: 'cultura',
+            description: 'Chiesa rurale dedicata a San Calogero',
+            icon: '⛪'
+        },
+        
+        // Cultura e Storia - Conventi
+        {
+            id: 'convento-sant-agostino',
+            name: 'Convento S. Agostino',
+            coords: [37.649602, 14.640310],
+            category: 'cultura',
+            description: 'Convento dedicato a Sant\'Agostino',
+            icon: '🏛️'
+        },
+        {
+            id: 'convento-sant-antonio',
+            name: 'Convento Sant\'Antonio',
+            coords: [37.669940, 14.625629],
+            category: 'cultura',
+            description: 'Convento rurale di Sant\'Antonio',
+            icon: '🏛️'
+        },
+        {
+            id: 'convento-s-m-delle-grazie',
+            name: 'Convento S.M. delle Grazie',
+            coords: [37.650955, 14.641503],
+            category: 'cultura',
+            description: 'Convento di Santa Maria delle Grazie',
+            icon: '🏛️'
+        },
+        
+        // Cultura e Storia - Monumenti e Palazzi
+        {
+            id: 'monumento-ai-caduti',
+            name: 'Monumento ai Caduti',
+            coords: [37.649513, 14.640744],
+            category: 'cultura',
+            description: 'Monumento commemorativo dedicato ai caduti delle guerre',
+            icon: '🏛️'
+        },
+        {
+            id: 'cine-teatro-urania',
+            name: 'Cine Teatro Urania',
+            coords: [37.649339, 14.640664],
+            category: 'cultura',
+            description: 'Teatro comunale e cinema, centro culturale locale',
+            icon: '🎭'
+        },
+        {
+            id: 'collegio-di-maria',
+            name: 'Collegio di Maria',
+            coords: [37.650481, 14.640677],
+            category: 'cultura',
+            description: 'Istituto educativo femminile',
+            icon: '🏛️'
+        },
+        {
+            id: 'palazzo-comunale',
+            name: 'Palazzo Comunale',
+            coords: [37.652236, 14.640434],
+            category: 'cultura',
+            description: 'Sede del Municipio di Regalbuto',
+            icon: '🏛️'
+        },
+        {
+            id: 'palazzo-marletta',
+            name: 'Palazzo Marletta',
+            coords: [37.650160, 14.640799],
+            category: 'cultura',
+            description: 'Palazzo storico della famiglia Marletta',
+            icon: '🏛️'
+        },
+        {
+            id: 'palazzo-falcone',
+            name: 'Palazzo Falcone',
+            coords: [37.651814, 14.640389],
+            category: 'cultura',
+            description: 'Palazzo storico della famiglia Falcone',
+            icon: '🏛️'
+        },
+        {
+            id: 'palazzo-gerardi',
+            name: 'Palazzo Gerardi',
+            coords: [37.652067, 14.640949],
+            category: 'cultura',
+            description: 'Palazzo storico della famiglia Gerardi',
+            icon: '🏛️'
+        },
+        {
+            id: 'caserma-cc-ex-convento-san-domenico',
+            name: 'Caserma C.C. (ex Convento S. Domenico)',
+            coords: [37.654446, 14.638834],
+            category: 'cultura',
+            description: 'Caserma dei Carabinieri, ex Convento di San Domenico',
+            icon: '🏛️'
         }
     ];
     
@@ -811,11 +985,37 @@ function filterMapLocations(category) {
     // Filter location cards
     const locationCards = document.querySelectorAll('.location-card');
     locationCards.forEach(card => {
-        if (category === 'all' || card.dataset.category === category) {
-            card.style.display = 'flex';
+        const cardCategory = card.dataset.category;
+        let shouldShow = false;
+        
+        if (category === 'all') {
+            shouldShow = true;
+        } else if (category === 'sport') {
+            // Include both sport and svago categories
+            shouldShow = cardCategory === 'sport' || cardCategory === 'svago';
         } else {
-            card.style.display = 'none';
+            shouldShow = cardCategory === category;
         }
+        
+        card.style.display = shouldShow ? 'flex' : 'none';
+    });
+    
+    // Filter monument cards
+    const monumentCards = document.querySelectorAll('.monument-card');
+    monumentCards.forEach(card => {
+        const cardCategory = card.dataset.category;
+        let shouldShow = false;
+        
+        if (category === 'all') {
+            shouldShow = true;
+        } else if (category === 'sport') {
+            // Include both sport and svago categories
+            shouldShow = cardCategory === 'sport' || cardCategory === 'svago';
+        } else {
+            shouldShow = cardCategory === category;
+        }
+        
+        card.style.display = shouldShow ? 'block' : 'none';
     });
     
     // Filter map markers
@@ -831,7 +1031,8 @@ function getCategoryDisplayName(category) {
         'all': 'Tutti i luoghi',
         'natura': 'Natura e Paesaggio',
         'cultura': 'Cultura e Storia',
-        'tecnologia': 'Tecnologia'
+        'tecnologia': 'Tecnologia',
+        'sport': 'Svago e Sport'
     };
     return names[category] || category;
 }
