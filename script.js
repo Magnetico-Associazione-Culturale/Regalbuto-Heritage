@@ -196,7 +196,7 @@ function switchTab(tabName) {
 // Hero Section Functions
 function startTour() {
     switchTab('virtual-tour');
-    showNotification('Benvenuto nel tour virtuale di Regalbuto!', 'success');
+    // Removed notification
 }
 
 // QR Scanner Functions
@@ -572,39 +572,451 @@ function expandMonument(monumentId) {
 }
 
 // Audio Guide Functions
+let currentAudioPlayer = null;
+let currentAudioInstance = null;
+let audioUpdateInterval = null;
+let activeAudioPlayers = new Set();
+
 function playAudioGuide(monumentId) {
-    const audioPlayer = document.getElementById('audio-player');
+    // Stop event propagation if called from within a card
+    if (event && event.stopPropagation) {
+        event.stopPropagation();
+    }
     
-    // Audio guide URLs - add new monuments
-    const audioGuides = {
-        'san-basilio': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'santantonio': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'purgatorio': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'san-giovanni': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'torre-orologio': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'cinema-capitol': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'museo-civico': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'lago-pozzillo': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'parco-avventura': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'punto-panoramico': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'san-calogero': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'tecnopolo': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-        'monumento-caduti': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
+    // Find the button that was clicked
+    const button = event.target.closest('.btn');
+    if (!button) return;
+    
+    // Stop all other active audio players
+    stopAllAudioPlayers();
+    
+    // Get or create audio player container
+    let playerContainer = button.parentElement.querySelector('.audio-player-container');
+    
+    if (!playerContainer) {
+        // Create new audio player
+        playerContainer = createAudioPlayer(monumentId);
+        
+        // Replace the button with the player
+        button.parentElement.replaceChild(playerContainer, button);
+        
+        // Track this player
+        activeAudioPlayers.add(playerContainer);
+    }
+    
+    // Initialize audio playback
+    initializeAudioPlayback(monumentId, playerContainer);
+}
+
+function stopAllAudioPlayers() {
+    // Stop current audio instance
+    if (currentAudioInstance) {
+        currentAudioInstance.pause();
+        currentAudioInstance = null;
+    }
+    
+    // Clear intervals
+    if (audioUpdateInterval) {
+        clearInterval(audioUpdateInterval);
+        audioUpdateInterval = null;
+    }
+    
+    // Reset all tracked players
+    activeAudioPlayers.forEach(player => {
+        const playPauseBtn = player.querySelector('.play-pause');
+        if (playPauseBtn) {
+            playPauseBtn.innerHTML = `
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+            `;
+            playPauseBtn.title = 'Play';
+        }
+    });
+    
+    currentAudioPlayer = null;
+}
+
+function createAudioPlayer(monumentId) {
+    const container = document.createElement('div');
+    container.className = 'audio-player-container';
+    container.dataset.monumentId = monumentId;
+    
+    // Get monument name for display
+    const monumentName = getMonumentDisplayName(monumentId);
+    
+    container.innerHTML = `
+        <button class="audio-control-btn close-player-btn" onclick="event.stopPropagation(); restoreOriginalButton(this.closest('.audio-player-container'))">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+        <div class="audio-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+            </svg>
+            ${monumentName}
+        </div>
+        <div class="audio-controls-row">
+            <button class="audio-control-btn backward" onclick="event.stopPropagation(); seekAudio(-15)" title="Indietro 15 secondi">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                    <line x1="5" y1="19" x2="5" y2="5"></line>
+                </svg>
+            </button>
+            <button class="audio-control-btn play-pause" onclick="event.stopPropagation(); toggleAudioPlayback()" title="Play/Pausa">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+            </button>
+            <button class="audio-control-btn forward" onclick="event.stopPropagation(); seekAudio(15)" title="Avanti 15 secondi">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                    <line x1="19" y1="5" x2="19" y2="19"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="audio-progress-container">
+            <span class="audio-time current-time">0:00</span>
+            <div class="audio-progress-bar" onclick="event.stopPropagation(); seekToPosition(event)">
+                <div class="audio-progress-fill"></div>
+            </div>
+            <span class="audio-time total-time">0:00</span>
+        </div>
+        <div class="audio-loading" style="display: none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite;">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+            </svg>
+            Caricamento audio...
+        </div>
+        <div class="audio-error" style="display: none;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            Errore nel caricamento
+        </div>
+    `;
+    
+    return container;
+}
+
+function getMonumentDisplayName(monumentId) {
+    const displayNames = {
+        'san-basilio': 'Chiesa di San Basilio',
+        'santantonio': 'Convento di Sant\'Antonio',
+        'purgatorio': 'Chiesa del Purgatorio',
+        'santa-maria-croce': 'Chiesa di Santa Maria della Croce',
+        'san-agostino': 'Chiesa di San Agostino',
+        'monumento-caduti': 'Monumento ai Caduti',
+        'teatro-urania': 'Teatro Urania',
+        'lago-pozzillo': 'Lago Pozzillo',
+        'parco-avventura': 'Parco Avventura',
+        'tecnopolo': 'Tecnopolo Magnetico',
+        'chiesa-maria-ss-della-croce': 'Chiesa di Santa Maria della Croce',
+        'chiesa-san-basilio': 'Chiesa di San Basilio',
+        'cine-teatro-urania': 'Teatro Urania',
+        'convento-sant-agostino': 'Convento di Sant\'Agostino'
     };
     
-    const audioUrl = audioGuides[monumentId];
+    return displayNames[monumentId] || monumentId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+
+function initializeAudioPlayback(monumentId, playerContainer) {
+    // Stop any currently playing audio
+    if (currentAudioInstance) {
+        currentAudioInstance.pause();
+        currentAudioInstance = null;
+    }
     
-    if (audioUrl) {
-        audioPlayer.src = audioUrl;
-        audioPlayer.style.display = 'block';
-        audioPlayer.play().catch(err => {
-            console.log('Audio play failed:', err);
-            showNotification('Audio guida non disponibile al momento', 'warning');
-        });
+    // Clear any existing interval
+    if (audioUpdateInterval) {
+        clearInterval(audioUpdateInterval);
+    }
+    
+    // Set current player
+    currentAudioPlayer = playerContainer;
+    
+    // Load audio guide data from monuments.json
+    loadAudioGuideData(monumentId, playerContainer);
+}
+
+async function loadAudioGuideData(monumentId, playerContainer) {
+    try {
+        const response = await fetch('data/monuments.json');
+        const monuments = await response.json();
         
-        showNotification(`Riproduzione audio guida in corso...`, 'info');
+        // Find the monument
+        const monument = monuments.find(m => m.id === monumentId);
+        
+        if (monument && monument.audio_guide && monument.audio_guide.path) {
+            const audioUrl = monument.audio_guide.path;
+            initializeAudioWithUrl(audioUrl, playerContainer, monument.audio_guide);
+        } else {
+            // Try alternative ID mappings
+            const idMappings = {
+                'san-agostino': 'convento-sant-agostino',
+                'teatro-urania': 'cine-teatro-urania',
+                'purgatorio': 'chiesa-san-rocco',
+                'santa-maria-croce': 'chiesa-maria-ss-della-croce',
+                'santantonio': 'convento-sant-antonio'
+            };
+            
+            const alternativeId = idMappings[monumentId];
+            const alternativeMonument = alternativeId ? monuments.find(m => m.id === alternativeId) : null;
+            
+            if (alternativeMonument && alternativeMonument.audio_guide && alternativeMonument.audio_guide.path) {
+                const audioUrl = alternativeMonument.audio_guide.path;
+                initializeAudioWithUrl(audioUrl, playerContainer, alternativeMonument.audio_guide);
+            } else {
+                // Fallback to default audio guides
+                const defaultAudioGuides = {
+                    'san-basilio': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'santantonio': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'purgatorio': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'santa-maria-croce': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'san-agostino': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'monumento-caduti': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'teatro-urania': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'lago-pozzillo': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'parco-avventura': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'tecnopolo': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
+                    'chiesa-maria-ss-della-croce': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
+                };
+                
+                const audioUrl = defaultAudioGuides[monumentId];
+                
+                if (audioUrl) {
+                    initializeAudioWithUrl(audioUrl, playerContainer, { 
+                        description: `Audio guida per ${monumentId}`,
+                        duration: null 
+                    });
+                } else {
+                    showAudioError(playerContainer, true);
+                    // Removed notification
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Errore nel caricamento dati audio:', error);
+        showAudioError(playerContainer, true);
+        // Removed notification
+    }
+}
+
+function initializeAudioWithUrl(audioUrl, playerContainer, audioInfo) {
+    showAudioLoading(playerContainer, true);
+    
+    // Create new audio instance
+    currentAudioInstance = new Audio(audioUrl);
+    
+    // Set up event listeners
+    currentAudioInstance.addEventListener('loadedmetadata', () => {
+        showAudioLoading(playerContainer, false);
+        updateAudioDisplay(playerContainer);
+        startAudioUpdateInterval(playerContainer);
+        
+        // Auto-play immediately after loading
+        currentAudioInstance.play().then(() => {
+            // Update play button to pause icon
+            const playPauseBtn = playerContainer.querySelector('.play-pause');
+            if (playPauseBtn) {
+                playPauseBtn.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                        <rect x="6" y="4" width="4" height="16"></rect>
+                        <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
+                `;
+                playPauseBtn.title = 'Pausa';
+            }
+        }).catch(err => {
+            console.log('Audio play failed:', err);
+            // Removed notification
+        });
+    });
+    
+    currentAudioInstance.addEventListener('ended', () => {
+        resetAudioPlayer(playerContainer);
+    });
+    
+    currentAudioInstance.addEventListener('error', () => {
+        showAudioError(playerContainer, true);
+        // Removed notification
+    });
+    
+    const description = audioInfo.description || 'Audio guida';
+    // Removed notification
+}
+
+function toggleAudioPlayback() {
+    if (!currentAudioInstance || !currentAudioPlayer) return;
+    
+    const playPauseBtn = currentAudioPlayer.querySelector('.play-pause');
+    
+    if (currentAudioInstance.paused) {
+        currentAudioInstance.play();
+        playPauseBtn.innerHTML = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+            </svg>
+        `;
+        playPauseBtn.title = 'Pausa';
     } else {
-        showNotification('Audio guida non disponibile per questo monumento', 'warning');
+        currentAudioInstance.pause();
+        playPauseBtn.innerHTML = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        `;
+        playPauseBtn.title = 'Play';
+    }
+}
+
+function seekAudio(seconds) {
+    if (!currentAudioInstance) return;
+    
+    currentAudioInstance.currentTime = Math.max(0, 
+        Math.min(currentAudioInstance.duration, currentAudioInstance.currentTime + seconds)
+    );
+}
+
+function seekToPosition(event) {
+    if (!currentAudioInstance) return;
+    
+    const progressBar = event.currentTarget;
+    const rect = progressBar.getBoundingClientRect();
+    const percentage = (event.clientX - rect.left) / rect.width;
+    
+    currentAudioInstance.currentTime = percentage * currentAudioInstance.duration;
+}
+
+function updateAudioDisplay(playerContainer) {
+    if (!currentAudioInstance || !playerContainer) return;
+    
+    const currentTime = currentAudioInstance.currentTime;
+    const duration = currentAudioInstance.duration;
+    
+    // Update time displays
+    const currentTimeElement = playerContainer.querySelector('.current-time');
+    const totalTimeElement = playerContainer.querySelector('.total-time');
+    const progressFill = playerContainer.querySelector('.audio-progress-fill');
+    
+    if (currentTimeElement) {
+        currentTimeElement.textContent = formatTime(currentTime);
+    }
+    
+    if (totalTimeElement) {
+        totalTimeElement.textContent = formatTime(duration);
+    }
+    
+    if (progressFill) {
+        const percentage = (currentTime / duration) * 100;
+        progressFill.style.width = `${percentage}%`;
+    }
+}
+
+function formatTime(seconds) {
+    if (isNaN(seconds)) return '0:00';
+    
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
+function startAudioUpdateInterval(playerContainer) {
+    audioUpdateInterval = setInterval(() => {
+        updateAudioDisplay(playerContainer);
+    }, 1000);
+}
+
+function resetAudioPlayer(playerContainer) {
+    const playPauseBtn = playerContainer.querySelector('.play-pause');
+    if (playPauseBtn) {
+        playPauseBtn.innerHTML = `
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        `;
+        playPauseBtn.title = 'Play';
+    }
+    
+    if (audioUpdateInterval) {
+        clearInterval(audioUpdateInterval);
+        audioUpdateInterval = null;
+    }
+}
+
+function restoreOriginalButton(playerContainer) {
+    const monumentId = playerContainer.dataset.monumentId;
+    
+    // Stop current audio
+    if (currentAudioInstance) {
+        currentAudioInstance.pause();
+        currentAudioInstance = null;
+    }
+    
+    // Clear interval
+    if (audioUpdateInterval) {
+        clearInterval(audioUpdateInterval);
+        audioUpdateInterval = null;
+    }
+    
+    // Create original button
+    const originalButton = document.createElement('button');
+    originalButton.className = 'btn btn-primary';
+    originalButton.onclick = () => playAudioGuide(monumentId);
+    originalButton.innerHTML = `
+        <i data-feather="headphones"></i>
+        Ascolta Audio Guida
+    `;
+    
+    // Replace player with original button
+    playerContainer.parentElement.replaceChild(originalButton, playerContainer);
+    
+    // Remove from active players
+    activeAudioPlayers.delete(playerContainer);
+    
+    // Re-initialize feather icons
+    feather.replace();
+    
+    // Reset current player reference
+    if (currentAudioPlayer === playerContainer) {
+        currentAudioPlayer = null;
+    }
+}
+
+function showAudioLoading(playerContainer, show) {
+    const loadingElement = playerContainer.querySelector('.audio-loading');
+    const errorElement = playerContainer.querySelector('.audio-error');
+    const controls = playerContainer.querySelectorAll('.audio-controls-row, .audio-progress-container');
+    
+    if (show) {
+        loadingElement.style.display = 'flex';
+        errorElement.style.display = 'none';
+        controls.forEach(el => el.style.display = 'none');
+    } else {
+        loadingElement.style.display = 'none';
+        controls.forEach(el => el.style.display = 'flex');
+    }
+}
+
+function showAudioError(playerContainer, show) {
+    const errorElement = playerContainer.querySelector('.audio-error');
+    const loadingElement = playerContainer.querySelector('.audio-loading');
+    const controls = playerContainer.querySelectorAll('.audio-controls-row, .audio-progress-container');
+    
+    if (show) {
+        errorElement.style.display = 'flex';
+        loadingElement.style.display = 'none';
+        controls.forEach(el => el.style.display = 'none');
+    } else {
+        errorElement.style.display = 'none';
+        controls.forEach(el => el.style.display = 'flex');
     }
 }
 
@@ -1101,7 +1513,7 @@ function openMapLocation(monumentId) {
     // Open in a new window/tab to trigger the Maps app
     window.open(url, '_blank', 'noopener,noreferrer');
     
-    showNotification('Apertura Google Maps...', 'info');
+    // Removed notification
 }
 
 // Featured Card Functions (Home Page)
@@ -1313,7 +1725,7 @@ function loadLocation(locationId) {
             console.error('Errore caricamento iframe');
         };
         
-        showNotification(`Caricamento ${locationId}...`, 'info');
+        // Removed notification
     } else {
         console.error('Iframe o location non trovati');
     }
@@ -1386,8 +1798,10 @@ function enterFullscreenMode() {
             if (fullscreenPromise && fullscreenPromise.then) {
                 fullscreenPromise.then(() => {
                     console.log('Fullscreen nativo attivato con successo');
-                    showNotification('Modalità schermo intero attivata', 'success');
+                    // Removed notification
                     createExitButton();
+                    // Crea anche il pulsante X per uscire dal fullscreen
+                    createFullscreenExitButton();
                     resolve('native fullscreen activated');
                 }).catch((err) => {
                     console.log('Errore fullscreen nativo:', err);
@@ -1444,11 +1858,191 @@ function simulateFullscreen() {
     // Segna come modalità simulata
     viewer.setAttribute('data-simulated-fullscreen', 'true');
     
-    showNotification('Schermo intero simulato attivato', 'info');
-    createExitButton();
+    // Removed notification
+    console.log('Creazione pulsanti di uscita...');
+    
+    // NON creare pulsanti se è attiva la modalità VR
+    const isVRActive = checkIfVRActive();
+    if (!isVRActive) {
+        console.log('Nessuna modalità VR attiva - creando pulsanti fullscreen');
+        createExitButton();
+        createFullscreenExitButton();
+        
+        // Su Android, avvia anche il monitoraggio continuo solo per fullscreen
+        if (/Android/i.test(navigator.userAgent)) {
+            console.log('Avvio monitoraggio continuo per Android (solo fullscreen)');
+            startAndroidFullscreenMonitoring();
+            showAndroidEmergencyOverlay();
+        }
+    } else {
+        console.log('Modalità VR attiva - NON creando pulsanti fullscreen (Android usa quello nativo)');
+    }
+    
+    // Debug: verifica se i pulsanti sono stati creati
+    setTimeout(() => {
+        const exitBtn = document.getElementById('fullscreen-exit-btn');
+        const fullscreenExitBtn = document.getElementById('fullscreen-only-exit-btn');
+        console.log('Exit button presente:', !!exitBtn);
+        console.log('Fullscreen exit button presente:', !!fullscreenExitBtn);
+        console.log('VR attivo:', isVRActive);
+        
+        if (exitBtn) {
+            console.log('Exit button styles:', exitBtn.style.cssText);
+        }
+        if (fullscreenExitBtn) {
+            console.log('Fullscreen exit button styles:', fullscreenExitBtn.style.cssText);
+        }
+    }, 100);
     
     // Aggiungi controlli touch per mobile
     addMobileExitControls(viewer);
+}
+
+// Funzione per verificare se la modalità VR è attiva
+function checkIfVRActive() {
+    // Controlla se c'è un pulsante VR attivo
+    const vrExitBtn = document.getElementById('vr-exit-btn');
+    if (vrExitBtn) {
+        console.log('VR rilevato: pulsante VR exit presente');
+        return true;
+    }
+    
+    // Controlla se l'iframe ha parametri VR
+    const iframe = document.querySelector('#pano-viewer iframe');
+    if (iframe && iframe.src) {
+        const src = iframe.src;
+        if (src.includes('vr=1')) {
+            console.log('VR rilevato: parametro vr=1 nell\'URL');
+            return true;
+        }
+    }
+    
+    // Controlla se siamo in modalità VR tramite A-Frame
+    const viewer = document.getElementById('pano-viewer');
+    if (viewer && viewer.getAttribute('data-vr-active') === 'true') {
+        console.log('VR rilevato: attributo data-vr-active');
+        return true;
+    }
+    
+    console.log('VR non rilevato');
+    return false;
+}
+
+// Funzione per monitorare continuamente il fullscreen su Android
+function startAndroidFullscreenMonitoring() {
+    // Evita di creare monitor multipli
+    if (window.androidFullscreenMonitor) {
+        clearInterval(window.androidFullscreenMonitor);
+    }
+    
+    window.androidFullscreenMonitor = setInterval(() => {
+        const viewer = document.getElementById('pano-viewer');
+        const isSimulated = viewer && viewer.getAttribute('data-simulated-fullscreen') === 'true';
+        const isFullscreen = document.fullscreenElement || 
+                           document.webkitFullscreenElement || 
+                           document.mozFullScreenElement || 
+                           document.msFullscreenElement;
+        
+        // Controlla se VR è attivo
+        const isVRActive = checkIfVRActive();
+        
+        // Se siamo in fullscreen (simulato o reale) ma NON in VR, assicuriamoci che i pulsanti siano presenti
+        if ((isSimulated || isFullscreen) && !isVRActive) {
+            const fullscreenExitBtn = document.getElementById('fullscreen-only-exit-btn');
+            const androidOverlay = document.getElementById('android-fullscreen-overlay');
+            
+            if (!fullscreenExitBtn && !androidOverlay) {
+                console.log('Android monitor: ricreando pulsanti X mancanti (solo fullscreen, non VR)');
+                createFullscreenExitButton();
+            }
+        } else if (isVRActive) {
+            console.log('Android monitor: VR attivo, rimuovendo pulsanti fullscreen');
+            removeFullscreenExitButton();
+        } else {
+            // Non siamo più in fullscreen, ferma il monitor
+            clearInterval(window.androidFullscreenMonitor);
+            window.androidFullscreenMonitor = null;
+        }
+    }, 1000); // Controlla ogni secondo
+}
+
+// Funzione di emergenza per Android - mostra overlay temporaneo
+function showAndroidEmergencyOverlay() {
+    // Crea overlay di emergenza che copre tutto lo schermo
+    const emergencyOverlay = document.createElement('div');
+    emergencyOverlay.id = 'android-emergency-overlay';
+    emergencyOverlay.innerHTML = `
+        <div style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            z-index: 2147483647;
+        ">
+            <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+            <div style="font-size: 24px; margin-bottom: 20px; font-weight: bold;">MODALITÀ FULLSCREEN ATTIVA</div>
+            <div style="font-size: 16px; margin-bottom: 30px;">Cerca la X rossa nell'angolo in alto a destra</div>
+            <div style="font-size: 14px; margin-bottom: 20px;">o tocca l'angolo in alto a destra dello schermo</div>
+            <div style="font-size: 12px; color: #ccc;">Questo messaggio scomparirà in <span id="emergency-countdown">10</span> secondi</div>
+        </div>
+    `;
+    
+    emergencyOverlay.style.cssText = `
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 2147483647 !important;
+        pointer-events: auto !important;
+        background: transparent !important;
+    `;
+    
+    // Quando si tocca l'overlay, esce dal fullscreen
+    emergencyOverlay.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Android emergency overlay clicked');
+        exitFullscreenMode();
+    });
+    
+    emergencyOverlay.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Android emergency overlay touched');
+        exitFullscreenMode();
+    }, { passive: false });
+    
+    document.body.appendChild(emergencyOverlay);
+    
+    // Countdown per rimuovere l'overlay
+    let countdown = 10;
+    const countdownElement = document.getElementById('emergency-countdown');
+    
+    const countdownInterval = setInterval(() => {
+        countdown--;
+        if (countdownElement) {
+            countdownElement.textContent = countdown;
+        }
+        
+        if (countdown <= 0) {
+            clearInterval(countdownInterval);
+            if (emergencyOverlay.parentNode) {
+                emergencyOverlay.remove();
+            }
+        }
+    }, 1000);
+    
+    console.log('Android emergency overlay created');
 }
 
 function addMobileExitControls(viewer) {
@@ -1481,7 +2075,7 @@ function addMobileExitControls(viewer) {
             clearTimeout(tapTimer);
             tapCount = 0;
             console.log('Doppio tap rilevato - uscita da fullscreen');
-            showNotification('Doppio tap rilevato - uscita da fullscreen', 'info');
+            // Removed notification
             exitFullscreenMode();
         }
     };
@@ -1505,7 +2099,7 @@ function addMobileExitControls(viewer) {
         // Swipe down dall'alto dello schermo (primi 100px)
         if (touchStartY < 100 && swipeDistance > 150 && touchDuration < 1000) {
             console.log('Swipe down dall\'alto rilevato - uscita da fullscreen');
-            showNotification('Swipe rilevato - uscita da fullscreen', 'info');
+            // Removed notification
             exitFullscreenMode();
         }
     };
@@ -1529,7 +2123,7 @@ function addMobileExitControls(viewer) {
     // Mostra istruzioni per mobile
     setTimeout(() => {
         if (isMobileDevice()) {
-            showNotification('Tocca la X rossa, doppio tap o swipe dall\'alto per uscire', 'info');
+            // Removed notification
         }
     }, 2000);
 }
@@ -1547,6 +2141,13 @@ function removeMobileExitControls(viewer) {
 
 function exitFullscreenMode() {
     console.log('exitFullscreenMode called');
+    
+    // Ferma il monitoraggio Android se attivo
+    if (window.androidFullscreenMonitor) {
+        clearInterval(window.androidFullscreenMonitor);
+        window.androidFullscreenMonitor = null;
+        console.log('Android fullscreen monitor stopped');
+    }
     
     const viewer = document.getElementById('pano-viewer');
     const isSimulated = viewer && viewer.getAttribute('data-simulated-fullscreen') === 'true';
@@ -1587,7 +2188,7 @@ function exitFullscreenMode() {
         viewer.removeAttribute('data-simulated-fullscreen');
         
         console.log('Fullscreen simulato disattivato');
-        showNotification('Schermo intero disattivato', 'info');
+        // Removed notification
         
     } else {
         // Uscita dalla modalità fullscreen nativa
@@ -1595,32 +2196,33 @@ function exitFullscreenMode() {
             if (document.exitFullscreen) {
                 document.exitFullscreen().then(() => {
                     console.log('Fullscreen nativo disattivato');
-                    showNotification('Schermo intero disattivato', 'info');
+                    // Removed notification
                 }).catch(err => {
                     console.log('Errore uscita fullscreen nativo:', err);
-                    showNotification('Schermo intero disattivato', 'info');
+                    // Removed notification
                 });
             } else if (document.webkitExitFullscreen) {
                 document.webkitExitFullscreen();
-                showNotification('Schermo intero disattivato', 'info');
+                // Removed notification
             } else if (document.mozCancelFullScreen) {
                 document.mozCancelFullScreen();
-                showNotification('Schermo intero disattivato', 'info');
+                // Removed notification
             } else if (document.msExitFullscreen) {
                 document.msExitFullscreen();
-                showNotification('Schermo intero disattivato', 'info');
+                // Removed notification
             }
             
             console.log('Fullscreen nativo disattivato');
             
         } catch (err) {
             console.error('Errore uscita fullscreen:', err);
-            showNotification('Schermo intero disattivato', 'info');
+            // Removed notification
         }
     }
     
-    // Rimuovi sempre il pulsante di uscita
+    // Rimuovi sempre i pulsanti di uscita
     removeExitButton();
+    removeFullscreenExitButton();
 }
 
 function createExitButton() {
@@ -1631,31 +2233,39 @@ function createExitButton() {
     exitBtn.id = 'fullscreen-exit-btn';
     exitBtn.innerHTML = '×';
     exitBtn.title = 'Esci dallo schermo intero';
+    
+    // Rileva se siamo su Android per ottimizzare il pulsante
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const buttonSize = isAndroid ? '80px' : '60px';
+    const fontSize = isAndroid ? '40px' : '32px';
+    const topPosition = isAndroid ? '30px' : '20px';
+    
     exitBtn.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 60px;
-        height: 60px;
-        background: rgba(255, 0, 0, 0.8);
-        color: white;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-        border-radius: 50%;
-        font-size: 32px;
-        font-weight: bold;
-        cursor: pointer;
-        z-index: 10001;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        transition: all 0.3s ease;
-        line-height: 1;
-        user-select: none;
-        -webkit-user-select: none;
-        -webkit-tap-highlight-color: transparent;
-        touch-action: manipulation;
-        font-family: Arial, sans-serif;
+        position: fixed !important;
+        top: ${topPosition} !important;
+        right: 20px !important;
+        width: ${buttonSize} !important;
+        height: ${buttonSize} !important;
+        background: rgba(255, 0, 0, 0.9) !important;
+        color: white !important;
+        border: 3px solid rgba(255, 255, 255, 0.8) !important;
+        border-radius: 50% !important;
+        font-size: ${fontSize} !important;
+        font-weight: bold !important;
+        cursor: pointer !important;
+        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+        transition: all 0.3s ease !important;
+        line-height: 1 !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        font-family: Arial, sans-serif !important;
+        opacity: 0.9 !important;
     `;
     
     // Event handler semplificato per massima compatibilità
@@ -1726,6 +2336,202 @@ function createExitButton() {
     console.log('Exit button and touch area created');
 }
 
+// Funzione per creare un pulsante X per uscire dal fullscreen (diverso dal VR)
+function createFullscreenExitButton() {
+    // Rimuovi eventuali pulsanti fullscreen esistenti
+    removeFullscreenExitButton();
+    
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    
+    if (isAndroid) {
+        // Su Android, crea un overlay completo con area di uscita
+        const androidOverlay = document.createElement('div');
+        androidOverlay.id = 'android-fullscreen-overlay';
+        androidOverlay.innerHTML = `
+            <div id="android-exit-area">
+                <div id="android-exit-button">✕</div>
+                <div id="android-exit-text">TOCCA QUI PER USCIRE</div>
+            </div>
+        `;
+        
+        androidOverlay.style.cssText = `
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 2147483647 !important;
+            pointer-events: none !important;
+            background: transparent !important;
+        `;
+        
+        const styleSheet = document.createElement('style');
+        styleSheet.id = 'android-fullscreen-overlay-styles';
+        styleSheet.textContent = `
+            #android-exit-area {
+                position: absolute !important;
+                top: 0 !important;
+                right: 0 !important;
+                width: 300px !important;
+                height: 300px !important;
+                background: radial-gradient(circle, rgba(255, 0, 0, 0.8) 0%, rgba(255, 0, 0, 0.4) 50%, transparent 100%) !important;
+                border-radius: 0 0 0 150px !important;
+                pointer-events: auto !important;
+                cursor: pointer !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: flex-start !important;
+                padding-top: 30px !important;
+                animation: androidPulse 1.5s infinite !important;
+            }
+            
+            #android-exit-button {
+                font-size: 60px !important;
+                color: white !important;
+                font-weight: 900 !important;
+                text-shadow: 0 0 10px rgba(0, 0, 0, 0.8) !important;
+                margin-bottom: 10px !important;
+                font-family: Arial, sans-serif !important;
+            }
+            
+            #android-exit-text {
+                font-size: 12px !important;
+                color: white !important;
+                font-weight: bold !important;
+                text-shadow: 0 0 5px rgba(0, 0, 0, 0.8) !important;
+                text-align: center !important;
+                font-family: Arial, sans-serif !important;
+            }
+            
+            @keyframes androidPulse {
+                0% { opacity: 0.6; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.05); }
+                100% { opacity: 0.6; transform: scale(1); }
+            }
+        `;
+        
+        document.head.appendChild(styleSheet);
+        document.body.appendChild(androidOverlay);
+        
+        // Event listeners per l'area di uscita
+        const exitArea = document.getElementById('android-exit-area');
+        
+        exitArea.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Android exit area clicked');
+            exitFullscreenMode();
+        });
+        
+        exitArea.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Android exit area touched');
+            exitFullscreenMode();
+        }, { passive: false });
+        
+        exitArea.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Android exit area touch end');
+            exitFullscreenMode();
+        }, { passive: false });
+        
+        console.log('Android fullscreen overlay created');
+        
+    } else {
+        // Desktop/iOS - usa il pulsante normale
+        const fullscreenExitBtn = document.createElement('button');
+        fullscreenExitBtn.id = 'fullscreen-only-exit-btn';
+        fullscreenExitBtn.innerHTML = '×';
+        fullscreenExitBtn.title = 'Esci dallo schermo intero';
+        
+        fullscreenExitBtn.style.cssText = `
+            position: fixed !important;
+            top: 20px !important;
+            right: 20px !important;
+            width: 60px !important;
+            height: 60px !important;
+            background: rgba(0, 0, 0, 0.8) !important;
+            color: white !important;
+            border: 2px solid rgba(255, 255, 255, 0.5) !important;
+            border-radius: 50% !important;
+            font-size: 32px !important;
+            font-weight: bold !important;
+            cursor: pointer !important;
+            z-index: 99999 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+            transition: all 0.3s ease !important;
+            line-height: 1 !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            touch-action: manipulation !important;
+            font-family: Arial, sans-serif !important;
+            backdrop-filter: blur(10px) !important;
+        `;
+        
+        // Event handlers per desktop
+        fullscreenExitBtn.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Desktop fullscreen exit button clicked');
+            exitFullscreenMode();
+        };
+        
+        fullscreenExitBtn.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Desktop fullscreen exit button touched');
+            exitFullscreenMode();
+        }, { passive: false });
+        
+        document.body.appendChild(fullscreenExitBtn);
+        
+        console.log('Desktop fullscreen exit button created');
+    }
+}
+
+function removeFullscreenExitButton() {
+    // Rimuovi overlay Android
+    const androidOverlay = document.getElementById('android-fullscreen-overlay');
+    const androidStyles = document.getElementById('android-fullscreen-overlay-styles');
+    
+    if (androidOverlay) {
+        androidOverlay.remove();
+        console.log('Android fullscreen overlay removed');
+    }
+    
+    if (androidStyles) {
+        androidStyles.remove();
+        console.log('Android fullscreen overlay styles removed');
+    }
+    
+    // Rimuovi pulsanti desktop
+    const fullscreenExitBtn = document.getElementById('fullscreen-only-exit-btn');
+    const fullscreenTouchArea = document.getElementById('fullscreen-only-touch-area');
+    const androidBanner = document.getElementById('android-fullscreen-banner');
+    
+    if (fullscreenExitBtn) {
+        fullscreenExitBtn.remove();
+        console.log('Fullscreen exit button removed');
+    }
+    
+    if (fullscreenTouchArea) {
+        fullscreenTouchArea.remove();
+        console.log('Fullscreen touch area removed');
+    }
+    
+    if (androidBanner) {
+        androidBanner.remove();
+        console.log('Android fullscreen banner removed');
+    }
+}
+
 function removeExitButton() {
     const exitBtn = document.getElementById('fullscreen-exit-btn');
     const touchArea = document.getElementById('fullscreen-touch-area');
@@ -1741,7 +2547,9 @@ function removeExitButton() {
     }
 }
 
-// Funzioni per il pulsante X di uscita dal VR
+// Funzioni per il pulsante X di uscita dal VR - NON PIÙ USATE
+// Il VR usa i controlli nativi di Android
+/*
 function createVRExitButton() {
     // Rimuovi eventuali pulsanti VR esistenti
     removeVRExitButton();
@@ -1750,37 +2558,52 @@ function createVRExitButton() {
     vrExitBtn.id = 'vr-exit-btn';
     vrExitBtn.innerHTML = '×';
     vrExitBtn.title = 'Esci dalla modalità VR';
+    
+    // Rileva se siamo su Android per ottimizzare il pulsante
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const buttonSize = isAndroid ? '80px' : '60px';
+    const fontSize = isAndroid ? '40px' : '32px';
+    const topPosition = isAndroid ? '30px' : '20px';
+    
     vrExitBtn.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        width: 60px;
-        height: 60px;
-        background: rgba(255, 0, 0, 0.9);
-        color: white;
-        border: 3px solid rgba(255, 255, 255, 0.8);
-        border-radius: 50%;
-        font-size: 32px;
-        font-weight: bold;
-        cursor: pointer;
-        z-index: 10002;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        transition: all 0.3s ease;
-        line-height: 1;
-        user-select: none;
-        -webkit-user-select: none;
-        -webkit-tap-highlight-color: transparent;
-        touch-action: manipulation;
-        font-family: Arial, sans-serif;
-        backdrop-filter: blur(10px);
+        position: fixed !important;
+        top: ${topPosition} !important;
+        left: 20px !important;
+        width: ${buttonSize} !important;
+        height: ${buttonSize} !important;
+        background: rgba(255, 0, 0, 0.95) !important;
+        color: white !important;
+        border: 3px solid rgba(255, 255, 255, 0.9) !important;
+        border-radius: 50% !important;
+        font-size: ${fontSize} !important;
+        font-weight: bold !important;
+        cursor: pointer !important;
+        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+        transition: all 0.3s ease !important;
+        line-height: 1 !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        font-family: Arial, sans-serif !important;
+        backdrop-filter: blur(10px) !important;
+        opacity: 0.95 !important;
     `;
     
-    // Funzione per uscire dal VR
+    // Funzione per uscire dal VR - NON PIÙ USATA
+    // Il VR usa i controlli nativi di Android
     function exitVRMode() {
-        console.log('Uscita dal VR tramite pulsante X');
+        console.log('Uscita dal VR tramite controlli nativi');
+        
+        // Rimuovi il flag VR attivo
+        const viewer = document.getElementById('pano-viewer');
+        if (viewer) {
+            viewer.removeAttribute('data-vr-active');
+        }
         
         // Invia messaggio all'iframe per uscire dal VR
         const iframe = document.querySelector('#pano-viewer iframe');
@@ -1788,11 +2611,7 @@ function createVRExitButton() {
             iframe.contentWindow.postMessage({ action: 'exitVR' }, '*');
         }
         
-        // Rimuovi il pulsante
-        removeVRExitButton();
-        
-        // Mostra notifica
-        showNotification('Uscita dalla modalità VR', 'info');
+        // Removed notification
         
         // Se siamo in fullscreen, esci anche da quello
         if (document.fullscreenElement || document.webkitFullscreenElement || 
@@ -1888,6 +2707,7 @@ function removeVRExitButton() {
         console.log('VR touch area removed');
     }
 }
+*/
 
 // Gestione messaggi dal panorama iframe per feedback VR
 window.addEventListener('message', function(event) {
@@ -1896,39 +2716,55 @@ window.addEventListener('message', function(event) {
     if (event.data && event.data.action === 'vrActivated') {
         if (event.data.success) {
             console.log('VR attivato con successo nell\'iframe');
-            showNotification('Modalità VR Cardboard attivata! Inserisci il telefono nel visore.', 'success');
-            createVRExitButton(); // Crea il pulsante X per uscire dal VR
+            // Segna che il VR è attivo
+            const viewer = document.getElementById('pano-viewer');
+            if (viewer) {
+                viewer.setAttribute('data-vr-active', 'true');
+            }
+            // Removed notification
+            // NON creare pulsante X per VR - Android ha il suo nativo
         } else {
             console.error('Errore VR nell\'iframe:', event.data.error);
-            showNotification('Errore modalità VR: ' + (event.data.error || 'Dispositivo non compatibile'), 'error');
+            // Removed notification
         }
     }
     
     // Gestione entrata in modalità VR
     if (event.data && event.data.action === 'vrEntered') {
         console.log('Entrato in modalità VR - device ora in VR mode');
-        showNotification('Modalità VR attiva! Ruota il telefono in orizzontale.', 'success');
-        createVRExitButton(); // Assicurati che il pulsante X sia presente
+        // Segna che il VR è attivo
+        const viewer = document.getElementById('pano-viewer');
+        if (viewer) {
+            viewer.setAttribute('data-vr-active', 'true');
+        }
+        // Removed notification
+        // NON creare pulsante X per VR - Android ha il suo nativo
     }
     
     // Gestione uscita dalla modalità VR
     if (event.data && event.data.action === 'vrExited') {
         console.log('Uscito dalla modalità VR - uscendo anche dal fullscreen');
-        removeVRExitButton(); // Rimuovi il pulsante X del VR
+        // Rimuovi il flag VR attivo
+        const viewer = document.getElementById('pano-viewer');
+        if (viewer) {
+            viewer.removeAttribute('data-vr-active');
+        }
+        // NON rimuovere pulsante VR perché non lo creiamo più
         // Quando si esce dal VR, esci automaticamente dal fullscreen
         if (document.fullscreenElement || document.webkitFullscreenElement || 
             document.mozFullScreenElement || document.msFullscreenElement) {
             exitFullscreenMode();
-            showNotification('Uscita dalla modalità VR', 'info');
+            // Removed notification
         }
     }
 });
 
-// Gestione eventi fullscreen per rimuovere il pulsante X quando si esce con ESC
+// Gestione eventi fullscreen per rimuovere i pulsanti X quando si esce con ESC
 document.addEventListener('fullscreenchange', function() {
     if (!document.fullscreenElement) {
         console.log('Uscita da fullscreen rilevata (ESC o altro)');
         removeExitButton();
+        removeFullscreenExitButton();
         removeVRExitButton(); // Rimuovi anche il pulsante VR
     }
 });
@@ -1937,6 +2773,7 @@ document.addEventListener('webkitfullscreenchange', function() {
     if (!document.webkitFullscreenElement) {
         console.log('Uscita da webkit fullscreen rilevata');
         removeExitButton();
+        removeFullscreenExitButton();
         removeVRExitButton(); // Rimuovi anche il pulsante VR
     }
 });
@@ -1945,6 +2782,7 @@ document.addEventListener('mozfullscreenchange', function() {
     if (!document.mozFullScreenElement) {
         console.log('Uscita da moz fullscreen rilevata');
         removeExitButton();
+        removeFullscreenExitButton();
         removeVRExitButton(); // Rimuovi anche il pulsante VR
     }
 });
@@ -1953,6 +2791,7 @@ document.addEventListener('msfullscreenchange', function() {
     if (!document.msFullscreenElement) {
         console.log('Uscita da ms fullscreen rilevata');
         removeExitButton();
+        removeFullscreenExitButton();
         removeVRExitButton(); // Rimuovi anche il pulsante VR
     }
 });
@@ -1968,13 +2807,13 @@ function toggleVRMode() {
     // Verifica se siamo su iPhone
     if (isIPhone()) {
         console.log('iPhone rilevato - VR non supportato');
-        showNotification('La modalità VR non è supportata su iPhone', 'warning');
+        // Removed notification
         return;
     }
     
     if (!iframe) {
         console.error('Iframe non trovato');
-        showNotification('Errore: panorama non caricato', 'error');
+        // Removed notification
         return;
     }
 
@@ -1985,39 +2824,38 @@ function toggleVRMode() {
         // Controlla se siamo su dispositivo mobile
         if (!isMobileDevice()) {
             console.log('Dispositivo desktop rilevato - VR non supportato');
-            showNotification('La modalità VR è disponibile solo su dispositivi mobili', 'warning');
+            // Removed notification
             return;
         }
         
-        console.log('Dispositivo mobile rilevato - attivando VR con fullscreen automatico');
+        console.log('Dispositivo mobile rilevato - attivando VR');
         
         try {
-            // Prima attiviamo la modalità VR
-            console.log('VR: Attivando VR prima del fullscreen');
+            // Attiva solo la modalità VR, senza fullscreen automatico
+            console.log('VR: Attivando modalità VR A-Frame');
             iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
             
-            // Poi proviamo ad attivare il fullscreen (ma non è critico se fallisce)
+            // Segna che il VR è attivo
+            const viewer = document.getElementById('pano-viewer');
+            viewer.setAttribute('data-vr-active', 'true');
+            
+            // NON creare pulsante X per VR - Android ha il suo nativo
+            console.log('VR: Modalità VR attivata senza pulsanti custom');
+            
+            // Su Android, non creare pulsanti aggiuntivi
+            if (/Android/i.test(navigator.userAgent)) {
+                console.log('Android rilevato - usando pulsanti VR nativi');
+            }
+            
+            // Mostra un messaggio per suggerire il fullscreen manualmente
             setTimeout(() => {
-                console.log('VR: Tentativo fullscreen dopo VR');
-                const fullscreenResult = toggleFullscreen();
-                
-                if (fullscreenResult && fullscreenResult.then) {
-                    fullscreenResult.then(() => {
-                        console.log('VR: Fullscreen attivato dopo VR');
-                        showNotification('Modalità VR a schermo intero attivata', 'success');
-                    }).catch(error => {
-                        console.log('VR: Fullscreen fallito ma VR attivo:', error);
-                        showNotification('Modalità VR attivata (senza fullscreen)', 'success');
-                    });
-                } else {
-                    console.log('VR: toggleFullscreen non ha restituito Promise');
-                    showNotification('Modalità VR attivata', 'success');
-                }
-            }, 200); // Piccolo delay per permettere al VR di attivarsi
+                console.log('VR: Modalità VR attivata, suggerimento fullscreen');
+                // Potremmo aggiungere un pulsante per fullscreen se necessario
+            }, 500);
             
         } catch (err) {
             console.error('Errore nell\'attivazione VR:', err);
-            showNotification('Errore nell\'attivazione modalità VR: ' + err.message, 'error');
+            // Removed notification
         }
         
     } else {
@@ -2038,7 +2876,7 @@ function toggleVRMode() {
                 vrBtn.classList.add('btn-outline');
             }
             removeVRExitButton(); // Rimuovi il pulsante X del VR
-            showNotification('Modalità VR disattivata', 'info');
+            // Removed notification
         } else {
             // Enable VR mode
             src = src.replace('vr=0', 'vr=1');
@@ -2055,9 +2893,9 @@ function toggleVRMode() {
             }, 1000); // Delay per permettere al VR di attivarsi
             
             if (isSingleTour) {
-                showNotification('Modalità VR attivata! Cerca l\'icona VR nell\'angolo in basso a destra del tour.', 'success');
+                // Removed notification
             } else {
-                showNotification('Modalità VR attivata! Cerca l\'icona VR nel tour.', 'success');
+                // Removed notification
             }
         }
         
@@ -2082,7 +2920,7 @@ function resetView() {
         setTimeout(() => {
             iframe.src = src;
         }, 100);
-        showNotification('Vista ripristinata', 'info');
+        // Removed notification
     }
 }
 
@@ -2231,8 +3069,69 @@ function debugApp() {
     console.log('========================================');
 }
 
-// Make debug function available globally
+// Funzione di test per i pulsanti X su Android
+function testAndroidXButtons() {
+    console.log('=== Test Pulsanti X su Android ===');
+    console.log('User Agent:', navigator.userAgent);
+    console.log('Is Android:', /Android/i.test(navigator.userAgent));
+    console.log('Is Mobile:', isMobileDevice());
+    
+    // Rimuovi tutti i pulsanti esistenti
+    removeVRExitButton();
+    removeExitButton();
+    removeFullscreenExitButton();
+    
+    // Crea i pulsanti di test
+    console.log('Creando pulsanti di test...');
+    createVRExitButton();
+    createExitButton();
+    createFullscreenExitButton();
+    
+    // Su Android, mostra anche l'overlay di emergenza
+    if (/Android/i.test(navigator.userAgent)) {
+        console.log('Mostrando overlay di emergenza Android...');
+        showAndroidEmergencyOverlay();
+    }
+    
+    // Verifica che siano stati creati
+    setTimeout(() => {
+        const vrBtn = document.getElementById('vr-exit-btn');
+        const exitBtn = document.getElementById('fullscreen-exit-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-only-exit-btn');
+        const androidOverlay = document.getElementById('android-fullscreen-overlay');
+        const emergencyOverlay = document.getElementById('android-emergency-overlay');
+        
+        console.log('VR Exit Button:', !!vrBtn);
+        console.log('Exit Button:', !!exitBtn);
+        console.log('Fullscreen Exit Button:', !!fullscreenBtn);
+        console.log('Android Overlay:', !!androidOverlay);
+        console.log('Emergency Overlay:', !!emergencyOverlay);
+        
+        if (vrBtn) {
+            console.log('VR Button visibility:', window.getComputedStyle(vrBtn).visibility);
+            console.log('VR Button display:', window.getComputedStyle(vrBtn).display);
+            console.log('VR Button z-index:', window.getComputedStyle(vrBtn).zIndex);
+        }
+        
+        if (exitBtn) {
+            console.log('Exit Button visibility:', window.getComputedStyle(exitBtn).visibility);
+            console.log('Exit Button display:', window.getComputedStyle(exitBtn).display);
+            console.log('Exit Button z-index:', window.getComputedStyle(exitBtn).zIndex);
+        }
+        
+        if (androidOverlay) {
+            console.log('Android Overlay visibility:', window.getComputedStyle(androidOverlay).visibility);
+            console.log('Android Overlay display:', window.getComputedStyle(androidOverlay).display);
+            console.log('Android Overlay z-index:', window.getComputedStyle(androidOverlay).zIndex);
+        }
+        
+        console.log('=== Fine Test ===');
+    }, 500);
+}
+
+// Make debug functions available globally
 window.debugApp = debugApp;
+window.testAndroidXButtons = testAndroidXButtons;
 
 // Global event delegation for QR modal close button
 document.addEventListener('click', function(e) {

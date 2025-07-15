@@ -250,9 +250,10 @@
                        skyMaterial.material.map;
             }
             
-            // Se la texture non è pronta, forza il ricaricamento
-            if (!isTextureReady()) {
-                console.log('Texture non pronta, forzo ricaricamento completo...');
+            // Forza sempre il ricaricamento della texture per Android
+            const isAndroid = /Android/i.test(navigator.userAgent);
+            if (isAndroid || !isTextureReady()) {
+                console.log('Android rilevato o texture non pronta, forzo ricaricamento...');
                 
                 // Reset e ricarica la texture
                 sky.removeAttribute('src');
@@ -267,21 +268,18 @@
                         // Riapplica la texture
                         sky.setAttribute('src', '#panorama');
                         
-                        // Attendi che A-Frame processi la texture
+                        // Attendi più tempo per Android per processare la texture
                         setTimeout(() => {
                             console.log('Verifica finale texture prima VR...');
                             if (isTextureReady()) {
                                 console.log('Texture verificata, attivando VR...');
                                 attemptVRActivation(scene);
                             } else {
-                                console.error('Texture ancora non pronta dopo ricaricamento');
-                                window.parent.postMessage({ 
-                                    action: 'vrActivated', 
-                                    success: false, 
-                                    error: 'Errore preparazione texture per VR' 
-                                }, '*');
+                                console.error('Texture ancora non pronta, tentativo VR comunque...');
+                                // Su Android, prova comunque il VR anche se la texture sembra non pronta
+                                attemptVRActivation(scene);
                             }
-                        }, 2000);
+                        }, isAndroid ? 3000 : 2000); // Più tempo per Android
                     };
                     tempImg.onerror = function() {
                         console.error('Errore ricaricamento immagine per VR');
@@ -308,8 +306,10 @@
             // Controllo finale pre-VR
             const sky = document.getElementById('sky');
             const panoramaImg = document.getElementById('panorama');
+            const isAndroid = /Android/i.test(navigator.userAgent);
             
             console.log('Controlli pre-VR:');
+            console.log('- Device: Android =', isAndroid);
             console.log('- Scene ready:', !!scene);
             console.log('- Sky element:', !!sky);
             console.log('- Panorama image:', !!panoramaImg);
@@ -327,6 +327,22 @@
                 }
             }
             
+            // Gestione specifica per Android
+            if (isAndroid) {
+                console.log('Gestione Android VR - attesa aggiuntiva...');
+                
+                // Forza il rendering prima del VR
+                scene.renderOnDemand = false;
+                
+                // Aspetta che tutto sia renderizzato
+                setTimeout(() => {
+                    console.log('Android: Tentativo VR dopo rendering...');
+                    performVRActivation(scene);
+                }, 1000);
+                
+                return;
+            }
+            
             // Per iOS, richiedi permessi per i sensori di movimento
             if (typeof DeviceOrientationEvent !== 'undefined' && 
                 typeof DeviceOrientationEvent.requestPermission === 'function') {
@@ -337,55 +353,49 @@
                         console.log('Stato permessi iOS:', permissionState);
                         if (permissionState === 'granted') {
                             console.log('Permessi concessi, attivando VR...');
-                            // Attiva VR dopo aver ottenuto i permessi
-                            scene.enterVR().then(() => {
-                                console.log('✅ VR attivato con successo su iOS');
-                                window.parent.postMessage({ 
-                                    action: 'vrActivated', 
-                                    success: true 
-                                }, '*');
-                            }).catch(error => {
-                                console.error('❌ Errore attivazione VR iOS:', error);
-                                window.parent.postMessage({ 
-                                    action: 'vrActivated', 
-                                    success: false, 
-                                    error: 'Errore VR iOS: ' + error.message 
-                                }, '*');
-                            });
+                            performVRActivation(scene);
                         } else {
                             console.log('Permessi iOS negati, tentativo VR senza permessi...');
-                            scene.enterVR().catch(error => {
-                                console.error('❌ VR fallito senza permessi iOS:', error);
-                            });
+                            performVRActivation(scene);
                         }
                     })
                     .catch(error => {
                         console.error('Errore richiesta permessi iOS:', error);
-                        // Prova comunque ad attivare VR
-                        scene.enterVR().catch(vrError => {
-                            console.error('❌ VR fallito dopo errore permessi:', vrError);
-                        });
+                        performVRActivation(scene);
                     });
                     
             } else {
                 // Non iOS o permessi non necessari
                 console.log('Attivando VR su dispositivo non-iOS...');
-                scene.enterVR().then(() => {
-                    console.log('✅ VR attivato con successo');
-                    window.parent.postMessage({ 
-                        action: 'vrActivated', 
-                        success: true 
-                    }, '*');
-                }).catch(error => {
-                    console.error('❌ Errore attivazione VR:', error);
-                    window.parent.postMessage({ 
-                        action: 'vrActivated', 
-                        success: false, 
-                        error: 'Errore VR: ' + error.message 
-                    }, '*');
-                });
+                performVRActivation(scene);
             }
         };
+        
+        function performVRActivation(scene) {
+            console.log('Esecuzione attivazione VR...');
+            
+            scene.enterVR().then(() => {
+                console.log('✅ VR attivato con successo');
+                window.parent.postMessage({ 
+                    action: 'vrActivated', 
+                    success: true 
+                }, '*');
+                
+                // Invia anche il messaggio di entrata in VR
+                window.parent.postMessage({ 
+                    action: 'vrEntered',
+                    success: true 
+                }, '*');
+                
+            }).catch(error => {
+                console.error('❌ Errore attivazione VR:', error);
+                window.parent.postMessage({ 
+                    action: 'vrActivated', 
+                    success: false, 
+                    error: 'Errore VR: ' + error.message 
+                }, '*');
+            });
+        }
         
         window.exitVR = function() {
             console.log('Uscita dalla modalità VR richiesta');

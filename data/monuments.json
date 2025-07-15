@@ -8,6 +8,13 @@
         "lon": 14.640583,
         "maps_url": "https://maps.app.goo.gl/36n3wGo6KZ3wdWKa7",
         "address": "Regalbuto, EN, Italia",
+        "audio_guide": {
+            "path": "src/audio/chiesa-maria-ss-della-croce.mp3",
+            "duration": 180,
+            "language": "it",
+            "narrator": "Sistema Audio Guida Regalbuto",
+            "description": "Audio guida per la Chiesa di Santa Maria della Croce"
+        },
         "images": [
             {
                 "title": "Chiesa Maria S.S. della Croce - Interno",
@@ -87,6 +94,13 @@
         "lon": 14.639812,
         "maps_url": "https://maps.app.goo.gl/vSNW8QEorSkNDE487",
         "address": "Regalbuto, EN, Italia",
+        "audio_guide": {
+            "path": "src/audio/chiesa-san-basilio.mp3",
+            "duration": 240,
+            "language": "it",
+            "narrator": "Sistema Audio Guida Regalbuto",
+            "description": "Audio guida per la Chiesa di San Basilio"
+        },
         "images": [
             {
                 "title": "Chiesa S. Basilio - Ingresso",
@@ -428,6 +442,13 @@
         "lon": 14.640310,
         "maps_url": "https://maps.app.goo.gl/tV7agQC2Wzuy9DdH8",
         "address": "Regalbuto, EN, Italia",
+        "audio_guide": {
+            "path": "src/audio/convento-sant-agostino.mp3",
+            "duration": 300,
+            "language": "it",
+            "narrator": "Sistema Audio Guida Regalbuto",
+            "description": "Audio guida per il Convento di Sant'Agostino"
+        },
         "images": [
             {
                 "title": "Convento S. Agostino - Ingresso",
@@ -558,6 +579,13 @@
         "lon": 14.640744,
         "maps_url": "https://maps.app.goo.gl/Y8ZdEJJdnEfLNZfg7",
         "address": "Piazza Centrale, Regalbuto, EN, Italia",
+        "audio_guide": {
+            "path": "src/audio/monumento-ai-caduti.mp3",
+            "duration": 180,
+            "language": "it",
+            "narrator": "Sistema Audio Guida Regalbuto",
+            "description": "Audio guida per il Monumento ai Caduti"
+        },
         "images": [
             {
                 "title": "Monumento ai Caduti",
@@ -594,6 +622,13 @@
         "lon": 14.640664,
         "maps_url": "https://maps.app.goo.gl/bxz44Y7xddcPseqr5",
         "address": "Via Teatro, Regalbuto, EN, Italia",
+        "audio_guide": {
+            "path": "src/audio/cine-teatro-urania.mp3",
+            "duration": 200,
+            "language": "it",
+            "narrator": "Sistema Audio Guida Regalbuto",
+            "description": "Audio guida per il Cine Teatro Urania"
+        },
         "images": [
             {
                 "title": "Cine Teatro Urania",
