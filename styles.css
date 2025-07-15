@@ -241,6 +241,306 @@ p {
     margin-bottom: 3rem; /* Increased space between title and content */
 }
 
+/* INFO SECTION - COMPACT REDESIGN */
+#info .section-title {
+    text-align: left;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+
+/* Info Grid Layout */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Compact Card Design */
+.info-compact-card {
+    background: var(--background-white);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 8px var(--shadow-light);
+    overflow: hidden;
+}
+
+.compact-header {
+    background: var(--background-light);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.compact-header i {
+    color: var(--primary-color);
+    width: 20px;
+    height: 20px;
+}
+
+.compact-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Comune logo icon */
+.comune-logo {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 0.5rem;
+}
+
+.compact-content {
+    padding: 1rem;
+}
+
+/* Info Items */
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.info-item i {
+    color: var(--primary-color);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.info-item span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.info-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.info-item a:hover {
+    text-decoration: underline;
+}
+
+/* Service Items */
+.service-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+}
+
+.service-item i {
+    color: var(--primary-color);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.service-item span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Transport Items */
+.transport-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+}
+
+.transport-icon {
+    font-size: 1.2rem;
+    width: 20px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.transport-item span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Schedule Items */
+.schedule-item {
+    margin-bottom: 0.5rem;
+}
+
+.schedule-item strong {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.schedule-item span {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.schedule-note {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.schedule-note em {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Credit Items */
+.credit-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.credit-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.credit-item i {
+    color: var(--primary-color);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+.credit-item div {
+    flex: 1;
+}
+
+.credit-item strong {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.credit-item span {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.credit-item a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.credit-item a:hover {
+    text-decoration: underline;
+}
+
+/* Privacy Items */
+.privacy-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem 0;
+}
+
+.privacy-item i {
+    color: var(--primary-color);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.privacy-item span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.privacy-link {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Info Footer */
+.info-footer {
+    background: var(--background-light);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.footer-content {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.footer-content h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.footer-content p {
+    margin: 0.25rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.footer-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .compact-header {
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .compact-content {
+        padding: 0.75rem;
+    }
+    
+    .footer-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .footer-actions .btn {
+        width: 100%;
+        max-width: 200px;
+    }
+}
+
 .section-title:hover {
     background: var(--gradient-warm);
     -webkit-background-clip: text;
@@ -1486,230 +1786,6 @@ p {
     justify-content: center;
     font-weight: bold;
     flex-shrink: 0;
-}
-
-/* Info Section Styles */
-.info-block {
-    background: var(--background-white);
-    padding: 2rem;
-    border-radius: 20px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 15px var(--shadow-light);
-}
-
-.info-card {
-    background: var(--background-white);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px var(--shadow-light);
-    margin-bottom: 2rem;
-    border: 1px solid var(--border-color);
-    overflow: hidden;
-}
-
-.info-card .card-header {
-    background: var(--background-light);
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.info-card .card-header h3 {
-    margin: 0;
-    color: var(--text-primary);
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-
-.info-card .card-content {
-    padding: 1.5rem;
-}
-
-.contact-grid {
-    display: grid;
-    gap: 1rem;
-}
-
-.contact-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.contact-row:last-child {
-    border-bottom: none;
-}
-
-.contact-row i {
-    width: 20px;
-    height: 20px;
-    color: var(--primary-color);
-    flex-shrink: 0;
-    margin-top: 0.25rem;
-}
-
-.contact-row div {
-    flex: 1;
-}
-
-.contact-row strong {
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.contact-row a {
-    color: var(--primary-color);
-    text-decoration: none;
-}
-
-.contact-row a:hover {
-    text-decoration: underline;
-}
-
-.simple-credits {
-    text-align: center;
-    padding: 2rem 1rem;
-    margin-top: 2rem;
-    border-top: 1px solid var(--border-color);
-    color: var(--text-secondary);
-}
-
-.simple-credits h4 {
-    color: var(--text-primary);
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.simple-credits p {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
-    line-height: 1.5;
-}
-
-.contact-info {
-    display: grid;
-    gap: 1.5rem;
-}
-
-.contact-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--background-light);
-    border-radius: 15px;
-}
-
-.contact-item i {
-    color: var(--primary-color);
-    margin-top: 0.2rem;
-}
-
-.contact-item a {
-    color: var(--primary-color);
-    text-decoration: none;
-}
-
-.contact-item a:hover {
-    text-decoration: underline;
-}
-
-.schedule-grid {
-    display: grid;
-    gap: 1rem;
-}
-
-.schedule-item {
-    padding: 1.5rem;
-    background: var(--background-light);
-    border-radius: 15px;
-    border-left: 4px solid var(--primary-color);
-}
-
-.schedule-note {
-    padding: 1rem;
-    background: var(--accent-color);
-    border-radius: 10px;
-    text-align: center;
-    font-style: italic;
-}
-
-.tourist-services {
-    display: grid;
-    gap: 1rem;
-}
-
-.service-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: var(--background-light);
-    border-radius: 15px;
-}
-
-.service-item i {
-    color: var(--primary-color);
-}
-
-.transport-options {
-    display: grid;
-    gap: 1.5rem;
-}
-
-.transport-item {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 1.5rem;
-    background: var(--background-light);
-    border-radius: 15px;
-}
-
-.transport-icon {
-    font-size: 2rem;
-    width: 60px;
-    text-align: center;
-}
-
-.credits {
-    text-align: center;
-    padding: 2rem;
-    background: var(--gradient-gold);
-    border-radius: 15px;
-}
-
-.app-version {
-    margin-top: 1rem;
-    opacity: 0.7;
-}
-
-/* Privacy and Support Styles */
-.privacy-content h4 {
-    color: var(--primary-color);
-    margin-top: 1.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.privacy-content h4:first-child {
-    margin-top: 0;
-}
-
-.privacy-link {
-    margin-top: 1.5rem;
-}
-
-.support-content {
-    text-align: center;
-}
-
-.support-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
 }
 
 .final-credits {
