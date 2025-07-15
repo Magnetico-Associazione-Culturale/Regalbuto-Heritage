@@ -1043,11 +1043,14 @@ function loadLocation(locationId) {
     // Location URLs for virtual tours
     const locations = {
         'convento': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
-        'santa-maria-croce': 'https://kuula.co/share/hdWFx?logo=1&info=1&fs=1&vr=1&zoom=1&autorotate=0.22&thumbs=1&inst=it&gyro=1&cc=1',
-        'chiesa-madre': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
+        'santa-maria-croce': 'panoramas/panorama.html?img=src/imgs/360/smaria-altare.JPG',
+        'san-basilio': 'panoramas/panorama.html?img=src/imgs/360/sbasilio-altare.JPG',
         'panorama': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
         'piazza': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
-        'monumento-caduti': 'panoramas/panorama.html?img=src/imgs/360/caduti.JPG'
+        'monumento-caduti': 'panoramas/panorama.html?img=src/imgs/360/caduti.JPG',
+        'san-agostino': 'panoramas/panorama.html?img=src/imgs/360/sagostino-altare.JPG',
+        'teatro-urania': 'panoramas/panorama.html?img=src/imgs/360/teatro.JPG',
+        'purgatorio': 'panoramas/panorama.html?img=src/imgs/360/srocco-ingresso.JPG'
     };
     
     const iframe = document.querySelector('#pano-viewer iframe');

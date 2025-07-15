@@ -501,6 +501,10 @@
                                     <i data-feather="map-pin"></i>
                                     Portami lì
                                 </button>
+                                <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('san-basilio')">
+                                    <i data-feather="eye"></i>
+                                    Tour Virtuale 360°
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -578,6 +582,10 @@
                                     <i data-feather="map-pin"></i>
                                     Portami lì
                                 </button>
+                                <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('purgatorio')">
+                                    <i data-feather="eye"></i>
+                                    Tour Virtuale 360°
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -624,6 +632,49 @@
                         </div>
                     </div>
 
+                    <!-- Chiesa di San Agostino -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/360/sagostino-altare.JPG" alt="Chiesa di San Agostino">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa di San Agostino</h4>
+                            <p class="monument-description">Edificio religioso di grande valore storico e artistico</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.7 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('san-agostino')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-san-agostino">
+                            <div class="monument-description">
+                                <p>La Chiesa di San Agostino rappresenta uno dei più significativi esempi di architettura religiosa di Regalbuto. Edificata in epoca medievale, la chiesa ha subito diverse trasformazioni nel corso dei secoli, mantenendo tuttavia intatto il suo fascino storico e spirituale.</p>
+                                <p>L'interno della chiesa è caratterizzato da un'atmosfera raccolta e suggestiva, con elementi decorativi che testimoniano la devozione della comunità locale verso il grande Santo Dottore della Chiesa.</p>
+                                <p><strong>Architettura:</strong> La chiesa presenta una facciata sobria ma elegante, con un portale principale che invita alla contemplazione e alla preghiera.</p>
+                                <p><strong>Patrimonio artistico:</strong> All'interno sono conservate opere d'arte sacra di notevole valore, tra cui affreschi e arredi liturgici che raccontano la storia della fede a Regalbuto.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('san-agostino')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('san-agostino')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                                <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('san-agostino')">
+                                    <i data-feather="eye"></i>
+                                    Tour Virtuale 360°
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Monumento ai Caduti -->
                     <div class="monument-card" data-category="cultura">
                         <div class="monument-image">
@@ -660,6 +711,49 @@
                                     Portami lì
                                 </button>
                                 <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('monumento-caduti')">
+                                    <i data-feather="eye"></i>
+                                    Tour Virtuale 360°
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cine Teatro Urania -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/360/teatro.JPG" alt="Cine Teatro Urania">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Cine Teatro Urania</h4>
+                            <p class="monument-description">Storico teatro e cinema del centro città</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.4 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('teatro-urania')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-teatro-urania">
+                            <div class="monument-description">
+                                <p>Il Cine Teatro Urania rappresenta il cuore pulsante della vita culturale di Regalbuto. Costruito nel XX secolo, questo elegante edificio ha ospitato generazioni di spettatori, diventando un punto di riferimento per la comunità locale e un simbolo dell'identità culturale della città.</p>
+                                <p>La struttura conserva il fascino dell'architettura teatrale tradizionale, con una sala che unisce funzionalità moderne a elementi decorativi d'epoca. Il teatro è stato palcoscenico di importanti rappresentazioni teatrali, proiezioni cinematografiche e eventi culturali.</p>
+                                <p><strong>Programmazione:</strong> Il teatro ospita regolarmente spettacoli di compagnie locali e nazionali, concerti, conferenze e proiezioni cinematografiche, mantenendo viva la tradizione culturale del territorio.</p>
+                                <p><strong>Importanza sociale:</strong> Il Cine Teatro Urania non è solo un luogo di spettacolo, ma un centro di aggregazione sociale che favorisce l'incontro e lo scambio culturale tra i cittadini di tutte le età.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('teatro-urania')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('teatro-urania')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                                <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('teatro-urania')">
                                     <i data-feather="eye"></i>
                                     Tour Virtuale 360°
                                 </button>
@@ -1149,12 +1243,12 @@
                             <div class="location-card" onclick="loadLocation('santa-maria-croce')">
                                 <div class="location-thumb">⛪</div>
                                 <h5>Chiesa di Santa Maria della Croce</h5>
-                                <p>Tour virtuale 360°</p>
+                                <p>Altare principale</p>
                             </div>
-                            <div class="location-card" onclick="loadLocation('chiesa-madre')">
+                            <div class="location-card" onclick="loadLocation('san-basilio')">
                                 <div class="location-thumb">⛪</div>
-                                <h5>Chiesa Madre</h5>
-                                <p>Navata centrale</p>
+                                <h5>Chiesa di San Basilio</h5>
+                                <p>Altare principale</p>
                             </div>
                             <div class="location-card" onclick="loadLocation('panorama')">
                                 <div class="location-thumb">🏔️</div>
@@ -1170,6 +1264,21 @@
                                 <div class="location-thumb">🕊️</div>
                                 <h5>Monumento ai Caduti</h5>
                                 <p>Memoria e commemorazione</p>
+                            </div>
+                            <div class="location-card" onclick="loadLocation('san-agostino')">
+                                <div class="location-thumb">⛪</div>
+                                <h5>Chiesa di San Agostino</h5>
+                                <p>Altare principale</p>
+                            </div>
+                            <div class="location-card" onclick="loadLocation('teatro-urania')">
+                                <div class="location-thumb">🎭</div>
+                                <h5>Cine Teatro Urania</h5>
+                                <p>Palcoscenico e platea</p>
+                            </div>
+                            <div class="location-card" onclick="loadLocation('purgatorio')">
+                                <div class="location-thumb">⛪</div>
+                                <h5>Chiesa di San Rocco</h5>
+                                <p>Ingresso principale</p>
                             </div>
                         </div>
                     </div>

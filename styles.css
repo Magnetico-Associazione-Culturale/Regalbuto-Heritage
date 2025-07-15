@@ -1389,7 +1389,7 @@ p {
 }
 
 .monument-content.expanded {
-    max-height: 800px;
+    max-height: 1000px;
     padding: 1.5rem;
 }
 
