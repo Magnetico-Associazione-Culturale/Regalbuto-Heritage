@@ -1321,6 +1321,20 @@ function loadLocation(locationId) {
     console.log(`Loading virtual tour location: ${locationId}`);
 }
 
+function loadLocationAndScroll(locationId) {
+    // Prima carica la location
+    loadLocation(locationId);
+    
+    // Poi scroll automatico verso l'iframe
+    const iframe = document.querySelector('#pano-viewer');
+    if (iframe) {
+        iframe.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+    }
+}
+
 function toggleFullscreen() {
     const viewer = document.getElementById('pano-viewer');
     const iframe = viewer ? viewer.querySelector('iframe') : null;
