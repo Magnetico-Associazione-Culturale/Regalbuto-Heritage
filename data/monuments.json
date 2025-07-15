@@ -1,48 +1,48 @@
 [
     {
-        "name": "Chiesa Maria S.S. della Croce",
-        "id": "chiesa-maria-ss-della-croce",
+        "name": "Chiesa di Santa Maria la Croce",
+        "id": "chiesa-santa-maria-la-croce",
         "short_description": "Chiesa di Santa Maria la Croce, importante punto di culto locale",
         "category": "church",
         "lat": 37.649969,
         "lon": 14.640583,
         "maps_url": "https://maps.app.goo.gl/36n3wGo6KZ3wdWKa7",
         "address": "Regalbuto, EN, Italia",
-        "audio_guide": {
-            "path": "src/audio/chiesa-maria-ss-della-croce.mp3",
+        "audio": {
+            "path": "src/audio/chiesa-santa-maria-la-croce.mp3",
             "duration": 180,
             "language": "it",
-            "narrator": "Sistema Audio Guida Regalbuto",
+            "title": "Sistema Audio Guida Regalbuto",
             "description": "Audio guida per la Chiesa di Santa Maria della Croce"
         },
         "images": [
             {
-                "title": "Chiesa Maria S.S. della Croce - Interno",
+                "title": "Chiesa di Santa Maria la Croce - Interno",
                 "description": "Vista dell'interno della chiesa con l'altare principale",
                 "format": "360",
                 "path": "src/imgs/360/smaria-ingresso.JPG",
-                "alt": "Vista panoramica 360° dell'interno della Chiesa Maria S.S. della Croce"
+                "alt": "Vista panoramica 360° dell'interno della Chiesa di Santa Maria la Croce"
             },
             {
-                "title": "Chiesa Maria S.S. della Croce - Altare",
-                "description": "Altare principale della chiesa",
+                "title": "Chiesa di Santa Maria la Croce - Altare maggiora",
+                "description": "Altare maggiore della chiesa",
                 "format": "360",
                 "path": "src/imgs/360/smaria-altare.JPG",
-                "alt": "Vista panoramica 360° dell'altare principale"
+                "alt": "Vista panoramica 360° dell'altare maggiore"
             },
             {
-                "title": "Chiesa Maria S.S. della Croce - Lato destro",
-                "description": "Vista del lato destro della chiesa",
+                "title": "Chiesa di Santa Maria la Croce - Navata destra",
+                "description": "Vista della navata destra della chiesa",
                 "format": "360",
                 "path": "src/imgs/360/smaria-dx.JPG",
-                "alt": "Vista panoramica 360° del lato destro della chiesa"
+                "alt": "Vista panoramica 360° della navata destra della chiesa"
             },
             {
-                "title": "Chiesa Maria S.S. della Croce - Lato sinistro",
-                "description": "Vista del lato sinistro della chiesa",
+                "title": "Chiesa di Santa Maria la Croce - Navata sinistra",
+                "description": "Vista della navata sinistra della chiesa",
                 "format": "360",
                 "path": "src/imgs/360/smaria-sx.JPG",
-                "alt": "Vista panoramica 360° del lato sinistro della chiesa"
+                "alt": "Vista panoramica 360° della navata sinistra della chiesa"
             }
         ],
         "history": [
@@ -86,7 +86,7 @@
         ]
     },
     {
-        "name": "Chiesa S. Basilio",
+        "name": "Chiesa Madre di San Basilio",
         "id": "chiesa-san-basilio",
         "short_description": "Chiesa dedicata a San Basilio, importante testimonianza dell'architettura religiosa locale",
         "category": "church",
@@ -94,30 +94,31 @@
         "lon": 14.639812,
         "maps_url": "https://maps.app.goo.gl/vSNW8QEorSkNDE487",
         "address": "Regalbuto, EN, Italia",
-        "audio_guide": {
+        "audio": {
             "path": "src/audio/chiesa-san-basilio.mp3",
-            "duration": 240,
+            "duration": 120,
             "language": "it",
-            "narrator": "Sistema Audio Guida Regalbuto",
-            "description": "Audio guida per la Chiesa di San Basilio"
+            "title": "Sistema Audio Guida Regalbuto",
+            "description": "Audio guida per la Chiesa di San Basilio",
+            "role": "audioguide"
         },
         "images": [
             {
-                "title": "Chiesa S. Basilio - Ingresso",
+                "title": "Chiesa Madre di San Basilio - Ingresso",
                 "description": "Vista dell'ingresso principale della Chiesa di San Basilio",
                 "format": "360",
                 "path": "src/imgs/360/sbasilio-ingresso.JPG",
                 "alt": "Vista panoramica 360° dell'ingresso della Chiesa di San Basilio"
             },
             {
-                "title": "Chiesa S. Basilio - Altare",
+                "title": "Chiesa Madre di San Basilio - Altare",
                 "description": "Altare principale della Chiesa di San Basilio",
                 "format": "360",
                 "path": "src/imgs/360/sbasilio-altare.JPG",
                 "alt": "Vista panoramica 360° dell'altare della Chiesa di San Basilio"
             },
             {
-                "title": "Chiesa S. Basilio - Esterno",
+                "title": "Chiesa Madre di San Basilio - Esterno",
                 "description": "Vista esterna della Chiesa di San Basilio",
                 "format": "standard",
                 "path": "src/imgs/flat/chiesa-san-basilio.jpg",
@@ -194,9 +195,9 @@
         ]
     },
     {
-        "name": "Chiesa Madonna del Carmelo",
+        "name": "Chiesa della Madonna del Carmelo",
         "id": "chiesa-madonna-del-carmelo",
-        "short_description": "Chiesa dedicata alla Madonna del Carmelo, importante devozione mariana locale",
+        "short_description": "Chiesa dedicata alla della Madonna del Carmelo, importante devozione mariana locale",
         "category": "church",
         "lat": 37.650585,
         "lon": 14.644247,
@@ -204,17 +205,17 @@
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Chiesa Madonna del Carmelo",
-                "description": "Vista della Chiesa Madonna del Carmelo",
+                "title": "Chiesa della Madonna del Carmelo",
+                "description": "Vista della Chiesa della Madonna del Carmelo",
                 "format": "standard",
                 "path": "src/imgs/flat/chiesa-purgatorio.webp",
-                "alt": "Chiesa Madonna del Carmelo"
+                "alt": "Chiesa della Madonna del Carmelo"
             }
         ],
         "history": [
             {
                 "title": "Devozione carmelitana",
-                "description": "Edificazione della chiesa per la devozione alla Madonna del Carmelo",
+                "description": "Edificazione della chiesa per la devozione alla della Madonna del Carmelo",
                 "period": {
                     "start": "1600",
                     "end": "1650"
@@ -223,7 +224,7 @@
         ]
     },
     {
-        "name": "Chiesa S. Domenico",
+        "name": "Chiesa di San Domenico",
         "id": "chiesa-san-domenico",
         "short_description": "Chiesa dedicata a San Domenico, parte del patrimonio domenicano locale",
         "category": "church",
@@ -233,7 +234,7 @@
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Chiesa S. Domenico",
+                "title": "Chiesa di San Domenico",
                 "description": "Vista della Chiesa di San Domenico",
                 "format": "standard",
                 "path": "src/imgs/flat/chiesa-san-basilio.jpg",
@@ -252,7 +253,7 @@
         ]
     },
     {
-        "name": "Chiesa S. Sebastiano",
+        "name": "Chiesa di San Sebastiano",
         "id": "chiesa-san-sebastiano",
         "short_description": "Chiesa dedicata a San Sebastiano, protettore dalla peste e dalle epidemie",
         "category": "church",
@@ -262,7 +263,7 @@
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Chiesa S. Sebastiano",
+                "title": "Chiesa di San Sebastiano",
                 "description": "Vista della Chiesa di San Sebastiano",
                 "format": "standard",
                 "path": "src/imgs/flat/chiesa-purgatorio.webp",
@@ -281,7 +282,7 @@
         ]
     },
     {
-        "name": "Chiesa S. Francesco d'Assisi",
+        "name": "Chiesa di San Francesco d'Assisi",
         "id": "chiesa-san-francesco-assisi",
         "short_description": "Chiesa dedicata a San Francesco d'Assisi, testimonianza dell'ordine francescano",
         "category": "church",
@@ -291,7 +292,7 @@
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Chiesa S. Francesco d'Assisi",
+                "title": "Chiesa di San Francesco d'Assisi",
                 "description": "Vista della Chiesa di San Francesco d'Assisi",
                 "format": "standard",
                 "path": "src/imgs/flat/convento-santantonio.avif",
@@ -310,7 +311,7 @@
         ]
     },
     {
-        "name": "Chiesa S.M. delle Grazie e Convento Annesso",
+        "name": "Chiesa di Santa Maria delle Grazie e convento annesso",
         "id": "chiesa-sm-delle-grazie-convento",
         "short_description": "Chiesa di Santa Maria delle Grazie con convento annesso, sede dell'Istituto Femminile S. Giuseppe",
         "category": "church",
@@ -320,7 +321,7 @@
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Chiesa S.M. delle Grazie",
+                "title": "Chiesa di Santa Maria delle Grazie",
                 "description": "Vista della Chiesa di Santa Maria delle Grazie",
                 "format": "standard",
                 "path": "src/imgs/flat/convento-santantonio.avif",
@@ -339,7 +340,7 @@
         ]
     },
     {
-        "name": "Chiesa S. Antonio da Padova",
+        "name": "Chiesa di Sant'Antonio da Padova",
         "id": "chiesa-sant-antonio-padova",
         "short_description": "Chiesa dedicata a Sant'Antonio da Padova, importante centro di devozione antoniana",
         "category": "church",
@@ -349,7 +350,7 @@
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Chiesa S. Antonio da Padova",
+                "title": "Chiesa di Sant'Antonio da Padova",
                 "description": "Vista della Chiesa di Sant'Antonio da Padova",
                 "format": "standard",
                 "path": "src/imgs/flat/convento-santantonio.avif",
@@ -368,7 +369,7 @@
         ]
     },
     {
-        "name": "Caserma C.C. (ex Convento S. Domenico)",
+        "name": "Caserma C.C. (ex Convento di San Domenico)",
         "id": "caserma-cc-ex-convento-san-domenico",
         "short_description": "Edificio che ospita la Caserma dei Carabinieri, originariamente Convento di San Domenico",
         "category": "civic",
@@ -378,7 +379,7 @@
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Caserma C.C. (ex Convento S. Domenico)",
+                "title": "Caserma C.C. (ex Convento di San Domenico)",
                 "description": "Vista dell'edificio che ospita la Caserma dei Carabinieri",
                 "format": "standard",
                 "path": "src/imgs/flat/convento-santantonio.avif",
@@ -405,7 +406,7 @@
         ]
     },
     {
-        "name": "Chiesa rurale San Calogero",
+        "name": "Chiesa rurale di San Calogero",
         "id": "chiesa-rurale-san-calogero",
         "short_description": "Chiesa rurale dedicata a San Calogero, situata nel territorio agricolo circostante",
         "category": "church",
@@ -434,7 +435,7 @@
         ]
     },
     {
-        "name": "Convento S. Agostino",
+        "name": "Convento di Sant'Agostino",
         "id": "convento-sant-agostino",
         "short_description": "Convento dedicato a Sant'Agostino, importante complesso monastico agostiniano",
         "category": "convent",
@@ -442,30 +443,30 @@
         "lon": 14.640310,
         "maps_url": "https://maps.app.goo.gl/tV7agQC2Wzuy9DdH8",
         "address": "Regalbuto, EN, Italia",
-        "audio_guide": {
+        "audio": {
             "path": "src/audio/convento-sant-agostino.mp3",
             "duration": 300,
             "language": "it",
-            "narrator": "Sistema Audio Guida Regalbuto",
+            "title": "Sistema Audio Guida Regalbuto",
             "description": "Audio guida per il Convento di Sant'Agostino"
         },
         "images": [
             {
-                "title": "Convento S. Agostino - Ingresso",
+                "title": "Convento di Sant'Agostino - Ingresso",
                 "description": "Vista dell'ingresso del Convento di Sant'Agostino",
                 "format": "360",
                 "path": "src/imgs/360/sagostino-ingresso.JPG",
                 "alt": "Vista panoramica 360° dell'ingresso del Convento di Sant'Agostino"
             },
             {
-                "title": "Convento S. Agostino - Altare",
+                "title": "Convento di Sant'Agostino - Altare",
                 "description": "Altare principale del Convento di Sant'Agostino",
                 "format": "360",
                 "path": "src/imgs/360/sagostino-altare.JPG",
                 "alt": "Vista panoramica 360° dell'altare del Convento di Sant'Agostino"
             },
             {
-                "title": "Convento S. Agostino - Esterno",
+                "title": "Convento di Sant'Agostino - Esterno",
                 "description": "Vista esterna del Convento di Sant'Agostino",
                 "format": "standard",
                 "path": "src/imgs/flat/convento-santantonio.avif",
@@ -484,7 +485,7 @@
         ]
     },
     {
-        "name": "Convento Sant'Antonio",
+        "name": "Convento di Sant'Antonio",
         "id": "convento-sant-antonio",
         "short_description": "Convento rurale di Sant'Antonio, oggi struttura privata",
         "category": "convent",
@@ -494,11 +495,11 @@
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Convento Sant'Antonio",
+                "title": "Convento di Sant'Antonio",
                 "description": "Vista del Convento rurale di Sant'Antonio",
                 "format": "standard",
                 "path": "src/imgs/flat/convento-santantonio.avif",
-                "alt": "Convento Sant'Antonio"
+                "alt": "Convento di Sant'Antonio"
             }
         ],
         "history": [
@@ -513,7 +514,7 @@
         ]
     },
     {
-        "name": "Convento S.M. delle Grazie",
+        "name": "Convento di Santa Maria delle Grazie",
         "id": "convento-s-m-delle-grazie",
         "short_description": "Convento di Santa Maria delle Grazie, oggi istituto educativo",
         "category": "convent",
@@ -523,7 +524,7 @@
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Convento S.M. delle Grazie",
+                "title": "Convento di Santa Maria delle Grazie",
                 "description": "Vista del Convento di Santa Maria delle Grazie",
                 "format": "standard",
                 "path": "src/imgs/flat/convento-santantonio.avif",
@@ -579,11 +580,11 @@
         "lon": 14.640744,
         "maps_url": "https://maps.app.goo.gl/Y8ZdEJJdnEfLNZfg7",
         "address": "Piazza Centrale, Regalbuto, EN, Italia",
-        "audio_guide": {
+        "audio": {
             "path": "src/audio/monumento-ai-caduti.mp3",
             "duration": 180,
             "language": "it",
-            "narrator": "Sistema Audio Guida Regalbuto",
+            "title": "Sistema Audio Guida Regalbuto",
             "description": "Audio guida per il Monumento ai Caduti"
         },
         "images": [
@@ -614,7 +615,7 @@
         ]
     },
     {
-        "name": "Cine Teatro Urania",
+        "name": "CineTeatro Urania",
         "id": "cine-teatro-urania",
         "short_description": "Teatro comunale e cinema, importante centro culturale e di intrattenimento locale",
         "category": "theater",
@@ -622,11 +623,11 @@
         "lon": 14.640664,
         "maps_url": "https://maps.app.goo.gl/bxz44Y7xddcPseqr5",
         "address": "Via Teatro, Regalbuto, EN, Italia",
-        "audio_guide": {
+        "audio": {
             "path": "src/audio/cine-teatro-urania.mp3",
             "duration": 200,
             "language": "it",
-            "narrator": "Sistema Audio Guida Regalbuto",
+            "title": "Sistema Audio Guida Regalbuto",
             "description": "Audio guida per il Cine Teatro Urania"
         },
         "images": [
