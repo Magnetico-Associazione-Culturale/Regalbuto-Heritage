@@ -837,16 +837,61 @@ function getCategoryDisplayName(category) {
 }
 
 function openMapLocation(monumentId) {
-    // Define Google Maps URLs that open the native app with coordinates
+    // Define Google Maps URLs based on monuments.json data
     const mapUrls = {
+        // Chiese
+        'chiesa-maria-ss-della-croce': 'https://maps.app.goo.gl/36n3wGo6KZ3wdWKa7',
+        'santa-maria-croce': 'https://maps.app.goo.gl/36n3wGo6KZ3wdWKa7', // alias
+        'chiesa-san-giovanni': 'https://maps.app.goo.gl/othA2S9tDMcGK3FBA',
+        'chiesa-san-basilio': 'https://maps.app.goo.gl/vSNW8QEorSkNDE487',
+        'san-basilio': 'https://maps.app.goo.gl/vSNW8QEorSkNDE487', // alias
+        'chiesa-san-rocco': 'https://maps.app.goo.gl/RnocN7suTUtA44dcA',
+        'purgatorio': 'https://maps.app.goo.gl/RnocN7suTUtA44dcA', // alias
+        'chiesa-del-collegio': 'https://maps.app.goo.gl/uoby9MpGjr3MShXR8',
+        'chiesa-madonna-del-carmelo': 'https://maps.app.goo.gl/JmebSSTwzJs3wbBj6',
+        'chiesa-san-domenico': 'https://maps.app.goo.gl/9YNxj1NhouS5oJ7FA',
+        'chiesa-san-sebastiano': 'https://maps.app.goo.gl/qfcQQjYUEF8nXwbbA',
+        'chiesa-san-francesco-assisi': 'https://maps.app.goo.gl/BQKrtvufPcqWstZu8',
+        'chiesa-sm-delle-grazie-convento': 'https://maps.app.goo.gl/QKmP4c3c6zWVSHiGA',
+        'chiesa-sant-antonio-padova': 'https://maps.app.goo.gl/xsGJdJe1ZfeZeLWK8',
+        'chiesa-rurale-san-calogero': 'https://maps.google.com/maps?q=37.649874,14.646600&ll=37.649874,14.646600&z=16',
+        
+        // Conventi
+        'convento-sant-agostino': 'https://maps.app.goo.gl/tV7agQC2Wzuy9DdH8',
+        'san-agostino': 'https://maps.app.goo.gl/tV7agQC2Wzuy9DdH8', // alias
+        'convento-sant-antonio': 'https://maps.app.goo.gl/bwwdjx9qspeiSmxS6',
+        'santantonio': 'https://maps.app.goo.gl/bwwdjx9qspeiSmxS6', // alias
+        'convento-s-m-delle-grazie': 'https://maps.app.goo.gl/zFR6uWHiXjoAvJgd9',
+        
+        // Edifici civici
+        'caserma-cc-ex-convento-san-domenico': 'https://maps.app.goo.gl/w3B61q3drdJNbEPU6',
+        'collegio-di-maria': 'https://maps.app.goo.gl/dXbkhcBzdCwct2WAA',
+        'palazzo-comunale': 'https://maps.app.goo.gl/smMJq1Q86eirZLrb6',
+        
+        // Monumenti
+        'monumento-ai-caduti': 'https://maps.app.goo.gl/Y8ZdEJJdnEfLNZfg7',
+        'monumento-caduti': 'https://maps.app.goo.gl/Y8ZdEJJdnEfLNZfg7', // alias
+        
+        // Teatro
+        'cine-teatro-urania': 'https://maps.app.goo.gl/bxz44Y7xddcPseqr5',
+        'teatro-urania': 'https://maps.app.goo.gl/bxz44Y7xddcPseqr5', // alias
+        
+        // Istituti finanziari
+        'istituto-credito-cooperativo-la-riscossa': 'https://maps.app.goo.gl/1CTjLE8i9ZPcWBSr5',
+        'credito-cooperativo-la-riscossa-2': 'https://maps.app.goo.gl/zrWq99t9Cv2TFvTk8',
+        'istituto-intesa-san-paolo': 'https://maps.google.com/maps?q=37.6450,14.6380&ll=37.6450,14.6380&z=17',
+        
+        // Palazzi
+        'palazzo-marletta': 'https://maps.app.goo.gl/jnY3iJbPuJmnLMKE6',
+        'palazzo-falcone': 'https://maps.app.goo.gl/11szoYS55Rk12owd6',
+        'palazzo-gerardi': 'https://maps.app.goo.gl/TGeLkq3mGc6MSkYM7',
+        'palazzo-barone-carchiolo': 'https://maps.google.com/maps?q=37.6480,14.6350&ll=37.6480,14.6350&z=17',
+        
+        // Natura e luoghi esistenti
         'lago-pozzillo': 'https://maps.google.com/maps?q=37.6587117,14.5975772&ll=37.6587117,14.5975772&z=16',
         'parco-avventura': 'https://maps.google.com/maps?q=37.6589778,14.6188852&ll=37.6589778,14.6188852&z=16',
-        'san-basilio': 'https://maps.google.com/maps?q=37.6526434,14.6408936&ll=37.6526434,14.6408936&z=17',
-        'santantonio': 'https://maps.google.com/maps?q=37.6731697,14.6452891&ll=37.6731697,14.6452891&z=16',
         'calvario': 'https://maps.google.com/maps?q=37.6264741,14.7434425&ll=37.6264741,14.7434425&z=15',
         'tecnopolo': 'https://maps.google.com/maps?q=37.6555295,14.6282223&ll=37.6555295,14.6282223&z=17',
-        'purgatorio': 'https://maps.google.com/maps?q=37.6526434,14.6408936&ll=37.6526434,14.6408936&z=17',
-        'monumento-caduti': 'https://maps.google.com/maps?q=37.6496168,14.6407503&ll=37.6496168,14.6407503&z=17',
         'default': 'https://maps.google.com/maps?q=37.6395,14.6351&ll=37.6395,14.6351&z=14'
     };
     

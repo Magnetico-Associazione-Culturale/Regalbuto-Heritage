@@ -2,12 +2,12 @@
     {
         "name": "Chiesa Maria S.S. della Croce",
         "id": "chiesa-maria-ss-della-croce",
-        "short_description": "Chiesa principale dedicata a Maria Santissima della Croce, importante luogo di culto del centro storico",
+        "short_description": "Chiesa di Santa Maria la Croce, importante punto di culto locale",
         "category": "church",
-        "lat": 37.6461,
-        "lon": 14.6369,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+Maria+SS+della+Croce,+Regalbuto/@37.6461,14.6369,17z",
-        "address": "Via Roma, Regalbuto, EN, Italia",
+        "lat": 37.649969,
+        "lon": 14.640583,
+        "maps_url": "https://maps.app.goo.gl/36n3wGo6KZ3wdWKa7",
+        "address": "Regalbuto, EN, Italia",
         "images": [
             {
                 "title": "Chiesa Maria S.S. della Croce - Interno",
@@ -54,9 +54,9 @@
         "id": "chiesa-san-giovanni",
         "short_description": "Chiesa dedicata a San Giovanni, importante edificio religioso del patrimonio locale",
         "category": "church",
-        "lat": 37.6455,
-        "lon": 14.6375,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Giovanni,+Regalbuto/@37.6455,14.6375,17z",
+        "lat": 37.649732,
+        "lon": 14.640482,
+        "maps_url": "https://maps.app.goo.gl/othA2S9tDMcGK3FBA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -83,9 +83,9 @@
         "id": "chiesa-san-basilio",
         "short_description": "Chiesa dedicata a San Basilio, importante testimonianza dell'architettura religiosa locale",
         "category": "church",
-        "lat": 37.6450,
-        "lon": 14.6380,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Basilio,+Regalbuto/@37.6450,14.6380,17z",
+        "lat": 37.652803,
+        "lon": 14.639812,
+        "maps_url": "https://maps.app.goo.gl/vSNW8QEorSkNDE487",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -126,9 +126,9 @@
         "id": "chiesa-san-rocco",
         "short_description": "Chiesa dedicata a San Rocco, conosciuta anche come Chiesa del Purgatorio, caratteristico esempio di architettura religiosa popolare",
         "category": "church",
-        "lat": 37.6465,
-        "lon": 14.6365,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+di+San+Rocco,+Regalbuto/@37.6465,14.6365,17z",
+        "lat": 37.652933,
+        "lon": 14.640170,
+        "maps_url": "https://maps.app.goo.gl/RnocN7suTUtA44dcA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -155,9 +155,9 @@
         "id": "chiesa-del-collegio",
         "short_description": "Chiesa annessa al collegio, importante centro di formazione religiosa e culturale",
         "category": "church",
-        "lat": 37.6470,
-        "lon": 14.6360,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+del+Collegio,+Regalbuto/@37.6470,14.6360,17z",
+        "lat": 37.650658,
+        "lon": 14.640722,
+        "maps_url": "https://maps.app.goo.gl/uoby9MpGjr3MShXR8",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -184,9 +184,9 @@
         "id": "chiesa-madonna-del-carmelo",
         "short_description": "Chiesa dedicata alla Madonna del Carmelo, importante devozione mariana locale",
         "category": "church",
-        "lat": 37.6445,
-        "lon": 14.6385,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+Madonna+del+Carmelo,+Regalbuto/@37.6445,14.6385,17z",
+        "lat": 37.650585,
+        "lon": 14.644247,
+        "maps_url": "https://maps.app.goo.gl/JmebSSTwzJs3wbBj6",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -213,9 +213,9 @@
         "id": "chiesa-san-domenico",
         "short_description": "Chiesa dedicata a San Domenico, parte del patrimonio domenicano locale",
         "category": "church",
-        "lat": 37.6440,
-        "lon": 14.6390,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Domenico,+Regalbuto/@37.6440,14.6390,17z",
+        "lat": 37.654306,
+        "lon": 14.638889,
+        "maps_url": "https://maps.app.goo.gl/9YNxj1NhouS5oJ7FA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -242,9 +242,9 @@
         "id": "chiesa-san-sebastiano",
         "short_description": "Chiesa dedicata a San Sebastiano, protettore dalla peste e dalle epidemie",
         "category": "church",
-        "lat": 37.6475,
-        "lon": 14.6355,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Sebastiano,+Regalbuto/@37.6475,14.6355,17z",
+        "lat": 37.654191,
+        "lon": 14.636747,
+        "maps_url": "https://maps.app.goo.gl/qfcQQjYUEF8nXwbbA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -271,9 +271,9 @@
         "id": "chiesa-san-francesco-assisi",
         "short_description": "Chiesa dedicata a San Francesco d'Assisi, testimonianza dell'ordine francescano",
         "category": "church",
-        "lat": 37.6435,
-        "lon": 14.6395,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Francesco,+Regalbuto/@37.6435,14.6395,17z",
+        "lat": 37.653628,
+        "lon": 14.634098,
+        "maps_url": "https://maps.app.goo.gl/BQKrtvufPcqWstZu8",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -300,9 +300,9 @@
         "id": "chiesa-sm-delle-grazie-convento",
         "short_description": "Chiesa di Santa Maria delle Grazie con convento annesso, sede dell'Istituto Femminile S. Giuseppe",
         "category": "church",
-        "lat": 37.6480,
-        "lon": 14.6350,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+SM+delle+Grazie,+Regalbuto/@37.6480,14.6350,17z",
+        "lat": 37.650709,
+        "lon": 14.641753,
+        "maps_url": "https://maps.app.goo.gl/QKmP4c3c6zWVSHiGA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -329,9 +329,9 @@
         "id": "chiesa-sant-antonio-padova",
         "short_description": "Chiesa dedicata a Sant'Antonio da Padova, importante centro di devozione antoniana",
         "category": "church",
-        "lat": 37.6485,
-        "lon": 14.6345,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+Sant+Antonio,+Regalbuto/@37.6485,14.6345,17z",
+        "lat": 37.650606,
+        "lon": 14.642021,
+        "maps_url": "https://maps.app.goo.gl/xsGJdJe1ZfeZeLWK8",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -358,9 +358,9 @@
         "id": "caserma-cc-ex-convento-san-domenico",
         "short_description": "Edificio che ospita la Caserma dei Carabinieri, originariamente Convento di San Domenico",
         "category": "civic",
-        "lat": 37.6460,
-        "lon": 14.6370,
-        "maps_url": "https://www.google.com/maps/place/Caserma+Carabinieri,+Regalbuto/@37.6460,14.6370,17z",
+        "lat": 37.654446,
+        "lon": 14.638834,
+        "maps_url": "https://maps.app.goo.gl/w3B61q3drdJNbEPU6",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -395,9 +395,9 @@
         "id": "chiesa-rurale-san-calogero",
         "short_description": "Chiesa rurale dedicata a San Calogero, situata nel territorio agricolo circostante",
         "category": "church",
-        "lat": 37.6500,
-        "lon": 14.6300,
-        "maps_url": "https://www.google.com/maps/place/Chiesa+San+Calogero,+Regalbuto/@37.6500,14.6300,17z",
+        "lat": 37.649874,
+        "lon": 14.646600,
+        "maps_url": "",
         "address": "Contrada San Calogero, Regalbuto, EN, Italia",
         "images": [
             {
@@ -424,9 +424,9 @@
         "id": "convento-sant-agostino",
         "short_description": "Convento dedicato a Sant'Agostino, importante complesso monastico agostiniano",
         "category": "convent",
-        "lat": 37.6430,
-        "lon": 14.6400,
-        "maps_url": "https://www.google.com/maps/place/Convento+Sant+Agostino,+Regalbuto/@37.6430,14.6400,17z",
+        "lat": 37.649602,
+        "lon": 14.640310,
+        "maps_url": "https://maps.app.goo.gl/tV7agQC2Wzuy9DdH8",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -463,13 +463,71 @@
         ]
     },
     {
+        "name": "Convento Sant'Antonio",
+        "id": "convento-sant-antonio",
+        "short_description": "Convento rurale di Sant'Antonio, oggi struttura privata",
+        "category": "convent",
+        "lat": 37.669940,
+        "lon": 14.625629,
+        "maps_url": "https://maps.app.goo.gl/bwwdjx9qspeiSmxS6",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Convento Sant'Antonio",
+                "description": "Vista del Convento rurale di Sant'Antonio",
+                "format": "standard",
+                "path": "src/imgs/flat/convento-santantonio.avif",
+                "alt": "Convento Sant'Antonio"
+            }
+        ],
+        "history": [
+            {
+                "title": "Fondazione rurale",
+                "description": "Costruzione del convento nel territorio rurale come punto di riferimento spirituale",
+                "period": {
+                    "start": "1600",
+                    "end": "1700"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Convento S.M. delle Grazie",
+        "id": "convento-s-m-delle-grazie",
+        "short_description": "Convento di Santa Maria delle Grazie, oggi istituto educativo",
+        "category": "convent",
+        "lat": 37.650955,
+        "lon": 14.641503,
+        "maps_url": "https://maps.app.goo.gl/zFR6uWHiXjoAvJgd9",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Convento S.M. delle Grazie",
+                "description": "Vista del Convento di Santa Maria delle Grazie",
+                "format": "standard",
+                "path": "src/imgs/flat/convento-santantonio.avif",
+                "alt": "Convento Santa Maria delle Grazie"
+            }
+        ],
+        "history": [
+            {
+                "title": "Fondazione conventuale",
+                "description": "Costruzione del convento come sede dell'istituto educativo religioso",
+                "period": {
+                    "start": "1700",
+                    "end": "1750"
+                }
+            }
+        ]
+    },
+    {
         "name": "Collegio di Maria",
         "id": "collegio-di-maria",
         "short_description": "Istituto educativo femminile dedicato alla formazione religiosa e culturale",
         "category": "educational",
-        "lat": 37.6475,
-        "lon": 14.6355,
-        "maps_url": "https://www.google.com/maps/place/Collegio+di+Maria,+Regalbuto/@37.6475,14.6355,17z",
+        "lat": 37.650481,
+        "lon": 14.640677,
+        "maps_url": "https://maps.app.goo.gl/dXbkhcBzdCwct2WAA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -496,9 +554,9 @@
         "id": "monumento-ai-caduti",
         "short_description": "Monumento commemorativo dedicato ai caduti delle guerre, simbolo della memoria storica locale",
         "category": "monument",
-        "lat": 37.6465,
-        "lon": 14.6365,
-        "maps_url": "https://www.google.com/maps/place/Monumento+ai+Caduti,+Regalbuto/@37.6465,14.6365,17z",
+        "lat": 37.649513,
+        "lon": 14.640744,
+        "maps_url": "https://maps.app.goo.gl/Y8ZdEJJdnEfLNZfg7",
         "address": "Piazza Centrale, Regalbuto, EN, Italia",
         "images": [
             {
@@ -532,9 +590,9 @@
         "id": "cine-teatro-urania",
         "short_description": "Teatro comunale e cinema, importante centro culturale e di intrattenimento locale",
         "category": "theater",
-        "lat": 37.6470,
-        "lon": 14.6360,
-        "maps_url": "https://www.google.com/maps/place/Teatro+Urania,+Regalbuto/@37.6470,14.6360,17z",
+        "lat": 37.649339,
+        "lon": 14.640664,
+        "maps_url": "https://maps.app.goo.gl/bxz44Y7xddcPseqr5",
         "address": "Via Teatro, Regalbuto, EN, Italia",
         "images": [
             {
@@ -561,10 +619,10 @@
         "id": "istituto-credito-cooperativo-la-riscossa",
         "short_description": "Storico istituto bancario cooperativo, importante per l'economia locale",
         "category": "financial",
-        "lat": 37.6455,
-        "lon": 14.6375,
-        "maps_url": "https://www.google.com/maps/place/Banca+La+Riscossa,+Regalbuto/@37.6455,14.6375,17z",
-        "address": "Via Principale, Regalbuto, EN, Italia",
+        "lat": 37.650063,
+        "lon": 14.640791,
+        "maps_url": "https://maps.app.goo.gl/1CTjLE8i9ZPcWBSr5",
+        "address": "Via Gian Filippo Ingrassia, 96, Regalbuto, EN, Italia",
         "images": [
             {
                 "title": "Istituto di Credito Cooperativo \"La Riscossa\"",
@@ -615,14 +673,43 @@
         ]
     },
     {
+        "name": "Istituto di Credito Cooperativo La Riscossa (Sede 2)",
+        "id": "credito-cooperativo-la-riscossa-2",
+        "short_description": "Seconda sede dell'Istituto di Credito Cooperativo La Riscossa",
+        "category": "financial",
+        "lat": 37.654217,
+        "lon": 14.636302,
+        "maps_url": "https://maps.app.goo.gl/zrWq99t9Cv2TFvTk8",
+        "address": "Via Monsignor Vito Pernicone 1, Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Istituto di Credito Cooperativo La Riscossa (Sede 2)",
+                "description": "Vista della seconda sede dell'Istituto di Credito Cooperativo La Riscossa",
+                "format": "standard",
+                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "alt": "Istituto di Credito Cooperativo La Riscossa Sede 2"
+            }
+        ],
+        "history": [
+            {
+                "title": "Espansione cooperativa",
+                "description": "Apertura della seconda sede per servire meglio la comunità locale",
+                "period": {
+                    "start": "1950",
+                    "end": "1970"
+                }
+            }
+        ]
+    },
+    {
         "name": "Palazzo Marletta",
         "id": "palazzo-marletta",
         "short_description": "Palazzo storico della famiglia Marletta, esempio di architettura nobiliare locale",
         "category": "palace",
-        "lat": 37.6445,
-        "lon": 14.6385,
-        "maps_url": "https://www.google.com/maps/place/Palazzo+Marletta,+Regalbuto/@37.6445,14.6385,17z",
-        "address": "Regalbuto, EN, Italia",
+        "lat": 37.650160,
+        "lon": 14.640799,
+        "maps_url": "https://maps.app.goo.gl/jnY3iJbPuJmnLMKE6",
+        "address": "Via Gian Filippo Ingrassia, 71, Regalbuto, EN, Italia",
         "images": [
             {
                 "title": "Palazzo Marletta",
@@ -654,9 +741,9 @@
         "id": "palazzo-falcone",
         "short_description": "Palazzo storico della famiglia Falcone, testimonianza dell'architettura signorile",
         "category": "palace",
-        "lat": 37.6440,
-        "lon": 14.6390,
-        "maps_url": "https://www.google.com/maps/place/Palazzo+Falcone,+Regalbuto/@37.6440,14.6390,17z",
+        "lat": 37.651814,
+        "lon": 14.640389,
+        "maps_url": "https://maps.app.goo.gl/11szoYS55Rk12owd6",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -689,9 +776,9 @@
         "id": "palazzo-gerardi",
         "short_description": "Palazzo storico della famiglia Gerardi, importante esempio di architettura civile",
         "category": "palace",
-        "lat": 37.6435,
-        "lon": 14.6395,
-        "maps_url": "https://www.google.com/maps/place/Palazzo+Gerardi,+Regalbuto/@37.6435,14.6395,17z",
+        "lat": 37.652067,
+        "lon": 14.640949,
+        "maps_url": "https://maps.app.goo.gl/TGeLkq3mGc6MSkYM7",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -724,10 +811,10 @@
         "id": "palazzo-comunale",
         "short_description": "Sede del Municipio di Regalbuto, centro amministrativo della città",
         "category": "civic",
-        "lat": 37.6465,
-        "lon": 14.6365,
-        "maps_url": "https://www.google.com/maps/place/Municipio+Regalbuto/@37.6465,14.6365,17z",
-        "address": "Piazza Municipio, Regalbuto, EN, Italia",
+        "lat": 37.652236,
+        "lon": 14.640434,
+        "maps_url": "https://maps.app.goo.gl/smMJq1Q86eirZLrb6",
+        "address": "Piazza della Repubblica, 1, Regalbuto, EN, Italia",
         "images": [
             {
                 "title": "Palazzo Comunale",
@@ -753,9 +840,9 @@
         "id": "palazzo-maccarrone",
         "short_description": "Palazzo storico della famiglia Maccarrone, esempio di architettura residenziale nobiliare",
         "category": "palace",
-        "lat": 37.6475,
-        "lon": 14.6355,
-        "maps_url": "https://www.google.com/maps/place/Palazzo+Maccarrone,+Regalbuto/@37.6475,14.6355,17z",
+        "lat": null,
+        "lon": null,
+        "maps_url": "",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {

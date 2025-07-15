@@ -540,6 +540,10 @@
                                     <i data-feather="headphones"></i>
                                     Ascolta Audio Guida
                                 </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('santantonio')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
                                 <button class="btn btn-secondary" onclick="switchTab('virtual-tour'); loadLocation('convento')">
                                     <i data-feather="eye"></i>
                                     Tour Virtuale 360°
@@ -761,6 +765,424 @@
                         </div>
                     </div>
 
+                    <!-- Chiesa S. Giovanni -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/chiesa-san-basilio.jpg" alt="Chiesa S. Giovanni">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa S. Giovanni</h4>
+                            <p class="monument-description">Chiesa dedicata a San Giovanni, importante edificio religioso del patrimonio locale</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.5 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('chiesa-san-giovanni')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-chiesa-san-giovanni">
+                            <div class="monument-description">
+                                <p>La Chiesa di San Giovanni è una testimonianza importante del patrimonio religioso locale, dedicata al Santo che rappresenta una figura centrale nella tradizione cristiana di Regalbuto.</p>
+                                <p>L'edificio presenta caratteristiche architettoniche tipiche dell'arte sacra siciliana, con elementi decorativi che riflettono la devozione della comunità locale verso questo importante santo.</p>
+                                <p><strong>Patrimonio artistico:</strong> La chiesa conserva opere d'arte sacra e arredi liturgici di valore storico e artistico.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('chiesa-san-giovanni')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('chiesa-san-giovanni')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chiesa del Collegio -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/convento-santantonio.avif" alt="Chiesa del Collegio">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa del Collegio</h4>
+                            <p class="monument-description">Chiesa annessa al collegio, importante centro di formazione religiosa e culturale</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.6 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('chiesa-del-collegio')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-chiesa-del-collegio">
+                            <div class="monument-description">
+                                <p>La Chiesa del Collegio è un importante edificio religioso annesso al complesso collegiale, che ha svolto un ruolo centrale nella formazione religiosa e culturale della comunità di Regalbuto.</p>
+                                <p>L'edificio rappresenta un esempio significativo di architettura religiosa legata all'istruzione, testimoniando l'importanza dell'educazione cristiana nella storia locale.</p>
+                                <p><strong>Funzione educativa:</strong> La chiesa è stata per secoli il centro spirituale del collegio, luogo di formazione per diverse generazioni di studenti.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('chiesa-del-collegio')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('chiesa-del-collegio')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chiesa Madonna del Carmelo -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/chiesa-purgatorio.webp" alt="Chiesa Madonna del Carmelo">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa Madonna del Carmelo</h4>
+                            <p class="monument-description">Chiesa dedicata alla Madonna del Carmelo, importante devozione mariana locale</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.7 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('chiesa-madonna-del-carmelo')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-chiesa-madonna-del-carmelo">
+                            <div class="monument-description">
+                                <p>La Chiesa della Madonna del Carmelo è dedicata a una delle devozioni mariane più sentite nella tradizione cattolica siciliana. La Madonna del Carmelo è venerata come protettrice e madre spirituale della comunità.</p>
+                                <p>L'edificio religioso rappresenta un importante centro di devozione mariana, dove si svolgono celebrazioni e riti tradizionali legati al culto della Madonna del Carmelo.</p>
+                                <p><strong>Tradizioni:</strong> La chiesa è particolarmente cara ai fedeli durante la festa della Madonna del Carmelo, celebrata il 16 luglio di ogni anno.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('chiesa-madonna-del-carmelo')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('chiesa-madonna-del-carmelo')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chiesa S. Domenico -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/chiesa-san-basilio.jpg" alt="Chiesa S. Domenico">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa S. Domenico</h4>
+                            <p class="monument-description">Chiesa dedicata a San Domenico, parte del patrimonio domenicano locale</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.8 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('chiesa-san-domenico')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-chiesa-san-domenico">
+                            <div class="monument-description">
+                                <p>La Chiesa di San Domenico testimonia la presenza dell'ordine dei Predicatori (Domenicani) nel territorio di Regalbuto. San Domenico di Guzmán, fondatore dell'ordine, è venerato come santo della predicazione e dell'educazione.</p>
+                                <p>L'edificio rappresenta un importante esempio di architettura religiosa legata agli ordini mendicanti, che hanno avuto un ruolo significativo nella storia spirituale e culturale della Sicilia.</p>
+                                <p><strong>Ordine domenicano:</strong> La chiesa è testimonianza dell'attività pastorale e culturale dei frati domenicani nel territorio.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('chiesa-san-domenico')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('chiesa-san-domenico')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chiesa S. Sebastiano -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/chiesa-purgatorio.webp" alt="Chiesa S. Sebastiano">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa S. Sebastiano</h4>
+                            <p class="monument-description">Chiesa dedicata a San Sebastiano, protettore dalla peste e dalle epidemie</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.9 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('chiesa-san-sebastiano')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-chiesa-san-sebastiano">
+                            <div class="monument-description">
+                                <p>La Chiesa di San Sebastiano è dedicata al santo martire romano invocato tradizionalmente come protettore dalla peste e dalle epidemie. La sua costruzione riflette la devozione popolare verso questo importante santo.</p>
+                                <p>San Sebastiano è una figura centrale nella religiosità siciliana, spesso invocato nei momenti di difficoltà e pericolo, e la sua chiesa rappresenta un luogo di preghiera e raccoglimento per la comunità.</p>
+                                <p><strong>Devozione popolare:</strong> La chiesa è stata edificata come voto durante epidemie passate, testimoniando la fede della comunità nei momenti di prova.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('chiesa-san-sebastiano')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('chiesa-san-sebastiano')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chiesa S. Francesco d'Assisi -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/convento-santantonio.avif" alt="Chiesa S. Francesco d'Assisi">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa S. Francesco d'Assisi</h4>
+                            <p class="monument-description">Chiesa dedicata a San Francesco d'Assisi, testimonianza dell'ordine francescano</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    1.0 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('chiesa-san-francesco-assisi')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-chiesa-san-francesco-assisi">
+                            <div class="monument-description">
+                                <p>La Chiesa di San Francesco d'Assisi testimonia la presenza dell'ordine francescano nel territorio di Regalbuto. San Francesco, fondatore dell'ordine dei Frati Minori, è venerato come santo della pace e della povertà evangelica.</p>
+                                <p>L'edificio rappresenta un importante esempio di architettura francescana, caratterizzata dalla semplicità e dall'armonia che riflettono lo spirito del santo di Assisi.</p>
+                                <p><strong>Spiritualità francescana:</strong> La chiesa è un luogo di preghiera e contemplazione che richiama i valori di umiltà e carità predicati da San Francesco.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('chiesa-san-francesco-assisi')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('chiesa-san-francesco-assisi')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chiesa S.M. delle Grazie e Convento Annesso -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/convento-santantonio.avif" alt="Chiesa S.M. delle Grazie">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa S.M. delle Grazie</h4>
+                            <p class="monument-description">Chiesa di Santa Maria delle Grazie con convento annesso, sede dell'Istituto Femminile S. Giuseppe</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.7 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('chiesa-sm-delle-grazie-convento')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-chiesa-sm-delle-grazie-convento">
+                            <div class="monument-description">
+                                <p>La Chiesa di Santa Maria delle Grazie è un complesso religioso che include un convento annesso, sede dell'Istituto Femminile San Giuseppe. Rappresenta un importante centro di formazione ed educazione religiosa.</p>
+                                <p>Il complesso è dedicato a Santa Maria delle Grazie, invocata come dispensatrice di grazie e benedizioni, e testimonia la tradizione educativa cattolica femminile nel territorio.</p>
+                                <p><strong>Istituto educativo:</strong> Il convento ospita l'Istituto Femminile San Giuseppe, dedicato alla formazione delle giovani donne secondo i principi cristiani.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('chiesa-sm-delle-grazie-convento')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('chiesa-sm-delle-grazie-convento')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chiesa S. Antonio da Padova -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/convento-santantonio.avif" alt="Chiesa S. Antonio da Padova">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Chiesa S. Antonio da Padova</h4>
+                            <p class="monument-description">Chiesa dedicata a Sant'Antonio da Padova, importante centro di devozione antoniana</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.6 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('chiesa-sant-antonio-padova')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-chiesa-sant-antonio-padova">
+                            <div class="monument-description">
+                                <p>La Chiesa di Sant'Antonio da Padova è dedicata al santo francescano portoghese, particolarmente venerato come "santo dei miracoli" e invocato per ritrovare gli oggetti smarriti e per ottenere grazie.</p>
+                                <p>Sant'Antonio da Padova è una delle figure più amate della tradizione cattolica, e la sua chiesa rappresenta un importante centro di devozione antoniana nel territorio di Regalbuto.</p>
+                                <p><strong>Devozione antoniana:</strong> La chiesa è meta di pellegrinaggi e preghiere, particolarmente durante la festa del santo il 13 giugno.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('chiesa-sant-antonio-padova')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('chiesa-sant-antonio-padova')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Convento S.M. delle Grazie -->
+                    <div class="monument-card" data-category="religioso">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/convento-santantonio.avif" alt="Convento S.M. delle Grazie">
+                            <div class="monument-category-badge">Religioso</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Convento S.M. delle Grazie</h4>
+                            <p class="monument-description">Convento di Santa Maria delle Grazie, oggi istituto educativo</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.8 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('convento-s-m-delle-grazie')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-convento-s-m-delle-grazie">
+                            <div class="monument-description">
+                                <p>Il Convento di Santa Maria delle Grazie è un complesso monastico che oggi ospita un istituto educativo. Rappresenta un importante esempio di architettura conventuale siciliana.</p>
+                                <p>Il convento ha mantenuto la sua funzione educativa nel corso dei secoli, adattandosi alle esigenze moderne pur conservando la sua identità spirituale e culturale.</p>
+                                <p><strong>Funzione educativa:</strong> Il convento continua la sua missione formativa ospitando attività didattiche e culturali.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('convento-s-m-delle-grazie')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('convento-s-m-delle-grazie')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Collegio di Maria -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/convento-santantonio.avif" alt="Collegio di Maria">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Collegio di Maria</h4>
+                            <p class="monument-description">Istituto educativo femminile dedicato alla formazione religiosa e culturale</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.6 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('collegio-di-maria')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-collegio-di-maria">
+                            <div class="monument-description">
+                                <p>Il Collegio di Maria è un storico istituto educativo femminile che ha svolto un ruolo fondamentale nella formazione religiosa e culturale delle giovani donne di Regalbuto e del territorio circostante.</p>
+                                <p>L'istituzione rappresenta un importante esempio di educazione cattolica femminile, che ha contribuito alla crescita culturale e spirituale di molte generazioni.</p>
+                                <p><strong>Tradizione educativa:</strong> Il collegio ha mantenuto nel tempo la sua missione formativa, adattandosi alle trasformazioni sociali.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('collegio-di-maria')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('collegio-di-maria')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Palazzo Comunale -->
+                    <div class="monument-card" data-category="cultura">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/regalbuto-plaza.jpg" alt="Palazzo Comunale">
+                            <div class="monument-category-badge">Cultura</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Palazzo Comunale</h4>
+                            <p class="monument-description">Sede del Municipio di Regalbuto, centro amministrativo della città</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.3 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('palazzo-comunale')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-palazzo-comunale">
+                            <div class="monument-description">
+                                <p>Il Palazzo Comunale di Regalbuto è la sede del Municipio e rappresenta il centro amministrativo della città. L'edificio è il cuore pulsante della vita istituzionale e civica locale.</p>
+                                <p>Situato in posizione centrale, il palazzo è il luogo dove si svolgono le principali attività amministrative e dove i cittadini possono accedere ai servizi comunali.</p>
+                                <p><strong>Funzione istituzionale:</strong> Il palazzo ospita gli uffici comunali, la sala consiliare e gli spazi per le cerimonie ufficiali.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('palazzo-comunale')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('palazzo-comunale')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Natura e Paesaggio -->
@@ -848,6 +1270,130 @@
                         </div>
                     </div>
 
+
+                </div>
+
+                <!-- Svago e Sport -->
+                <div class="monuments-category" data-category-section="svago-sport">
+                    <h3 class="category-title">
+                        <i data-feather="activity"></i>
+                        Svago e Sport
+                    </h3>
+                    
+                    <!-- Palazzetto dello Sport -->
+                    <div class="monument-card" data-category="sport">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/regalbuto-plaza.jpg" alt="Palazzetto dello Sport">
+                            <div class="monument-category-badge">Sport</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Palazzetto dello Sport</h4>
+                            <p class="monument-description">Struttura sportiva polivalente per eventi e attività sportive</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.8 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('palazzetto-dello-sport')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-palazzetto-dello-sport">
+                            <div class="monument-description">
+                                <p>Il Palazzetto dello Sport di Regalbuto è una moderna struttura sportiva polivalente che ospita eventi sportivi, tornei e manifestazioni culturali. Rappresenta un importante centro di aggregazione per la comunità locale.</p>
+                                <p>La struttura è dotata di impianti all'avanguardia e può ospitare diverse discipline sportive, dalla pallavolo al basket, dal calcio a 5 ad altre attività sportive indoor.</p>
+                                <p><strong>Attività:</strong> Tornei sportivi, eventi culturali, manifestazioni pubbliche e attività per le scuole.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('palazzetto-dello-sport')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('palazzetto-dello-sport')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Circolo Ricreativo -->
+                    <div class="monument-card" data-category="svago">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/regalbuto-plaza.jpg" alt="Circolo Ricreativo">
+                            <div class="monument-category-badge">Svago</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Circolo Ricreativo</h4>
+                            <p class="monument-description">Centro di aggregazione sociale e ricreativa per la comunità</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    0.5 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('circolo-ricreativo')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-content" id="content-circolo-ricreativo">
+                            <div class="monument-description">
+                                <p>Il Circolo Ricreativo è un importante centro di aggregazione sociale che offre spazi per il tempo libero, attività ricreative e momenti di socializzazione per cittadini di tutte le età.</p>
+                                <p>La struttura ospita eventi culturali, serate danzanti, tornei di carte e altre attività che contribuiscono a rafforzare i legami comunitari e a promuovere la vita sociale del paese.</p>
+                                <p><strong>Attività:</strong> Eventi sociali, attività ricreative, tornei, serate culturali e momenti di aggregazione.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('circolo-ricreativo')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('circolo-ricreativo')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parco Avventura -->
+                    <div class="monument-card" data-category="svago">
+                        <div class="monument-image">
+                            <img src="src/imgs/flat/parco-avventura.webp" alt="Parco Avventura">
+                            <div class="monument-category-badge">Svago</div>
+                        </div>
+                        <div class="monument-info">
+                            <h4>Parco Avventura</h4>
+                            <p class="monument-description">Area ricreativa con percorsi avventura e attività all'aria aperta</p>
+                            <div class="monument-details">
+                                <span class="distance">
+                                    <i data-feather="map-pin"></i>
+                                    1.5 km
+                                </span>
+                                <button class="expand-btn" onclick="toggleMonument('parco-avventura')">
+                                    <i data-feather="chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="monument-expanded-content" id="content-parco-avventura">
+                            <div class="monument-description">
+                                <p>Il Parco Avventura è un'area ricreativa immersa nel verde che offre percorsi avventura, attività all'aria aperta e momenti di svago per famiglie e gruppi di amici.</p>
+                                <p>Con i suoi percorsi tra gli alberi, aree picnic e spazi per attività ricreative, il parco rappresenta una destinazione ideale per chi cerca avventura e contatto con la natura.</p>
+                                <p><strong>Attività:</strong> Percorsi avventura, trekking, mountain bike, picnic e attività per bambini.</p>
+                                <p><strong>Strutture:</strong> Aree picnic attrezzate, sentieri naturalistici, percorsi per mountain bike e spazi gioco per bambini.</p>
+                            </div>
+                            <div class="monument-actions">
+                                <button class="btn btn-primary" onclick="playAudioGuide('parco-avventura')">
+                                    <i data-feather="headphones"></i>
+                                    Ascolta Audio Guida
+                                </button>
+                                <button class="btn btn-secondary" onclick="openMapLocation('parco-avventura')">
+                                    <i data-feather="map-pin"></i>
+                                    Portami lì
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
 
