@@ -95,6 +95,20 @@ function updateResultsCount(count) {
     resultsText.textContent = `${count} monumenti trovati`;
 }
 
+function initializeMonumentCounter() {
+    const monuments = document.querySelectorAll('.monument-card');
+    let visibleCount = 0;
+    
+    monuments.forEach(monument => {
+        const computedStyle = window.getComputedStyle(monument);
+        if (computedStyle.display !== 'none') {
+            visibleCount++;
+        }
+    });
+    
+    updateResultsCount(visibleCount);
+}
+
 // Tab Navigation Functions
 function switchTab(tabName) {
     // Close QR scanner if open when switching tabs
@@ -157,6 +171,11 @@ function switchTab(tabName) {
         // Manage VR button visibility when switching to virtual tour
         if (tabName === 'virtual-tour') {
             manageVRButtonVisibility();
+        }
+        
+        // Initialize monument counter when switching to monuments tab
+        if (tabName === 'monumenti') {
+            initializeMonumentCounter();
         }
     }, 100);
     
