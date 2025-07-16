@@ -2314,6 +2314,107 @@ p {
     font-weight: 500;
 }
 
+/* iPad Fix for Bottom Navigation */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: both) {
+    body {
+        padding-bottom: 90px !important; /* Ensure enough space for iPad bottom nav */
+    }
+    
+    .bottom-nav {
+        background: var(--background-white);
+        border-top: 2px solid var(--border-color);
+        box-shadow: 0 -6px 20px var(--shadow-medium);
+        z-index: 1001;
+        padding: 0.75rem 0;
+        /* Ensure full coverage on iPad */
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        /* Prevent any transparency issues */
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .nav-item {
+        padding: 0.8rem 1rem;
+        min-width: 80px;
+        border-radius: 16px;
+        /* Ensure proper touch targets on iPad */
+        touch-action: manipulation;
+    }
+    
+    .nav-item span {
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    .nav-item.active::before {
+        width: 35px;
+        height: 3px;
+    }
+}
+
+/* Comprehensive iPad Support - all orientations and models */
+@media (min-width: 768px) and (max-width: 1366px) and (-webkit-min-device-pixel-ratio: 1.5) {
+    .bottom-nav {
+        background: var(--background-white) !important;
+        border-top: 2px solid var(--border-color) !important;
+        box-shadow: 0 -8px 25px var(--shadow-medium) !important;
+        z-index: 1002 !important;
+        padding: 0.8rem 0 !important;
+        /* Force full coverage */
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        /* Add safe area support */
+        padding-bottom: max(0.8rem, env(safe-area-inset-bottom)) !important;
+        /* Prevent any transparency */
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
+        /* Ensure solid background */
+        background-color: rgba(255, 255, 255, 0.98) !important;
+    }
+    
+    body {
+        padding-bottom: max(90px, calc(90px + env(safe-area-inset-bottom))) !important;
+    }
+}
+
+/* Additional fix for all tablet devices */
+@media (pointer: coarse) and (min-width: 768px) {
+    .bottom-nav {
+        min-height: 70px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-around !important;
+        background: var(--background-white) !important;
+        border-top: 2px solid var(--border-color) !important;
+        box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1) !important;
+        z-index: 1003 !important;
+    }
+}
+
+/* iPhone landscape and similar devices */
+@media (max-width: 768px) and (orientation: landscape) {
+    .bottom-nav {
+        padding: 0.4rem 0;
+    }
+    
+    .nav-item {
+        padding: 0.4rem 0.3rem;
+        min-width: 50px;
+    }
+    
+    .nav-item span {
+        font-size: 0.65rem;
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .hero-section {
