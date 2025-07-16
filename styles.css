@@ -1113,6 +1113,115 @@ p {
     height: 16px;
 }
 
+/* Category-specific colors for filter buttons */
+.filter-btn[data-category="church"]:hover {
+    border-color: #8B4513;
+    background: rgba(139, 69, 19, 0.1);
+}
+
+.filter-btn[data-category="church"].active {
+    background: #8B4513;
+    border-color: #8B4513;
+    box-shadow: 0 3px 10px rgba(139, 69, 19, 0.3);
+}
+
+.filter-btn[data-category="convent"]:hover {
+    border-color: #8B4513;
+    background: rgba(139, 69, 19, 0.1);
+}
+
+.filter-btn[data-category="convent"].active {
+    background: #8B4513;
+    border-color: #8B4513;
+    box-shadow: 0 3px 10px rgba(139, 69, 19, 0.3);
+}
+
+.filter-btn[data-category="palace"]:hover {
+    border-color: #DAA520;
+    background: rgba(218, 165, 32, 0.1);
+}
+
+.filter-btn[data-category="palace"].active {
+    background: #DAA520;
+    border-color: #DAA520;
+    box-shadow: 0 3px 10px rgba(218, 165, 32, 0.3);
+}
+
+.filter-btn[data-category="monument"]:hover {
+    border-color: #696969;
+    background: rgba(105, 105, 105, 0.1);
+}
+
+.filter-btn[data-category="monument"].active {
+    background: #696969;
+    border-color: #696969;
+    box-shadow: 0 3px 10px rgba(105, 105, 105, 0.3);
+}
+
+.filter-btn[data-category="theater"]:hover {
+    border-color: #DC143C;
+    background: rgba(220, 20, 60, 0.1);
+}
+
+.filter-btn[data-category="theater"].active {
+    background: #DC143C;
+    border-color: #DC143C;
+    box-shadow: 0 3px 10px rgba(220, 20, 60, 0.3);
+}
+
+.filter-btn[data-category="civic"]:hover {
+    border-color: #4682B4;
+    background: rgba(70, 130, 180, 0.1);
+}
+
+.filter-btn[data-category="civic"].active {
+    background: #4682B4;
+    border-color: #4682B4;
+    box-shadow: 0 3px 10px rgba(70, 130, 180, 0.3);
+}
+
+.filter-btn[data-category="educational"]:hover {
+    border-color: #4B0082;
+    background: rgba(75, 0, 130, 0.1);
+}
+
+.filter-btn[data-category="educational"].active {
+    background: #4B0082;
+    border-color: #4B0082;
+    box-shadow: 0 3px 10px rgba(75, 0, 130, 0.3);
+}
+
+.filter-btn[data-category="financial"]:hover {
+    border-color: #228B22;
+    background: rgba(34, 139, 34, 0.1);
+}
+
+.filter-btn[data-category="financial"].active {
+    background: #228B22;
+    border-color: #228B22;
+    box-shadow: 0 3px 10px rgba(34, 139, 34, 0.3);
+}
+
+/* Font Awesome icons in filter buttons */
+.filter-btn .fas {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Custom map icon styling */
+.custom-map-icon {
+    background: transparent !important;
+    border: none !important;
+}
+
+.custom-map-icon div {
+    position: relative;
+}
+
 /* Enhanced Map Tooltips */
 .leaflet-popup-content-wrapper {
     border-radius: 16px !important;
@@ -1278,24 +1387,147 @@ p {
     pointer-events: none !important;
 }
 
-/* Responsive tooltip design */
+/* Map Monument Card Tooltips - Replicate monument card design */
+.map-monument-card {
+    background: var(--background-white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px var(--shadow-light);
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+    max-width: 320px;
+    width: 100%;
+}
+
+.map-monument-card .monument-image {
+    position: relative;
+    height: 160px;
+    overflow: hidden;
+}
+
+.map-monument-card .monument-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.map-monument-card .monument-category-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.map-monument-card .monument-info {
+    padding: 1.5rem;
+}
+
+.map-monument-card .monument-info h4 {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.map-monument-card .monument-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.map-monument-card .monument-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.map-monument-card .monument-actions.has-audio {
+    gap: 0.75rem;
+}
+
+.map-monument-card .monument-actions .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    min-height: 44px;
+    pointer-events: auto;
+}
+
+.map-monument-card .monument-actions .btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.map-monument-card .monument-actions .btn-primary:hover {
+    background: #1e9599;
+    transform: translateY(-1px);
+}
+
+.map-monument-card .monument-actions .btn-secondary {
+    background: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.map-monument-card .monument-actions .btn-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.map-monument-card .monument-actions .secondary-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.map-monument-card .monument-actions .secondary-actions .btn {
+    flex: 1;
+    font-size: 0.85rem;
+    padding: 0.6rem 0.5rem;
+}
+
+.map-monument-card .monument-actions .btn svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+}
+
+/* Responsive design for smaller popups */
 @media (max-width: 768px) {
-    .enhanced-tooltip {
-        min-width: 260px;
+    .map-monument-card {
+        max-width: 300px;
     }
     
-    .tooltip-header {
-        padding: 0.875rem;
+    .map-monument-card .monument-image {
+        height: 160px;
     }
     
-    .tooltip-title {
+    .map-monument-card .monument-info {
+        padding: 1rem;
+    }
+    
+    .map-monument-card .monument-info h4 {
         font-size: 1rem;
     }
     
-    .category-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 1.3rem;
+    .map-monument-card .monument-actions .btn {
+        font-size: 0.8rem;
+        padding: 0.6rem 0.8rem;
     }
 }
 

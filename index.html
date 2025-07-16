@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regalbuto Heritage - Scopri il nostro patrimonio</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
@@ -399,33 +403,37 @@
                             <i data-feather="map-pin"></i>
                             Tutti i luoghi
                         </button>
-                        <button class="filter-btn" onclick="filterMapLocations('natura')" data-category="natura">
-                            <i data-feather="sun"></i>
-                            Natura e Paesaggio
-                        </button>
-                        <button class="filter-btn" onclick="filterMapLocations('cultura')" data-category="cultura">
-                            <i data-feather="bookmark"></i>
-                            Cultura e Storia
-                        </button>
-                        <button class="filter-btn" onclick="filterMapLocations('tecnologia')" data-category="tecnologia">
-                            <i data-feather="cpu"></i>
-                            Tecnologia
-                        </button>
-                        <button class="filter-btn" onclick="filterMapLocations('sport')" data-category="sport">
-                            <i data-feather="activity"></i>
-                            Svago e Sport
-                        </button>
                         <button class="filter-btn" onclick="filterMapLocations('church')" data-category="church">
-                            <i data-feather="home"></i>
+                            <i class="fas fa-church"></i>
                             Chiese
                         </button>
+                        <button class="filter-btn" onclick="filterMapLocations('convent')" data-category="convent">
+                            <i class="fas fa-place-of-worship"></i>
+                            Conventi
+                        </button>
                         <button class="filter-btn" onclick="filterMapLocations('palace')" data-category="palace">
-                            <i data-feather="crown"></i>
+                            <i class="fas fa-crown"></i>
                             Palazzi
                         </button>
                         <button class="filter-btn" onclick="filterMapLocations('monument')" data-category="monument">
-                            <i data-feather="award"></i>
+                            <i class="fas fa-monument"></i>
                             Monumenti
+                        </button>
+                        <button class="filter-btn" onclick="filterMapLocations('theater')" data-category="theater">
+                            <i class="fas fa-theater-masks"></i>
+                            Teatri
+                        </button>
+                        <button class="filter-btn" onclick="filterMapLocations('civic')" data-category="civic">
+                            <i class="fas fa-landmark"></i>
+                            Edifici Civici
+                        </button>
+                        <button class="filter-btn" onclick="filterMapLocations('educational')" data-category="educational">
+                            <i class="fas fa-graduation-cap"></i>
+                            Educazione
+                        </button>
+                        <button class="filter-btn" onclick="filterMapLocations('financial')" data-category="financial">
+                            <i class="fas fa-university"></i>
+                            Finanza
                         </button>
                     </div>
                 </div>
@@ -435,7 +443,7 @@
                         <i data-feather="info"></i>
                         <span>Tocca la mappa per attivare lo zoom</span>
                     </div>
-                    <div id="osm-map" style="height: 400px; width: 100%; border-radius: 8px;"></div>
+                    <div id="osm-map" style="height: 550px; width: 100%; border-radius: 8px;"></div>
                 </div>
             </div>
         </section>
