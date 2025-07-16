@@ -415,6 +415,18 @@
                             <i data-feather="activity"></i>
                             Svago e Sport
                         </button>
+                        <button class="filter-btn" onclick="filterMapLocations('church')" data-category="church">
+                            <i data-feather="home"></i>
+                            Chiese
+                        </button>
+                        <button class="filter-btn" onclick="filterMapLocations('palace')" data-category="palace">
+                            <i data-feather="crown"></i>
+                            Palazzi
+                        </button>
+                        <button class="filter-btn" onclick="filterMapLocations('monument')" data-category="monument">
+                            <i data-feather="award"></i>
+                            Monumenti
+                        </button>
                     </div>
                 </div>
                 
@@ -473,7 +485,7 @@
                     </h3>
                     
                     <!-- Chiesa Madre di San Basilio -->
-                    <div class="monument-card" data-category="religioso">
+                    <div class="monument-card" data-category="religioso" data-monument-id="chiesa-san-basilio">
                         <div class="monument-image">
                             <img src="src/imgs/flat/chiesa-san-basilio.jpg" alt="Chiesa Madre di San Basilio">
                             <div class="monument-category-badge">Religioso</div>
@@ -642,9 +654,8 @@
                     </div>
 
                     <!-- Chiesa di San Agostino -->
-                    <div class="monument-card" data-category="religioso">
-                        <div class="monument-image">
-                            <img src="src/imgs/360/sagostino-altare.JPG" alt="Chiesa di San Agostino">
+                    <!-- Chiesa di San Agostino -->
+                    <div class="monument-card" data-category="religioso" data-monument-id="convento-sant-agostino">
                             <div class="monument-category-badge">Religioso</div>
                         </div>
                         <div class="monument-info">
@@ -685,7 +696,7 @@
                     </div>
 
                     <!-- Monumento ai Caduti -->
-                    <div class="monument-card" data-category="cultura">
+                    <div class="monument-card" data-category="cultura" data-monument-id="monumento-ai-caduti">
                         <div class="monument-image">
                             <img src="src/imgs/flat/cadutiflat.png" alt="Monumento ai Caduti">
                             <div class="monument-category-badge">Cultura</div>

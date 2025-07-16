@@ -1021,6 +1021,93 @@ function showAudioError(playerContainer, show) {
 }
 
 // Map Initialization and Management Functions
+function createCustomIcon(category) {
+    // Define icon SVG and color based on category using Feather Icons
+    let iconSvg = '';
+    let iconColor = '';
+    
+    switch(category) {
+        case 'church':
+            iconSvg = '<path d="M12 2L8 6v3H4a2 2 0 00-2 2v7a2 2 0 002 2h16a2 2 0 002-2v-7a2 2 0 00-2-2h-4V6l-4-4z"/><path d="M12 2v8"/>'; // home icon
+            iconColor = '#8B4513'; // Brown
+            break;
+        case 'convent':
+            iconSvg = '<path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/>'; // building icon
+            iconColor = '#8B4513'; // Brown
+            break;
+        case 'palace':
+            iconSvg = '<path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17h20"/><path d="M2 12c0 5 10 5 10 5s10 0 10-5"/>'; // layers/castle-like icon
+            iconColor = '#DAA520'; // Goldenrod
+            break;
+        case 'monument':
+            iconSvg = '<circle cx="12" cy="8" r="7"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/>'; // award icon
+            iconColor = '#696969'; // DimGray
+            break;
+        case 'theater':
+            iconSvg = '<path d="M2 3h20v18H2zM8 21l4-4 4 4M12 17V9"/>'; // monitor/screen icon
+            iconColor = '#DC143C'; // Crimson
+            break;
+        case 'civic':
+            iconSvg = '<path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/>'; // building icon
+            iconColor = '#4682B4'; // SteelBlue
+            break;
+        case 'educational':
+            iconSvg = '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>'; // book-open icon
+            iconColor = '#4B0082'; // Indigo
+            break;
+        case 'financial':
+            iconSvg = '<rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3-3-3-3h-4"/>'; // credit-card icon
+            iconColor = '#228B22'; // ForestGreen
+            break;
+        case 'cultura':
+            iconSvg = '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'; // book icon
+            iconColor = '#8B4513'; // Brown
+            break;
+        case 'natura':
+            iconSvg = '<path d="M7 20h10"/><path d="M12 20v-8"/><path d="M17 10c.7-1 1.69-2.3 1.69-4a6.9 6.9 0 0 0-13.38 0c0 1.7.99 3 1.69 4Z"/>'; // tree icon
+            iconColor = '#228B22'; // ForestGreen
+            break;
+        case 'sport':
+            iconSvg = '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>'; // activity icon
+            iconColor = '#FF6347'; // Tomato
+            break;
+        case 'tecnologia':
+            iconSvg = '<rect x="4" y="4" width="16" height="12" rx="2"/><path d="M8 12h8"/><path d="M8 18h8"/>'; // monitor icon
+            iconColor = '#4169E1'; // RoyalBlue
+            break;
+        default:
+            iconSvg = '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>'; // map-pin icon
+            iconColor = '#666666'; // Gray
+    }
+    
+    return L.divIcon({
+        html: `
+            <div class="map-marker" style="
+                width: 40px;
+                height: 40px;
+                background: ${iconColor};
+                border: 3px solid white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+                cursor: pointer;
+                position: relative;
+                pointer-events: auto;
+            ">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    ${iconSvg}
+                </svg>
+            </div>
+        `,
+        className: 'custom-map-marker',
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -20]
+    });
+}
+
 function initializeMap() {
     // Initialize map only when needed to avoid loading issues
     setTimeout(() => {
@@ -1036,7 +1123,9 @@ function initializeMap() {
 }
 
 function createMap() {
-    // Create map centered on Regalbuto
+    // Create map centered on Regalbuto's historic center
+    // Coordinates calculated as average of main historic landmarks:
+    // Palazzo Comunale, Monumento ai Caduti, Chiesa Santa Maria la Croce
     map = L.map('osm-map', {
         // Disable scroll zoom by default to prevent conflicts
         scrollWheelZoom: false,
@@ -1046,12 +1135,13 @@ function createMap() {
         zoomAnimation: true,
         // Prevent map from capturing all scroll events
         touchZoom: 'center'
-    }).setView([37.6395, 14.6351], 13);
+    }).setView([37.650573, 14.640587], 16);
     
-    // Add OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        maxZoom: 18
+    // Add CartoDB Positron tiles for a beautiful, clean look
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19
     }).addTo(map);
     
     // Get the hint element
@@ -1102,7 +1192,149 @@ function addAllMarkers() {
     // Clear existing markers
     clearMarkers();
     
-    // Define locations with coordinates and categories based on monuments.json
+    // Load monuments data and create markers
+    fetch('data/monuments.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(monuments => {
+            console.log('Loaded monuments data:', monuments.length, 'monuments');
+            monuments.forEach(monument => {
+                if (monument.lat && monument.lon) {
+                    // Create custom icon based on category
+                    const customIcon = createCustomIcon(monument.category);
+                    
+                    // Check if monument has virtual tour (360° images)
+                    const hasVirtualTour = monument.images && monument.images.some(img => img.format === '360');
+                    
+                    // Check if monument has audio guide
+                    const hasAudioGuide = monument.audio && monument.audio.path;
+                    
+                    // Create enhanced tooltip content
+                    const tooltipContent = createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide);
+                    
+                    // Create marker with custom icon
+                    const marker = L.marker([monument.lat, monument.lon], {
+                        icon: customIcon
+                    })
+                    .bindPopup(tooltipContent, {
+                        maxWidth: 320,
+                        className: 'custom-popup',
+                        closeButton: true,
+                        autoPan: true
+                    })
+                    .addTo(map);
+                    
+                    // Add click event listener for debugging
+                    marker.on('click', function(e) {
+                        console.log('Marker clicked:', monument.name);
+                        console.log('Marker position:', monument.lat, monument.lon);
+                        // The popup should open automatically, but let's ensure it does
+                        marker.openPopup();
+                        
+                        // Add a small delay to make sure popup is open before adding event listeners
+                        setTimeout(() => {
+                            // Make sure popup buttons are clickable
+                            const popup = marker.getPopup();
+                            if (popup && popup._container) {
+                                const buttons = popup._container.querySelectorAll('.tooltip-btn');
+                                buttons.forEach(btn => {
+                                    btn.style.pointerEvents = 'auto';
+                                    btn.style.cursor = 'pointer';
+                                });
+                            }
+                        }, 100);
+                    });
+                    
+                    // Store marker with its category for filtering
+                    marker.category = monument.category;
+                    marker.monumentId = monument.id;
+                    markers.push(marker);
+                }
+            });
+            console.log('Added', markers.length, 'markers to map');
+        })
+        .catch(error => {
+            console.error('Error loading monuments data:', error);
+            // Fallback to old static data if needed
+            console.log('Falling back to static markers');
+            addStaticMarkers();
+        });
+}
+
+function createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide) {
+    const categoryIcon = getCategoryIcon(monument.category);
+    
+    const tooltip = `
+        <div class="enhanced-tooltip">
+            <div class="tooltip-header">
+                <span class="category-icon">${categoryIcon}</span>
+                <h3 class="tooltip-title">${monument.name}</h3>
+            </div>
+            <div class="tooltip-content">
+                <p class="tooltip-description">${monument.short_description}</p>
+                <div class="tooltip-actions">
+                    <button class="tooltip-btn tooltip-btn-primary" onclick="openMapLocation('${monument.id}')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                        <span>Portami lì</span>
+                    </button>
+                    ${hasVirtualTour ? `
+                        <button class="tooltip-btn tooltip-btn-secondary" onclick="openVirtualTourFromMap('${monument.id}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            <span>Tour 360°</span>
+                        </button>
+                    ` : ''}
+                    ${hasAudioGuide ? `
+                        <button class="tooltip-btn tooltip-btn-secondary" onclick="playAudioGuideFromMap('${monument.id}')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 18v-6a9 9 0 0 1 18 0v6"/>
+                                <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>
+                            </svg>
+                            <span>Audio Guida</span>
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    return tooltip;
+}
+
+function getCategoryIcon(category) {
+    switch(category) {
+        case 'church': 
+            return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L8 6v3H4a2 2 0 00-2 2v7a2 2 0 002 2h16a2 2 0 002-2v-7a2 2 0 00-2-2h-4V6l-4-4z"/><path d="M12 2v8"/></svg>';
+        case 'convent': 
+            return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>';
+        case 'palace': 
+            return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17h20"/><path d="M2 12c0 5 10 5 10 5s10 0 10-5"/></svg>';
+        case 'monument': 
+            return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>';
+        case 'theater': 
+            return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h20v18H2zM8 21l4-4 4 4M12 17V9"/></svg>';
+        case 'civic': 
+            return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>';
+        case 'educational': 
+            return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>';
+        case 'financial': 
+            return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3-3-3-3h-4"/></svg>';
+        default: 
+            return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+    }
+}
+
+function addStaticMarkers() {
+    // Fallback static markers (existing code as backup)
     const locations = [
         // Natura e Paesaggio
         {
@@ -1347,6 +1579,42 @@ function addAllMarkers() {
     });
 }
 
+// Helper functions for map tooltip actions
+window.openVirtualTourFromMap = function(monumentId) {
+    console.log('Opening virtual tour from map for:', monumentId);
+    // Close the popup first
+    if (map) map.closePopup();
+    
+    // Switch to virtual tour tab and load the monument
+    switchTab('virtual-tour');
+    setTimeout(() => {
+        loadLocation(monumentId);
+    }, 300);
+};
+
+window.playAudioGuideFromMap = function(monumentId) {
+    console.log('Playing audio guide from map for:', monumentId);
+    // Close the popup first
+    if (map) map.closePopup();
+    
+    // Switch to monuments tab and trigger audio guide
+    switchTab('monumenti');
+    setTimeout(() => {
+        // Find the monument card and trigger audio guide
+        const monumentCard = document.querySelector(`[data-monument-id="${monumentId}"]`);
+        if (monumentCard) {
+            monumentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => {
+                playAudioGuide(monumentId);
+            }, 500);
+        } else {
+            console.warn('Monument card not found for ID:', monumentId);
+            // Fallback: try to play audio guide directly
+            playAudioGuide(monumentId);
+        }
+    }, 300);
+};
+
 function clearMarkers() {
     markers.forEach(marker => {
         map.removeLayer(marker);
@@ -1377,11 +1645,10 @@ function filterMarkersBy(category) {
         if (visibleMarkers.length > 0) {
             const group = new L.featureGroup(visibleMarkers);
             map.fitBounds(group.getBounds().pad(0.1));
+        }        } else {
+            // Show all markers - reset to historic center view
+            map.setView([37.650573, 14.640587], 16);
         }
-    } else {
-        // Show all markers - reset to default view
-        map.setView([37.6395, 14.6351], 13);
-    }
 }
 
 // Map Location Functions
@@ -1444,12 +1711,22 @@ function getCategoryDisplayName(category) {
         'natura': 'Natura e Paesaggio',
         'cultura': 'Cultura e Storia',
         'tecnologia': 'Tecnologia',
-        'sport': 'Svago e Sport'
+        'sport': 'Svago e Sport',
+        'church': 'Chiese',
+        'convent': 'Conventi',
+        'palace': 'Palazzi',
+        'monument': 'Monumenti',
+        'theater': 'Teatri',
+        'civic': 'Edifici Civici',
+        'educational': 'Istituti Educativi',
+        'financial': 'Istituti Finanziari'
     };
     return names[category] || category;
 }
 
 function openMapLocation(monumentId) {
+    console.log('Opening map location for:', monumentId);
+    
     // Define Google Maps URLs based on monuments.json data
     const mapUrls = {
         // Chiese
@@ -1505,7 +1782,7 @@ function openMapLocation(monumentId) {
         'parco-avventura': 'https://maps.google.com/maps?q=37.6589778,14.6188852&ll=37.6589778,14.6188852&z=16',
         'calvario': 'https://maps.google.com/maps?q=37.6264741,14.7434425&ll=37.6264741,14.7434425&z=15',
         'tecnopolo': 'https://maps.google.com/maps?q=37.6555295,14.6282223&ll=37.6555295,14.6282223&z=17',
-        'default': 'https://maps.google.com/maps?q=37.6395,14.6351&ll=37.6395,14.6351&z=14'
+        'default': 'https://maps.google.com/maps?q=37.650573,14.640587&ll=37.650573,14.640587&z=16'
     };
     
     const url = mapUrls[monumentId] || mapUrls['default'];

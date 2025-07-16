@@ -1063,8 +1063,20 @@ p {
 
 .filter-buttons {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.8rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.6rem;
+}
+
+@media (max-width: 768px) {
+    .filter-buttons {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 0.5rem;
+    }
+    
+    .filter-btn {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+    }
 }
 
 .filter-btn {
@@ -1099,6 +1111,192 @@ p {
 .filter-btn i {
     width: 16px;
     height: 16px;
+}
+
+/* Enhanced Map Tooltips */
+.leaflet-popup-content-wrapper {
+    border-radius: 16px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    border: none !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.leaflet-popup-content {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-width: 280px !important;
+    line-height: 1.4 !important;
+}
+
+.leaflet-popup-tip {
+    background: white !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.leaflet-popup-close-button {
+    color: white !important;
+    font-size: 18px !important;
+    padding: 8px !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
+    text-align: center !important;
+    line-height: 16px !important;
+    top: 8px !important;
+    right: 8px !important;
+}
+
+.enhanced-tooltip {
+    font-family: 'Inter', sans-serif;
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.tooltip-header {
+    background: linear-gradient(135deg, var(--primary-color), #1e9599);
+    color: white;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.category-icon {
+    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.tooltip-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    flex: 1;
+}
+
+.tooltip-content {
+    padding: 1rem;
+}
+
+.tooltip-description {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.tooltip-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tooltip-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    min-height: 44px;
+    pointer-events: auto;
+    z-index: 1000;
+    position: relative;
+}
+
+.tooltip-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tooltip-btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.tooltip-btn-primary:hover {
+    background: #1e9599;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(32, 178, 170, 0.3);
+}
+
+.tooltip-btn-secondary {
+    background: rgba(32, 178, 170, 0.1);
+    color: var(--primary-color);
+    border: 1px solid rgba(32, 178, 170, 0.3);
+}
+
+.tooltip-btn-secondary:hover {
+    background: rgba(32, 178, 170, 0.2);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.tooltip-btn i,
+.tooltip-btn svg {
+    width: 16px !important;
+    height: 16px !important;
+    stroke: currentColor;
+}
+
+/* Custom Map Marker Styles */
+.custom-map-marker {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    pointer-events: auto !important;
+}
+
+.custom-map-marker .map-marker {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    transition: transform 0.2s ease !important;
+}
+
+.custom-map-marker:hover .map-marker {
+    transform: scale(1.1) !important;
+}
+
+.custom-map-marker .map-marker svg {
+    pointer-events: none !important;
+}
+
+/* Responsive tooltip design */
+@media (max-width: 768px) {
+    .enhanced-tooltip {
+        min-width: 260px;
+    }
+    
+    .tooltip-header {
+        padding: 0.875rem;
+    }
+    
+    .tooltip-title {
+        font-size: 1rem;
+    }
+    
+    .category-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.3rem;
+    }
 }
 
 /* Location Cards */
