@@ -37,7 +37,9 @@ switchTab('monumenti') // Switches to monuments section
   - Multiple image formats (360° and flat)
   - Audio guide metadata
   - Historical timeline data
+  - Categories: (church, convent, etc.)
 - Leaflet.js for interactive maps with custom markers
+- Font Awesome icons for monument categories on map markers and filters
 
 ### Mobile-First Development
 
@@ -89,9 +91,18 @@ switchTab('monumenti') // Switches to monuments section
 ### External Dependencies
 - **Leaflet.js**: Interactive maps and markers
 - **A-Frame**: WebVR/360° panorama rendering
-- **Feather Icons**: Consistent iconography
+- **Feather Icons**: Consistent iconography for app navigation and UI elements
+- **Font Awesome**: Category-specific icons for map markers, tooltips, and monument filters
 - **Marzipano**: Alternative panorama viewer (imported but primarily uses A-Frame)
 - **html5-qrcode**: QR code scanning functionality
+
+### Icon Usage Guidelines
+- **Feather Icons**: Used for general app navigation (bottom nav, header buttons, search, etc.)
+- **Font Awesome**: Used specifically for monument categories and map-related features:
+  - Map markers: Category-specific icons (church, monument, theater, etc.)
+  - Map filter buttons: Semantic icons matching monument categories
+  - Map tooltips: Action icons (headphones, map-marker, VR cardboard)
+  - Monument categories from JSON: `monuments.json`
 
 ### File Organization
 - Keep 360° images under 2MB for mobile performance
