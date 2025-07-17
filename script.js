@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize map when in map section
     initializeMap();
     
+    // Clean monuments section on load
+    setTimeout(() => {
+        cleanMonumentsSection();
+    }, 100);
+    
     console.log('Regalbuto Heritage App initialized');
 });
 
@@ -120,6 +125,20 @@ function initializeMonumentCounter() {
     updateResultsCount(visibleCount);
 }
 
+// Function to clean monuments section from any floating elements
+function cleanMonumentsSection() {
+    const monumentsSection = document.getElementById('monumenti');
+    if (monumentsSection) {
+        // Ensure no elements are positioned above the section title
+        const sectionHeader = monumentsSection.querySelector('.section-header');
+        if (sectionHeader) {
+            sectionHeader.style.position = 'relative';
+            sectionHeader.style.zIndex = '10';
+            sectionHeader.style.background = 'var(--background-light)';
+        }
+    }
+}
+
 // Tab Navigation Functions
 function switchTab(tabName) {
     // Close QR scanner if open when switching tabs
@@ -177,6 +196,11 @@ function switchTab(tabName) {
                 // Resize map to fix display issues when switching tabs
                 map.invalidateSize();
             }
+        }
+        
+        // Clean monuments section when opening it
+        if (tabName === 'monumenti') {
+            cleanMonumentsSection();
         }
         
         // Manage VR button visibility when switching to virtual tour

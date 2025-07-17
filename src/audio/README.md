@@ -6,7 +6,7 @@ Questa cartella contiene i file audio per le guide audio dei monumenti di Regalb
 
 I file devono essere in formato MP3 per la massima compatibilità con i browser.
 
-### File attualmente definiti in monuments.json:
+### File attualmente definiti in monuments.json (placeholder):
 
 - chiesa-maria-ss-della-croce.mp3
 - chiesa-san-basilio.mp3

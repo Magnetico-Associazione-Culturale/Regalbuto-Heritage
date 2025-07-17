@@ -1755,6 +1755,19 @@ p {
     border-radius: 12px;
     font-size: 0.75rem;
     font-weight: 500;
+    z-index: 1;
+    max-width: calc(100% - 24px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Ensure badges are always contained within monument cards */
+.monument-card .monument-category-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 2;
 }
 
 .monument-info {
@@ -2730,6 +2743,8 @@ button:focus,
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease, padding 0.3s ease;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .monument-expanded-content.expanded {
