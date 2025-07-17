@@ -575,7 +575,7 @@
         "name": "Monumento ai Caduti",
         "id": "monumento-ai-caduti",
         "short_description": "Monumento commemorativo dedicato ai caduti delle guerre, simbolo della memoria storica locale",
-        "category": "monument",
+        "category": "civic",
         "lat": 37.649513,
         "lon": 14.640744,
         "maps_url": "https://maps.app.goo.gl/Y8ZdEJJdnEfLNZfg7",
@@ -938,6 +938,35 @@
                         "name": "Barone Carchiolo"
                     }
                 ]
+            }
+        ]
+    },
+    {
+        "name": "Tecnopolo Magnetico",
+        "id": "tecnopolo-magnetico",
+        "short_description": "Lab formativo e spazio di co-working ICT, centro di innovazione tecnologica e digitale",
+        "category": "technology",
+        "lat": 37.6555295,
+        "lon": 14.6282223,
+        "maps_url": "https://maps.app.goo.gl/TechnopoloMagnetico",
+        "address": "Regalbuto, EN, Italia",
+        "images": [
+            {
+                "title": "Tecnopolo Magnetico",
+                "description": "Vista del Tecnopolo Magnetico",
+                "format": "standard",
+                "path": "src/imgs/flat/tecnopolo-logo.png",
+                "alt": "Tecnopolo Magnetico"
+            }
+        ],
+        "history": [
+            {
+                "title": "Innovazione digitale",
+                "description": "Creazione del centro di innovazione tecnologica per la formazione e l'imprenditorialità digitale",
+                "period": {
+                    "start": "2020",
+                    "end": "2025"
+                }
             }
         ]
     }

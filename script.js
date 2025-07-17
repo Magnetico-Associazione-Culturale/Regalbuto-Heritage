@@ -23,11 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize map when in map section
     initializeMap();
     
-    // Clean monuments section on load
-    setTimeout(() => {
-        cleanMonumentsSection();
-    }, 100);
-    
     console.log('Regalbuto Heritage App initialized');
 });
 
@@ -47,10 +42,8 @@ function filterMonuments() {
         
         if (currentFilter === 'all') {
             matchesFilter = true;
-        } else if (currentFilter === 'sport') {
-            // Include both sport and svago categories
-            matchesFilter = category === 'sport' || category === 'svago';
         } else {
+            // Check if the category matches the current filter
             matchesFilter = category === currentFilter;
         }
         
@@ -59,6 +52,26 @@ function filterMonuments() {
             visibleCount++;
         } else {
             monument.style.display = 'none';
+        }
+    });
+    
+    // Hide/show category sections based on whether they have visible monuments
+    const categorySection = document.querySelectorAll('.monuments-category');
+    categorySection.forEach(section => {
+        const monumentsInSection = section.querySelectorAll('.monument-card');
+        let hasVisibleMonuments = false;
+        
+        monumentsInSection.forEach(monument => {
+            const style = window.getComputedStyle(monument);
+            if (style.display !== 'none') {
+                hasVisibleMonuments = true;
+            }
+        });
+        
+        if (hasVisibleMonuments) {
+            section.style.display = 'block';
+        } else {
+            section.style.display = 'none';
         }
     });
     
@@ -88,11 +101,14 @@ function filterByCategory(category) {
 function scrollToCategorySection(category) {
     // Map filter categories to monument sections
     const categoryMap = {
-        'religioso': 'cultura-storia',
-        'natura': 'natura-paesaggio', 
-        'cultura': 'cultura-storia',
-        'sport': 'svago-sport',
-        'tecnologia': 'tecnologia'
+        'church': 'patrimonio-religioso',
+        'convent': 'patrimonio-religioso',
+        'palace': 'architettura-civile',
+        'civic': 'architettura-civile',
+        'educational': 'educazione',
+        'theater': 'cultura-spettacolo',
+        'financial': 'istituzioni-finanziarie',
+        'technology': 'tecnologia'
     };
     
     const targetCategory = categoryMap[category] || category;
@@ -115,6 +131,12 @@ function initializeMonumentCounter() {
     const monuments = document.querySelectorAll('.monument-card');
     let visibleCount = 0;
     
+    // Ensure all category sections are visible by default
+    const categorySection = document.querySelectorAll('.monuments-category');
+    categorySection.forEach(section => {
+        section.style.display = 'block';
+    });
+    
     monuments.forEach(monument => {
         const computedStyle = window.getComputedStyle(monument);
         if (computedStyle.display !== 'none') {
@@ -123,20 +145,6 @@ function initializeMonumentCounter() {
     });
     
     updateResultsCount(visibleCount);
-}
-
-// Function to clean monuments section from any floating elements
-function cleanMonumentsSection() {
-    const monumentsSection = document.getElementById('monumenti');
-    if (monumentsSection) {
-        // Ensure no elements are positioned above the section title
-        const sectionHeader = monumentsSection.querySelector('.section-header');
-        if (sectionHeader) {
-            sectionHeader.style.position = 'relative';
-            sectionHeader.style.zIndex = '10';
-            sectionHeader.style.background = 'var(--background-light)';
-        }
-    }
 }
 
 // Tab Navigation Functions
@@ -196,11 +204,6 @@ function switchTab(tabName) {
                 // Resize map to fix display issues when switching tabs
                 map.invalidateSize();
             }
-        }
-        
-        // Clean monuments section when opening it
-        if (tabName === 'monumenti') {
-            cleanMonumentsSection();
         }
         
         // Manage VR button visibility when switching to virtual tour
