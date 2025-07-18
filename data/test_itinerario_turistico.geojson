@@ -116,7 +116,8 @@
         "type": "Point"
       },
       "properties": {
-        "name": "Piazza della repubblica"
+        "name": "Piazza della repubblica",
+        "monument_id": "piazza-repubblica"
       },
       "id": "M3SDO"
     },
@@ -130,7 +131,8 @@
         "type": "Point"
       },
       "properties": {
-        "name": "Chiesa di Santa Maria la Croce"
+        "name": "Chiesa di Santa Maria la Croce",
+        "monument_id": "chiesa-santa-maria"
       },
       "id": "j2JxR"
     }
