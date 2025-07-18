@@ -105,6 +105,34 @@
         "description": "Questo è un test per l'itinerario turistico di Regalbuto"
       },
       "id": "sPSkI"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "coordinates": [
+          14.640977,
+          37.652321
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "name": "Piazza della repubblica"
+      },
+      "id": "M3SDO"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "coordinates": [
+          14.640967,
+          37.649748
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "name": "Chiesa di Santa Maria la Croce"
+      },
+      "id": "j2JxR"
     }
   ]
 }
