@@ -109,3 +109,6 @@ switchTab('monumenti') // Switches to monuments section
 - Audio files should be MP3 format for broad compatibility
 - PDFs in `src/docs/` for downloadable heritage documentation
 - Use semantic naming: `chiesa-smaria-ingresso.JPG` for church interior entrance view
+
+## Code Execution
+Usa sempre windows subsystem for Linux (WSL) per eseguire il codice.

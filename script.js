@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize map when in map section
     initializeMap();
     
+    // Load monuments from JSON data
+    loadMonumentsFromJSON();
+    
     console.log('Regalbuto Heritage App initialized');
 });
 
@@ -1814,6 +1817,49 @@ window.openVirtualTourFromMap = async function(monumentId) {
         }
         
         // Switch to virtual tour tab (same as monument cards)
+        switchTab('virtual-tour');
+        
+        // Wait a moment for the tab to load, then load the location with dynamic data
+        setTimeout(() => {
+            loadLocationFromJSON(monumentId, image360.path);
+        }, 300);
+        
+        console.log('Loading virtual tour for monument:', monument.name);
+        
+    } catch (error) {
+        console.error('Error loading monument data:', error);
+        showNotification('Errore durante il caricamento del tour virtuale', 'error');
+    }
+};
+
+// Open virtual tour for a monument from monument cards
+window.openVirtualTour = async function(monumentId) {
+    console.log('Opening virtual tour for:', monumentId);
+    
+    try {
+        // Load monuments data from JSON to get 360° images dynamically
+        const response = await fetch('data/monuments.json');
+        const monuments = await response.json();
+        
+        // Find the monument by ID
+        const monument = monuments.find(m => m.id === monumentId);
+        
+        if (!monument) {
+            console.error('Monument not found:', monumentId);
+            showNotification('Monumento non trovato', 'error');
+            return;
+        }
+        
+        // Find the first 360° image
+        const image360 = monument.images && monument.images.find(img => img.format === '360');
+        
+        if (!image360) {
+            console.error('No 360° image found for monument:', monumentId);
+            showNotification('Tour virtuale non disponibile per questo monumento', 'error');
+            return;
+        }
+        
+        // Switch to virtual tour tab
         switchTab('virtual-tour');
         
         // Wait a moment for the tab to load, then load the location with dynamic data
@@ -3698,56 +3744,196 @@ document.addEventListener('touchend', function(e) {
     }
 });
 
-// Load monument thumbnails from monuments.json
-async function loadMonumentThumbnails() {
+// Load monument data from monuments.json and generate monument cards dynamically
+async function loadMonumentsFromJSON() {
     try {
         const response = await fetch('data/monuments.json');
         const monumentsData = await response.json();
         
-        // Create a map for quick lookup
-        const monumentsMap = {};
+        // Get the monuments container
+        const monumentsContainer = document.getElementById('monuments-container');
+        if (!monumentsContainer) {
+            console.error('Monuments container not found');
+            return;
+        }
+        
+        // Clear any existing content
+        monumentsContainer.innerHTML = '';
+        
+        // Group monuments by category for better organization
+        const categoryMapping = {
+            'church': 'Chiese',
+            'convent': 'Conventi', 
+            'palace': 'Palazzi',
+            'civic': 'Architettura Civile',
+            'theater': 'Cultura e Spettacolo',
+            'educational': 'Educazione',
+            'financial': 'Istituzioni Finanziarie',
+            'technology': 'Tecnologia',
+            'monument': 'Monumenti',
+            'nature': 'Natura e Paesaggio'
+        };
+        
+        // Create monument cards for each monument in JSON
         monumentsData.forEach(monument => {
-            monumentsMap[monument.id] = monument;
+            const monumentCard = createMonumentCard(monument);
+            monumentsContainer.appendChild(monumentCard);
         });
         
-        // Update all monument cards with correct thumbnails
-        const monumentCards = document.querySelectorAll('.monument-card[data-monument-id]');
+        // Update results count
+        const resultsText = document.getElementById('results-text');
+        if (resultsText) {
+            resultsText.textContent = `${monumentsData.length} monumenti trovati`;
+        }
         
-        monumentCards.forEach(card => {
-            const monumentId = card.getAttribute('data-monument-id');
-            const monument = monumentsMap[monumentId];
-            
-            if (monument && monument.images && monument.images.length > 0) {
-                const imgElement = card.querySelector('.monument-image img');
-                if (imgElement) {
-                    // Use the same logic as the map popups
-                    let thumbnailImage = null;
-                    
-                    // Look for image with role thumbnail first
-                    thumbnailImage = monument.images.find(img => img.role === 'thumbnail');
-                    // If no thumbnail role, use first standard format image
-                    if (!thumbnailImage) {
-                        thumbnailImage = monument.images.find(img => img.format === 'standard');
-                    }
-                    // If still no image, use first available
-                    if (!thumbnailImage) {
-                        thumbnailImage = monument.images[0];
-                    }
-                    
-                    // Update the image source
-                    imgElement.src = thumbnailImage.path;
-                    imgElement.alt = thumbnailImage.alt || monument.name;
-                }
-            }
-        });
+        // Reinitialize Feather icons for the dynamically generated content
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
         
-        console.log('Monument thumbnails loaded successfully');
+        console.log('Monuments loaded successfully from monuments.json');
     } catch (error) {
-        console.error('Error loading monument thumbnails:', error);
+        console.error('Error loading monuments from JSON:', error);
+        const monumentsContainer = document.getElementById('monuments-container');
+        if (monumentsContainer) {
+            monumentsContainer.innerHTML = '<p>Errore nel caricamento dei monumenti. Riprova più tardi.</p>';
+        }
     }
 }
 
-// Backup initialization
+// Create a monument card element from monument data
+function createMonumentCard(monument) {
+    // Get thumbnail image
+    let thumbnailImage = null;
+    if (monument.images && monument.images.length > 0) {
+        // Look for image with role thumbnail first
+        thumbnailImage = monument.images.find(img => img.role === 'thumbnail');
+        // If no thumbnail role, use first standard format image  
+        if (!thumbnailImage) {
+            thumbnailImage = monument.images.find(img => img.format === 'standard');
+        }
+        // If still no image, use first available
+        if (!thumbnailImage) {
+            thumbnailImage = monument.images[0];
+        }
+    }
+    
+    // Default image if none found
+    const imagePath = thumbnailImage ? thumbnailImage.path : 'src/imgs/flat/regalbuto-plaza.jpg';
+    const imageAlt = thumbnailImage ? (thumbnailImage.alt || monument.name) : monument.name;
+    
+    // Map category to display name
+    const categoryDisplay = getCategoryDisplayName(monument.category);
+    
+    // Create the monument card HTML
+    const cardHTML = `
+        <div class="monument-card" data-category="${monument.category}" data-monument-id="${monument.id}">
+            <div class="monument-image">
+                <img src="${imagePath}" alt="${imageAlt}">
+                <div class="monument-category-badge">${categoryDisplay}</div>
+            </div>
+            <div class="monument-info">
+                <h4>${monument.name}</h4>
+                <p class="monument-description">${monument.short_description || 'Monumento storico di Regalbuto'}</p>
+                <div class="monument-details">
+                    <span class="distance">
+                        <i data-feather="map-pin"></i>
+                        ${monument.address ? '0.5 km' : 'Posizione da definire'}
+                    </span>
+                    <button class="expand-btn" onclick="toggleMonument('${monument.id}')">
+                        <i data-feather="chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="monument-content" id="content-${monument.id}">
+                <div class="monument-description">
+                    ${generateMonumentDescription(monument)}
+                </div>
+                <div class="monument-actions">
+                    ${generateMonumentActions(monument)}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Create a temporary container to parse the HTML
+    const tempContainer = document.createElement('div');
+    tempContainer.innerHTML = cardHTML;
+    
+    // Return the first child element
+    return tempContainer.firstElementChild;
+}
+
+// Get display name for category
+function getCategoryDisplayName(category) {
+    const categoryNames = {
+        'church': 'Chiesa',
+        'convent': 'Convento', 
+        'palace': 'Palazzo',
+        'civic': 'Civico',
+        'theater': 'Teatro',
+        'educational': 'Educativo',
+        'financial': 'Finanziario',
+        'technology': 'Tecnologia',
+        'monument': 'Monumento',
+        'nature': 'Natura'
+    };
+    return categoryNames[category] || 'Monumento';
+}
+
+// Generate monument description from JSON data
+function generateMonumentDescription(monument) {
+    let description = '';
+    
+    if (monument.history && monument.history.length > 0) {
+        monument.history.forEach(period => {
+            description += `<p><strong>${period.title}:</strong> ${period.description}</p>`;
+        });
+    } else {
+        description = `<p>${monument.short_description || 'Informazioni dettagliate in fase di aggiornamento.'}</p>`;
+    }
+    
+    return description;
+}
+
+// Generate monument actions based on available features
+function generateMonumentActions(monument) {
+    let actions = '';
+    
+    // Audio guide button if available
+    if (monument.audio) {
+        actions += `
+            <button class="btn btn-primary" onclick="playAudioGuide('${monument.id}')">
+                <i data-feather="headphones"></i>
+                Ascolta Audio Guida
+            </button>
+        `;
+    }
+    
+    // Map location button if coordinates available
+    if (monument.lat && monument.lon) {
+        actions += `
+            <button class="btn btn-secondary" onclick="openMapLocation('${monument.id}')">
+                <i data-feather="map-pin"></i>
+                Portami lì
+            </button>
+        `;
+    }
+    
+    // Virtual tour button if 360° images available
+    if (monument.images && monument.images.some(img => img.format === '360')) {
+        actions += `
+            <button class="btn btn-secondary" onclick="openVirtualTour('${monument.id}')">
+                <i data-feather="eye"></i>
+                Tour Virtuale 360°
+            </button>
+        `;
+    }
+    
+    return actions || '<p>Ulteriori funzionalità disponibili a breve</p>';
+}
+
+// Backup initialization for monument loading
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Feather icons for the modal
     if (typeof feather !== 'undefined') {
@@ -3757,8 +3943,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Controlla e gestisci la visibilità del pulsante VR
     manageVRButtonVisibility();
     
-    // Load monument thumbnails from JSON data
-    loadMonumentThumbnails();
+    // Load monuments from JSON data (backup call)
+    setTimeout(() => {
+        if (document.getElementById('monuments-container').children.length === 0) {
+            loadMonumentsFromJSON();
+        }
+    }, 1000);
 });
 
 console.log('Regalbuto Heritage - Script loaded successfully');
