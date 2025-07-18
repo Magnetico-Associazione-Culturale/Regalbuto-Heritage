@@ -181,6 +181,13 @@
                 "format": "standard",
                 "path": "src/imgs/flat/convento-santantonio.avif",
                 "alt": "Chiesa del Collegio"
+            },
+            {
+                "title": "Interno della Chiesa del Collegio",
+                "description": "Unica navata della Chiesa del Collegio con altare maggiore",
+                "format": "360",
+                "path": "src/imgs/360/chiesa-collegio.JPG",
+                "alt": "Vista panoramica 360° dell'interno della Chiesa del Collegio"
             }
         ],
         "history": [
@@ -421,6 +428,20 @@
                 "format": "standard",
                 "path": "src/imgs/flat/chiesa-san-basilio.jpg",
                 "alt": "Chiesa rurale di San Calogero"
+            },
+            {
+                "title": "Interno della Chiesa rurale di San Calogero",
+                "description": "Interno della chiesa",
+                "format": "360",
+                "path": "src/imgs/360/chiesa-san-calogero.JPG",
+                "alt": "Vista panoramica 360° dell'interno della Chiesa rurale di San Calogero"
+            },
+            {
+                "title": "Esterno della Chiesa rurale di San Calogero",
+                "description": "Vista esterna della chiesa",
+                "format": "standard",
+                "path": "src/imgs/360/vista-san-calogero.jpg",
+                "alt": "Chiesa rurale di San Calogero vista esterna"
             }
         ],
         "history": [
@@ -500,6 +521,41 @@
                 "format": "standard",
                 "path": "src/imgs/flat/convento-santantonio.avif",
                 "alt": "Convento di Sant'Antonio"
+            },
+            {
+                "title": "Chiostro del Convento di Sant'Antonio",
+                "description": "Chiostro del convento",
+                "format": "360",
+                "path": "src/imgs/360/chiostro-convento-sant-antonio.JPG",
+                "alt": "Vista panoramica 360° dell'interno del chiostro del Convento di Sant'Antonio"
+            },
+            {
+                "title": "Chiesa del Convento di Sant'Antonio",
+                "description": "Interno della chiesa del Convento",
+                "format": "360",
+                "path": "src/imgs/360/chiesa-convento-sant-antonio.JPG",
+                "alt": "Vista panoramica 360° dell'interno del Convento di Sant'Antonio"
+            },
+            {
+                "title": "TEST optimized Chiesa del Convento di Sant'Antonio",
+                "description": "Chiesa del Convento di Sant'Antonio",
+                "format": "360",
+                "path": "src/imgs/360/test-optimized.JPG",
+                "alt": "Convento di Sant'Antonio vista esterna"
+            },
+            {
+                "title": "Vista esterna del Convento di Sant'Antonio con insediamento rupestre",
+                "description": "Vista esterna del Convento di Sant'Antonio con insediamento rupestre",
+                "format": "360",
+                "path": "src/imgs/360/vista-convento-sant-antonio.JPG",
+                "alt": "Vista panoramica 360° del Convento di Sant'Antonio con insediamento rupestre"
+            },
+            {
+                "title": "Grotta dell'insediamento rupestre di monte Sant'Antonio",
+                "description": "Grotta dell'insediamento rupestre di monte Sant'Antonio",
+                "format": "360",
+                "path": "src/imgs/360/grotta-insediamento-sant-antonio.JPG",
+                "alt": "Grotta dell'insediamento rupestre di monte Sant'Antonio"
             }
         ],
         "history": [
@@ -558,6 +614,13 @@
                 "format": "standard",
                 "path": "src/imgs/flat/convento-santantonio.avif",
                 "alt": "Collegio di Maria"
+            },
+            {
+                "title": "Chiostro del Collegio di Maria",
+                "description": "Chiostro del Collegio di Maria con aula didattica",
+                "format": "360",
+                "path": "src/imgs/360/chiostro-collegio-maria.JPG",
+                "alt": "Vista panoramica 360° del Chiostro del Collegio di Maria"
             }
         ],
         "history": [
