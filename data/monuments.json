@@ -137,8 +137,8 @@
         ]
     },
     {
-        "name": "Chiesa di San Rocco",
-        "id": "chiesa-san-rocco",
+        "name": "Chiesa del Purgatorio (San Rocco)",
+        "id": "chiesa-purgatorio",
         "short_description": "Chiesa dedicata a San Rocco, conosciuta anche come Chiesa del Purgatorio, caratteristico esempio di architettura religiosa popolare",
         "category": "church",
         "lat": 37.652933,
@@ -148,9 +148,10 @@
         "images": [
             {
                 "title": "Chiesa di San Rocco",
-                "description": "Vista della Chiesa di San Rocco (anche detta Chiesa del Purgatorio)",
+                "description": "Facciata della Chiesa di San Rocco",
                 "format": "standard",
-                "path": "src/imgs/flat/srocco-flat.png",
+                "role": "thumbnail",
+                "path": "src/imgs/flat/chiesa-purgatorio.png",
                 "alt": "Chiesa di San Rocco"
             }
         ],
@@ -271,9 +272,10 @@
         "images": [
             {
                 "title": "Chiesa di San Sebastiano",
-                "description": "Vista della Chiesa di San Sebastiano",
+                "description": "Prospetto della Chiesa di San Sebastiano",
+                "role": "thumbnail",
                 "format": "standard",
-                "path": "src/imgs/flat/chiesa-purgatorio.webp",
+                "path": "src/imgs/flat/chiesa-san-sebastiano.jpg",
                 "alt": "Chiesa di San Sebastiano"
             }
         ],
@@ -301,8 +303,9 @@
             {
                 "title": "Chiesa di San Francesco d'Assisi",
                 "description": "Vista della Chiesa di San Francesco d'Assisi",
+                "rolwe": "thumbnail",
                 "format": "standard",
-                "path": "src/imgs/flat/convento-santantonio.avif",
+                "path": "src/imgs/flat/chiesa-san-francesco.jpg",
                 "alt": "Chiesa di San Francesco d'Assisi"
             }
         ],
@@ -424,9 +427,10 @@
         "images": [
             {
                 "title": "Chiesa rurale San Calogero",
-                "description": "Vista della Chiesa rurale di San Calogero",
+                "description": "Prospetto della Chiesa rurale di San Calogero",
+                "role": "thumbnail",
                 "format": "standard",
-                "path": "src/imgs/flat/chiesa-san-basilio.jpg",
+                "path": "src/imgs/flat/chiesa-san-calogero.jpg",
                 "alt": "Chiesa rurale di San Calogero"
             },
             {
@@ -970,20 +974,21 @@
         ]
     },
     {
-        "name": "Palazzo Barone Carchiolo",
-        "id": "palazzo-barone-carchiolo",
+        "name": "Palazzo Carchiolo (via Dante",
+        "id": "palazzo-carchiolo-dante",
         "short_description": "Palazzo baronale della famiglia Carchiolo, importante residenza aristocratica",
         "category": "palace",
-        "lat": 37.6480,
-        "lon": 14.6350,
-        "maps_url": "https://www.google.com/maps/place/Palazzo+Barone+Carchiolo,+Regalbuto/@37.6480,14.6350,17z",
-        "address": "Regalbuto, EN, Italia",
+        "lat": 37.653959,
+        "lon": 14.638464,
+        "maps_url": "https://maps.app.goo.gl/tWpLkJ9wTckdtrYRA",
+        "address": "Via Dante, 92",
         "images": [
             {
-                "title": "Palazzo Barone Carchiolo",
-                "description": "Vista del Palazzo Barone Carchiolo",
+                "title": "Facciata del Carchiolo",
+                "description": "Facciata del Palazzo del Barone Carchiolo di Via Dante",
                 "format": "standard",
-                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "role": "thumbnail",
+                "path": "src/imgs/flat/palazzo-carchiolo-dante.jpg",
                 "alt": "Palazzo Barone Carchiolo"
             }
         ],
