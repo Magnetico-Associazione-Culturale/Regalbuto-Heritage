@@ -57,21 +57,28 @@
         ]
     },
     {
-        "name": "Chiesa S. Giovanni",
+        "name": "Chiesa di Sant'Agostino in San Giovanni",
         "id": "chiesa-san-giovanni",
         "short_description": "Chiesa dedicata a San Giovanni, importante edificio religioso del patrimonio locale",
         "category": "church",
-        "lat": 37.649732,
-        "lon": 14.640482,
+        "lat": 37.6497325,
+        "lon": 14.6404821,
         "maps_url": "https://maps.app.goo.gl/othA2S9tDMcGK3FBA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Chiesa S. Giovanni",
-                "description": "Vista esterna della Chiesa di San Giovanni",
-                "format": "standard",
-                "path": "src/imgs/flat/chiesa-san-basilio.jpg",
-                "alt": "Chiesa di San Giovanni"
+                "title": "Ingresso della Chiesa di Sant'Agostino",
+                "description": "Vista dell'ingresso della Chiesa di Sant'Agostino",
+                "format": "360",
+                "path": "src/imgs/360/sagostino-ingresso.JPG",
+                "alt": "Chiesa di Sant'Agostino - Ingresso"
+            },
+            {
+                "title": "Altare maggiore della chiesa di Sant'Agostino",
+                "description": "Vista a 360 dell'altare maggiore della Chiesa di Sant'Agostino",
+                "format": "360",
+                "path": "src/imgs/360/sagostino-altare.JPG",
+                "alt": "Chiesa di Sant'Agostino - Altare maggiore"
             }
         ],
         "history": [
@@ -151,7 +158,7 @@
                 "description": "Facciata della Chiesa di San Rocco",
                 "format": "standard",
                 "role": "thumbnail",
-                "path": "src/imgs/flat/chiesa-purgatorio.png",
+                "path": "src/imgs/flat/chiesa-purgatorio.jpg",
                 "alt": "Chiesa di San Rocco"
             }
         ],
@@ -974,7 +981,7 @@
         ]
     },
     {
-        "name": "Palazzo Carchiolo (via Dante",
+        "name": "Palazzo Carchiolo (via Dante)",
         "id": "palazzo-carchiolo-dante",
         "short_description": "Palazzo baronale della famiglia Carchiolo, importante residenza aristocratica",
         "category": "palace",
