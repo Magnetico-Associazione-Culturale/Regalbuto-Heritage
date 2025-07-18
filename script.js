@@ -3698,6 +3698,55 @@ document.addEventListener('touchend', function(e) {
     }
 });
 
+// Load monument thumbnails from monuments.json
+async function loadMonumentThumbnails() {
+    try {
+        const response = await fetch('data/monuments.json');
+        const monumentsData = await response.json();
+        
+        // Create a map for quick lookup
+        const monumentsMap = {};
+        monumentsData.forEach(monument => {
+            monumentsMap[monument.id] = monument;
+        });
+        
+        // Update all monument cards with correct thumbnails
+        const monumentCards = document.querySelectorAll('.monument-card[data-monument-id]');
+        
+        monumentCards.forEach(card => {
+            const monumentId = card.getAttribute('data-monument-id');
+            const monument = monumentsMap[monumentId];
+            
+            if (monument && monument.images && monument.images.length > 0) {
+                const imgElement = card.querySelector('.monument-image img');
+                if (imgElement) {
+                    // Use the same logic as the map popups
+                    let thumbnailImage = null;
+                    
+                    // Look for image with role thumbnail first
+                    thumbnailImage = monument.images.find(img => img.role === 'thumbnail');
+                    // If no thumbnail role, use first standard format image
+                    if (!thumbnailImage) {
+                        thumbnailImage = monument.images.find(img => img.format === 'standard');
+                    }
+                    // If still no image, use first available
+                    if (!thumbnailImage) {
+                        thumbnailImage = monument.images[0];
+                    }
+                    
+                    // Update the image source
+                    imgElement.src = thumbnailImage.path;
+                    imgElement.alt = thumbnailImage.alt || monument.name;
+                }
+            }
+        });
+        
+        console.log('Monument thumbnails loaded successfully');
+    } catch (error) {
+        console.error('Error loading monument thumbnails:', error);
+    }
+}
+
 // Backup initialization
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize Feather icons for the modal
@@ -3707,6 +3756,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Controlla e gestisci la visibilità del pulsante VR
     manageVRButtonVisibility();
+    
+    // Load monument thumbnails from JSON data
+    loadMonumentThumbnails();
 });
 
 console.log('Regalbuto Heritage - Script loaded successfully');
