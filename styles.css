@@ -876,6 +876,21 @@ p {
     border-color: #ff7700;
 }
 
+.btn-accent {
+    background: var(--accent-color); /* Gold background */
+    color: var(--primary-color);
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    font-weight: 600;
+}
+
+.btn-accent:hover {
+    background: #e6c200;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+    border-color: #e6c200;
+}
+
 .btn-outline {
     background: transparent;
     color: var(--text-primary);
@@ -989,6 +1004,14 @@ p {
     /* Prevent map from interfering with page scroll */
     touch-action: pan-x pan-y;
     position: relative;
+}
+
+/* GPS Map specific styling */
+#gps-map {
+    border: 2px solid var(--border-color);
+    border-radius: 16px !important;
+    overflow: hidden;
+    box-shadow: 0 6px 25px var(--shadow-medium);
 }
 
 .map-container #osm-map {
@@ -1528,6 +1551,98 @@ p {
     .map-monument-card .monument-actions .btn {
         font-size: 0.8rem;
         padding: 0.6rem 0.8rem;
+    }
+}
+
+/* GPS MapLibre popup styles - simplified and always visible */
+.gps-monument-popup {
+    font-family: inherit;
+    z-index: 1000 !important;
+}
+
+.gps-monument-popup .maplibregl-popup-content {
+    padding: 0 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+    border: none !important;
+    max-width: 300px !important;
+    min-width: 280px !important;
+    background: white !important;
+    margin: 0 !important;
+    line-height: 1.4 !important;
+    position: relative !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.gps-monument-popup .map-monument-card {
+    margin: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: white;
+}
+
+.gps-monument-popup .maplibregl-popup-tip {
+    background: white !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
+.gps-monument-popup .maplibregl-popup-close-button {
+    color: white !important;
+    font-size: 18px !important;
+    padding: 8px !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
+    text-align: center !important;
+    line-height: 16px !important;
+    top: 8px !important;
+    right: 8px !important;
+    border: none !important;
+    cursor: pointer;
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Force popup visibility - override any MapLibre defaults */
+.maplibregl-popup.gps-monument-popup {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1000 !important;
+    position: absolute !important;
+}
+
+.maplibregl-popup-anchor-bottom .maplibregl-popup-content {
+    margin-bottom: 15px !important;
+}
+
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+    border-top: 8px solid white !important;
+    border-left: 8px solid transparent !important;
+    border-right: 8px solid transparent !important;
+    border-bottom: none !important;
+}
+
+/* Mobile-specific popup positioning */
+@media (max-width: 768px) {
+    .gps-monument-popup .maplibregl-popup-content {
+        max-width: 280px;
+        min-width: 260px;
+    }
+    
+    /* Ensure popups don't exceed screen boundaries on mobile */
+    .maplibregl-popup {
+        max-width: calc(100vw - 40px) !important;
+    }
+    
+    .maplibregl-popup-content {
+        max-width: 100% !important;
     }
 }
 
@@ -3258,6 +3373,317 @@ button:focus,
     max-width: 600px !important;
     margin: 0 !important;
     display: block !important;
+}
+
+/* GPS Navigation Section Styles */
+.navigation-controls {
+    background: var(--background-white);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    margin-top: 2rem; /* Spazio dal titolo */
+    box-shadow: 0 4px 20px var(--shadow-light);
+    border: 1px solid var(--border-color);
+}
+
+.navigation-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--background-secondary);
+    border-radius: 12px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    padding: 0.5rem;
+}
+
+.stat-item i {
+    color: var(--primary-color);
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.stat-item strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.navigation-buttons {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1rem;
+    align-items: center;
+}
+
+.navigation-info {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 6px 25px var(--shadow-medium);
+}
+
+.current-instruction {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.current-instruction i {
+    width: 22px;
+    height: 22px;
+    color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.next-destination {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.next-destination i {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.route-progress {
+    background: var(--background-white);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: 0 4px 20px var(--shadow-light);
+    border: 1px solid var(--border-color);
+}
+
+.route-progress h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.checkpoints-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.checkpoint-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--background-secondary);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.checkpoint-item.visited {
+    background: rgba(74, 85, 104, 0.1);
+    border-left: 4px solid var(--primary-color);
+}
+
+.checkpoint-item.current {
+    background: rgba(255, 215, 0, 0.1);
+    border-left: 4px solid var(--accent-color);
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+}
+
+.checkpoint-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-color);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.checkpoint-item.visited .checkpoint-icon {
+    background: var(--primary-color);
+}
+
+.checkpoint-item.current .checkpoint-icon {
+    background: var(--accent-color);
+    color: var(--primary-color);
+}
+
+.checkpoint-info {
+    flex: 1;
+}
+
+.checkpoint-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.checkpoint-distance {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.checkpoint-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.checkpoint-status i {
+    width: 12px;
+    height: 12px;
+}
+
+.checkpoint-item.visited .checkpoint-status {
+    color: var(--primary-color);
+}
+
+.checkpoint-item.current .checkpoint-status {
+    color: var(--accent-color);
+}
+
+/* GPS Map specific styles */
+#gps-map {
+    border: 2px solid var(--border-color);
+    position: relative;
+}
+
+#gps-map .maplibregl-ctrl-bottom-left,
+#gps-map .maplibregl-ctrl-bottom-right {
+    display: none;
+}
+
+/* User location pulse animation */
+.user-location-pulse {
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 215, 0, 0.3);
+    border-radius: 50%;
+    position: absolute;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+/* Navigation responsive design */
+@media (max-width: 768px) {
+    .navigation-controls {
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    .navigation-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .navigation-buttons {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .navigation-buttons .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+    
+    .navigation-info {
+        padding: 1.5rem;
+    }
+    
+    .current-instruction {
+        font-size: 1rem;
+        gap: 0.75rem;
+    }
+    
+    .route-progress {
+        padding: 1.5rem;
+    }
+    
+    .checkpoint-item {
+        padding: 1rem;
+    }
+    
+    .checkpoint-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Navigation tablet responsive design */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .navigation-controls {
+        padding: 1.75rem;
+    }
+    
+    .navigation-buttons {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    .navigation-buttons .btn:first-child {
+        grid-column: 1 / -1;
+    }
+    
+    .navigation-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.25rem;
+    }
+}
+
+/* Remaining mobile styles for checkpoints */
+@media (max-width: 768px) {
+    .checkpoint-icon {
+        height: 32px;
+        font-size: 0.9rem;
+    }
+    
+    .checkpoint-name {
+        font-size: 0.9rem;
+    }
+    
+    .checkpoint-distance {
+        font-size: 0.8rem;
+    }
 }
 
 /* Responsive footer */

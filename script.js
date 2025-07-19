@@ -209,6 +209,11 @@ function switchTab(tabName) {
             }
         }
         
+        // Initialize GPS map if switching to navigation tab
+        if (tabName === 'navigazione') {
+            initializeGPSMap();
+        }
+        
         // Manage VR button visibility when switching to virtual tour
         if (tabName === 'virtual-tour') {
             manageVRButtonVisibility();
@@ -1441,8 +1446,8 @@ function createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide) {
     
     // Create actions layout based on available features
     let actionsLayout = '';
-    if (hasAudioGuide) {
-        // Layout with audio guide as primary action
+    if (hasAudioGuide && hasVirtualTour) {
+        // Layout with both audio guide and virtual tour
         actionsLayout = `
             <div class="monument-actions has-audio">
                 <button class="btn btn-primary" onclick="playAudioGuideFromMap('${monument.id}')">
@@ -1450,35 +1455,36 @@ function createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide) {
                     <span>Ascolta Audio Guida</span>
                 </button>
                 <div class="secondary-actions">
-                    <button class="btn btn-secondary" onclick="openMapLocation('${monument.id}')">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>Portami lì</span>
-                    </button>
-                    ${hasVirtualTour ? `
-                        <button class="btn btn-secondary" onclick="openVirtualTourFromMap('${monument.id}')">
-                            <i class="fas fa-vr-cardboard"></i>
-                            <span>Tour 360°</span>
-                        </button>
-                    ` : ''}
-                </div>
-            </div>
-        `;
-    } else {
-        // Layout without audio guide
-        actionsLayout = `
-            <div class="monument-actions">
-                <button class="btn btn-primary" onclick="openMapLocation('${monument.id}')">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>Portami lì</span>
-                </button>
-                ${hasVirtualTour ? `
                     <button class="btn btn-secondary" onclick="openVirtualTourFromMap('${monument.id}')">
                         <i class="fas fa-vr-cardboard"></i>
                         <span>Tour 360°</span>
                     </button>
-                ` : ''}
+                </div>
             </div>
         `;
+    } else if (hasAudioGuide) {
+        // Layout with only audio guide
+        actionsLayout = `
+            <div class="monument-actions has-audio">
+                <button class="btn btn-primary" onclick="playAudioGuideFromMap('${monument.id}')">
+                    <i class="fas fa-headphones"></i>
+                    <span>Ascolta Audio Guida</span>
+                </button>
+            </div>
+        `;
+    } else if (hasVirtualTour) {
+        // Layout with only virtual tour
+        actionsLayout = `
+            <div class="monument-actions">
+                <button class="btn btn-primary" onclick="openVirtualTourFromMap('${monument.id}')">
+                    <i class="fas fa-vr-cardboard"></i>
+                    <span>Tour 360°</span>
+                </button>
+            </div>
+        `;
+    } else {
+        // Layout with no special features - leave empty
+        actionsLayout = '';
     }
 
     const tooltip = `
@@ -1493,6 +1499,30 @@ function createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide) {
                 <h4>${monument.name}</h4>
                 <p class="monument-description">${monument.short_description}</p>
                 ${actionsLayout}
+            </div>
+        </div>
+    `;
+    
+    return tooltip;
+}
+
+// Function to create enhanced tooltip for GPS checkpoints without monument data
+function createCheckpointTooltip(name, coordinates) {
+    const tooltip = `
+        <div class="map-monument-card">
+            <div class="monument-info">
+                <h4>${name}</h4>
+                <p class="monument-description">Punto dell'itinerario turistico di Regalbuto</p>
+                <div class="monument-actions">
+                    <button class="btn btn-primary" onclick="centerGPSMapOnLocation(${coordinates[1]}, ${coordinates[0]})">
+                        <i class="fas fa-crosshairs"></i>
+                        <span>Centra sulla mappa</span>
+                    </button>
+                    <button class="btn btn-secondary" onclick="startNavigationToPoint('${name}', ${coordinates[1]}, ${coordinates[0]})">
+                        <i class="fas fa-navigation"></i>
+                        <span>Naviga qui</span>
+                    </button>
+                </div>
             </div>
         </div>
     `;
@@ -3950,5 +3980,682 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, 1000);
 });
+
+// GPS Navigation Variables
+let gpsMap = null; // MapLibre GL JS map instance
+let userLocation = null;
+let navigationActive = false;
+let routeData = null;
+let currentCheckpointIndex = 0;
+let checkpoints = [];
+let watchId = null;
+
+// GPS Navigation Functions
+async function initializeGPSMap() {
+    if (gpsMap) return;
+    
+    try {
+        // Initialize MapLibre GL JS map with CartoDB Positron style
+        gpsMap = new maplibregl.Map({
+            container: 'gps-map',
+            style: {
+                version: 8,
+                sources: {
+                    'carto-positron': {
+                        type: 'raster',
+                        tiles: [
+                            'https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                            'https://b.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                            'https://c.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                            'https://d.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png'
+                        ],
+                        tileSize: 256,
+                        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>'
+                    }
+                },
+                layers: [{
+                    id: 'carto-positron',
+                    type: 'raster',
+                    source: 'carto-positron'
+                }]
+            },
+            center: [14.641, 37.650], // Regalbuto center
+            zoom: 14,
+            pitch: 0,
+            bearing: 0
+        });
+        
+        // Add navigation controls
+        gpsMap.addControl(new maplibregl.NavigationControl({
+            showCompass: true,
+            showZoom: true,
+            visualizePitch: true
+        }), 'top-right');
+        
+        // Add geolocate control
+        const geolocateControl = new maplibregl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true,
+            showUserHeading: true
+        });
+        
+        gpsMap.addControl(geolocateControl, 'top-right');
+        
+        // Wait for map to load
+        gpsMap.on('load', async () => {
+            console.log('GPS Map loaded');
+            await loadRouteData();
+            setupRouteVisualization();
+            updateCheckpointsList();
+        });
+        
+        // Handle geolocation events
+        geolocateControl.on('geolocate', (e) => {
+            userLocation = [e.coords.longitude, e.coords.latitude];
+            if (navigationActive) {
+                updateNavigationInstructions();
+            }
+        });
+        
+    } catch (error) {
+        console.error('Error initializing GPS map:', error);
+        alert('Errore nell\'inizializzazione della mappa GPS. Riprova più tardi.');
+    }
+}
+
+// Helper function to ensure popup is properly positioned and visible
+function createOptimallyPositionedPopup(coordinates, content, map) {
+    // Always use bottom anchor for consistency
+    const popup = new maplibregl.Popup({
+        maxWidth: '300px',
+        className: 'gps-monument-popup',
+        closeButton: true,
+        anchor: 'bottom',
+        offset: [0, 250]
+    })
+        .setLngLat(coordinates)
+        .setHTML(content)
+        .addTo(map);
+    
+    // Simple pan to ensure popup is visible
+    // Move the map so the pin is in the bottom half, popup in top half
+    setTimeout(() => {
+        const mapContainer = map.getContainer();
+        const mapHeight = mapContainer.offsetHeight;
+        
+        // Calculate a point slightly below center to show popup above
+        const bounds = map.getBounds();
+        const latRange = bounds.getNorth() - bounds.getSouth();
+        const offsetLat = latRange * 0.15; // Move pin down 15% of visible area
+        
+        const newCenter = [
+            coordinates[0], // Keep same longitude
+            coordinates[1] - offsetLat // Move latitude down
+        ];
+        
+        map.easeTo({
+            center: newCenter,
+            zoom: Math.max(map.getZoom(), 16),
+            duration: 500,
+            essential: true
+        });
+    }, 150);
+    
+    return popup;
+}
+
+async function loadRouteData() {
+    try {
+        const response = await fetch('data/test_itinerario_turistico.geojson');
+        const data = await response.json();
+        routeData = data;
+        
+        // Extract checkpoints from GeoJSON
+        checkpoints = [];
+        data.features.forEach(feature => {
+            if (feature.geometry.type === 'Point' && feature.properties.name) {
+                checkpoints.push({
+                    name: feature.properties.name,
+                    coordinates: feature.geometry.coordinates,
+                    monument_id: feature.properties.monument_id || null,
+                    visited: false
+                });
+            }
+        });
+        
+        console.log('Route data loaded:', checkpoints.length, 'checkpoints');
+        
+        // Update total count
+        document.getElementById('total-count').textContent = checkpoints.length;
+        
+    } catch (error) {
+        console.error('Error loading route data:', error);
+    }
+}
+
+function setupRouteVisualization() {
+    if (!gpsMap || !routeData) return;
+    
+    // Add route source
+    gpsMap.addSource('route', {
+        type: 'geojson',
+        data: routeData
+    });
+    
+    // Add route line layer
+    gpsMap.addLayer({
+        id: 'route-line',
+        type: 'line',
+        source: 'route',
+        filter: ['==', '$type', 'LineString'],
+        layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        paint: {
+            'line-color': '#4a5568',
+            'line-width': 4,
+            'line-opacity': 0.8
+        }
+    });
+    
+    // Add checkpoints layer
+    gpsMap.addLayer({
+        id: 'checkpoints',
+        type: 'circle',
+        source: 'route',
+        filter: ['==', '$type', 'Point'],
+        paint: {
+            'circle-radius': 12,
+            'circle-color': '#ffd700',
+            'circle-stroke-color': '#4a5568',
+            'circle-stroke-width': 3
+        }
+    });
+    
+    // Add checkpoint labels
+    gpsMap.addLayer({
+        id: 'checkpoint-labels',
+        type: 'symbol',
+        source: 'route',
+        filter: ['==', '$type', 'Point'],
+        layout: {
+            'text-field': ['get', 'name'],
+            'text-font': ['Open Sans Regular'],
+            'text-offset': [0, 2],
+            'text-anchor': 'top',
+            'text-size': 12
+        },
+        paint: {
+            'text-color': '#2c2c2c',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 2
+        }
+    });
+    
+    // Add click events for checkpoints
+    gpsMap.on('click', 'checkpoints', async (e) => {
+        console.log('Checkpoint clicked, creating popup...');
+        
+        // Close any existing popups first
+        const existingPopups = document.querySelectorAll('.maplibregl-popup');
+        existingPopups.forEach(popup => popup.remove());
+        
+        const coordinates = e.features[0].geometry.coordinates.slice();
+        const name = e.features[0].properties.name;
+        const monumentId = e.features[0].properties.monument_id;
+        
+        console.log('Popup coordinates:', coordinates);
+        console.log('Monument ID:', monumentId);
+        
+        // Try to get monument data if monument_id is available
+        let popupContent = '';
+        if (monumentId) {
+            try {
+                const response = await fetch('data/monuments.json');
+                const monumentsData = await response.json();
+                const monument = monumentsData.find(m => m.id === monumentId);
+                
+                if (monument) {
+                    // Check if monument has virtual tour and audio guide
+                    const hasVirtualTour = monument.images && monument.images.some(img => img.format === '360');
+                    const hasAudioGuide = monument.audio && monument.audio.path;
+                    
+                    // Use the same enhanced tooltip as the OpenStreetMap
+                    popupContent = createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide);
+                    console.log('Created enhanced popup for:', monument.name);
+                } else {
+                    // Fallback if monument not found
+                    popupContent = createCheckpointTooltip(name, coordinates);
+                    console.log('Monument not found, using simple tooltip');
+                }
+            } catch (error) {
+                console.error('Error loading monument data for popup:', error);
+                popupContent = createCheckpointTooltip(name, coordinates);
+            }
+        } else {
+            // No monument_id, create simple checkpoint tooltip
+            popupContent = createCheckpointTooltip(name, coordinates);
+            console.log('No monument ID, using simple tooltip');
+        }
+        
+        // Create popup
+        const popup = createOptimallyPositionedPopup(coordinates, popupContent, gpsMap);
+        console.log('Popup created:', popup);
+        
+        // Force visibility after a delay
+        setTimeout(() => {
+            const popupElement = popup.getElement();
+            console.log('Popup element:', popupElement);
+            if (popupElement) {
+                popupElement.style.display = 'block';
+                popupElement.style.visibility = 'visible';
+                popupElement.style.opacity = '1';
+                popupElement.style.zIndex = '1000';
+                console.log('Popup forced visible');
+            }
+        }, 200);
+    });
+    
+    // Fit map to route bounds
+    const routeFeature = routeData.features.find(f => f.geometry.type === 'LineString');
+    if (routeFeature) {
+        const coordinates = routeFeature.geometry.coordinates;
+        const bounds = coordinates.reduce((bounds, coord) => {
+            return bounds.extend(coord);
+        }, new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
+        
+        gpsMap.fitBounds(bounds, { padding: 50 });
+    }
+}
+
+function startNavigation() {
+    if (!checkpoints.length || !gpsMap) {
+        alert('Dati del percorso non disponibili. Riprova tra qualche istante.');
+        return;
+    }
+    
+    navigationActive = true;
+    currentCheckpointIndex = 0;
+    
+    // Update UI
+    document.getElementById('start-navigation-btn').style.display = 'none';
+    document.getElementById('stop-navigation-btn').style.display = 'inline-flex';
+    document.getElementById('navigation-info').style.display = 'block';
+    
+    // Start geolocation tracking
+    if (navigator.geolocation) {
+        watchId = navigator.geolocation.watchPosition(
+            (position) => {
+                userLocation = [position.coords.longitude, position.coords.latitude];
+                updateUserLocationOnMap();
+                updateNavigationInstructions();
+                checkCheckpointProximity();
+            },
+            (error) => {
+                console.error('Geolocation error:', error);
+                document.getElementById('instruction-text').textContent = 
+                    'Errore GPS. Verifica le impostazioni di localizzazione.';
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 1000
+            }
+        );
+    } else {
+        alert('GPS non supportato su questo dispositivo.');
+        stopNavigation();
+        return;
+    }
+    
+    document.getElementById('instruction-text').textContent = 'Acquisizione posizione GPS...';
+    updateNextDestination();
+    updateCheckpointsList();
+    
+    console.log('Navigation started');
+}
+
+function stopNavigation() {
+    navigationActive = false;
+    
+    // Stop geolocation tracking
+    if (watchId) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+    }
+    
+    // Update UI
+    document.getElementById('start-navigation-btn').style.display = 'inline-flex';
+    document.getElementById('stop-navigation-btn').style.display = 'none';
+    document.getElementById('navigation-info').style.display = 'none';
+    
+    // Remove user location marker
+    if (gpsMap && gpsMap.getSource('user-location')) {
+        gpsMap.removeLayer('user-location');
+        gpsMap.removeSource('user-location');
+    }
+    
+    console.log('Navigation stopped');
+}
+
+function updateUserLocationOnMap() {
+    if (!gpsMap || !userLocation) return;
+    
+    const userLocationGeoJSON = {
+        type: 'Feature',
+        geometry: {
+            type: 'Point',
+            coordinates: userLocation
+        }
+    };
+    
+    if (gpsMap.getSource('user-location')) {
+        gpsMap.getSource('user-location').setData(userLocationGeoJSON);
+    } else {
+        gpsMap.addSource('user-location', {
+            type: 'geojson',
+            data: userLocationGeoJSON
+        });
+        
+        gpsMap.addLayer({
+            id: 'user-location',
+            type: 'circle',
+            source: 'user-location',
+            paint: {
+                'circle-radius': 8,
+                'circle-color': '#007cbf',
+                'circle-stroke-color': '#ffffff',
+                'circle-stroke-width': 2
+            }
+        });
+    }
+    
+    // Center map on user location if navigation is active
+    if (navigationActive) {
+        gpsMap.easeTo({
+            center: userLocation,
+            zoom: 16,
+            duration: 1000
+        });
+    }
+}
+
+function updateNavigationInstructions() {
+    if (!navigationActive || !userLocation || !checkpoints.length) return;
+    
+    const currentCheckpoint = checkpoints[currentCheckpointIndex];
+    if (!currentCheckpoint) return;
+    
+    const distance = calculateDistance(
+        userLocation[1], userLocation[0],
+        currentCheckpoint.coordinates[1], currentCheckpoint.coordinates[0]
+    );
+    
+    let instruction = '';
+    if (distance < 0.05) { // Less than 50 meters
+        instruction = `Sei arrivato a: ${currentCheckpoint.name}`;
+    } else if (distance < 0.1) { // Less than 100 meters
+        instruction = `${currentCheckpoint.name} è a ${Math.round(distance * 1000)} metri`;
+    } else {
+        instruction = `Dirigiti verso: ${currentCheckpoint.name} (${distance.toFixed(2)} km)`;
+    }
+    
+    document.getElementById('instruction-text').textContent = instruction;
+    
+    // Update remaining distance
+    const totalRemaining = calculateRemainingDistance();
+    document.getElementById('remaining-distance').textContent = `${totalRemaining.toFixed(2)} km`;
+}
+
+function checkCheckpointProximity() {
+    if (!navigationActive || !userLocation || !checkpoints.length) return;
+    
+    const currentCheckpoint = checkpoints[currentCheckpointIndex];
+    if (!currentCheckpoint || currentCheckpoint.visited) return;
+    
+    const distance = calculateDistance(
+        userLocation[1], userLocation[0],
+        currentCheckpoint.coordinates[1], currentCheckpoint.coordinates[0]
+    );
+    
+    // Mark as visited if within 50 meters
+    if (distance < 0.05) {
+        currentCheckpoint.visited = true;
+        currentCheckpointIndex++;
+        
+        // Update visited count
+        const visitedCount = checkpoints.filter(cp => cp.visited).length;
+        document.getElementById('visited-count').textContent = visitedCount;
+        
+        // Check if route completed
+        if (currentCheckpointIndex >= checkpoints.length) {
+            document.getElementById('instruction-text').textContent = 'Itinerario completato! Congratulazioni!';
+            document.getElementById('next-destination-text').textContent = 'Percorso terminato';
+        } else {
+            updateNextDestination();
+        }
+        
+        updateCheckpointsList();
+        
+        // Show completion notification
+        if (visitedCount === checkpoints.length) {
+            setTimeout(() => {
+                alert('🎉 Complimenti! Hai completato l\'itinerario turistico di Regalbuto!');
+            }, 1000);
+        }
+    }
+}
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // Earth's radius in km
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+}
+
+function calculateRemainingDistance() {
+    if (!userLocation || !checkpoints.length) return 0;
+    
+    let totalDistance = 0;
+    
+    // Distance to current checkpoint
+    if (currentCheckpointIndex < checkpoints.length) {
+        const currentCheckpoint = checkpoints[currentCheckpointIndex];
+        totalDistance += calculateDistance(
+            userLocation[1], userLocation[0],
+            currentCheckpoint.coordinates[1], currentCheckpoint.coordinates[0]
+        );
+        
+        // Distance between remaining checkpoints
+        for (let i = currentCheckpointIndex; i < checkpoints.length - 1; i++) {
+            totalDistance += calculateDistance(
+                checkpoints[i].coordinates[1], checkpoints[i].coordinates[0],
+                checkpoints[i + 1].coordinates[1], checkpoints[i + 1].coordinates[0]
+            );
+        }
+    }
+    
+    return totalDistance;
+}
+
+function updateNextDestination() {
+    if (currentCheckpointIndex < checkpoints.length) {
+        const nextCheckpoint = checkpoints[currentCheckpointIndex];
+        document.getElementById('next-destination-text').textContent = nextCheckpoint.name;
+    } else {
+        document.getElementById('next-destination-text').textContent = 'Percorso completato';
+    }
+}
+
+function updateCheckpointsList() {
+    const container = document.getElementById('route-checkpoints');
+    container.innerHTML = '';
+    
+    checkpoints.forEach((checkpoint, index) => {
+        const item = document.createElement('div');
+        item.className = 'checkpoint-item';
+        
+        if (checkpoint.visited) {
+            item.classList.add('visited');
+        } else if (index === currentCheckpointIndex && navigationActive) {
+            item.classList.add('current');
+        }
+        
+        const distance = userLocation ? 
+            calculateDistance(
+                userLocation[1], userLocation[0],
+                checkpoint.coordinates[1], checkpoint.coordinates[0]
+            ).toFixed(2) + ' km' : '--';
+        
+        const statusIcon = checkpoint.visited ? 'check-circle' : 
+                          (index === currentCheckpointIndex && navigationActive) ? 'navigation-2' : 'circle';
+        
+        const statusText = checkpoint.visited ? 'Visitato' : 
+                          (index === currentCheckpointIndex && navigationActive) ? 'Destinazione attuale' : 'Da visitare';
+        
+        item.innerHTML = `
+            <div class="checkpoint-icon">${index + 1}</div>
+            <div class="checkpoint-info">
+                <div class="checkpoint-name">${checkpoint.name}</div>
+                <div class="checkpoint-distance">Distanza: ${distance}</div>
+                <div class="checkpoint-status">
+                    <i data-feather="${statusIcon}"></i>
+                    <span>${statusText}</span>
+                </div>
+            </div>
+        `;
+        
+        container.appendChild(item);
+    });
+    
+    // Re-initialize feather icons
+    feather.replace();
+}
+
+// Helper functions for GPS popup buttons
+function centerGPSMapOnLocation(lat, lon) {
+    if (gpsMap) {
+        gpsMap.flyTo({
+            center: [lon, lat],
+            zoom: 17,
+            duration: 1500
+        });
+    }
+}
+
+function startNavigationToPoint(name, lat, lon) {
+    // Find the checkpoint index for this location
+    const checkpointIndex = checkpoints.findIndex(cp => 
+        Math.abs(cp.coordinates[1] - lat) < 0.0001 && 
+        Math.abs(cp.coordinates[0] - lon) < 0.0001
+    );
+    
+    if (checkpointIndex !== -1) {
+        currentCheckpointIndex = checkpointIndex;
+        
+        if (!navigationActive) {
+            startNavigation();
+        } else {
+            updateNextDestination();
+            updateCheckpointsList();
+            updateNavigationInstructions();
+        }
+        
+        alert(`Navigazione impostata verso: ${name}`);
+    } else {
+        alert('Punto non trovato nell\'itinerario.');
+    }
+}
+
+// Enhanced functions for map popup buttons (compatible with both OpenStreetMap and GPS popups)
+function playAudioGuideFromMap(monumentId) {
+    // Close any open popups first
+    if (gpsMap) {
+        const popups = document.querySelectorAll('.maplibregl-popup');
+        popups.forEach(popup => popup.remove());
+    }
+    if (map) map.closePopup();
+    
+    // Switch to monuments tab and play audio
+    switchTab('monumenti');
+    setTimeout(() => {
+        playAudioGuide(monumentId);
+    }, 500);
+}
+
+function openVirtualTourFromMap(monumentId) {
+    // Close any open popups first
+    if (gpsMap) {
+        const popups = document.querySelectorAll('.maplibregl-popup');
+        popups.forEach(popup => popup.remove());
+    }
+    if (map) map.closePopup();
+    
+    // Get monument data to find 360° image
+    fetch('data/monuments.json')
+        .then(response => response.json())
+        .then(monumentsData => {
+            const monument = monumentsData.find(m => m.id === monumentId);
+            if (monument && monument.images) {
+                const image360 = monument.images.find(img => img.format === '360');
+                if (image360) {
+                    // Extract filename from path for panorama viewer
+                    const filename = image360.path.split('/').pop();
+                    openVirtualTour(filename);
+                } else {
+                    alert('Tour 360° non disponibile per questo monumento.');
+                }
+            } else {
+                alert('Dati del monumento non trovati.');
+            }
+        })
+        .catch(error => {
+            console.error('Error loading monument data:', error);
+            alert('Errore nel caricamento del tour virtuale.');
+        });
+}
+
+function centerOnUserLocation() {
+    if (!gpsMap) {
+        alert('Mappa non inizializzata.');
+        return;
+    }
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const coords = [position.coords.longitude, position.coords.latitude];
+                userLocation = coords;
+                
+                gpsMap.flyTo({
+                    center: coords,
+                    zoom: 16,
+                    duration: 2000
+                });
+                
+                updateUserLocationOnMap();
+            },
+            (error) => {
+                console.error('Geolocation error:', error);
+                alert('Impossibile ottenere la posizione. Verifica le impostazioni GPS.');
+            },
+            {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 60000
+            }
+        );
+    } else {
+        alert('Geolocalizzazione non supportata su questo dispositivo.');
+    }
+}
 
 console.log('Regalbuto Heritage - Script loaded successfully');
