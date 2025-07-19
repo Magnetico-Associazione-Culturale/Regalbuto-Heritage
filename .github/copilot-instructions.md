@@ -112,3 +112,6 @@ switchTab('monumenti') // Switches to monuments section
 
 ## Code Execution
 Usa sempre windows subsystem for Linux (WSL) per eseguire il codice.
+
+## Code example and documetation
+Use context7 to get up-to-date, version-specific documentation and code examples from any library or framework

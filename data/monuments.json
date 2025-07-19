@@ -17,6 +17,14 @@
         },
         "images": [
             {
+                "title": "Facciata della Chiesa di Santa Maria la Croce",
+                "description": "Vista esterna della facciata della Chiesa di Santa Maria la Croce",
+                "format": "standard",
+                "role": "thumbnail",
+                "path": "src/imgs/flat/chiesa-santa-maria-croce.JPG",
+                "alt": "Chiesa di Santa Maria la Croce vista esterna"
+            },
+            {
                 "title": "Chiesa di Santa Maria la Croce - Interno",
                 "description": "Vista dell'interno della chiesa con l'altare principale",
                 "format": "360",
@@ -66,6 +74,13 @@
         "maps_url": "https://maps.app.goo.gl/othA2S9tDMcGK3FBA",
         "address": "Regalbuto, EN, Italia",
         "images": [
+            {
+                "title": "Facciata della Chiesa di Sant'Agostino",
+                "description": "Facciata esterna della Chiesa di Sant'Agostino",
+                "format": "standard",
+                "path": "src/imgs/flat/chiesa-sant-agostino.JPG",
+                "alt": "Chiesa di Sant'Agostino vista esterna"
+            },
             {
                 "title": "Ingresso della Chiesa di Sant'Agostino",
                 "description": "Vista dell'ingresso della Chiesa di Sant'Agostino",
@@ -184,11 +199,12 @@
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Chiesa del Collegio",
-                "description": "Vista della Chiesa del Collegio",
+                "title": "Facciata della Chiesa del Collegio",
+                "description": "Vista della facciata esterna della Chiesa del Collegio",
                 "format": "standard",
-                "path": "src/imgs/flat/convento-santantonio.avif",
-                "alt": "Chiesa del Collegio"
+                "role": "thumbnail",
+                "path": "src/imgs/flat/placeholder.jpg",
+                "alt": "Vista panoramica 360° dell'ingresso della Chiesa del Collegio"
             },
             {
                 "title": "Interno della Chiesa del Collegio",
@@ -223,7 +239,8 @@
                 "title": "Chiesa della Madonna del Carmelo",
                 "description": "Vista della Chiesa della Madonna del Carmelo",
                 "format": "standard",
-                "path": "src/imgs/flat/chiesa-purgatorio.webp",
+                "role": "thumbnail",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Chiesa della Madonna del Carmelo"
             }
         ],
@@ -252,7 +269,8 @@
                 "title": "Chiesa di San Domenico",
                 "description": "Vista della Chiesa di San Domenico",
                 "format": "standard",
-                "path": "src/imgs/flat/chiesa-san-basilio.jpg",
+                "role": "thumbnail",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Chiesa di San Domenico"
             }
         ],
@@ -341,7 +359,7 @@
                 "title": "Chiesa di Santa Maria delle Grazie",
                 "description": "Vista della Chiesa di Santa Maria delle Grazie",
                 "format": "standard",
-                "path": "src/imgs/flat/convento-santantonio.avif",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Chiesa di Santa Maria delle Grazie"
             }
         ],
@@ -370,7 +388,8 @@
                 "title": "Chiesa di Sant'Antonio da Padova",
                 "description": "Vista della Chiesa di Sant'Antonio da Padova",
                 "format": "standard",
-                "path": "src/imgs/flat/convento-santantonio.avif",
+                "role": "thumbnail",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Chiesa di Sant'Antonio da Padova"
             }
         ],
@@ -399,7 +418,8 @@
                 "title": "Caserma C.C. (ex Convento di San Domenico)",
                 "description": "Vista dell'edificio che ospita la Caserma dei Carabinieri",
                 "format": "standard",
-                "path": "src/imgs/flat/convento-santantonio.avif",
+                "role": "thumbnail",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Caserma Carabinieri ex Convento San Domenico"
             }
         ],
@@ -483,6 +503,14 @@
             "description": "Audio guida per il Convento di Sant'Agostino"
         },
         "images": [
+            {
+                "title": "Facciata del Convento di Sant'Agostino",
+                "description": "Vista esterna della facciata della facciata del Convento di Sant'Agostino con annessa chiesa",
+                "format": "standard",
+                "role": "thumbnail",
+                "path": "src/imgs/flat/chiesa-sant-agostino.JPG",
+                "alt": "Convento di Sant'Agostino vista esterna"
+            },
             {
                 "title": "Convento di Sant'Agostino - Ingresso",
                 "description": "Vista dell'ingresso del Convento di Sant'Agostino",
@@ -594,7 +622,8 @@
                 "title": "Convento di Santa Maria delle Grazie",
                 "description": "Vista del Convento di Santa Maria delle Grazie",
                 "format": "standard",
-                "path": "src/imgs/flat/convento-santantonio.avif",
+                "role": "thumbnail",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Convento Santa Maria delle Grazie"
             }
         ],
@@ -623,7 +652,8 @@
                 "title": "Collegio di Maria",
                 "description": "Vista del Collegio di Maria",
                 "format": "standard",
-                "path": "src/imgs/flat/convento-santantonio.avif",
+                "role": "thumbnail",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Collegio di Maria"
             },
             {
@@ -690,7 +720,7 @@
     },
     {
         "name": "CineTeatro Urania",
-        "id": "cine-teatro-urania",
+        "id": "cineteatro-urania",
         "short_description": "Teatro comunale e cinema, importante centro culturale e di intrattenimento locale",
         "category": "theater",
         "lat": 37.649339,
@@ -706,11 +736,19 @@
         },
         "images": [
             {
-                "title": "Cine Teatro Urania",
-                "description": "Vista del Cine Teatro Urania",
+                "title": "CineTeatro Urania",
+                "description": "Vista esterna del CineTeatro Urania",
+                "format": "standard",
+                "role": "thumbnail",
+                "path": "src/imgs/flat/teatro.JPG",
+                "alt": "CineTeatro Urania vista esterna"
+            },
+            {
+                "title": "CineTeatro Urania",
+                "description": "Vista del CineTeatro Urania",
                 "format": "360",
                 "path": "src/imgs/360/teatro.JPG",
-                "alt": "Vista panoramica 360° del Teatro Urania"
+                "alt": "Vista panoramica 360° del CineTeatro Urania"
             }
         ],
         "history": [
@@ -738,7 +776,7 @@
                 "title": "Istituto di Credito Cooperativo \"La Riscossa\"",
                 "description": "Vista dell'Istituto di Credito Cooperativo La Riscossa",
                 "format": "standard",
-                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Istituto di Credito Cooperativo La Riscossa"
             }
         ],
@@ -754,9 +792,9 @@
         ]
     },
     {
-        "name": "Istituto Intesa S. Paolo",
-        "id": "istituto-intesa-san-paolo",
-        "short_description": "Sede locale dell'Istituto Bancario Intesa San Paolo",
+        "name": "Istituto Intesa Sanpaolo",
+        "id": "istituto-intesa-sanpaolo",
+        "short_description": "Sede locale dell'Istituto Bancario Intesa Sanpaolo",
         "category": "financial",
         "lat": 37.6450,
         "lon": 14.6380,
@@ -764,11 +802,11 @@
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
-                "title": "Istituto Intesa S. Paolo",
-                "description": "Vista dell'Istituto Intesa San Paolo",
+                "title": "Istituto Intesa Sanpaolo",
+                "description": "Vista dell'Istituto Intesa Sanpaolo",
                 "format": "standard",
-                "path": "src/imgs/flat/regalbuto-plaza.jpg",
-                "alt": "Istituto Intesa San Paolo"
+                "path": "src/imgs/flat/placeholder.jpg",
+                "alt": "Istituto Intesa Sanpaolo"
             }
         ],
         "history": [
@@ -777,35 +815,6 @@
                 "description": "Apertura della filiale locale del grande istituto bancario nazionale",
                 "period": {
                     "start": "1960",
-                    "end": "1970"
-                }
-            }
-        ]
-    },
-    {
-        "name": "Istituto di Credito Cooperativo La Riscossa (Sede 2)",
-        "id": "credito-cooperativo-la-riscossa-2",
-        "short_description": "Seconda sede dell'Istituto di Credito Cooperativo La Riscossa",
-        "category": "financial",
-        "lat": 37.654217,
-        "lon": 14.636302,
-        "maps_url": "https://maps.app.goo.gl/zrWq99t9Cv2TFvTk8",
-        "address": "Via Monsignor Vito Pernicone 1, Regalbuto, EN, Italia",
-        "images": [
-            {
-                "title": "Istituto di Credito Cooperativo La Riscossa (Sede 2)",
-                "description": "Vista della seconda sede dell'Istituto di Credito Cooperativo La Riscossa",
-                "format": "standard",
-                "path": "src/imgs/flat/regalbuto-plaza.jpg",
-                "alt": "Istituto di Credito Cooperativo La Riscossa Sede 2"
-            }
-        ],
-        "history": [
-            {
-                "title": "Espansione cooperativa",
-                "description": "Apertura della seconda sede per servire meglio la comunità locale",
-                "period": {
-                    "start": "1950",
                     "end": "1970"
                 }
             }
@@ -825,7 +834,7 @@
                 "title": "Palazzo Marletta",
                 "description": "Vista del Palazzo Marletta",
                 "format": "standard",
-                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Palazzo Marletta"
             }
         ],
@@ -860,7 +869,7 @@
                 "title": "Palazzo Falcone",
                 "description": "Vista del Palazzo Falcone",
                 "format": "standard",
-                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Palazzo Falcone"
             }
         ],
@@ -895,7 +904,7 @@
                 "title": "Palazzo Gerardi",
                 "description": "Vista del Palazzo Gerardi",
                 "format": "standard",
-                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Palazzo Gerardi"
             }
         ],
@@ -930,7 +939,7 @@
                 "title": "Palazzo Comunale",
                 "description": "Vista del Palazzo Comunale di Regalbuto",
                 "format": "standard",
-                "path": "src/imgs/flat/regalbuto-plaza.jpg",
+                "path": "src/imgs/flat/placeholder.jpg",
                 "alt": "Palazzo Comunale di Regalbuto"
             }
         ],
