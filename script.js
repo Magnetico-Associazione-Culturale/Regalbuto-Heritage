@@ -216,38 +216,12 @@ function switchTab(tabName) {
         
         // Manage VR button visibility when switching to virtual tour
         if (tabName === 'virtual-tour') {
-            console.log('Switching to virtual-tour tab');
             manageVRButtonVisibility();
             
             // Load Convento di Sant'Antonio as default tour
             setTimeout(() => {
-                console.log('Starting default tour load...');
-                
-                // Hide loading message
-                const loadingMessage = document.getElementById('loading-message');
-                if (loadingMessage) {
-                    console.log('Hiding loading message');
-                    loadingMessage.style.display = 'none';
-                } else {
-                    console.log('Loading message not found');
-                }
-                
-                // Find and activate the convento-sant-antonio card
-                const conventoCard = document.querySelector('[onclick*="loadVirtualTour(\'convento-sant-antonio\')"]');
-                console.log('Found convento card:', !!conventoCard);
-                
-                if (conventoCard) {
-                    // Remove active class from all cards
-                    document.querySelectorAll('.location-card').forEach(card => card.classList.remove('active'));
-                    // Add active class to convento card
-                    conventoCard.classList.add('active');
-                    console.log('Activated convento card');
-                }
-                
-                // Load the virtual tour
-                console.log('Loading virtual tour: convento-sant-antonio');
-                loadVirtualTour('convento-sant-antonio');
-            }, 300);
+                loadConventoSantAntonio();
+            }, 200);
         }
         
         // Initialize monument counter when switching to monuments tab
@@ -2465,62 +2439,35 @@ const virtualTourConfig = {
 
 // Main Virtual Tour loader function
 function loadVirtualTour(tourId) {
-    console.log('loadVirtualTour called with:', tourId);
-    
     const config = virtualTourConfig[tourId];
     if (!config) {
         console.warn('Tour configuration not found for:', tourId);
         return;
     }
-    
-    console.log('Found config:', config);
 
     // Remove active class from all location cards
     document.querySelectorAll('.location-card').forEach(card => card.classList.remove('active'));
     
-    // Add active class to selected location - handle case where event may not be defined
-    let selectedCard = null;
-    if (typeof event !== 'undefined' && event && event.target) {
-        selectedCard = event.target.closest('.location-card');
-    } else {
-        // Fallback: find the card by onclick attribute
-        selectedCard = document.querySelector(`[onclick*="loadVirtualTour('${tourId}')"]`);
-    }
-    
+    // Add active class to selected location
+    const selectedCard = event.target.closest('.location-card');
     if (selectedCard) {
         selectedCard.classList.add('active');
-        console.log('Added active class to card:', selectedCard);
     }
 
     // Load the first/default image
     const defaultImage = config.views[0];
     const iframe = document.querySelector('#pano-viewer iframe');
-    console.log('Found iframe:', !!iframe, 'Default image:', defaultImage);
-    
     if (iframe && defaultImage) {
         const rotation = defaultImage.rotation || -90; // Default to -90 if not specified
         const panoramaUrl = `panoramas/panorama.html?img=${defaultImage.value}&rotation=${rotation}`;
-        console.log('Setting iframe src to:', panoramaUrl);
+        console.log('Loading virtual tour:', config.name, 'with image and rotation:', panoramaUrl);
         iframe.src = panoramaUrl;
-        
-        // Add error handling for iframe
-        iframe.onload = function() {
-            console.log('Iframe loaded successfully');
-        };
-        
-        iframe.onerror = function() {
-            console.error('Iframe failed to load');
-        };
-    } else {
-        console.error('Missing iframe or defaultImage:', { iframe: !!iframe, defaultImage });
     }
 
     // Show dropdown if multiple views available
     if (config.views.length > 1) {
-        console.log('Showing multiple views dropdown');
         showMultipleViews(config);
     } else {
-        console.log('Hiding subcategories - single view');
         hideSubcategories();
     }
 }

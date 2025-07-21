@@ -2335,14 +2335,6 @@ p {
     transform: translateY(-2px);
 }
 
-.location-card.active p {
-    color: white !important;
-}
-
-.location-card.active h5 {
-    color: white !important;
-}
-
 .location-thumb {
     font-size: 1.8rem;
     margin-bottom: 0.5rem;
