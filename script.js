@@ -248,6 +248,7 @@ function switchTab(tabName) {
                 console.log('Loading virtual tour: convento-sant-antonio');
                 loadVirtualTour('convento-sant-antonio');
             }, 300);
+                loadConventoSantAntonio();
         }
         
         // Initialize monument counter when switching to monuments tab
@@ -2373,7 +2374,6 @@ function loadLocationFromJSON(monumentId, imagePath) {
     
     console.log(`Loading virtual tour from JSON for monument: ${monumentId}`);
 }
-
 // Function to hide subcategories dropdown
 function hideSubcategories() {
     const dropdownContainer = document.getElementById('views-dropdown-container');
@@ -2567,10 +2567,274 @@ function handleViewChange(imagePath) {
 // Function to load specific panorama view
 function loadPanoramaView(imagePath, rotation = -90) {
     console.log('Loading panorama view with image and rotation:', imagePath, rotation);
+=======
+// Function to load Convento di Sant'Antonio with subcategories
+function loadConventoSantAntonio() {
+    console.log('Loading Convento di Sant Antonio main view');
+    
+    // Remove active class from all location cards
+    const locationCards = document.querySelectorAll('.location-card');
+    locationCards.forEach(card => card.classList.remove('active'));
+    
+    // Add active class to convento card
+    const conventoCard = document.querySelector('[onclick*="loadConventoSantAntonio"]');
+    if (conventoCard) {
+        conventoCard.classList.add('active');
+    }
+    
+    // Load the main view (vista principale as primary view)
+    const iframe = document.querySelector('#pano-viewer iframe');
+    if (iframe) {
+        iframe.src = 'panoramas/panorama.html?img=../src/imgs/360/vista-convento-sant-antonio.JPG';
+    }
+    
+    // Show subcategories dropdown
+    showConventoSubcategories();
+}
+
+// Function to show Convento di Sant'Antonio subcategories as dropdown
+function showConventoSubcategories() {
+    const dropdownContainer = document.getElementById('views-dropdown-container');
+    const viewsSelect = document.getElementById('views-select');
+    
+    if (dropdownContainer && viewsSelect) {
+        // Clear existing options
+        viewsSelect.innerHTML = '<option value="">Seleziona una vista...</option>';
+        
+        // Add subcategory options
+        const subcategories = [
+            { value: '../src/imgs/360/vista-convento-sant-antonio.JPG', text: 'Vista Principale' },
+            { value: '../src/imgs/360/chiostro-convento-sant-antonio.JPG', text: 'Chiostro' },
+            { value: '../src/imgs/360/chiesa-convento-sant-antonio.JPG', text: 'Chiesa' },
+            { value: '../src/imgs/360/grotta-insediamento-sant-antonio.JPG', text: 'Grotta Rupestre' }
+        ];
+        
+        subcategories.forEach(subcategory => {
+            const option = document.createElement('option');
+            option.value = subcategory.value;
+            option.textContent = subcategory.text;
+            viewsSelect.appendChild(option);
+        });
+        
+        // Show the dropdown
+        dropdownContainer.style.display = 'flex';
+        
+        // Set default selection to "Vista Principale"
+        viewsSelect.value = '../src/imgs/360/vista-convento-sant-antonio.JPG';
+    }
+}
+// Function to hide subcategories dropdown
+function hideSubcategories() {
+    const dropdownContainer = document.getElementById('views-dropdown-container');
+    if (dropdownContainer) {
+        dropdownContainer.style.display = 'none';
+    }
+}
+
+// Virtual Tour Configuration - based on monuments.json
+const virtualTourConfig = {
+    'chiesa-santa-maria-la-croce': {
+        name: 'Chiesa di Santa Maria della Croce',
+        views: [
+            { value: '../src/imgs/360/smaria-ingresso.JPG', text: 'Ingresso principale', rotation: -90 },
+            { value: '../src/imgs/360/smaria-altare.JPG', text: 'Altare maggiore', rotation: -90 },
+            { value: '../src/imgs/360/smaria-dx.JPG', text: 'Navata destra', rotation: -90 },
+            { value: '../src/imgs/360/smaria-sx.JPG', text: 'Navata sinistra', rotation: -90 }
+        ]
+    },
+    'chiesa-san-giovanni': {
+        name: 'Chiesa di Sant\'Agostino in San Giovanni', 
+        views: [
+            { value: '../src/imgs/360/sagostino-ingresso.JPG', text: 'Ingresso', rotation: -90 },
+            { value: '../src/imgs/360/sagostino-altare.JPG', text: 'Altare maggiore', rotation: -90 }
+        ]
+    },
+    'chiesa-san-basilio': {
+        name: 'Chiesa Madre di San Basilio',
+        views: [
+            { value: '../src/imgs/360/sbasilio-ingresso.JPG', text: 'Ingresso principale', rotation: -90 },
+            { value: '../src/imgs/360/sbasilio-altare.JPG', text: 'Altare principale', rotation: -90 }
+        ]
+    },
+    'convento-sant-agostino': {
+        name: 'Convento di Sant\'Agostino',
+        views: [
+            { value: '../src/imgs/360/sagostino-ingresso.JPG', text: 'Ingresso', rotation: -90 },
+            { value: '../src/imgs/360/sagostino-altare.JPG', text: 'Altare', rotation: -90 }
+        ]
+    },
+    'convento-sant-antonio': {
+        name: 'Convento di Sant\'Antonio',
+        views: [
+            { value: '../src/imgs/360/vista-convento-sant-antonio.JPG', text: 'Vista Principale', rotation: 95 },
+            { value: '../src/imgs/360/chiostro-convento-sant-antonio.JPG', text: 'Chiostro', rotation: -90 },
+            { value: '../src/imgs/360/chiesa-convento-sant-antonio.JPG', text: 'Chiesa', rotation: -90 },
+            { value: '../src/imgs/360/grotta-insediamento-sant-antonio.JPG', text: 'Grotta Rupestre', rotation: -90 }
+        ]
+    },
+    // Single view tours
+    'chiesa-purgatorio': {
+        name: 'Chiesa del Purgatorio (San Rocco)',
+        views: [
+            { value: '../src/imgs/360/srocco-ingresso.JPG', text: 'Ingresso', rotation: -90 }
+        ]
+    },
+    'chiesa-del-collegio': {
+        name: 'Chiesa del Collegio',
+        views: [
+            { value: '../src/imgs/360/chiesa-collegio.JPG', text: 'Interno', rotation: -90 }
+        ]
+    },
+    'chiesa-rurale-san-calogero': {
+        name: 'Chiesa rurale di San Calogero',
+        views: [
+            { value: '../src/imgs/360/chiesa-san-calogero.JPG', text: 'Interno', rotation: -90 },
+            { value: '../src/imgs/360/vista-san-calogero.JPG', text: 'Vista esterna', rotation: 90 }
+        ]
+    },
+    'collegio-di-maria': {
+        name: 'Collegio di Maria',
+        views: [
+            { value: '../src/imgs/360/chiostro-collegio-maria.JPG', text: 'Chiostro', rotation: -90 }
+        ]
+    },
+    'monumento-ai-caduti': {
+        name: 'Monumento ai Caduti',
+        views: [
+            { value: '../src/imgs/360/caduti.JPG', text: 'Vista panoramica', rotation: -90 }
+        ]
+    },
+    'cineteatro-urania': {
+        name: 'CineTeatro Urania',
+        views: [
+            { value: '../src/imgs/360/teatro.JPG', text: 'Sala teatrale', rotation: -90 }
+        ]
+    }
+};
+
+// Main Virtual Tour loader function
+function loadVirtualTour(tourId) {
+    console.log('loadVirtualTour called with:', tourId);
+    
+    const config = virtualTourConfig[tourId];
+    if (!config) {
+        console.warn('Tour configuration not found for:', tourId);
+        return;
+    }
+    
+    console.log('Found config:', config);
+
+    // Remove active class from all location cards
+    document.querySelectorAll('.location-card').forEach(card => card.classList.remove('active'));
+    
+    // Add active class to selected location - handle case where event may not be defined
+    let selectedCard = null;
+    if (typeof event !== 'undefined' && event && event.target) {
+        selectedCard = event.target.closest('.location-card');
+    } else {
+        // Fallback: find the card by onclick attribute
+        selectedCard = document.querySelector(`[onclick*="loadVirtualTour('${tourId}')"]`);
+    }
+    
+    if (selectedCard) {
+        selectedCard.classList.add('active');
+        console.log('Added active class to card:', selectedCard);
+    }
+
+    // Load the first/default image
+    const defaultImage = config.views[0];
+    const iframe = document.querySelector('#pano-viewer iframe');
+    console.log('Found iframe:', !!iframe, 'Default image:', defaultImage);
+    
+    if (iframe && defaultImage) {
+        const rotation = defaultImage.rotation || -90; // Default to -90 if not specified
+        const panoramaUrl = `panoramas/panorama.html?img=${defaultImage.value}&rotation=${rotation}`;
+        console.log('Setting iframe src to:', panoramaUrl);
+        iframe.src = panoramaUrl;
+        
+        // Add error handling for iframe
+        iframe.onload = function() {
+            console.log('Iframe loaded successfully');
+        };
+        
+        iframe.onerror = function() {
+            console.error('Iframe failed to load');
+        };
+    } else {
+        console.error('Missing iframe or defaultImage:', { iframe: !!iframe, defaultImage });
+    }
+
+    // Show dropdown if multiple views available
+    if (config.views.length > 1) {
+        console.log('Showing multiple views dropdown');
+        showMultipleViews(config);
+    } else {
+        console.log('Hiding subcategories - single view');
+        hideSubcategories();
+    }
+}
+// Function to load specific convento subcategory
+function loadConventoSubcategory(imagePath, subcategoryName) {
+    console.log('Loading convento subcategory:', subcategoryName, 'with image:', imagePath);
+    
+    // Remove active class from all subcategory cards
+    const subcategoryCards = document.querySelectorAll('.subcategory-card');
+    subcategoryCards.forEach(card => card.classList.remove('active'));
+    
+    // Add active class to selected subcategory
+    const selectedCard = event.target.closest('.subcategory-card');
+    if (selectedCard) {
+        selectedCard.classList.add('active');
+    }
+    console.log('Loading convento subcategory with image:', imagePath);
+// Function to show multiple views dropdown
+function showMultipleViews(config) {
+    const dropdownContainer = document.getElementById('views-dropdown-container');
+    const viewsSelect = document.getElementById('views-select');
+    
+    if (dropdownContainer && viewsSelect) {
+        // Clear existing options
+        viewsSelect.innerHTML = '<option value="">Seleziona una vista...</option>';
+        
+        // Add options for this tour
+        config.views.forEach(view => {
+            const option = document.createElement('option');
+            option.value = view.value;
+            option.textContent = view.text;
+            option.dataset.rotation = view.rotation || -90; // Store rotation in dataset
+            viewsSelect.appendChild(option);
+        });
+        
+        // Show the dropdown
+        dropdownContainer.style.display = 'flex';
+        
+        // Set default selection to first view
+        viewsSelect.value = config.views[0].value;
+        viewsSelect.selectedOptions[0].dataset.rotation = config.views[0].rotation || -90;
+    }
+}
+
+// Function to handle dropdown view changes
+function handleViewChange(imagePath) {
+    if (imagePath) {
+        // Get the rotation from the selected option
+        const viewsSelect = document.getElementById('views-select');
+        const selectedOption = viewsSelect.selectedOptions[0];
+        const rotation = selectedOption ? (selectedOption.dataset.rotation || -90) : -90;
+        
+        loadPanoramaView(imagePath, rotation);
+    }
+}
+
+// Function to load specific panorama view
+function loadPanoramaView(imagePath, rotation = -90) {
+    console.log('Loading panorama view with image and rotation:', imagePath, rotation);
     
     // Load the panorama
     const iframe = document.querySelector('#pano-viewer iframe');
     if (iframe) {
+        const panoramaUrl = `panoramas/panorama.html?img=${imagePath}&rotation=${rotation}`;
+        const panoramaUrl = `panoramas/panorama.html?img=${imagePath}`;
         const panoramaUrl = `panoramas/panorama.html?img=${imagePath}&rotation=${rotation}`;
         console.log('Setting iframe src to:', panoramaUrl);
         iframe.src = panoramaUrl;
