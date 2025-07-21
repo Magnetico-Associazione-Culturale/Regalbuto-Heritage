@@ -110,6 +110,21 @@
       "type": "Feature",
       "geometry": {
         "coordinates": [
+          14.640977,
+          37.652321
+        ],
+        "type": "Point"
+      },
+      "properties": {
+        "name": "Piazza della repubblica",
+        "monument_id": "piazza-repubblica"
+      },
+      "id": "M3SDO"
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "coordinates": [
           14.640967,
           37.649748
         ],
@@ -120,21 +135,6 @@
         "monument_id": "chiesa-santa-maria-la-croce"
       },
       "id": "j2JxR"
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "coordinates": [
-          14.640977,
-          37.652321
-        ],
-        "type": "Point"
-      },
-      "properties": {
-        "name": "Palazzo Comunale",
-        "monument_id": "palazzo-comunale"
-      },
-      "id": "M3SDO"
     }
   ]
 }
