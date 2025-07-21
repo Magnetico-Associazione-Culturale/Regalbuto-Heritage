@@ -751,7 +751,7 @@ function getMonumentDisplayName(monumentId) {
         'lago-pozzillo': 'Lago Pozzillo',
         'parco-avventura': 'Parco Avventura',
         'tecnopolo': 'Tecnopolo Magnetico',
-        'chiesa-santa-maria-la-croce': 'Chiesa di Santa Maria della Croce',
+        'chiesa-maria-ss-della-croce': 'Chiesa di Santa Maria della Croce',
         'chiesa-san-basilio': 'Chiesa di San Basilio',
         'cine-teatro-urania': 'Teatro Urania',
         'convento-sant-agostino': 'Convento di Sant\'Agostino'
@@ -797,7 +797,7 @@ async function loadAudioGuideData(monumentId, playerContainer) {
                 'san-agostino': 'convento-sant-agostino',
                 'teatro-urania': 'cine-teatro-urania',
                 'purgatorio': 'chiesa-san-rocco',
-                'santa-maria-croce': 'chiesa-santa-maria-la-croce',
+                'santa-maria-croce': 'chiesa-maria-ss-della-croce',
                 'santantonio': 'convento-sant-antonio'
             };
             
@@ -820,7 +820,7 @@ async function loadAudioGuideData(monumentId, playerContainer) {
                     'lago-pozzillo': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
                     'parco-avventura': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
                     'tecnopolo': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav',
-                    'chiesa-santa-maria-la-croce': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
+                    'chiesa-maria-ss-della-croce': 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav'
                 };
                 
                 const audioUrl = defaultAudioGuides[monumentId];
@@ -1606,6 +1606,14 @@ function addStaticMarkers() {
         
         // Cultura e Storia - Chiese
         {
+            id: 'chiesa-maria-ss-della-croce',
+            name: 'Chiesa Maria S.S. della Croce',
+            coords: [37.649969, 14.640583],
+            category: 'cultura',
+            description: 'Chiesa di Santa Maria la Croce, importante punto di culto locale',
+            icon: '⛪'
+        },
+        {
             id: 'chiesa-san-giovanni',
             name: 'Chiesa S. Giovanni',
             coords: [37.649732, 14.640482],
@@ -2031,7 +2039,7 @@ function openMapLocation(monumentId) {
     // Define Google Maps URLs based on monuments.json data
     const mapUrls = {
         // Chiese
-        'chiesa-santa-maria-la-croce': 'https://maps.app.goo.gl/36n3wGo6KZ3wdWKa7',
+        'chiesa-maria-ss-della-croce': 'https://maps.app.goo.gl/36n3wGo6KZ3wdWKa7',
         'santa-maria-croce': 'https://maps.app.goo.gl/36n3wGo6KZ3wdWKa7', // alias
         'chiesa-san-giovanni': 'https://maps.app.goo.gl/othA2S9tDMcGK3FBA',
         'chiesa-san-basilio': 'https://maps.app.goo.gl/vSNW8QEorSkNDE487',
@@ -2341,89 +2349,6 @@ function loadLocationFromJSON(monumentId, imagePath) {
     }
     
     console.log(`Loading virtual tour from JSON for monument: ${monumentId}`);
-}
-
-// Function to load Convento di Sant'Antonio with subcategories
-function loadConventoSantAntonio() {
-    console.log('Loading Convento di Sant Antonio main view');
-    
-    // Remove active class from all location cards
-    const locationCards = document.querySelectorAll('.location-card');
-    locationCards.forEach(card => card.classList.remove('active'));
-    
-    // Add active class to convento card
-    const conventoCard = document.querySelector('[onclick*="loadConventoSantAntonio"]');
-    if (conventoCard) {
-        conventoCard.classList.add('active');
-    }
-    
-    // Load the main view (vista esterna as primary view)
-    const iframe = document.querySelector('#pano-viewer iframe');
-    if (iframe) {
-        iframe.src = 'panoramas/panorama.html?img=../src/imgs/360/vista-convento-sant-antonio.JPG';
-    }
-    
-    // Show subcategories
-    showConventoSubcategories();
-    
-    // Set the "Vista Principale" as active after a short delay to ensure DOM is updated
-    setTimeout(() => {
-        const vistaPrincipaleCard = document.querySelector('.subcategory-card.vista-principale');
-        if (vistaPrincipaleCard) {
-            // Remove active from other subcategory cards
-            document.querySelectorAll('.subcategory-card').forEach(card => card.classList.remove('active'));
-            // Add active to vista principale
-            vistaPrincipaleCard.classList.add('active');
-        }
-    }, 100);
-}
-
-// Function to show Convento di Sant'Antonio subcategories
-function showConventoSubcategories() {
-    const subcategoriesContainer = document.getElementById('convento-subcategories');
-    if (subcategoriesContainer) {
-        subcategoriesContainer.style.display = 'block';
-        
-        // Reinitialize feather icons for new content
-        feather.replace();
-        
-        // Scroll to subcategories
-        subcategoriesContainer.scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest'
-        });
-    }
-}
-
-// Function to hide subcategories
-function hideSubcategories() {
-    const subcategoriesContainer = document.getElementById('convento-subcategories');
-    if (subcategoriesContainer) {
-        subcategoriesContainer.style.display = 'none';
-    }
-}
-
-// Function to load specific convento subcategory
-function loadConventoSubcategory(imagePath, subcategoryName) {
-    console.log('Loading convento subcategory:', subcategoryName, 'with image:', imagePath);
-    
-    // Remove active class from all subcategory cards
-    const subcategoryCards = document.querySelectorAll('.subcategory-card');
-    subcategoryCards.forEach(card => card.classList.remove('active'));
-    
-    // Add active class to selected subcategory
-    const selectedCard = event.target.closest('.subcategory-card');
-    if (selectedCard) {
-        selectedCard.classList.add('active');
-    }
-    
-    // Load the panorama
-    const iframe = document.querySelector('#pano-viewer iframe');
-    if (iframe) {
-        const panoramaUrl = `panoramas/panorama.html?img=${imagePath}`;
-        console.log('Setting iframe src to:', panoramaUrl);
-        iframe.src = panoramaUrl;
-    }
 }
 
 function loadLocationAndScroll(locationId) {
