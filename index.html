@@ -2094,14 +2094,6 @@
                         </button>
                     </div>
 
-                    <!-- Views Dropdown (appears when multiple views are available) -->
-                    <div id="views-dropdown-container" class="views-dropdown-container" style="display: none;">
-                        <label for="views-select">Viste disponibili:</label>
-                        <select id="views-select" class="views-select" onchange="handleViewChange(this.value)">
-                            <option value="">Seleziona una vista...</option>
-                        </select>
-                    </div>
-
                     <!-- Tour Hotspots -->
                     <div class="tour-locations">
                         <h4>Luoghi Disponibili</h4>
@@ -2150,6 +2142,39 @@
                                 <div class="location-thumb">⛪</div>
                                 <h5>Chiesa di San Rocco</h5>
                                 <p>Ingresso principale</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Convento di Sant'Antonio Subcategories -->
+                    <div id="convento-subcategories" class="convento-subcategories" style="display: none;">
+                        <div class="subcategories-header">
+                            <h4>🏛️ Convento di Sant'Antonio - Viste Disponibili</h4>
+                            <button class="btn btn-outline btn-sm" onclick="hideSubcategories()">
+                                <i data-feather="x"></i>
+                                Chiudi
+                            </button>
+                        </div>
+                        <div class="subcategory-grid">
+                            <div class="subcategory-card vista-principale" onclick="loadConventoSubcategory('../src/imgs/360/vista-convento-sant-antonio.JPG', 'Vista Principale')">
+                                <div class="subcategory-thumb">🏛️</div>
+                                <h6>Vista Principale</h6>
+                                <p>Panorama completo del Convento di Sant'Antonio con l'antico insediamento rupestre</p>
+                            </div>
+                            <div class="subcategory-card" onclick="loadConventoSubcategory('../src/imgs/360/chiostro-convento-sant-antonio.JPG', 'Chiostro')">
+                                <div class="subcategory-thumb">🏛️</div>
+                                <h6>Chiostro del Convento</h6>
+                                <p>Vista panoramica del chiostro principale con archi e cortile centrale</p>
+                            </div>
+                            <div class="subcategory-card" onclick="loadConventoSubcategory('../src/imgs/360/chiesa-convento-sant-antonio.JPG', 'Chiesa')">
+                                <div class="subcategory-thumb">⛪</div>
+                                <h6>Chiesa del Convento</h6>
+                                <p>Interno della chiesa conventuale con altare e decorazioni</p>
+                            </div>
+                            <div class="subcategory-card" onclick="loadConventoSubcategory('../src/imgs/360/grotta-insediamento-sant-antonio.JPG', 'Grotta Rupestre')">
+                                <div class="subcategory-thumb">🗿</div>
+                                <h6>Grotta dell'Insediamento Rupestre</h6>
+                                <p>Antica grotta dell'insediamento rupestre di Monte Sant'Antonio</p>
                             </div>
                         </div>
                     </div>
