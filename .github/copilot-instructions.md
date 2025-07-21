@@ -38,8 +38,8 @@ switchTab('monumenti') // Switches to monuments section
   - Audio guide metadata
   - Historical timeline data
   - Categories: (church, convent, etc.)
-- Leaflet.js for interactive maps with custom markers
-- Font Awesome icons for monument categories on map markers and filters
+- MapLibre GL JS for GPS navigation and route tracking
+- Font Awesome icons for monument categories
 
 ### Mobile-First Development
 
@@ -64,7 +64,7 @@ switchTab('monumenti') // Switches to monuments section
 - `startQRScanner()` - QR code scanning for monuments
 - `playAudioGuide(monumentId)` - Audio guide playback
 - `openVirtualTour(imageFile)` - Launch 360° panorama viewer
-- `initializeMap()` - Leaflet map setup with monument markers
+- `initializeGPSMap()` - MapLibre GL JS GPS map setup for itinerary navigation
 
 #### Content Management
 - Monument data loaded from JSON, no dynamic API calls
@@ -89,19 +89,17 @@ switchTab('monumenti') // Switches to monuments section
 - Check map marker clustering and performance with large datasets
 
 ### External Dependencies
-- **Leaflet.js**: Interactive maps and markers
+- **MapLibre GL JS**: GPS navigation, interactive maps and route tracking
 - **A-Frame**: WebVR/360° panorama rendering
 - **Feather Icons**: Consistent iconography for app navigation and UI elements
-- **Font Awesome**: Category-specific icons for map markers, tooltips, and monument filters
+- **Font Awesome**: Category-specific icons for monument categories and map tooltips
 - **Marzipano**: Alternative panorama viewer (imported but primarily uses A-Frame)
 - **html5-qrcode**: QR code scanning functionality
 
 ### Icon Usage Guidelines
 - **Feather Icons**: Used for general app navigation (bottom nav, header buttons, search, etc.)
-- **Font Awesome**: Used specifically for monument categories and map-related features:
-  - Map markers: Category-specific icons (church, monument, theater, etc.)
-  - Map filter buttons: Semantic icons matching monument categories
-  - Map tooltips: Action icons (headphones, map-marker, VR cardboard)
+- **Font Awesome**: Used specifically for monument categories and GPS map features:
+  - GPS map tooltips: Action icons (headphones, map-marker, VR cardboard, navigation)
   - Monument categories from JSON: `monuments.json`
 
 ### File Organization

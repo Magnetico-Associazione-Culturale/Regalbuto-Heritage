@@ -3,8 +3,6 @@ let currentQuizQuestion = 1;
 let quizAnswers = {};
 let qrScanner = null;
 let currentFilter = 'all';
-let map = null; // Leaflet map instance
-let markers = []; // Array to store map markers
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -19,9 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Manage VR button visibility
     manageVRButtonVisibility();
-    
-    // Initialize map when in map section
-    initializeMap();
     
     // Load monuments from JSON data
     loadMonumentsFromJSON();
@@ -127,7 +122,7 @@ function scrollToCategorySection(category) {
 
 function updateResultsCount(count) {
     const resultsText = document.getElementById('results-text');
-    resultsText.textContent = `${count} monumenti trovati`;
+    resultsText.textContent = `${count} tappe trovate`;
 }
 
 function initializeMonumentCounter() {
@@ -199,16 +194,6 @@ function switchTab(tabName) {
     setTimeout(() => {
         feather.replace();
         
-        // Initialize map if switching to map tab
-        if (tabName === 'mappa') {
-            if (!map) {
-                initializeMap();
-            } else {
-                // Resize map to fix display issues when switching tabs
-                map.invalidateSize();
-            }
-        }
-        
         // Initialize GPS map if switching to navigation tab
         if (tabName === 'navigazione') {
             initializeGPSMap();
@@ -220,7 +205,7 @@ function switchTab(tabName) {
         }
         
         // Initialize monument counter when switching to monuments tab
-        if (tabName === 'monumenti') {
+        if (tabName === 'tappe') {
             initializeMonumentCounter();
         }
     }, 100);
@@ -439,7 +424,7 @@ function handleQRResult(qrText) {
         // Handle monument-specific QR codes - switch to monument tab and expand specific monument
         const monumentId = qrText.replace('monument:', '');
         closeQRScanner();
-        switchTab('monumenti');
+        switchTab('tappe');
         setTimeout(() => {
             expandMonument(monumentId);
             playAudioGuide(monumentId);
@@ -1190,239 +1175,11 @@ function showAudioError(playerContainer, show) {
     }
 }
 
-// Map Initialization and Management Functions
-function createCustomIcon(category) {
-    // Define Font Awesome icon class and color based on category
-    let iconClass = '';
-    let iconColor = '';
-    
-    switch(category) {
-        case 'church':
-            iconClass = 'fas fa-church';
-            iconColor = '#8B4513'; // Brown
-            break;
-        case 'convent':
-            iconClass = 'fas fa-place-of-worship';
-            iconColor = '#8B4513'; // Brown
-            break;
-        case 'palace':
-            iconClass = 'fas fa-crown';
-            iconColor = '#DAA520'; // Goldenrod
-            break;
-        case 'monument':
-            iconClass = 'fas fa-monument';
-            iconColor = '#696969'; // DimGray
-            break;
-        case 'theater':
-            iconClass = 'fas fa-theater-masks';
-            iconColor = '#DC143C'; // Crimson
-            break;
-        case 'civic':
-            iconClass = 'fas fa-landmark';
-            iconColor = '#4682B4'; // SteelBlue
-            break;
-        case 'educational':
-            iconClass = 'fas fa-graduation-cap';
-            iconColor = '#4B0082'; // Indigo
-            break;
-        case 'financial':
-            iconClass = 'fas fa-university';
-            iconColor = '#228B22'; // ForestGreen
-            break;
-        default:
-            iconClass = 'fas fa-map-marker-alt';
-            iconColor = '#666666'; // Gray
-            break;
-    }
-    
-    // Create custom HTML icon using Font Awesome
-    const iconHtml = `
-        <div style="
-            background-color: ${iconColor};
-            width: 30px;
-            height: 30px;
-            border-radius: 50% 50% 50% 0;
-            border: 3px solid white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform: rotate(-45deg);
-            position: relative;
-        ">
-            <i class="${iconClass}" style="
-                color: white;
-                font-size: 14px;
-                transform: rotate(45deg);
-            "></i>
-        </div>
-    `;
-    
-    return L.divIcon({
-        html: iconHtml,
-        iconSize: [30, 30],
-        iconAnchor: [15, 30],
-        popupAnchor: [0, -30],
-        className: 'custom-map-icon'
-    });
-}
-
-function initializeMap() {
-    // Initialize map only when needed to avoid loading issues
-    setTimeout(() => {
-        if (!map && document.getElementById('osm-map')) {
-            try {
-                createMap();
-            } catch (error) {
-                console.error('Error initializing map:', error);
-                showNotification('Errore nel caricamento della mappa', 'warning');
-            }
-        }
-    }, 100);
-}
-
-function createMap() {
-    // Create map centered on Regalbuto's historic center
-    // Coordinates calculated as average of main historic landmarks:
-    // Palazzo Comunale, Monumento ai Caduti, Chiesa Santa Maria la Croce
-    map = L.map('osm-map', {
-        // Disable scroll zoom by default to prevent conflicts
-        scrollWheelZoom: false,
-        // Enable zoom on map focus
-        zoomControl: true,
-        // Smooth zoom animation
-        zoomAnimation: true,
-        // Prevent map from capturing all scroll events
-        touchZoom: 'center'
-    }).setView([37.650573, 14.640587], 16);
-    
-    // Add CartoDB Positron tiles for a beautiful, clean look
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19
-    }).addTo(map);
-    
-    // Get the hint element
-    const hint = document.querySelector('.map-interaction-hint');
-    
-    // Enable scroll zoom when map is focused
-    map.on('focus', function() {
-        map.scrollWheelZoom.enable();
-        if (hint) hint.style.opacity = '0';
-    });
-    
-    // Disable scroll zoom when map loses focus
-    map.on('blur', function() {
-        map.scrollWheelZoom.disable();
-    });
-    
-    // Enable scroll zoom on click and hide hint
-    map.on('click', function() {
-        map.scrollWheelZoom.enable();
-        if (hint) {
-            hint.style.opacity = '0';
-            setTimeout(() => {
-                if (hint) hint.style.display = 'none';
-            }, 300);
-        }
-        setTimeout(() => {
-            map.scrollWheelZoom.disable();
-        }, 5000); // Disable after 5 seconds
-    });
-    
-    // Hide hint on any map interaction
-    map.on('zoomstart movestart', function() {
-        if (hint) {
-            hint.style.opacity = '0';
-            setTimeout(() => {
-                if (hint) hint.style.display = 'none';
-            }, 300);
-        }
-    });
-    
-    // Add all markers initially
-    addAllMarkers();
-    
-    console.log('Map initialized successfully');
-}
-
-function addAllMarkers() {
-    // Clear existing markers
-    clearMarkers();
-    
-    // Load monuments data and create markers
-    fetch('data/monuments.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(monuments => {
-            console.log('Loaded monuments data:', monuments.length, 'monuments');
-            monuments.forEach(monument => {
-                if (monument.lat && monument.lon) {
-                    // Create custom icon based on category
-                    const customIcon = createCustomIcon(monument.category);
-                    
-                    // Check if monument has virtual tour (360° images)
-                    const hasVirtualTour = monument.images && monument.images.some(img => img.format === '360');
-                    
-                    // Check if monument has audio guide
-                    const hasAudioGuide = monument.audio && monument.audio.path;
-                    
-                    // Create enhanced tooltip content
-                    const tooltipContent = createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide);
-                    
-                    // Create marker with custom icon
-                    const marker = L.marker([monument.lat, monument.lon], {
-                        icon: customIcon
-                    })
-                    .bindPopup(tooltipContent, {
-                        maxWidth: 300,
-                        minWidth: 280,
-                        className: 'map-monument-popup',
-                        closeButton: true,
-                        autoPan: true
-                    })
-                    .addTo(map);
-                    
-                    // Add click event listener for debugging
-                    marker.on('click', function(e) {
-                        console.log('Marker clicked:', monument.name);
-                        console.log('Marker position:', monument.lat, monument.lon);
-                        // The popup should open automatically, but let's ensure it does
-                        marker.openPopup();
-                        
-                        // Add a small delay to make sure popup is open before adding event listeners
-                        setTimeout(() => {
-                            // Make sure popup buttons are clickable
-                            const popup = marker.getPopup();
-                            if (popup && popup._container) {
-                                const buttons = popup._container.querySelectorAll('.tooltip-btn');
-                                buttons.forEach(btn => {
-                                    btn.style.pointerEvents = 'auto';
-                                    btn.style.cursor = 'pointer';
-                                });
-                            }
-                        }, 100);
-                    });
-                    
-                    // Store marker with its category for filtering
-                    marker.category = monument.category;
-                    marker.monumentId = monument.id;
-                    markers.push(marker);
-                }
-            });
-            console.log('Added', markers.length, 'markers to map');
-        })
-        .catch(error => {
-            console.error('Error loading monuments data:', error);
-            // Fallback to old static data if needed
-            console.log('Falling back to static markers');
-            addStaticMarkers();
-        });
+// Quiz Functions
+function initializeQuiz() {
+    currentQuizQuestion = 1;
+    quizAnswers = {};
+    updateQuizDisplay();
 }
 
 function createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide) {
@@ -1537,9 +1294,9 @@ function getCategoryBadge(category) {
         'palace': 'Storico',
         'monument': 'Monumentale',
         'theater': 'Culturale',
-        'civic': 'Civico',
+        'civic': 'Amministrativo',
         'educational': 'Educativo',
-        'financial': 'Commerciale',
+        'financial': 'Finanza',
         'cultura': 'Cultura',
         'natura': 'Natura',
         'sport': 'Sport',
@@ -1571,257 +1328,10 @@ function getCategoryIcon(category) {
     }
 }
 
-function addStaticMarkers() {
-    // Fallback static markers (existing code as backup)
-    const locations = [
-        // Natura e Paesaggio
-        {
-            id: 'lago-pozzillo',
-            name: 'Lago Pozzillo',
-            coords: [37.6587117, 14.5975772],
-            category: 'natura',
-            description: 'Bacino artificiale con attività ricreative',
-            icon: '🏞️'
-        },
-        
-        // Svago e Sport
-        {
-            id: 'parco-avventura',
-            name: 'Parco Avventura Pozzillo',
-            coords: [37.6589778, 14.6188852],
-            category: 'sport',
-            description: 'Percorsi acrobatici nella natura',
-            icon: '🌲'
-        },
-        
-        // Tecnologia
-        {
-            id: 'tecnopolo',
-            name: 'Tecnopolo Magnetico',
-            coords: [37.6555295, 14.6282223],
-            category: 'tecnologia',
-            description: 'Centro di innovazione e formazione ICT',
-            icon: '💻'
-        },
-        
-        // Cultura e Storia - Chiese
-        {
-            id: 'chiesa-maria-ss-della-croce',
-            name: 'Chiesa Maria S.S. della Croce',
-            coords: [37.649969, 14.640583],
-            category: 'cultura',
-            description: 'Chiesa di Santa Maria la Croce, importante punto di culto locale',
-            icon: '⛪'
-        },
-        {
-            id: 'chiesa-san-giovanni',
-            name: 'Chiesa S. Giovanni',
-            coords: [37.649732, 14.640482],
-            category: 'cultura',
-            description: 'Chiesa dedicata a San Giovanni, importante edificio religioso',
-            icon: '⛪'
-        },
-        {
-            id: 'chiesa-san-basilio',
-            name: 'Chiesa S. Basilio',
-            coords: [37.652803, 14.639812],
-            category: 'cultura',
-            description: 'Chiesa dedicata a San Basilio, importante testimonianza religiosa',
-            icon: '⛪'
-        },
-        {
-            id: 'chiesa-san-rocco',
-            name: 'Chiesa di San Rocco',
-            coords: [37.652933, 14.640170],
-            category: 'cultura',
-            description: 'Chiesa del Purgatorio, arte barocca e devozione popolare',
-            icon: '⛪'
-        },
-        {
-            id: 'chiesa-del-collegio',
-            name: 'Chiesa del Collegio',
-            coords: [37.650658, 14.640722],
-            category: 'cultura',
-            description: 'Chiesa annessa al collegio, centro di formazione religiosa',
-            icon: '⛪'
-        },
-        {
-            id: 'chiesa-madonna-del-carmelo',
-            name: 'Chiesa Madonna del Carmelo',
-            coords: [37.650585, 14.644247],
-            category: 'cultura',
-            description: 'Chiesa dedicata alla Madonna del Carmelo',
-            icon: '⛪'
-        },
-        {
-            id: 'chiesa-san-domenico',
-            name: 'Chiesa S. Domenico',
-            coords: [37.654306, 14.638889],
-            category: 'cultura',
-            description: 'Chiesa dedicata a San Domenico',
-            icon: '⛪'
-        },
-        {
-            id: 'chiesa-san-sebastiano',
-            name: 'Chiesa S. Sebastiano',
-            coords: [37.654191, 14.636747],
-            category: 'cultura',
-            description: 'Chiesa dedicata a San Sebastiano',
-            icon: '⛪'
-        },
-        {
-            id: 'chiesa-san-francesco-assisi',
-            name: 'Chiesa S. Francesco d\'Assisi',
-            coords: [37.653628, 14.634098],
-            category: 'cultura',
-            description: 'Chiesa dedicata a San Francesco d\'Assisi',
-            icon: '⛪'
-        },
-        {
-            id: 'chiesa-sm-delle-grazie-convento',
-            name: 'Chiesa S.M. delle Grazie',
-            coords: [37.650709, 14.641753],
-            category: 'cultura',
-            description: 'Chiesa di Santa Maria delle Grazie con convento',
-            icon: '⛪'
-        },
-        {
-            id: 'chiesa-sant-antonio-padova',
-            name: 'Chiesa S. Antonio da Padova',
-            coords: [37.650606, 14.642021],
-            category: 'cultura',
-            description: 'Chiesa dedicata a Sant\'Antonio da Padova',
-            icon: '⛪'
-        },
-        {
-            id: 'chiesa-rurale-san-calogero',
-            name: 'Chiesa rurale San Calogero',
-            coords: [37.649874, 14.646600],
-            category: 'cultura',
-            description: 'Chiesa rurale dedicata a San Calogero',
-            icon: '⛪'
-        },
-        
-        // Cultura e Storia - Conventi
-        {
-            id: 'convento-sant-agostino',
-            name: 'Convento S. Agostino',
-            coords: [37.649602, 14.640310],
-            category: 'cultura',
-            description: 'Convento dedicato a Sant\'Agostino',
-            icon: '🏛️'
-        },
-        {
-            id: 'convento-sant-antonio',
-            name: 'Convento Sant\'Antonio',
-            coords: [37.669940, 14.625629],
-            category: 'cultura',
-            description: 'Convento rurale di Sant\'Antonio',
-            icon: '🏛️'
-        },
-        {
-            id: 'convento-s-m-delle-grazie',
-            name: 'Convento S.M. delle Grazie',
-            coords: [37.650955, 14.641503],
-            category: 'cultura',
-            description: 'Convento di Santa Maria delle Grazie',
-            icon: '🏛️'
-        },
-        
-        // Cultura e Storia - Monumenti e Palazzi
-        {
-            id: 'monumento-ai-caduti',
-            name: 'Monumento ai Caduti',
-            coords: [37.649513, 14.640744],
-            category: 'cultura',
-            description: 'Monumento commemorativo dedicato ai caduti delle guerre',
-            icon: '🏛️'
-        },
-        {
-            id: 'cine-teatro-urania',
-            name: 'Cine Teatro Urania',
-            coords: [37.649339, 14.640664],
-            category: 'cultura',
-            description: 'Teatro comunale e cinema, centro culturale locale',
-            icon: '🎭'
-        },
-        {
-            id: 'collegio-di-maria',
-            name: 'Collegio di Maria',
-            coords: [37.650481, 14.640677],
-            category: 'cultura',
-            description: 'Istituto educativo femminile',
-            icon: '🏛️'
-        },
-        {
-            id: 'palazzo-comunale',
-            name: 'Palazzo Comunale',
-            coords: [37.652236, 14.640434],
-            category: 'cultura',
-            description: 'Sede del Municipio di Regalbuto',
-            icon: '🏛️'
-        },
-        {
-            id: 'palazzo-marletta',
-            name: 'Palazzo Marletta',
-            coords: [37.650160, 14.640799],
-            category: 'cultura',
-            description: 'Palazzo storico della famiglia Marletta',
-            icon: '🏛️'
-        },
-        {
-            id: 'palazzo-falcone',
-            name: 'Palazzo Falcone',
-            coords: [37.651814, 14.640389],
-            category: 'cultura',
-            description: 'Palazzo storico della famiglia Falcone',
-            icon: '🏛️'
-        },
-        {
-            id: 'palazzo-gerardi',
-            name: 'Palazzo Gerardi',
-            coords: [37.652067, 14.640949],
-            category: 'cultura',
-            description: 'Palazzo storico della famiglia Gerardi',
-            icon: '🏛️'
-        },
-        {
-            id: 'caserma-cc-ex-convento-san-domenico',
-            name: 'Caserma C.C. (ex Convento S. Domenico)',
-            coords: [37.654446, 14.638834],
-            category: 'cultura',
-            description: 'Caserma dei Carabinieri, ex Convento di San Domenico',
-            icon: '🏛️'
-        }
-    ];
-    
-    // Add markers for each location
-    locations.forEach(location => {
-        const marker = L.marker(location.coords)
-            .bindPopup(`
-                <div style="text-align: center; min-width: 200px;">
-                    <h4 style="margin: 0 0 8px 0; color: #2c3e50;">${location.icon} ${location.name}</h4>
-                    <p style="margin: 0 0 12px 0; color: #666; font-size: 14px;">${location.description}</p>
-                    <button onclick="openMapLocation('${location.id}')" 
-                            style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">
-                        🗺️ Portami lì
-                    </button>
-                </div>
-            `)
-            .addTo(map);
-        
-        // Store marker with its category for filtering
-        marker.category = location.category;
-        marker.locationId = location.id;
-        markers.push(marker);
-    });
-}
 
 // Helper functions for map tooltip actions
 window.openVirtualTourFromMap = async function(monumentId) {
     console.log('Opening virtual tour from map for:', monumentId);
-    // Close the popup first
-    if (map) map.closePopup();
     
     try {
         // Load monuments data from JSON to get 360° images dynamically
@@ -1907,8 +1417,6 @@ window.openVirtualTour = async function(monumentId) {
 
 window.playAudioGuideFromMap = function(monumentId) {
     console.log('Playing audio guide from map for:', monumentId);
-    // Close the popup first
-    if (map) map.closePopup();
     
     // Switch to monuments tab and trigger audio guide
     switchTab('monumenti');
@@ -1928,95 +1436,7 @@ window.playAudioGuideFromMap = function(monumentId) {
     }, 300);
 };
 
-function clearMarkers() {
-    markers.forEach(marker => {
-        map.removeLayer(marker);
-    });
-    markers = [];
-}
-
-function filterMarkersBy(category) {
-    if (!map || !markers) return;
-    
-    markers.forEach(marker => {
-        if (category === 'all' || marker.category === category) {
-            if (!map.hasLayer(marker)) {
-                marker.addTo(map);
-            }
-        } else {
-            if (map.hasLayer(marker)) {
-                map.removeLayer(marker);
-            }
-        }
-    });
-    
-    // Adjust map view based on visible markers
-    if (category !== 'all') {
-        const visibleMarkers = markers.filter(marker => 
-            marker.category === category && map.hasLayer(marker)
-        );
-        if (visibleMarkers.length > 0) {
-            const group = new L.featureGroup(visibleMarkers);
-            map.fitBounds(group.getBounds().pad(0.1));
-        }        } else {
-            // Show all markers - reset to historic center view
-            map.setView([37.650573, 14.640587], 16);
-        }
-}
-
 // Map Location Functions
-function filterMapLocations(category) {
-    // Update active filter button
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (btn.dataset.category === category) {
-            btn.classList.add('active');
-        }
-    });
-    
-    // Filter location cards
-    const locationCards = document.querySelectorAll('.location-card');
-    locationCards.forEach(card => {
-        const cardCategory = card.dataset.category;
-        let shouldShow = false;
-        
-        if (category === 'all') {
-            shouldShow = true;
-        } else if (category === 'sport') {
-            // Include both sport and svago categories
-            shouldShow = cardCategory === 'sport' || cardCategory === 'svago';
-        } else {
-            shouldShow = cardCategory === category;
-        }
-        
-        card.style.display = shouldShow ? 'flex' : 'none';
-    });
-    
-    // Filter monument cards
-    const monumentCards = document.querySelectorAll('.monument-card');
-    monumentCards.forEach(card => {
-        const cardCategory = card.dataset.category;
-        let shouldShow = false;
-        
-        if (category === 'all') {
-            shouldShow = true;
-        } else if (category === 'sport') {
-            // Include both sport and svago categories
-            shouldShow = cardCategory === 'sport' || cardCategory === 'svago';
-        } else {
-            shouldShow = cardCategory === category;
-        }
-        
-        card.style.display = shouldShow ? 'block' : 'none';
-    });
-    
-    // Filter map markers
-    if (map) {
-        filterMarkersBy(category);
-    }
-    
-    showNotification(`Filtro applicato: ${getCategoryDisplayName(category)}`, 'success');
-}
 
 function getCategoryDisplayName(category) {
     const names = {
@@ -2284,7 +1704,7 @@ function loadLocation(locationId) {
     if (selectedCard) {
         selectedCard.classList.add('active');
     }
-    
+    W
     // Location URLs for virtual tours
     const locations = {
         'convento': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
@@ -4130,6 +3550,12 @@ async function loadRouteData() {
         // Update total count
         document.getElementById('total-count').textContent = checkpoints.length;
         
+        // Update total count in tappe section
+        const totalMini = document.getElementById('total-count-mini');
+        if (totalMini) {
+            totalMini.textContent = checkpoints.length;
+        }
+        
     } catch (error) {
         console.error('Error loading route data:', error);
     }
@@ -4285,6 +3711,23 @@ function startNavigation() {
     document.getElementById('stop-navigation-btn').style.display = 'inline-flex';
     document.getElementById('navigation-info').style.display = 'block';
     
+    // Show navigation status panel in tappe section
+    const navigationPanel = document.getElementById('navigation-status-panel');
+    if (navigationPanel) {
+        navigationPanel.style.display = 'block';
+    }
+    
+    // Initialize counts in tappe section
+    const totalMini = document.getElementById('total-count-mini');
+    if (totalMini) {
+        totalMini.textContent = checkpoints.length;
+    }
+    
+    const visitedMini = document.getElementById('visited-count-mini');
+    if (visitedMini) {
+        visitedMini.textContent = '0';
+    }
+    
     // Start geolocation tracking
     if (navigator.geolocation) {
         watchId = navigator.geolocation.watchPosition(
@@ -4331,6 +3774,12 @@ function stopNavigation() {
     document.getElementById('start-navigation-btn').style.display = 'inline-flex';
     document.getElementById('stop-navigation-btn').style.display = 'none';
     document.getElementById('navigation-info').style.display = 'none';
+    
+    // Hide navigation status panel in tappe section
+    const navigationPanel = document.getElementById('navigation-status-panel');
+    if (navigationPanel) {
+        navigationPanel.style.display = 'none';
+    }
     
     // Remove user location marker
     if (gpsMap && gpsMap.getSource('user-location')) {
@@ -4408,6 +3857,12 @@ function updateNavigationInstructions() {
     // Update remaining distance
     const totalRemaining = calculateRemainingDistance();
     document.getElementById('remaining-distance').textContent = `${totalRemaining.toFixed(2)} km`;
+    
+    // Update mini navigation info in tappe section
+    const remainingMini = document.getElementById('remaining-distance-mini');
+    if (remainingMini) {
+        remainingMini.textContent = `${totalRemaining.toFixed(2)} km`;
+    }
 }
 
 function checkCheckpointProximity() {
@@ -4429,6 +3884,12 @@ function checkCheckpointProximity() {
         // Update visited count
         const visitedCount = checkpoints.filter(cp => cp.visited).length;
         document.getElementById('visited-count').textContent = visitedCount;
+        
+        // Update mini navigation info in tappe section
+        const visitedMini = document.getElementById('visited-count-mini');
+        if (visitedMini) {
+            visitedMini.textContent = visitedCount;
+        }
         
         // Check if route completed
         if (currentCheckpointIndex >= checkpoints.length) {
@@ -4490,14 +3951,31 @@ function updateNextDestination() {
     if (currentCheckpointIndex < checkpoints.length) {
         const nextCheckpoint = checkpoints[currentCheckpointIndex];
         document.getElementById('next-destination-text').textContent = nextCheckpoint.name;
+        
+        // Update mini navigation info in tappe section
+        const nextMini = document.getElementById('next-destination-mini');
+        if (nextMini) {
+            nextMini.textContent = nextCheckpoint.name;
+        }
     } else {
         document.getElementById('next-destination-text').textContent = 'Percorso completato';
+        
+        const nextMini = document.getElementById('next-destination-mini');
+        if (nextMini) {
+            nextMini.textContent = 'Percorso completato';
+        }
     }
 }
 
 function updateCheckpointsList() {
     const container = document.getElementById('route-checkpoints');
     container.innerHTML = '';
+    
+    // Show the route checkpoints section when navigation is available
+    const routeSection = document.getElementById('route-checkpoints-section');
+    if (routeSection) {
+        routeSection.style.display = checkpoints.length > 0 ? 'block' : 'none';
+    }
     
     checkpoints.forEach((checkpoint, index) => {
         const item = document.createElement('div');
@@ -4575,14 +4053,13 @@ function startNavigationToPoint(name, lat, lon) {
     }
 }
 
-// Enhanced functions for map popup buttons (compatible with both OpenStreetMap and GPS popups)
+// Enhanced functions for GPS map popup buttons (MapLibre GL JS)
 function playAudioGuideFromMap(monumentId) {
     // Close any open popups first
     if (gpsMap) {
         const popups = document.querySelectorAll('.maplibregl-popup');
         popups.forEach(popup => popup.remove());
     }
-    if (map) map.closePopup();
     
     // Switch to monuments tab and play audio
     switchTab('monumenti');
@@ -4597,7 +4074,6 @@ function openVirtualTourFromMap(monumentId) {
         const popups = document.querySelectorAll('.maplibregl-popup');
         popups.forEach(popup => popup.remove());
     }
-    if (map) map.closePopup();
     
     // Get monument data to find 360° image
     fetch('data/monuments.json')
