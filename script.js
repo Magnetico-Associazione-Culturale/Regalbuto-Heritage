@@ -217,6 +217,11 @@ function switchTab(tabName) {
         // Manage VR button visibility when switching to virtual tour
         if (tabName === 'virtual-tour') {
             manageVRButtonVisibility();
+            
+            // Load Convento di Sant'Antonio as default tour
+            setTimeout(() => {
+                loadConventoSantAntonio();
+            }, 200);
         }
         
         // Initialize monument counter when switching to monuments tab
@@ -2357,65 +2362,66 @@ function loadConventoSantAntonio() {
         conventoCard.classList.add('active');
     }
     
-    // Load the main view (vista esterna as primary view)
+    // Load the main view (vista principale as primary view)
     const iframe = document.querySelector('#pano-viewer iframe');
     if (iframe) {
         iframe.src = 'panoramas/panorama.html?img=../src/imgs/360/vista-convento-sant-antonio.JPG';
     }
     
-    // Show subcategories
+    // Show subcategories dropdown
     showConventoSubcategories();
-    
-    // Set the "Vista Principale" as active after a short delay to ensure DOM is updated
-    setTimeout(() => {
-        const vistaPrincipaleCard = document.querySelector('.subcategory-card.vista-principale');
-        if (vistaPrincipaleCard) {
-            // Remove active from other subcategory cards
-            document.querySelectorAll('.subcategory-card').forEach(card => card.classList.remove('active'));
-            // Add active to vista principale
-            vistaPrincipaleCard.classList.add('active');
-        }
-    }, 100);
 }
 
-// Function to show Convento di Sant'Antonio subcategories
+// Function to show Convento di Sant'Antonio subcategories as dropdown
 function showConventoSubcategories() {
-    const subcategoriesContainer = document.getElementById('convento-subcategories');
-    if (subcategoriesContainer) {
-        subcategoriesContainer.style.display = 'block';
+    const dropdownContainer = document.getElementById('views-dropdown-container');
+    const viewsSelect = document.getElementById('views-select');
+    
+    if (dropdownContainer && viewsSelect) {
+        // Clear existing options
+        viewsSelect.innerHTML = '<option value="">Seleziona una vista...</option>';
         
-        // Reinitialize feather icons for new content
-        feather.replace();
+        // Add subcategory options
+        const subcategories = [
+            { value: '../src/imgs/360/vista-convento-sant-antonio.JPG', text: 'Vista Principale' },
+            { value: '../src/imgs/360/chiostro-convento-sant-antonio.JPG', text: 'Chiostro' },
+            { value: '../src/imgs/360/chiesa-convento-sant-antonio.JPG', text: 'Chiesa' },
+            { value: '../src/imgs/360/grotta-insediamento-sant-antonio.JPG', text: 'Grotta Rupestre' }
+        ];
         
-        // Scroll to subcategories
-        subcategoriesContainer.scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest'
+        subcategories.forEach(subcategory => {
+            const option = document.createElement('option');
+            option.value = subcategory.value;
+            option.textContent = subcategory.text;
+            viewsSelect.appendChild(option);
         });
+        
+        // Show the dropdown
+        dropdownContainer.style.display = 'flex';
+        
+        // Set default selection to "Vista Principale"
+        viewsSelect.value = '../src/imgs/360/vista-convento-sant-antonio.JPG';
     }
 }
 
-// Function to hide subcategories
+// Function to hide subcategories dropdown
 function hideSubcategories() {
-    const subcategoriesContainer = document.getElementById('convento-subcategories');
-    if (subcategoriesContainer) {
-        subcategoriesContainer.style.display = 'none';
+    const dropdownContainer = document.getElementById('views-dropdown-container');
+    if (dropdownContainer) {
+        dropdownContainer.style.display = 'none';
+    }
+}
+
+// Function to handle dropdown view changes
+function handleViewChange(imagePath) {
+    if (imagePath) {
+        loadConventoSubcategory(imagePath);
     }
 }
 
 // Function to load specific convento subcategory
 function loadConventoSubcategory(imagePath, subcategoryName) {
-    console.log('Loading convento subcategory:', subcategoryName, 'with image:', imagePath);
-    
-    // Remove active class from all subcategory cards
-    const subcategoryCards = document.querySelectorAll('.subcategory-card');
-    subcategoryCards.forEach(card => card.classList.remove('active'));
-    
-    // Add active class to selected subcategory
-    const selectedCard = event.target.closest('.subcategory-card');
-    if (selectedCard) {
-        selectedCard.classList.add('active');
-    }
+    console.log('Loading convento subcategory with image:', imagePath);
     
     // Load the panorama
     const iframe = document.querySelector('#pano-viewer iframe');
