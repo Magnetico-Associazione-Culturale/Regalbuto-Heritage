@@ -3764,41 +3764,27 @@ async function initializeGPSMap() {
 
 // Helper function to ensure popup is properly positioned and visible
 function createOptimallyPositionedPopup(coordinates, content, map) {
-    // Always use bottom anchor for consistency
+    // Use bottom anchor but with positive offset to position popup lower
     const popup = new maplibregl.Popup({
         maxWidth: '300px',
         className: 'gps-monument-popup',
         closeButton: true,
         anchor: 'bottom',
-        offset: [0, 250]
+        offset: [0, 50] // Positive offset to move popup down from marker
     })
         .setLngLat(coordinates)
         .setHTML(content)
         .addTo(map);
     
-    // Simple pan to ensure popup is visible
-    // Move the map so the pin is in the bottom half, popup in top half
+    // Center the map directly on the clicked point
     setTimeout(() => {
-        const mapContainer = map.getContainer();
-        const mapHeight = mapContainer.offsetHeight;
-        
-        // Calculate a point slightly below center to show popup above
-        const bounds = map.getBounds();
-        const latRange = bounds.getNorth() - bounds.getSouth();
-        const offsetLat = latRange * 0.15; // Move pin down 15% of visible area
-        
-        const newCenter = [
-            coordinates[0], // Keep same longitude
-            coordinates[1] - offsetLat // Move latitude down
-        ];
-        
         map.easeTo({
-            center: newCenter,
+            center: coordinates, // Center directly on the original coordinates
             zoom: Math.max(map.getZoom(), 16),
-            duration: 500,
+            duration: 400,
             essential: true
         });
-    }, 150);
+    }, 100);
     
     return popup;
 }

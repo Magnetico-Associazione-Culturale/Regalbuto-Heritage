@@ -1802,6 +1802,17 @@ body.navigation-active {
     border-bottom: none !important;
 }
 
+.maplibregl-popup-anchor-top .maplibregl-popup-content {
+    margin-top: -10px !important;
+}
+
+.maplibregl-popup-anchor-top .maplibregl-popup-tip {
+    border-bottom: 8px solid white !important;
+    border-left: 8px solid transparent !important;
+    border-right: 8px solid transparent !important;
+    border-top: none !important;
+}
+
 /* Mobile-specific popup positioning */
 @media (max-width: 768px) {
     .gps-monument-popup .maplibregl-popup-content {
