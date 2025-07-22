@@ -1418,8 +1418,8 @@ window.openVirtualTour = async function(monumentId) {
 window.playAudioGuideFromMap = function(monumentId) {
     console.log('Playing audio guide from map for:', monumentId);
     
-    // Switch to monuments tab and trigger audio guide
-    switchTab('monumenti');
+    // Switch to tappe tab and trigger audio guide
+    switchTab('tappe');
     setTimeout(() => {
         // Find the monument card and trigger audio guide
         const monumentCard = document.querySelector(`[data-monument-id="${monumentId}"]`);
@@ -3198,7 +3198,10 @@ document.addEventListener('touchend', function(e) {
 async function loadMonumentsFromJSON() {
     try {
         const response = await fetch('data/monuments.json');
-        const monumentsData = await response.json();
+        const monumentsDataLocal = await response.json();
+        
+        // Store in global variable
+        monumentsData = monumentsDataLocal;
         
         // Get the monuments container
         const monumentsContainer = document.getElementById('monuments-container');
@@ -3225,7 +3228,7 @@ async function loadMonumentsFromJSON() {
         };
         
         // Create monument cards for each monument in JSON
-        monumentsData.forEach(monument => {
+        monumentsDataLocal.forEach(monument => {
             const monumentCard = createMonumentCard(monument);
             monumentsContainer.appendChild(monumentCard);
         });
@@ -3233,7 +3236,7 @@ async function loadMonumentsFromJSON() {
         // Update results count
         const resultsText = document.getElementById('results-text');
         if (resultsText) {
-            resultsText.textContent = `${monumentsData.length} monumenti trovati`;
+            resultsText.textContent = `${monumentsDataLocal.length} monumenti trovati`;
         }
         
         // Reinitialize Feather icons for the dynamically generated content
@@ -3275,12 +3278,43 @@ function createMonumentCard(monument) {
     // Map category to display name
     const categoryDisplay = getCategoryDisplayName(monument.category);
     
+    // Check if this monument is part of the navigation route
+    const checkpointIndex = checkpoints.findIndex(cp => cp.properties.id === monument.id);
+    const isNavigationStop = checkpointIndex !== -1;
+    const isVisited = visitedCheckpoints.includes(checkpointIndex);
+    const isCurrent = checkpointIndex === currentCheckpointIndex && navigationActive;
+    
+    // Generate navigation status indicators
+    let navigationBadge = '';
+    let navigationClass = '';
+    
+    if (navigationActive && isNavigationStop) {
+        navigationClass = 'navigation-active';
+        if (isVisited) {
+            navigationBadge = `<div class="navigation-badge visited">
+                <i data-feather="check-circle"></i>
+                <span>Visitata</span>
+            </div>`;
+        } else if (isCurrent) {
+            navigationBadge = `<div class="navigation-badge current">
+                <div class="step-number">${checkpointIndex + 1}</div>
+                <span>Attuale</span>
+            </div>`;
+        } else {
+            navigationBadge = `<div class="navigation-badge upcoming">
+                <div class="step-number">${checkpointIndex + 1}</div>
+                <span>Da visitare</span>
+            </div>`;
+        }
+    }
+    
     // Create the monument card HTML
     const cardHTML = `
-        <div class="monument-card" data-category="${monument.category}" data-monument-id="${monument.id}">
+        <div class="monument-card ${navigationClass}" data-category="${monument.category}" data-monument-id="${monument.id}" data-checkpoint-index="${checkpointIndex}">
             <div class="monument-image">
                 <img src="${imagePath}" alt="${imageAlt}">
                 <div class="monument-category-badge">${categoryDisplay}</div>
+                ${navigationBadge}
             </div>
             <div class="monument-info">
                 <h4>${monument.name}</h4>
@@ -3360,8 +3394,8 @@ function generateMonumentActions(monument) {
         `;
     }
     
-    // Map location button if coordinates available
-    if (monument.lat && monument.lon) {
+    // Map location button if coordinates available (only when navigation is not active)
+    if (monument.lat && monument.lon && !navigationActive) {
         actions += `
             <button class="btn btn-secondary" onclick="openMapLocation('${monument.id}')">
                 <i data-feather="map-pin"></i>
@@ -3408,7 +3442,9 @@ let navigationActive = false;
 let routeData = null;
 let currentCheckpointIndex = 0;
 let checkpoints = [];
+let visitedCheckpoints = [];
 let watchId = null;
+let monumentsData = []; // Global variable to store monument data
 
 // GPS Navigation Functions
 async function initializeGPSMap() {
@@ -3705,6 +3741,7 @@ function startNavigation() {
     
     navigationActive = true;
     currentCheckpointIndex = 0;
+    visitedCheckpoints = []; // Reset visited checkpoints
     
     // Update UI
     document.getElementById('start-navigation-btn').style.display = 'none';
@@ -3717,6 +3754,12 @@ function startNavigation() {
         navigationPanel.style.display = 'block';
     }
     
+    // Hide search and filter container during navigation
+    const searchFilterContainer = document.getElementById('search-filter-container');
+    if (searchFilterContainer) {
+        searchFilterContainer.style.display = 'none';
+    }
+    
     // Initialize counts in tappe section
     const totalMini = document.getElementById('total-count-mini');
     if (totalMini) {
@@ -3727,6 +3770,9 @@ function startNavigation() {
     if (visitedMini) {
         visitedMini.textContent = '0';
     }
+    
+    // Update monument cards to show navigation status
+    updateMonumentCardsForNavigation();
     
     // Start geolocation tracking
     if (navigator.geolocation) {
@@ -3764,6 +3810,10 @@ function startNavigation() {
 function stopNavigation() {
     navigationActive = false;
     
+    // Reset navigation state
+    visitedCheckpoints = [];
+    currentCheckpointIndex = 0;
+    
     // Stop geolocation tracking
     if (watchId) {
         navigator.geolocation.clearWatch(watchId);
@@ -3780,6 +3830,15 @@ function stopNavigation() {
     if (navigationPanel) {
         navigationPanel.style.display = 'none';
     }
+    
+    // Show search and filter container when navigation stops
+    const searchFilterContainer = document.getElementById('search-filter-container');
+    if (searchFilterContainer) {
+        searchFilterContainer.style.display = 'block';
+    }
+    
+    // Update monument cards to remove navigation status
+    updateMonumentCardsForNavigation();
     
     // Remove user location marker
     if (gpsMap && gpsMap.getSource('user-location')) {
@@ -3879,6 +3938,7 @@ function checkCheckpointProximity() {
     // Mark as visited if within 50 meters
     if (distance < 0.05) {
         currentCheckpoint.visited = true;
+        visitedCheckpoints.push(currentCheckpointIndex);
         currentCheckpointIndex++;
         
         // Update visited count
@@ -3890,6 +3950,9 @@ function checkCheckpointProximity() {
         if (visitedMini) {
             visitedMini.textContent = visitedCount;
         }
+        
+        // Update monument cards to reflect new status
+        updateMonumentCardsForNavigation();
         
         // Check if route completed
         if (currentCheckpointIndex >= checkpoints.length) {
@@ -4061,8 +4124,8 @@ function playAudioGuideFromMap(monumentId) {
         popups.forEach(popup => popup.remove());
     }
     
-    // Switch to monuments tab and play audio
-    switchTab('monumenti');
+    // Switch to tappe tab and play audio
+    switchTab('tappe');
     setTimeout(() => {
         playAudioGuide(monumentId);
     }, 500);
@@ -4132,6 +4195,71 @@ function centerOnUserLocation() {
     } else {
         alert('Geolocalizzazione non supportata su questo dispositivo.');
     }
+}
+
+// Update monument cards to show/hide navigation status
+function updateMonumentCardsForNavigation() {
+    const monumentCards = document.querySelectorAll('.monument-card');
+    
+    monumentCards.forEach(card => {
+        const monumentId = card.getAttribute('data-monument-id');
+        const checkpointIndex = checkpoints.findIndex(cp => cp.properties.id === monumentId);
+        const isNavigationStop = checkpointIndex !== -1;
+        const isVisited = visitedCheckpoints.includes(checkpointIndex);
+        const isCurrent = checkpointIndex === currentCheckpointIndex && navigationActive;
+        
+        // Remove existing navigation classes and badges
+        card.classList.remove('navigation-active');
+        const existingBadge = card.querySelector('.navigation-badge');
+        if (existingBadge) {
+            existingBadge.remove();
+        }
+        
+        // Add navigation status if active
+        if (navigationActive && isNavigationStop) {
+            card.classList.add('navigation-active');
+            card.setAttribute('data-checkpoint-index', checkpointIndex);
+            
+            const imageContainer = card.querySelector('.monument-image');
+            let navigationBadge = '';
+            
+            if (isVisited) {
+                navigationBadge = `<div class="navigation-badge visited">
+                    <i data-feather="check-circle"></i>
+                    <span>Visitata</span>
+                </div>`;
+            } else if (isCurrent) {
+                navigationBadge = `<div class="navigation-badge current">
+                    <div class="step-number">${checkpointIndex + 1}</div>
+                    <span>Attuale</span>
+                </div>`;
+            } else {
+                navigationBadge = `<div class="navigation-badge upcoming">
+                    <div class="step-number">${checkpointIndex + 1}</div>
+                    <span>Da visitare</span>
+                </div>`;
+            }
+            
+            if (navigationBadge && imageContainer) {
+                imageContainer.insertAdjacentHTML('beforeend', navigationBadge);
+            }
+        } else {
+            card.removeAttribute('data-checkpoint-index');
+        }
+        
+        // Update monument actions to hide/show "Portami lì" button
+        const monumentActionsContainer = card.querySelector('.monument-actions');
+        if (monumentActionsContainer) {
+            // Find the monument data to regenerate actions
+            const monument = monumentsData.find(m => m.id === monumentId);
+            if (monument) {
+                monumentActionsContainer.innerHTML = generateMonumentActions(monument);
+            }
+        }
+    });
+    
+    // Refresh Feather icons
+    feather.replace();
 }
 
 console.log('Regalbuto Heritage - Script loaded successfully');

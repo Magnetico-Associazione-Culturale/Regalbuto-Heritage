@@ -449,11 +449,26 @@
                     </button>
                 </div>
                 
-                <!-- Search Bar -->
-                <div class="search-container">
-                    <div class="search-bar">
-                        <i data-feather="search"></i>
-                        <input type="text" placeholder="Cerca tappe..." id="monument-search" onkeyup="filterMonuments()">
+                <!-- Search Bar (hidden during navigation) -->
+                <div id="search-filter-container" class="search-filter-container">
+                    <div class="search-container">
+                        <div class="search-bar">
+                            <i data-feather="search"></i>
+                            <input type="text" placeholder="Cerca tappe..." id="monument-search" onkeyup="filterMonuments()">
+                        </div>
+                    </div>
+
+                    <!-- Filter Tabs (hidden during navigation) -->
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" onclick="filterByCategory('all')" data-category="all">Tutti</button>
+                        <button class="filter-tab" onclick="filterByCategory('church')" data-category="church">Chiese</button>
+                        <button class="filter-tab" onclick="filterByCategory('convent')" data-category="convent">Conventi</button>
+                        <button class="filter-tab" onclick="filterByCategory('palace')" data-category="palace">Palazzi</button>
+                        <button class="filter-tab" onclick="filterByCategory('theater')" data-category="theater">Teatro</button>
+                        <button class="filter-tab" onclick="filterByCategory('civic')" data-category="civic">Civici</button>
+                        <button class="filter-tab" onclick="filterByCategory('educational')" data-category="educational">Educazione</button>
+                        <button class="filter-tab" onclick="filterByCategory('financial')" data-category="financial">Finanziari</button>
+                        <button class="filter-tab" onclick="filterByCategory('technology')" data-category="technology">Tecnologia</button>
                     </div>
                 </div>
 
@@ -484,19 +499,6 @@
                     </div>
                 </div>
 
-                <!-- Filter Tabs -->
-                <div class="filter-tabs">
-                    <button class="filter-tab active" onclick="filterByCategory('all')" data-category="all">Tutti</button>
-                    <button class="filter-tab" onclick="filterByCategory('church')" data-category="church">Chiese</button>
-                    <button class="filter-tab" onclick="filterByCategory('convent')" data-category="convent">Conventi</button>
-                    <button class="filter-tab" onclick="filterByCategory('palace')" data-category="palace">Palazzi</button>
-                    <button class="filter-tab" onclick="filterByCategory('theater')" data-category="theater">Teatro</button>
-                    <button class="filter-tab" onclick="filterByCategory('civic')" data-category="civic">Civici</button>
-                    <button class="filter-tab" onclick="filterByCategory('educational')" data-category="educational">Educazione</button>
-                    <button class="filter-tab" onclick="filterByCategory('financial')" data-category="financial">Finanziari</button>
-                    <button class="filter-tab" onclick="filterByCategory('technology')" data-category="technology">Tecnologia</button>
-                </div>
-
                 <!-- Results Count -->
                 <div class="results-count">
                     <span id="results-text">Caricamento...</span>
@@ -507,19 +509,7 @@
                     <!-- Monuments will be loaded dynamically from monuments.json -->
                 </div>
 
-                <!-- Route Checkpoints Container (shown only when navigation is available) -->
-                <div id="route-checkpoints-section" class="route-checkpoints-section" style="display: none;">
-                    <div class="section-divider">
-                        <h3>
-                            <i data-feather="route"></i>
-                            Tappe dell'Itinerario
-                        </h3>
-                        <p class="section-subtitle">Segui l'ordine delle tappe per un'esperienza completa</p>
-                    </div>
-                    <div id="route-checkpoints" class="checkpoints-list">
-                        <!-- Populated dynamically when navigation is available -->
-                    </div>
-                </div>
+
             </div>
 
         </section>

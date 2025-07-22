@@ -3574,3 +3574,158 @@ button:focus,
         height: 25px !important;
     }
 }
+
+/* Navigation Badges for Monument Cards */
+.navigation-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    z-index: 3;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navigation-badge.visited {
+    background: rgba(34, 197, 94, 0.9);
+    color: white;
+}
+
+.navigation-badge.current {
+    background: rgba(249, 115, 22, 0.9);
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+.navigation-badge.upcoming {
+    background: rgba(99, 102, 241, 0.9);
+    color: white;
+}
+
+.navigation-badge .step-number {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.navigation-badge i {
+    width: 16px;
+    height: 16px;
+}
+
+/* Monument cards with navigation active */
+.monument-card.navigation-active {
+    border: 2px solid var(--primary-color);
+}
+
+.monument-card.navigation-active:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
+}
+
+/* Hide search and filter container during navigation */
+.search-filter-container {
+    transition: all 0.3s ease;
+}
+
+.search-filter-container[style*="display: none"] {
+    display: none !important;
+}
+
+/* Pulse animation for current navigation badge */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+/* Navigation status panel improvements */
+.navigation-status-panel {
+    background: linear-gradient(135deg, var(--primary-color), #4f46e5);
+    color: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
+}
+
+.navigation-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.navigation-progress-header h4 {
+    color: white;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.navigation-stats-mini {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.85rem;
+}
+
+.stat-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.current-navigation-info {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.current-instruction-mini {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments for navigation badges */
+@media (max-width: 768px) {
+    .navigation-badge {
+        top: 8px;
+        right: 8px;
+        padding: 0.375rem 0.5rem;
+        font-size: 0.7rem;
+    }
+    
+    .navigation-badge .step-number {
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+    }
+    
+    .navigation-stats-mini {
+        flex-direction: column;
+        gap: 0.5rem;
+        font-size: 0.8rem;
+    }
+}
