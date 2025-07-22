@@ -3456,6 +3456,7 @@ async function initializeGPSMap() {
             container: 'gps-map',
             style: {
                 version: 8,
+                glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
                 sources: {
                     'carto-positron': {
                         type: 'raster',
@@ -3598,64 +3599,81 @@ async function loadRouteData() {
 }
 
 function setupRouteVisualization() {
-    if (!gpsMap || !routeData) return;
+    if (!gpsMap || !routeData) {
+        console.warn('GPS map or route data not available for route visualization');
+        return;
+    }
     
-    // Add route source
-    gpsMap.addSource('route', {
-        type: 'geojson',
-        data: routeData
-    });
-    
-    // Add route line layer
-    gpsMap.addLayer({
-        id: 'route-line',
-        type: 'line',
-        source: 'route',
-        filter: ['==', '$type', 'LineString'],
-        layout: {
-            'line-join': 'round',
-            'line-cap': 'round'
-        },
-        paint: {
-            'line-color': '#4a5568',
-            'line-width': 4,
-            'line-opacity': 0.8
+    try {
+        // Add route source
+        gpsMap.addSource('route', {
+            type: 'geojson',
+            data: routeData
+        });
+        
+        // Add route line layer
+        gpsMap.addLayer({
+            id: 'route-line',
+            type: 'line',
+            source: 'route',
+            filter: ['==', '$type', 'LineString'],
+            layout: {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            paint: {
+                'line-color': '#4a5568',
+                'line-width': 4,
+                'line-opacity': 0.8
+            }
+        });
+        
+        // Add checkpoints layer
+        gpsMap.addLayer({
+            id: 'checkpoints',
+            type: 'circle',
+            source: 'route',
+            filter: ['==', '$type', 'Point'],
+            paint: {
+                'circle-radius': 12,
+                'circle-color': '#ffd700',
+                'circle-stroke-color': '#4a5568',
+                'circle-stroke-width': 3
+            }
+        });
+        
+        // Add checkpoint labels with error handling
+        try {
+            gpsMap.addLayer({
+                id: 'checkpoint-labels',
+                type: 'symbol',
+                source: 'route',
+                filter: ['==', '$type', 'Point'],
+                layout: {
+                    'text-field': ['get', 'name'],
+                    'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+                    'text-offset': [0, 2],
+                    'text-anchor': 'top',
+                    'text-size': 12
+                },
+                paint: {
+                    'text-color': '#2c2c2c',
+                    'text-halo-color': '#ffffff',
+                    'text-halo-width': 2
+                }
+            });
+        } catch (error) {
+            console.warn('Could not add text labels to map:', error.message);
+            // Continue without text labels - checkpoints will still be visible as circles
         }
-    });
-    
-    // Add checkpoints layer
-    gpsMap.addLayer({
-        id: 'checkpoints',
-        type: 'circle',
-        source: 'route',
-        filter: ['==', '$type', 'Point'],
-        paint: {
-            'circle-radius': 12,
-            'circle-color': '#ffd700',
-            'circle-stroke-color': '#4a5568',
-            'circle-stroke-width': 3
-        }
-    });
-    
-    // Add checkpoint labels
-    gpsMap.addLayer({
-        id: 'checkpoint-labels',
-        type: 'symbol',
-        source: 'route',
-        filter: ['==', '$type', 'Point'],
-        layout: {
-            'text-field': ['get', 'name'],
-            'text-font': ['Open Sans Regular'],
-            'text-offset': [0, 2],
-            'text-anchor': 'top',
-            'text-size': 12
-        },
-        paint: {
-            'text-color': '#2c2c2c',
-            'text-halo-color': '#ffffff',
-            'text-halo-width': 2
-        }
-    });
+        
+        console.log('Route visualization setup completed successfully');
+        
+    } catch (error) {
+        console.error('Error setting up route visualization:', error);
+        alert('Errore nella visualizzazione del percorso. La mappa funzionerà senza le etichette.');
+        return;
+    }
     
     // Add click events for checkpoints
     gpsMap.on('click', 'checkpoints', async (e) => {
@@ -3784,14 +3802,34 @@ function startNavigation() {
                 checkCheckpointProximity();
             },
             (error) => {
-                console.error('Geolocation error:', error);
-                document.getElementById('instruction-text').textContent = 
-                    'Errore GPS. Verifica le impostazioni di localizzazione.';
+                console.warn('Geolocation error:', error);
+                let errorMessage = 'Errore GPS';
+                
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = 'GPS negato. Abilita localizzazione.';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = 'Posizione non disponibile.';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = 'GPS timeout. Riprovo...';
+                        // Don't stop navigation on timeout, just continue trying
+                        return;
+                    default:
+                        errorMessage = 'Errore GPS sconosciuto.';
+                        break;
+                }
+                
+                const instructionElement = document.getElementById('instruction-text');
+                if (instructionElement) {
+                    instructionElement.textContent = errorMessage;
+                }
             },
             {
                 enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 1000
+                timeout: 15000,  // Increased timeout to 15 seconds
+                maximumAge: 5000  // Increased maximum age to 5 seconds
             }
         );
     } else {
@@ -4032,6 +4070,12 @@ function updateNextDestination() {
 
 function updateCheckpointsList() {
     const container = document.getElementById('route-checkpoints');
+    if (!container) {
+        // If the checkpoints container doesn't exist, skip the update
+        console.log('Route checkpoints container not found, skipping update');
+        return;
+    }
+    
     container.innerHTML = '';
     
     // Show the route checkpoints section when navigation is available
@@ -4074,11 +4118,15 @@ function updateCheckpointsList() {
             </div>
         `;
         
-        container.appendChild(item);
+        if (container) {
+            container.appendChild(item);
+        }
     });
     
-    // Re-initialize feather icons
-    feather.replace();
+    // Re-initialize feather icons only if we have elements to update
+    if (container && container.children.length > 0) {
+        feather.replace();
+    }
 }
 
 // Helper functions for GPS popup buttons
@@ -4183,13 +4231,30 @@ function centerOnUserLocation() {
                 updateUserLocationOnMap();
             },
             (error) => {
-                console.error('Geolocation error:', error);
-                alert('Impossibile ottenere la posizione. Verifica le impostazioni GPS.');
+                console.warn('Geolocation error in centerOnUserLocation:', error);
+                let errorMessage = 'Errore GPS';
+                
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        errorMessage = 'Permesso GPS negato. Abilita la localizzazione nelle impostazioni del browser.';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        errorMessage = 'Posizione GPS non disponibile. Riprova più tardi.';
+                        break;
+                    case error.TIMEOUT:
+                        errorMessage = 'Timeout GPS. Riprova o controlla la connessione.';
+                        break;
+                    default:
+                        errorMessage = 'Errore GPS sconosciuto. Verifica le impostazioni.';
+                        break;
+                }
+                
+                alert(errorMessage);
             },
             {
                 enableHighAccuracy: true,
-                timeout: 10000,
-                maximumAge: 60000
+                timeout: 15000,  // Increased timeout
+                maximumAge: 5000 // Reduced maximum age for fresher location
             }
         );
     } else {

@@ -387,19 +387,7 @@
                 
                 <!-- Map Overlay Controls -->
                 <div class="map-overlay-controls">
-                    <!-- Top Stats Panel -->
-                    <div class="overlay-stats-panel">
-                        <div class="stat-item-overlay">
-                            <i data-feather="map-pin"></i>
-                            <span><strong id="visited-count">0</strong>/<strong id="total-count">0</strong></span>
-                        </div>
-                        <div class="stat-item-overlay">
-                            <i data-feather="activity"></i>
-                            <span id="remaining-distance">--</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Navigation Info Panel -->
+                    <!-- Navigation Info Panel - Top -->
                     <div id="navigation-info" class="overlay-navigation-info" style="display: none;">
                         <div class="current-instruction">
                             <i data-feather="navigation-2"></i>
@@ -411,17 +399,29 @@
                         </div>
                     </div>
                     
-                    <!-- Bottom Action Buttons -->
+                    <!-- Stats Panel - Unified Horizontal Layout -->
+                    <div class="overlay-stats-panel">
+                        <div class="stat-visited">
+                            <i data-feather="map-pin"></i>
+                            <span><strong id="visited-count">0</strong>/<strong id="total-count">0</strong> tappe</span>
+                        </div>
+                        <div class="stat-distance">
+                            <i data-feather="activity"></i>
+                            <span id="remaining-distance">--</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Buttons -->
                     <div class="overlay-action-buttons">
-                        <button id="start-navigation-btn" class="btn-overlay btn-primary-overlay" onclick="startNavigation()">
+                        <button id="start-navigation-btn" class="btn-overlay btn-primary-overlay main-action-btn" onclick="startNavigation()">
                             <i data-feather="play"></i>
-                            <span>Inizia</span>
+                            <span>Inizia Navigazione</span>
                         </button>
-                        <button id="stop-navigation-btn" class="btn-overlay btn-secondary-overlay" onclick="stopNavigation()" style="display: none;">
+                        <button id="stop-navigation-btn" class="btn-overlay btn-primary-overlay main-action-btn" onclick="stopNavigation()" style="display: none;">
                             <i data-feather="stop-circle"></i>
-                            <span>Ferma</span>
+                            <span>Ferma Navigazione</span>
                         </button>
-                        <button id="locate-btn" class="btn-overlay btn-secondary-overlay" onclick="centerOnUserLocation()">
+                        <button id="locate-btn" class="btn-overlay btn-secondary-overlay locate-action-btn" onclick="centerOnUserLocation()">
                             <i data-feather="crosshair"></i>
                             <span>Posizione</span>
                         </button>

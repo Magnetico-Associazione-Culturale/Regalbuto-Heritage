@@ -1038,60 +1038,41 @@ p {
     bottom: 0;
     pointer-events: none;
     z-index: 1000;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-/* Top Stats Panel */
-.overlay-stats-panel {
-    display: flex;
-    justify-content: space-between;
+    padding: 0;
+    display: grid;
+    grid-template-areas: 
+        "nav-info nav-info nav-info"
+        "stats-panel . ."
+        ". . ."
+        ". main-action ."
+        ". locate-btn .";
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto 1fr auto auto;
     gap: 1rem;
-    pointer-events: auto;
-    margin-top: 1rem;
+    padding: 1rem;
 }
 
-.stat-item-overlay {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    padding: 0.75rem 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    font-weight: 600;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    min-width: 120px;
-    justify-content: center;
-}
-
-.stat-item-overlay i {
-    color: var(--primary-color);
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-}
-
-.stat-item-overlay strong {
-    color: var(--primary-color);
-}
-
-/* Navigation Info Overlay */
+/* Navigation Info - Top Full Width */
 .overlay-navigation-info {
+    grid-area: nav-info;
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     color: white;
     border-radius: 16px;
-    padding: 1.5rem;
-    margin: 1rem 0;
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
+    padding: 1rem 1.5rem;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(15px);
     pointer-events: auto;
-    max-width: 100%;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    justify-self: center;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+}
+
+.overlay-navigation-info:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 35px rgba(0, 0, 0, 0.25);
 }
 
 .overlay-navigation-info .current-instruction {
@@ -1101,6 +1082,7 @@ p {
     font-size: 1rem;
     font-weight: 600;
     margin-bottom: 0.75rem;
+    line-height: 1.4;
 }
 
 .overlay-navigation-info .current-instruction i {
@@ -1116,74 +1098,182 @@ p {
     gap: 0.75rem;
     font-size: 0.9rem;
     opacity: 0.9;
+    padding: 0.5rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .overlay-navigation-info .next-destination i {
-    width: 16px;
-    height: 16px;
-    flex-shrink: 0;
-}
-
-/* Bottom Action Buttons */
-.overlay-action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    pointer-events: auto;
-    margin-bottom: 100px; /* Space for bottom navigation */
-    flex-wrap: wrap;
-}
-
-.btn-overlay {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50px;
-    padding: 0.75rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 600;
-    font-size: 0.9rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    min-width: 100px;
-    justify-content: center;
-}
-
-.btn-overlay:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
-}
-
-.btn-primary-overlay {
-    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    border: none;
-}
-
-.btn-primary-overlay:hover {
-    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-}
-
-.btn-secondary-overlay {
-    color: var(--text-secondary);
-}
-
-.btn-secondary-overlay:hover {
-    background: rgba(255, 255, 255, 1);
-    color: var(--primary-color);
-}
-
-.btn-overlay i {
     width: 18px;
     height: 18px;
     flex-shrink: 0;
 }
 
-.btn-overlay span {
+/* Stats Panel Redesigned - Unified Horizontal Layout */
+.overlay-stats-panel {
+    grid-area: stats-panel;
+    justify-self: start;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    padding: 0.8rem 1.2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    min-width: 280px;
+}
+
+.overlay-stats-panel:hover {
+    background: rgba(255, 255, 255, 1);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+.stat-visited,
+.stat-distance {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    flex: 1;
+}
+
+.stat-visited {
+    padding-right: 0.8rem;
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.stat-distance {
+    padding-left: 0.8rem;
+    justify-content: flex-end;
+}
+
+.stat-visited i,
+.stat-distance i {
+    color: var(--primary-color);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.stat-visited strong,
+.stat-distance strong {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Remove old individual stat item styles */
+.stat-item-overlay {
+    /* This class is no longer used but kept for compatibility */
+    display: none;
+}
+
+/* Main Action Buttons - Center Bottom */
+.overlay-action-buttons {
+    display: contents; /* Allow children to participate in parent grid */
+}
+
+.main-action-btn {
+    grid-area: main-action;
+    justify-self: center;
+    align-self: end;
+    margin-bottom: 20px;
+}
+
+.locate-action-btn {
+    grid-area: locate-btn;
+    justify-self: center;
+    align-self: end;
+    margin-bottom: 100px; /* Space for bottom navigation */
+}
+
+.btn-overlay {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    padding: 0.75rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-width: 120px;
+    justify-content: center;
     white-space: nowrap;
+    pointer-events: auto;
+}
+
+.btn-overlay:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 1);
+}
+
+/* Main Action Button - Prominent Style */
+.btn-primary-overlay {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    box-shadow: 0 6px 25px rgba(76, 175, 80, 0.3);
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    min-width: 160px;
+    border-radius: 60px;
+}
+
+.btn-primary-overlay:hover {
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    box-shadow: 0 8px 30px rgba(76, 175, 80, 0.4);
+    transform: translateY(-3px);
+}
+
+/* Secondary Action Button - Subtle Style */
+.btn-secondary-overlay {
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.8);
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+    min-width: 100px;
+    opacity: 0.8;
+    border-radius: 40px;
+}
+
+.btn-secondary-overlay:hover {
+    color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.95);
+    opacity: 1;
+    transform: translateY(-1px);
+}
+
+.btn-overlay i {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.btn-primary-overlay i {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-secondary-overlay i {
+    width: 14px;
+    height: 14px;
+}
+
+.btn-overlay span {
+    font-weight: inherit;
 }
 
 /* Special override for fullscreen navigation section */
@@ -1201,6 +1291,91 @@ p {
     right: 0;
     bottom: 0;
     z-index: 1;
+}
+
+/* Animation classes for overlay elements */
+.overlay-fade-in {
+    animation: overlayFadeIn 0.5s ease-out forwards;
+}
+
+.overlay-fade-out {
+    animation: overlayFadeOut 0.3s ease-in forwards;
+}
+
+.overlay-slide-in-left {
+    animation: overlaySlideInLeft 0.4s ease-out forwards;
+}
+
+.overlay-slide-out-left {
+    animation: overlaySlideOutLeft 0.3s ease-in forwards;
+}
+
+/* Keyframe animations */
+@keyframes overlayFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes overlayFadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes overlaySlideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes overlaySlideOutLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+}
+
+/* Enhanced visual feedback */
+.stat-item-overlay.pulse {
+    animation: statPulse 2s infinite;
+}
+
+@keyframes statPulse {
+    0%, 100% {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(76, 175, 80, 0.3);
+    }
+}
+
+/* Better visual hierarchy with slight shadows */
+.overlay-stats-panel {
+    filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.05));
+}
+
+.overlay-action-buttons {
+    filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.1));
 }
 
 /* Ensure content doesn't overlap with bottom navigation */
@@ -3922,26 +4097,22 @@ button:focus,
 
 /* Responsive styles for fullscreen map overlay */
 @media (max-width: 768px) {
-    .overlay-stats-panel {
-        flex-direction: column;
+    .map-overlay-controls {
+        grid-template-areas: 
+            "nav-info"
+            "stats-panel"
+            "."
+            "main-action"
+            "locate-btn";
+        grid-template-columns: 1fr;
+        padding: 0.75rem;
         gap: 0.75rem;
-        margin-top: 0.5rem;
-    }
-    
-    .stat-item-overlay {
-        padding: 0.6rem 0.8rem;
-        font-size: 0.8rem;
-        min-width: auto;
-    }
-    
-    .stat-item-overlay i {
-        width: 14px;
-        height: 14px;
     }
     
     .overlay-navigation-info {
         padding: 1rem;
-        margin: 0.5rem 0;
+        max-width: none;
+        margin: 0;
     }
     
     .overlay-navigation-info .current-instruction {
@@ -3961,42 +4132,53 @@ button:focus,
     }
     
     .overlay-navigation-info .next-destination i {
-        width: 14px;
-        height: 14px;
-    }
-    
-    .overlay-action-buttons {
-        flex-direction: column;
-        gap: 0.75rem;
-        margin-bottom: 90px;
-    }
-    
-    .btn-overlay {
-        padding: 0.7rem 1.2rem;
-        font-size: 0.85rem;
-        width: 100%;
-        max-width: 200px;
-        margin: 0 auto;
-    }
-    
-    .btn-overlay i {
         width: 16px;
         height: 16px;
     }
     
-    .map-overlay-controls {
-        padding: 0.75rem;
+    .overlay-stats-panel {
+        justify-self: center;
+        min-width: auto;
+        max-width: 90%;
+        padding: 0.7rem 1rem;
+    }
+    
+    .stat-visited,
+    .stat-distance {
+        font-size: 0.85rem;
+    }
+    
+    .stat-visited i,
+    .stat-distance i {
+        width: 15px;
+        height: 15px;
+    }
+    
+    .btn-primary-overlay {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+        min-width: 140px;
+    }
+    
+    .btn-secondary-overlay {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.75rem;
+        min-width: 80px;
+    }
+    
+    .main-action-btn {
+        margin-bottom: 10px;
+    }
+    
+    .locate-action-btn {
+        margin-bottom: 90px;
     }
 }
 
 @media (max-width: 480px) {
-    .overlay-stats-panel {
-        margin-top: 0.25rem;
-    }
-    
-    .stat-item-overlay {
-        padding: 0.5rem 0.6rem;
-        font-size: 0.75rem;
+    .map-overlay-controls {
+        padding: 0.5rem;
+        gap: 0.5rem;
     }
     
     .overlay-navigation-info {
@@ -4005,18 +4187,102 @@ button:focus,
     
     .overlay-navigation-info .current-instruction {
         font-size: 0.85rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;
     }
     
     .overlay-navigation-info .next-destination {
         font-size: 0.75rem;
     }
     
-    .btn-overlay {
-        padding: 0.6rem 1rem;
-        font-size: 0.8rem;
+    .overlay-stats-panel {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.6rem 0.8rem;
+        min-width: auto;
+        max-width: 95%;
     }
     
+    .stat-visited,
+    .stat-distance {
+        justify-content: center;
+        font-size: 0.8rem;
+        padding: 0;
+    }
+    
+    .stat-visited {
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding-bottom: 0.5rem;
+    }
+    
+    .stat-distance {
+        padding-top: 0.5rem;
+    }
+    
+    .btn-primary-overlay {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.85rem;
+        min-width: 120px;
+    }
+    
+    .btn-secondary-overlay {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.7rem;
+        min-width: 70px;
+    }
+    
+    .locate-action-btn {
+        margin-bottom: 80px;
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
     .map-overlay-controls {
+        grid-template-areas: 
+            "nav-info nav-info nav-info"
+            "stats-panel . ."
+            ". main-action locate-btn";
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: auto auto 1fr;
         padding: 0.5rem;
+    }
+    
+    .overlay-stats-panel {
+        justify-self: start;
+        flex-direction: row;
+        min-width: 250px;
+    }
+    
+    .stat-visited {
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+        border-bottom: none;
+        padding-right: 0.8rem;
+        padding-bottom: 0;
+    }
+    
+    .stat-distance {
+        padding-left: 0.8rem;
+        padding-top: 0;
+        justify-content: flex-end;
+    }
+    
+    .main-action-btn {
+        margin-bottom: 20px;
+        grid-area: main-action;
+        justify-self: center;
+    }
+    
+    .locate-action-btn {
+        margin-bottom: 20px;
+        grid-area: locate-btn;
+        justify-self: end;
+    }
+    
+    .overlay-navigation-info {
+        max-width: 500px;
+        padding: 0.8rem 1.2rem;
     }
 }
