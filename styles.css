@@ -1123,7 +1123,7 @@ p {
     transition: all 0.3s ease;
     pointer-events: auto;
     min-width: 280px;
-    margin-bottom: 100px; /* Space for bottom navigation */
+    margin-bottom: 120px; /* Space for bottom navigation */
 }
 
 .overlay-stats-panel:hover {
@@ -1182,7 +1182,7 @@ p {
     grid-area: main-action;
     justify-self: end;
     align-self: end;
-    margin-bottom: 100px; /* Space for bottom navigation */
+    margin-bottom: 120px; /* Space for bottom navigation */
 }
 
 .btn-overlay {
@@ -4135,7 +4135,7 @@ button:focus,
         min-width: auto;
         max-width: 240px;
         padding: 0.7rem 1rem;
-        margin-bottom: 90px; /* Space for bottom navigation */
+        margin-bottom: 120px; /* Increased space for bottom navigation */
     }
     
     .stat-visited,
@@ -4153,7 +4153,7 @@ button:focus,
         grid-area: main-action;
         justify-self: end;
         align-self: end;
-        margin-bottom: 90px; /* Space for bottom navigation */
+        margin-bottom: 120px; /* Increased space for bottom navigation */
     }
     
     .btn-primary-overlay {
@@ -4201,7 +4201,7 @@ button:focus,
         padding: 0.6rem 0.8rem;
         min-width: auto;
         max-width: 160px;
-        margin-bottom: 80px;
+        margin-bottom: 110px; /* Increased space for bottom navigation */
     }
     
     .stat-visited,
@@ -4222,7 +4222,7 @@ button:focus,
     }
     
     .main-action-btn {
-        margin-bottom: 80px;
+        margin-bottom: 110px; /* Increased space for bottom navigation */
     }
     
     .btn-primary-overlay {
@@ -4252,7 +4252,7 @@ button:focus,
         justify-self: start;
         flex-direction: row;
         min-width: 220px;
-        margin-bottom: 20px;
+        margin-bottom: 100px; /* Increased space for bottom navigation */
     }
     
     .stat-visited {
@@ -4269,7 +4269,7 @@ button:focus,
     }
     
     .main-action-btn {
-        margin-bottom: 20px;
+        margin-bottom: 100px; /* Increased space for bottom navigation */
         grid-area: main-action;
         justify-self: end;
     }
@@ -4282,5 +4282,38 @@ button:focus,
     /* Keep locate button hidden in landscape */
     .locate-action-btn {
         display: none !important;
+    }
+}
+
+/* Safe area adjustments for devices with notch/home indicator */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+    @media (max-width: 768px) {
+        .overlay-stats-panel {
+            margin-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+        }
+        
+        .main-action-btn {
+            margin-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .overlay-stats-panel {
+            margin-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
+        }
+        
+        .main-action-btn {
+            margin-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
+        }
+    }
+    
+    @media (max-width: 768px) and (orientation: landscape) {
+        .overlay-stats-panel {
+            margin-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+        }
+        
+        .main-action-btn {
+            margin-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+        }
     }
 }
