@@ -1,3 +1,15 @@
+.main-action-btn {
+    /* ...regole desktop già presenti... */
+}
+
+@media (max-width: 768px) {
+  .main-action-btn {
+    bottom: env(safe-area-inset-bottom, 0px);
+    right: 16px;
+    left: auto;
+    /* Così il tasto va a filo con la safe area e la navbar su smartphone */
+  }
+}
 /* Reset and Base Styles */
 * {
     margin: 0;
@@ -1240,11 +1252,18 @@ p {
     display: contents; /* Allow children to participate in parent grid */
 }
 
+
 .main-action-btn {
+    position: fixed;
+    right: 24px;
+    /* Sovrapposto al bordo superiore della navbar, senza safe-area extra */
+    bottom: var(--bottom-nav-height, 70px);
+    z-index: 1200;
     grid-area: main-action;
     justify-self: end;
     align-self: end;
-    margin-bottom: max(100px, calc(75px + env(safe-area-inset-bottom, 15px))); /* Reduced margin, closer to navigation */
+    margin-bottom: 0;
+    transition: bottom 0.2s;
 }
 
 .btn-overlay {
@@ -2612,11 +2631,13 @@ body.navigation-active {
     border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: space-around;
-    padding: 0.5rem 0;
+    padding: 0;
     box-shadow: 0 -4px 15px var(--shadow-light);
     z-index: 1000; /* Higher z-index to ensure it stays above map */
     /* Prevent any scrolling interference */
     touch-action: manipulation;
+    --bottom-nav-height: 70px;
+    height: var(--bottom-nav-height);
 }
 
 .nav-item {
@@ -4312,7 +4333,8 @@ button:focus,
         grid-area: main-action;
         justify-self: end;
         align-self: end;
-        margin-bottom: max(100px, calc(80px + env(safe-area-inset-bottom, 10px))); /* Closer to navigation bar */
+        bottom: env(safe-area-inset-bottom, 0px) !important;
+        margin-bottom: 0 !important;
     }
     
     .btn-primary-overlay {
@@ -4381,7 +4403,8 @@ button:focus,
     }
     
     .main-action-btn {
-        margin-bottom: max(95px, calc(75px + env(safe-area-inset-bottom, 8px))); /* Optimized for small screens */
+        bottom: calc(var(--bottom-nav-height, 80px) + env(safe-area-inset-bottom, 0px)) !important;
+        margin-bottom: 0 !important;
     }
     
     .btn-primary-overlay {
@@ -4428,7 +4451,8 @@ button:focus,
     }
     
     .main-action-btn {
-        margin-bottom: max(85px, calc(65px + env(safe-area-inset-bottom, 8px))); /* Optimized for landscape */
+        bottom: env(safe-area-inset-bottom, 0px) !important;
+        margin-bottom: 0 !important;
         grid-area: main-action;
         justify-self: end;
     }
