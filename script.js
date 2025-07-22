@@ -3279,7 +3279,7 @@ function createMonumentCard(monument) {
     const categoryDisplay = getCategoryDisplayName(monument.category);
     
     // Check if this monument is part of the navigation route
-    const checkpointIndex = checkpoints.findIndex(cp => cp.properties.id === monument.id);
+    const checkpointIndex = checkpoints.findIndex(cp => cp.monument_id === monument.id);
     const isNavigationStop = checkpointIndex !== -1;
     const isVisited = visitedCheckpoints.includes(checkpointIndex);
     const isCurrent = checkpointIndex === currentCheckpointIndex && navigationActive;
@@ -4203,7 +4203,7 @@ function updateMonumentCardsForNavigation() {
     
     monumentCards.forEach(card => {
         const monumentId = card.getAttribute('data-monument-id');
-        const checkpointIndex = checkpoints.findIndex(cp => cp.properties.id === monumentId);
+        const checkpointIndex = checkpoints.findIndex(cp => cp.monument_id === monumentId);
         const isNavigationStop = checkpointIndex !== -1;
         const isVisited = visitedCheckpoints.includes(checkpointIndex);
         const isCurrent = checkpointIndex === currentCheckpointIndex && navigationActive;
