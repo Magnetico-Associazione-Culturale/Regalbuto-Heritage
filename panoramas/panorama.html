@@ -86,6 +86,15 @@
             return imgParam;
         }
         
+        // Funzione per ottenere il parametro rotation dall'URL
+        function getRotationParameter() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const rotationParam = urlParams.get('rotation');
+            const rotation = rotationParam ? parseInt(rotationParam) : 0;
+            console.log('Parametro rotation:', rotation);
+            return rotation;
+        }
+        
         // Funzione per caricare l'immagine panoramica
         function loadPanorama() {
             const loadingScreen = document.getElementById('loadingScreen');
@@ -136,10 +145,20 @@
                 console.log('Immagine caricata con successo');
                 console.log('Dimensioni immagine:', this.naturalWidth, 'x', this.naturalHeight);
                 
+                // Get rotation parameter
+                const rotation = getRotationParameter();
+                
                 // Aspetta che A-Frame sia completamente inizializzato
                 setTimeout(() => {
                     sky.setAttribute('src', '#panorama');
-                    console.log('Texture applicata al sky element');
+                    
+                    // Apply rotation to the sky element
+                    if (rotation !== 0) {
+                        sky.setAttribute('rotation', `0 ${rotation} 0`);
+                        console.log(`Rotation applied to sky: 0 ${rotation} 0`);
+                    }
+                    
+                    console.log('Texture applicata al sky element con rotazione:', rotation);
                     
                     // Verifica che la texture sia stata applicata
                     setTimeout(() => {

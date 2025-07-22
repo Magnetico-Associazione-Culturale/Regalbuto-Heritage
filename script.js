@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load monuments from JSON data
     loadMonumentsFromJSON();
     
+    // Populate virtual tour locations dynamically
+    populateVirtualTourLocations();
+    
     console.log('Regalbuto Heritage App initialized');
 });
 
@@ -1756,12 +1759,19 @@ function loadLocation(locationId) {
 function loadLocationFromJSON(monumentId, imagePath) {
     console.log('Loading location from JSON for monument:', monumentId, 'with image:', imagePath);
     
-    // Remove active class from all location cards
-    const locationCards = document.querySelectorAll('.location-card');
-    locationCards.forEach(card => card.classList.remove('active'));
+    // Determine rotation based on image path and specific rules
+    let rotation = -90; // Default: rotate 90 degrees left (counterclockwise)
     
-    // Build the panorama URL using the image path from JSON
-    const panoramaUrl = `panoramas/panorama.html?img=${imagePath}`;
+    // Special case: external view of Sant'Antonio convent should rotate 90 degrees right
+    if (imagePath.includes('vista-convento-sant-antonio.JPG')) {
+        rotation = 90; // Rotate 90 degrees right (clockwise)
+        console.log('Special rotation for vista-convento-sant-antonio.JPG: +90°');
+    } else {
+        console.log('Default rotation applied: -90°');
+    }
+    
+    // Build the panorama URL using the image path from JSON with rotation
+    const panoramaUrl = `panoramas/panorama.html?img=${imagePath}&rotation=${rotation}`;
     
     const iframe = document.querySelector('#pano-viewer iframe');
     if (iframe) {
@@ -1780,7 +1790,208 @@ function loadLocationFromJSON(monumentId, imagePath) {
         console.error('Iframe not found');
     }
     
-    console.log(`Loading virtual tour from JSON for monument: ${monumentId}`);
+    // Load and display the view selector dropdown if multiple 360° images are available
+    loadViewSelector(monumentId, imagePath);
+    
+    console.log(`Loading virtual tour from JSON for monument: ${monumentId} with rotation: ${rotation}°`);
+}
+
+// Function to create and manage the view selector dropdown for monuments with multiple 360° images
+async function loadViewSelector(monumentId, currentImagePath) {
+    try {
+        // Load monuments data
+        const response = await fetch('data/monuments.json');
+        const monuments = await response.json();
+        
+        // Find the current monument
+        const monument = monuments.find(m => m.id === monumentId);
+        if (!monument) return;
+        
+        // Get all 360° images for this monument
+        const images360 = monument.images ? monument.images.filter(img => img.format === '360') : [];
+        
+        // Get or create the view selector container
+        let viewSelector = document.getElementById('view-selector');
+        if (!viewSelector) {
+            viewSelector = document.createElement('div');
+            viewSelector.id = 'view-selector';
+            viewSelector.className = 'view-selector';
+            
+            // Insert after the pano-viewer
+            const panoViewer = document.getElementById('pano-viewer');
+            if (panoViewer && panoViewer.parentNode) {
+                panoViewer.parentNode.insertBefore(viewSelector, panoViewer.nextSibling);
+            }
+        }
+        
+        // Clear existing content
+        viewSelector.innerHTML = '';
+        
+        if (images360.length > 1) {
+            // Create dropdown for multiple views
+            const selectorHTML = `
+                <div class="view-selector-content">
+                    <label for="view-dropdown">
+                        <i data-feather="eye"></i>
+                        Seleziona Vista:
+                    </label>
+                    <select id="view-dropdown" class="view-dropdown" onchange="changeView(this.value, '${monumentId}')">
+                        ${images360.map((img, index) => `
+                            <option value="${img.path}" ${img.path === currentImagePath ? 'selected' : ''}>
+                                ${img.title || `Vista ${index + 1}`}
+                            </option>
+                        `).join('')}
+                    </select>
+                </div>
+            `;
+            
+            viewSelector.innerHTML = selectorHTML;
+            viewSelector.style.display = 'block';
+            
+            // Initialize feather icons for the new element
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+        } else {
+            // Hide selector if only one or no 360° images
+            viewSelector.style.display = 'none';
+        }
+        
+    } catch (error) {
+        console.error('Error loading view selector:', error);
+    }
+}
+
+// Function to change the current view in the 360° viewer
+window.changeView = function(imagePath, monumentId) {
+    console.log('Changing view to:', imagePath);
+    
+    // Determine rotation based on image path and specific rules
+    let rotation = -90; // Default: rotate 90 degrees left (counterclockwise)
+    
+    // Special case: external view of Sant'Antonio convent should rotate 90 degrees right
+    if (imagePath.includes('vista-convento-sant-antonio.JPG')) {
+        rotation = 90; // Rotate 90 degrees right (clockwise)
+        console.log('Special rotation for vista-convento-sant-antonio.JPG: +90°');
+    } else {
+        console.log('Default rotation applied: -90°');
+    }
+    
+    // Update the iframe src with rotation
+    const iframe = document.querySelector('#pano-viewer iframe');
+    if (iframe) {
+        const panoramaUrl = `panoramas/panorama.html?img=${imagePath}&rotation=${rotation}`;
+        iframe.src = panoramaUrl;
+        
+        console.log(`View changed to: ${imagePath} with rotation: ${rotation}°`);
+    }
+};
+
+// Function to populate virtual tour locations dynamically from monuments.json
+async function populateVirtualTourLocations() {
+    try {
+        console.log('Populating virtual tour locations...');
+        
+        // Load monuments data
+        const response = await fetch('data/monuments.json');
+        const monuments = await response.json();
+        
+        // Filter monuments that have 360° images
+        const monumentsWithVR = monuments.filter(monument => 
+            monument.images && monument.images.some(img => img.format === '360')
+        );
+        
+        console.log(`Found ${monumentsWithVR.length} monuments with 360° images`);
+        
+        // Get the location grid container
+        const locationGrid = document.querySelector('.location-grid');
+        if (!locationGrid) {
+            console.error('Location grid not found');
+            return;
+        }
+        
+        // Clear existing hardcoded locations
+        locationGrid.innerHTML = '';
+        
+        // Populate virtual tour locations dynamically
+        monumentsWithVR.forEach((monument, index) => {
+            const firstImage360 = monument.images.find(img => img.format === '360');
+            const imageCount = monument.images.filter(img => img.format === '360').length;
+            
+            // Determine emoji based on category
+            let emoji = '🏛️'; // default
+            switch(monument.category) {
+                case 'church':
+                    emoji = '⛪';
+                    break;
+                case 'monument':
+                    emoji = '🗿';
+                    break;
+                case 'theater':
+                    emoji = '🎭';
+                    break;
+                case 'nature':
+                    emoji = '🏔️';
+                    break;
+                case 'historic':
+                    emoji = '🏛️';
+                    break;
+                default:
+                    emoji = '📍';
+            }
+            
+            const locationCard = document.createElement('div');
+            locationCard.className = `location-card ${index === 0 ? 'active' : ''}`;
+            locationCard.dataset.monumentId = monument.id;
+            locationCard.onclick = () => {
+                // Remove active from all cards
+                document.querySelectorAll('.location-card').forEach(card => 
+                    card.classList.remove('active')
+                );
+                // Add active to clicked card
+                locationCard.classList.add('active');
+                // Load the location
+                loadLocationAndScrollFromJSON(monument.id, firstImage360.path);
+            };
+            
+            locationCard.innerHTML = `
+                <div class="location-thumb">${emoji}</div>
+                <h5>${monument.name}</h5>
+                <p>${imageCount > 1 ? `${imageCount} viste disponibili` : 'Vista panoramica'}</p>
+            `;
+            
+            locationGrid.appendChild(locationCard);
+            
+            // Auto-load first monument when page loads
+            if (index === 0) {
+                setTimeout(() => {
+                    loadLocationFromJSON(monument.id, firstImage360.path);
+                }, 500);
+            }
+        });
+        
+        console.log('Virtual tour locations populated successfully');
+        
+    } catch (error) {
+        console.error('Error populating virtual tour locations:', error);
+    }
+}
+
+// Function similar to loadLocationAndScroll but works with JSON data
+function loadLocationAndScrollFromJSON(monumentId, imagePath) {
+    console.log('Loading location from JSON:', monumentId, imagePath);
+    
+    // Load the location
+    loadLocationFromJSON(monumentId, imagePath);
+    
+    // Scroll to iframe
+    const iframe = document.querySelector('#pano-viewer');
+    if (iframe) {
+        iframe.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+    }
 }
 
 function loadLocationAndScroll(locationId) {

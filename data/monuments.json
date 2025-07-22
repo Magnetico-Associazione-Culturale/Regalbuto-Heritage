@@ -467,6 +467,13 @@
                 "path": "src/imgs/360/chiesa-san-calogero.JPG",
                 "alt": "Vista panoramica 360° dell'interno della Chiesa rurale di San Calogero"
             },
+             {
+                "title": "Panorama dalla Chiesa rurale di San Calogero",
+                "description": "Panorama su Regalbuto",
+                "format": "360",
+                "path": "src/imgs/360/vista-san-calogero.JPG",
+                "alt": "Vista panoramica 360° su Regalbuto dalla Chiesa rurale di San Calogero"
+            },
             {
                 "title": "Esterno della Chiesa rurale di San Calogero",
                 "description": "Vista esterna della chiesa",
