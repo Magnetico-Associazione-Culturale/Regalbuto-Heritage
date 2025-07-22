@@ -1017,13 +1017,13 @@ p {
 .fullscreen-map-container {
     position: relative;
     height: 100vh;
-    width: 100%;
+    width: 100vw;
     overflow: hidden;
 }
 
 .fullscreen-map {
     height: 100vh !important;
-    width: 100% !important;
+    width: 100vw !important;
     border: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
@@ -1123,7 +1123,7 @@ p {
     transition: all 0.3s ease;
     pointer-events: auto;
     min-width: 280px;
-    margin-bottom: 120px; /* Space for bottom navigation */
+    margin-bottom: max(100px, calc(75px + env(safe-area-inset-bottom, 15px))); /* Reduced margin, closer to navigation */
 }
 
 .overlay-stats-panel:hover {
@@ -1182,7 +1182,7 @@ p {
     grid-area: main-action;
     justify-self: end;
     align-self: end;
-    margin-bottom: 120px; /* Space for bottom navigation */
+    margin-bottom: max(100px, calc(75px + env(safe-area-inset-bottom, 15px))); /* Reduced margin, closer to navigation */
 }
 
 .btn-overlay {
@@ -1271,18 +1271,31 @@ p {
 /* Special override for fullscreen navigation section */
 #navigazione.section {
     min-height: 100vh;
+    height: 100vh;
     padding: 0;
     margin: 0;
     background: transparent;
+    overflow: hidden; /* Prevent scrolling */
+    position: relative;
+}
+
+/* Prevent body scroll when navigation is active */
+body.navigation-active {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
 }
 
 #navigazione.section .fullscreen-map-container {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 1;
+    width: 100vw;
+    height: 100vh;
 }
 
 /* Animation classes for overlay elements */
@@ -4135,7 +4148,7 @@ button:focus,
         min-width: auto;
         max-width: 240px;
         padding: 0.7rem 1rem;
-        margin-bottom: 120px; /* Increased space for bottom navigation */
+        margin-bottom: max(100px, calc(80px + env(safe-area-inset-bottom, 10px))); /* Closer to navigation bar */
     }
     
     .stat-visited,
@@ -4153,7 +4166,7 @@ button:focus,
         grid-area: main-action;
         justify-self: end;
         align-self: end;
-        margin-bottom: 120px; /* Increased space for bottom navigation */
+        margin-bottom: max(100px, calc(80px + env(safe-area-inset-bottom, 10px))); /* Closer to navigation bar */
     }
     
     .btn-primary-overlay {
@@ -4201,7 +4214,7 @@ button:focus,
         padding: 0.6rem 0.8rem;
         min-width: auto;
         max-width: 160px;
-        margin-bottom: 110px; /* Increased space for bottom navigation */
+        margin-bottom: max(95px, calc(75px + env(safe-area-inset-bottom, 8px))); /* Optimized for small screens */
     }
     
     .stat-visited,
@@ -4222,7 +4235,7 @@ button:focus,
     }
     
     .main-action-btn {
-        margin-bottom: 110px; /* Increased space for bottom navigation */
+        margin-bottom: max(95px, calc(75px + env(safe-area-inset-bottom, 8px))); /* Optimized for small screens */
     }
     
     .btn-primary-overlay {
@@ -4252,7 +4265,7 @@ button:focus,
         justify-self: start;
         flex-direction: row;
         min-width: 220px;
-        margin-bottom: 100px; /* Increased space for bottom navigation */
+        margin-bottom: max(85px, calc(65px + env(safe-area-inset-bottom, 8px))); /* Optimized for landscape */
     }
     
     .stat-visited {
@@ -4269,7 +4282,7 @@ button:focus,
     }
     
     .main-action-btn {
-        margin-bottom: 100px; /* Increased space for bottom navigation */
+        margin-bottom: max(85px, calc(65px + env(safe-area-inset-bottom, 8px))); /* Optimized for landscape */
         grid-area: main-action;
         justify-self: end;
     }
@@ -4285,35 +4298,4 @@ button:focus,
     }
 }
 
-/* Safe area adjustments for devices with notch/home indicator */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-    @media (max-width: 768px) {
-        .overlay-stats-panel {
-            margin-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
-        }
-        
-        .main-action-btn {
-            margin-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
-        }
-    }
-    
-    @media (max-width: 480px) {
-        .overlay-stats-panel {
-            margin-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
-        }
-        
-        .main-action-btn {
-            margin-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
-        }
-    }
-    
-    @media (max-width: 768px) and (orientation: landscape) {
-        .overlay-stats-panel {
-            margin-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
-        }
-        
-        .main-action-btn {
-            margin-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
-        }
-    }
-}
+

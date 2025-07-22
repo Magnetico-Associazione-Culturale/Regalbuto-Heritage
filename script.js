@@ -167,6 +167,18 @@ function switchTab(tabName) {
         document.body.classList.remove('home-active');
     }
     
+    // Manage fullscreen navigation section
+    const footer = document.querySelector('.footer');
+    if (tabName === 'navigazione') {
+        document.body.classList.add('navigation-active');
+        document.body.style.overflow = 'hidden'; // Prevent body scroll
+        if (footer) footer.style.display = 'none'; // Hide footer
+    } else {
+        document.body.classList.remove('navigation-active');
+        document.body.style.overflow = ''; // Restore scroll
+        if (footer) footer.style.display = ''; // Show footer
+    }
+    
     // Hide all sections
     const sections = document.querySelectorAll('.section');
     sections.forEach(section => {
