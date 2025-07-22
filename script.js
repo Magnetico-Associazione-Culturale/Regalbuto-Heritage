@@ -1924,11 +1924,27 @@ async function populateVirtualTourLocations() {
                 case 'church':
                     emoji = '⛪';
                     break;
+                case 'convent':
+                    emoji = '🏛️';
+                    break;
+                case 'palace':
+                    emoji = '🏰';
+                    break;
                 case 'monument':
+                case 'civic':
                     emoji = '🗿';
                     break;
                 case 'theater':
                     emoji = '🎭';
+                    break;
+                case 'educational':
+                    emoji = '🎓';
+                    break;
+                case 'financial':
+                    emoji = '🏦';
+                    break;
+                case 'technology':
+                    emoji = '💻';
                     break;
                 case 'nature':
                     emoji = '🏔️';
@@ -1937,6 +1953,7 @@ async function populateVirtualTourLocations() {
                     emoji = '🏛️';
                     break;
                 default:
+                    console.warn(`Categoria non riconosciuta: "${monument.category}" per monumento: ${monument.name}`);
                     emoji = '📍';
             }
             
