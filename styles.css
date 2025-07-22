@@ -247,6 +247,55 @@ p {
     margin-bottom: 1rem;
 }
 
+/* Info section close button */
+.info-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.info-close-btn:hover {
+    background: var(--background-white);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.info-close-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.info-close-btn i {
+    width: 20px;
+    height: 20px;
+    color: var(--text-secondary);
+    transition: color 0.3s ease;
+}
+
+.info-close-btn:hover i {
+    color: var(--primary-color);
+}
+
+/* Ensure info section has relative positioning */
+#info {
+    position: relative;
+}
+
 /* Info Grid Layout */
 .info-grid {
     display: grid;
@@ -527,6 +576,19 @@ p {
     
     .compact-content {
         padding: 0.75rem;
+    }
+    
+    /* Mobile adjustments for info close button */
+    .info-close-btn {
+        top: 15px;
+        right: 15px;
+        width: 44px;
+        height: 44px;
+    }
+    
+    .info-close-btn i {
+        width: 18px;
+        height: 18px;
     }
     
     .footer-actions {
