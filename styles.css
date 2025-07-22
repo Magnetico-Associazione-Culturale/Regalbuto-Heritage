@@ -1013,6 +1013,196 @@ p {
     box-shadow: 0 6px 25px var(--shadow-medium);
 }
 
+/* Full Screen Map Styles */
+.fullscreen-map-container {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+.fullscreen-map {
+    height: 100vh !important;
+    width: 100% !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Map Overlay Controls */
+.map-overlay-controls {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 1000;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Top Stats Panel */
+.overlay-stats-panel {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    pointer-events: auto;
+    margin-top: 1rem;
+}
+
+.stat-item-overlay {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    min-width: 120px;
+    justify-content: center;
+}
+
+.stat-item-overlay i {
+    color: var(--primary-color);
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.stat-item-overlay strong {
+    color: var(--primary-color);
+}
+
+/* Navigation Info Overlay */
+.overlay-navigation-info {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    pointer-events: auto;
+    max-width: 100%;
+}
+
+.overlay-navigation-info .current-instruction {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.overlay-navigation-info .current-instruction i {
+    width: 20px;
+    height: 20px;
+    color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.overlay-navigation-info .next-destination {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.overlay-navigation-info .next-destination i {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+/* Bottom Action Buttons */
+.overlay-action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    pointer-events: auto;
+    margin-bottom: 100px; /* Space for bottom navigation */
+    flex-wrap: wrap;
+}
+
+.btn-overlay {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.btn-overlay:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary-overlay {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+}
+
+.btn-primary-overlay:hover {
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+}
+
+.btn-secondary-overlay {
+    color: var(--text-secondary);
+}
+
+.btn-secondary-overlay:hover {
+    background: rgba(255, 255, 255, 1);
+    color: var(--primary-color);
+}
+
+.btn-overlay i {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.btn-overlay span {
+    white-space: nowrap;
+}
+
+/* Special override for fullscreen navigation section */
+#navigazione.section {
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+}
+
+#navigazione.section .fullscreen-map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
 /* Ensure content doesn't overlap with bottom navigation */
 .section {
     padding-bottom: 1rem;
@@ -3727,5 +3917,106 @@ button:focus,
         flex-direction: column;
         gap: 0.5rem;
         font-size: 0.8rem;
+    }
+}
+
+/* Responsive styles for fullscreen map overlay */
+@media (max-width: 768px) {
+    .overlay-stats-panel {
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+    }
+    
+    .stat-item-overlay {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8rem;
+        min-width: auto;
+    }
+    
+    .stat-item-overlay i {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .overlay-navigation-info {
+        padding: 1rem;
+        margin: 0.5rem 0;
+    }
+    
+    .overlay-navigation-info .current-instruction {
+        font-size: 0.9rem;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .overlay-navigation-info .current-instruction i {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .overlay-navigation-info .next-destination {
+        font-size: 0.8rem;
+        gap: 0.5rem;
+    }
+    
+    .overlay-navigation-info .next-destination i {
+        width: 14px;
+        height: 14px;
+    }
+    
+    .overlay-action-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-bottom: 90px;
+    }
+    
+    .btn-overlay {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.85rem;
+        width: 100%;
+        max-width: 200px;
+        margin: 0 auto;
+    }
+    
+    .btn-overlay i {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .map-overlay-controls {
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .overlay-stats-panel {
+        margin-top: 0.25rem;
+    }
+    
+    .stat-item-overlay {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.75rem;
+    }
+    
+    .overlay-navigation-info {
+        padding: 0.8rem;
+    }
+    
+    .overlay-navigation-info .current-instruction {
+        font-size: 0.85rem;
+    }
+    
+    .overlay-navigation-info .next-destination {
+        font-size: 0.75rem;
+    }
+    
+    .btn-overlay {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .map-overlay-controls {
+        padding: 0.5rem;
     }
 }
