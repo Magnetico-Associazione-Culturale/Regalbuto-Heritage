@@ -4382,4 +4382,141 @@ button:focus,
     }
 }
 
+/* Heartbeat animation keyframes */
+@keyframes heartbeat-glow {
+    0% {
+        transform: scale(1) translateY(0);
+        box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3), 0 0 20px rgba(74, 85, 104, 0.1);
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    25% {
+        transform: scale(1.08) translateY(-2px);
+        box-shadow: 0 8px 25px rgba(74, 85, 104, 0.5), 0 0 50px rgba(74, 85, 104, 0.4);
+        background: linear-gradient(135deg, var(--primary-color), #5a6b79);
+        border-color: rgba(255, 255, 255, 0.8);
+    }
+    50% {
+        transform: scale(1.12) translateY(-4px);
+        box-shadow: 0 12px 35px rgba(74, 85, 104, 0.6), 0 0 70px rgba(74, 85, 104, 0.5), 0 0 100px rgba(255, 255, 255, 0.2);
+        background: linear-gradient(135deg, #6b7c8a, var(--primary-color));
+        border-color: rgba(255, 255, 255, 1);
+    }
+    75% {
+        transform: scale(1.08) translateY(-2px);
+        box-shadow: 0 8px 25px rgba(74, 85, 104, 0.5), 0 0 50px rgba(74, 85, 104, 0.4);
+        background: linear-gradient(135deg, var(--primary-color), #5a6b79);
+        border-color: rgba(255, 255, 255, 0.8);
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3), 0 0 20px rgba(74, 85, 104, 0.1);
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+}
+
+/* Subtle pulse for mobile devices */
+@keyframes heartbeat-glow-mobile {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3), 0 0 15px rgba(74, 85, 104, 0.1);
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    50% {
+        transform: scale(1.06);
+        box-shadow: 0 8px 25px rgba(74, 85, 104, 0.5), 0 0 40px rgba(74, 85, 104, 0.3), 0 0 60px rgba(255, 255, 255, 0.1);
+        background: linear-gradient(135deg, #5a6b79, var(--primary-color));
+        border-color: rgba(255, 255, 255, 0.6);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3), 0 0 15px rgba(74, 85, 104, 0.1);
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+}
+
+/* Apply heartbeat animation to "Inizia Itinerario" button */
+.hero-actions .btn-primary {
+    animation: heartbeat-glow 2.5s ease-in-out infinite;
+    position: relative;
+    overflow: visible;
+    z-index: 2;
+}
+
+/* Ensure text stays above pseudo-elements */
+.hero-actions .btn-primary * {
+    position: relative;
+    z-index: 3;
+}
+
+/* Reduce animation intensity on mobile */
+@media (max-width: 768px) {
+    .hero-actions .btn-primary {
+        animation: heartbeat-glow-mobile 2.5s ease-in-out infinite;
+    }
+}
+
+/* Pause animation on hover */
+.hero-actions .btn-primary:hover {
+    animation-play-state: paused;
+}
+
+/* Add subtle inner glow effect */
+.hero-actions .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.4));
+    border-radius: inherit;
+    opacity: 0;
+    animation: inner-glow 2.5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.hero-actions .btn-primary::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.6), transparent, rgba(255, 255, 255, 0.6));
+    border-radius: inherit;
+    opacity: 0;
+    animation: outer-rim-glow 2.5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes inner-glow {
+    0%, 100% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    75% {
+        opacity: 0.2;
+    }
+}
+
+@keyframes outer-rim-glow {
+    0%, 100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.4;
+    }
+}
+
 
