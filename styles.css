@@ -4315,7 +4315,11 @@ button:focus,
         min-width: auto;
         max-width: 240px;
         padding: 0.7rem 1rem;
-        margin-bottom: max(100px, calc(80px + env(safe-area-inset-bottom, 10px))); /* Closer to navigation bar */
+        position: fixed;
+        left: 16px;
+        bottom: calc(var(--bottom-nav-height, 70px) + env(safe-area-inset-bottom, 0px) + 16px) !important;
+        margin-bottom: 0 !important;
+        z-index: 1200;
     }
     
     .stat-visited,
