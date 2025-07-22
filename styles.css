@@ -1042,12 +1042,10 @@ p {
     display: grid;
     grid-template-areas: 
         "nav-info nav-info nav-info"
-        "stats-panel . ."
         ". . ."
-        ". main-action ."
-        ". locate-btn .";
+        "stats-panel . main-action";
     grid-template-columns: auto 1fr auto;
-    grid-template-rows: auto auto 1fr auto auto;
+    grid-template-rows: auto 1fr auto;
     gap: 1rem;
     padding: 1rem;
 }
@@ -1112,7 +1110,7 @@ p {
 .overlay-stats-panel {
     grid-area: stats-panel;
     justify-self: start;
-    align-self: center;
+    align-self: end;
     display: flex;
     align-items: center;
     gap: 0;
@@ -1125,6 +1123,7 @@ p {
     transition: all 0.3s ease;
     pointer-events: auto;
     min-width: 280px;
+    margin-bottom: 100px; /* Space for bottom navigation */
 }
 
 .overlay-stats-panel:hover {
@@ -1174,21 +1173,14 @@ p {
     display: none;
 }
 
-/* Main Action Buttons - Center Bottom */
+/* Main Action Buttons - Bottom Right */
 .overlay-action-buttons {
     display: contents; /* Allow children to participate in parent grid */
 }
 
 .main-action-btn {
     grid-area: main-action;
-    justify-self: center;
-    align-self: end;
-    margin-bottom: 20px;
-}
-
-.locate-action-btn {
-    grid-area: locate-btn;
-    justify-self: center;
+    justify-self: end;
     align-self: end;
     margin-bottom: 100px; /* Space for bottom navigation */
 }
@@ -4099,14 +4091,14 @@ button:focus,
 @media (max-width: 768px) {
     .map-overlay-controls {
         grid-template-areas: 
-            "nav-info"
-            "stats-panel"
-            "."
-            "main-action"
-            "locate-btn";
-        grid-template-columns: 1fr;
+            "nav-info nav-info nav-info"
+            ". . ."
+            "stats-panel . main-action";
+        grid-template-columns: auto 1fr auto;
+        grid-template-rows: auto 1fr auto;
         padding: 0.75rem;
         gap: 0.75rem;
+        align-items: end;
     }
     
     .overlay-navigation-info {
@@ -4137,10 +4129,13 @@ button:focus,
     }
     
     .overlay-stats-panel {
-        justify-self: center;
+        grid-area: stats-panel;
+        justify-self: start;
+        align-self: end;
         min-width: auto;
-        max-width: 90%;
+        max-width: 240px;
         padding: 0.7rem 1rem;
+        margin-bottom: 90px; /* Space for bottom navigation */
     }
     
     .stat-visited,
@@ -4154,29 +4149,33 @@ button:focus,
         height: 15px;
     }
     
+    .main-action-btn {
+        grid-area: main-action;
+        justify-self: end;
+        align-self: end;
+        margin-bottom: 90px; /* Space for bottom navigation */
+    }
+    
     .btn-primary-overlay {
         padding: 0.8rem 1.5rem;
         font-size: 0.9rem;
         min-width: 140px;
     }
     
-    .btn-secondary-overlay {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.75rem;
-        min-width: 80px;
-    }
-    
-    .main-action-btn {
-        margin-bottom: 10px;
-    }
-    
+    /* Hide locate button completely on mobile */
     .locate-action-btn {
-        margin-bottom: 90px;
+        display: none !important;
     }
 }
 
 @media (max-width: 480px) {
     .map-overlay-controls {
+        grid-template-areas: 
+            "nav-info"
+            "."
+            "stats-panel main-action";
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto 1fr auto;
         padding: 0.5rem;
         gap: 0.5rem;
     }
@@ -4201,12 +4200,13 @@ button:focus,
         gap: 0.5rem;
         padding: 0.6rem 0.8rem;
         min-width: auto;
-        max-width: 95%;
+        max-width: 160px;
+        margin-bottom: 80px;
     }
     
     .stat-visited,
     .stat-distance {
-        justify-content: center;
+        justify-content: flex-start;
         font-size: 0.8rem;
         padding: 0;
     }
@@ -4221,20 +4221,19 @@ button:focus,
         padding-top: 0.5rem;
     }
     
+    .main-action-btn {
+        margin-bottom: 80px;
+    }
+    
     .btn-primary-overlay {
         padding: 0.7rem 1.2rem;
         font-size: 0.85rem;
         min-width: 120px;
     }
     
-    .btn-secondary-overlay {
-        padding: 0.4rem 0.7rem;
-        font-size: 0.7rem;
-        min-width: 70px;
-    }
-    
+    /* Keep locate button hidden on small mobile */
     .locate-action-btn {
-        margin-bottom: 80px;
+        display: none !important;
     }
 }
 
@@ -4243,17 +4242,17 @@ button:focus,
     .map-overlay-controls {
         grid-template-areas: 
             "nav-info nav-info nav-info"
-            "stats-panel . ."
-            ". main-action locate-btn";
+            "stats-panel . main-action";
         grid-template-columns: auto 1fr auto;
-        grid-template-rows: auto auto 1fr;
+        grid-template-rows: auto 1fr;
         padding: 0.5rem;
     }
     
     .overlay-stats-panel {
         justify-self: start;
         flex-direction: row;
-        min-width: 250px;
+        min-width: 220px;
+        margin-bottom: 20px;
     }
     
     .stat-visited {
@@ -4272,17 +4271,16 @@ button:focus,
     .main-action-btn {
         margin-bottom: 20px;
         grid-area: main-action;
-        justify-self: center;
-    }
-    
-    .locate-action-btn {
-        margin-bottom: 20px;
-        grid-area: locate-btn;
         justify-self: end;
     }
     
     .overlay-navigation-info {
         max-width: 500px;
         padding: 0.8rem 1.2rem;
+    }
+    
+    /* Keep locate button hidden in landscape */
+    .locate-action-btn {
+        display: none !important;
     }
 }
