@@ -1185,24 +1185,13 @@ p {
     transition: all 0.3s ease;
     pointer-events: auto;
     min-width: 280px;
-    
-    /* Soluzione ibrida - usa le viewport units dinamiche dove supportate */
-    margin-bottom: max(140px, calc(105px + env(safe-area-inset-bottom, 0px) + 35px));
-    margin-bottom: max(140px, 18dvh); /* Dynamic viewport height - si adatta alla barra indirizzi */
-    margin-bottom: clamp(140px, max(18dvh, calc(105px + env(safe-area-inset-bottom, 0px) + 35px)), 210px);
+    margin-bottom: max(100px, calc(75px + env(safe-area-inset-bottom, 15px))); /* Reduced margin, closer to navigation */
 }
 
 .overlay-stats-panel:hover {
     background: rgba(255, 255, 255, 1);
     transform: translateY(-2px);
     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
-}
-
-/* Fallback per browser che non supportano dvh */
-@supports not (height: 1dvh) {
-    .overlay-stats-panel {
-        margin-bottom: clamp(140px, calc(105px + env(safe-area-inset-bottom, 0px) + 45px), 200px);
-    }
 }
 
 .stat-visited,
@@ -4299,30 +4288,13 @@ button:focus,
     }
     
     .overlay-stats-panel {
-        /* Soluzione con position fixed per mobile - più affidabile */
-        bottom: clamp(100px, calc(15dvh + 40px), 180px) !important;
-        
-        /* Fallback senza dvh per browser meno recenti */
-        bottom: clamp(120px, calc(12vh + 60px), 180px) !important;
-        bottom: clamp(100px, calc(15dvh + 40px), 180px) !important;
-        
-        margin-bottom: 0;
-        position: fixed;
-        
-        /* Responsive sizing per mobile */
-        min-width: 260px;
-        max-width: calc(100vw - 2rem);
+        grid-area: stats-panel;
+        justify-self: start;
+        align-self: end;
+        min-width: auto;
+        max-width: 240px;
         padding: 0.7rem 1rem;
-        
-        /* Adjust per schermi molto piccoli */
-        font-size: 0.9rem;
-    }
-    
-    /* Fallback per browser senza supporto dvh */
-    @supports not (height: 1dvh) {
-        .overlay-stats-panel {
-            bottom: clamp(130px, 18vh, 170px) !important;
-        }
+        margin-bottom: max(100px, calc(80px + env(safe-area-inset-bottom, 10px))); /* Closer to navigation bar */
     }
     
     .stat-visited,
@@ -4378,14 +4350,6 @@ button:focus,
         gap: 0.4rem;
     }
     
-    /* Fix per schermi molto piccoli */
-    .overlay-stats-panel {
-        bottom: clamp(110px, 18vh, 150px) !important;
-        transform: scale(0.9);
-        transform-origin: bottom left;
-        min-width: 240px;
-    }
-    
     .overlay-navigation-info .next-destination {
         font-size: 0.75rem;
     }
@@ -4429,103 +4393,6 @@ button:focus,
     /* Keep locate button hidden on small mobile */
     .locate-action-btn {
         display: none !important;
-    }
-}
-
-/* Soluzione specifica per iPhone */
-@supports (-webkit-touch-callout: none) {
-    .overlay-stats-panel {
-        /* iPhone con safe areas - molto più spazio per il pulsante */
-        bottom: clamp(200px, calc(140px + env(safe-area-inset-bottom, 0px) + max(22dvh, 60px)), 280px) !important;
-        position: fixed !important;
-        z-index: 998 !important;
-        /* Forza il posizionamento dal basso invece di margin */
-        margin-bottom: 0 !important;
-    }
-    
-    @media (max-width: 768px) {
-        .overlay-stats-panel {
-            bottom: clamp(190px, calc(130px + env(safe-area-inset-bottom, 0px) + 55px), 270px) !important;
-            margin-bottom: 0 !important;
-        }
-    }
-    
-    @media (max-width: 480px) {
-        .overlay-stats-panel {
-            bottom: clamp(180px, calc(120px + env(safe-area-inset-bottom, 0px) + 60px), 260px) !important;
-            transform: scale(0.8) !important;
-            transform-origin: bottom center !important;
-            margin-bottom: 0 !important;
-        }
-    }
-    
-    /* iPhone in landscape */
-    @media (max-height: 500px) and (orientation: landscape) {
-        .overlay-stats-panel {
-            bottom: clamp(80px, calc(40px + env(safe-area-inset-bottom, 0px) + 30px), 120px) !important;
-            transform: scale(0.75) !important;
-            margin-bottom: 0 !important;
-        }
-    }
-}
-
-/* Regola di emergenza per Safari iOS - posizionamento fisso assoluto */
-@supports (-webkit-touch-callout: none) {
-    @media (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
-        .overlay-stats-panel {
-            position: fixed !important;
-            bottom: 220px !important;
-            left: 20px !important;
-            right: auto !important;
-            margin: 0 !important;
-            z-index: 999 !important;
-        }
-        
-        @media (max-height: 700px) {
-            .overlay-stats-panel {
-                bottom: 200px !important;
-                transform: scale(0.85) !important;
-            }
-        }
-        
-        @media (max-height: 600px) {
-            .overlay-stats-panel {
-                bottom: 180px !important;
-                transform: scale(0.8) !important;
-            }
-        }
-    }
-}
-
-/* Regola specifica per il pulsante "Inizia Navigazione" su iPhone */
-@supports (-webkit-touch-callout: none) {
-    @media (max-width: 768px) {
-        .main-action-btn {
-            margin-bottom: max(220px, calc(180px + env(safe-area-inset-bottom, 15px))) !important;
-        }
-        
-        @media (max-height: 700px) {
-            .main-action-btn {
-                margin-bottom: max(200px, calc(160px + env(safe-area-inset-bottom, 15px))) !important;
-            }
-        }
-        
-        @media (max-height: 600px) {
-            .main-action-btn {
-                margin-bottom: max(180px, calc(140px + env(safe-area-inset-bottom, 15px))) !important;
-                transform: scale(0.9);
-            }
-        }
-    }
-}
-
-/* Soluzione per Android Chrome con gesture navigation */
-@media (max-width: 768px) and (min-resolution: 2dppx) {
-    .overlay-stats-panel {
-        /* Extra padding per gesture bar Android */
-        bottom: clamp(150px, calc(105px + env(safe-area-inset-bottom, 0px) + max(20dvh, 50px)), 220px) !important;
-        position: fixed !important;
-        z-index: 999 !important;
     }
 }
 
