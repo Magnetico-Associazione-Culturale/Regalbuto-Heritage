@@ -4,9 +4,12 @@
     <meta charset="utf-8">
     <title>Panorama 360°</title>
     <meta name="description" content="Panorama VR 360°">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
             margin: 0;
@@ -103,24 +106,30 @@
     </button>
 
     <a-scene 
+        id="main-scene"
         background="color: #000"
         vr-mode-ui="enabled: true"
         device-orientation-permission-ui="enabled: true"
-        renderer="antialias: true; colorManagement: true; sortObjects: true"
         embedded
         style="height: 100vh; width: 100vw;">
         
         <a-assets>
-            <img id="panorama" crossorigin="anonymous" />
+            <img id="panorama" 
+                 crossorigin="anonymous" 
+                 preload="auto" />
         </a-assets>
         
-        <a-sky id="sky" radius="500" rotation="0 0 0" material="shader: standard"></a-sky>
+        <a-sky id="sky" radius="500" rotation="0 0 0" material="shader: standard; roughness: 0; metalness: 0; transparent: false; alphaTest: 0; side: back"></a-sky>
         
         <a-camera 
-            look-controls="reverseMouseDrag: true; reverseTouchDrag: true"
+            id="camera"
+            look-controls="enabled: true; pointerLockEnabled: false; touchEnabled: true; mouseEnabled: true; reverseMouseDrag: true; reverseTouchDrag: true"
             wasd-controls="enabled: false"
             position="0 1.6 0"
-            fov="50">
+            fov="60"
+            near="0.1"
+            far="1000"
+            camera="active: true">
         </a-camera>
     </a-scene>
 
@@ -145,6 +154,807 @@
         
         // Rileva modalità iframe all'avvio
         detectIframeMode();
+        
+        // Funzione per configurare il renderer in base al dispositivo
+        function configureRendererForDevice() {
+            const scene = document.querySelector('#main-scene');
+            const isAndroid = isAndroidDevice();
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+            
+            console.log('Configurando renderer per:', {
+                android: isAndroid,
+                ios: isIOS,
+                userAgent: navigator.userAgent,
+                devicePixelRatio: window.devicePixelRatio
+            });
+            
+            if (isAndroid) {
+                // Configurazione ottimizzata per Android
+                const androidConfig = {
+                    antialias: true,
+                    colorManagement: true,
+                    sortObjects: true,
+                    physicallyCorrectLights: false,
+                    maxCanvasWidth: 2048,
+                    maxCanvasHeight: 2048,
+                    logarithmicDepthBuffer: false,
+                    precision: 'highp', // Prova highp prima
+                    powerPreference: 'high-performance'
+                };
+                
+                // Applica configurazione Android
+                Object.entries(androidConfig).forEach(([key, value]) => {
+                    scene.setAttribute('renderer', key, value);
+                });
+                
+                console.log('Renderer Android configurato:', androidConfig);
+                
+            } else if (isIOS) {
+                // Configurazione ottimizzata per iOS
+                const iosConfig = {
+                    antialias: true,
+                    colorManagement: true,
+                    sortObjects: true,
+                    physicallyCorrectLights: true,
+                    maxCanvasWidth: 4096,
+                    maxCanvasHeight: 4096,
+                    logarithmicDepthBuffer: true,
+                    precision: 'highp',
+                    powerPreference: 'high-performance'
+                };
+                
+                // Applica configurazione iOS
+                Object.entries(iosConfig).forEach(([key, value]) => {
+                    scene.setAttribute('renderer', key, value);
+                });
+                
+                console.log('Renderer iOS configurato:', iosConfig);
+                
+            } else {
+                // Configurazione default per altri dispositivi
+                const defaultConfig = {
+                    antialias: true,
+                    colorManagement: true,
+                    sortObjects: true,
+                    physicallyCorrectLights: true,
+                    maxCanvasWidth: 4096,
+                    maxCanvasHeight: 4096,
+                    logarithmicDepthBuffer: true,
+                    precision: 'highp'
+                };
+                
+                // Applica configurazione default
+                Object.entries(defaultConfig).forEach(([key, value]) => {
+                    scene.setAttribute('renderer', key, value);
+                });
+                
+                console.log('Renderer default configurato:', defaultConfig);
+            }
+        }
+        
+        // Funzione per rilevare dispositivi Android
+        function isAndroidDevice() {
+            return /Android/i.test(navigator.userAgent);
+        }
+        
+        // Funzione per ottimizzazioni specifiche Android
+        function applyAndroidOptimizations() {
+            console.log('Applicando ottimizzazioni ultra aggressive per Android...');
+            
+            const scene = document.querySelector('#main-scene');
+            const sky = document.querySelector('a-sky');
+            
+            if (scene && scene.renderer) {
+                // Pixel ratio ultra aggressivo per Android
+                const androidPixelRatio = Math.min(window.devicePixelRatio * 2.5, 3.5);
+                scene.renderer.setPixelRatio(androidPixelRatio);
+                
+                // Configurazione renderer per qualità massima
+                if (scene.renderer.capabilities) {
+                    scene.renderer.antialias = true;
+                    scene.renderer.shadowMap.enabled = false;
+                    scene.renderer.sortObjects = true;
+                    scene.renderer.autoClear = true;
+                    scene.renderer.autoClearColor = true;
+                    scene.renderer.autoClearDepth = true;
+                    
+                    // Forza precisione alta
+                    const gl = scene.renderer.getContext();
+                    if (gl) {
+                        // Abilita tutte le estensioni per qualità migliore
+                        const ext1 = gl.getExtension('EXT_texture_filter_anisotropic');
+                        const ext2 = gl.getExtension('WEBGL_compressed_texture_s3tc');
+                        const ext3 = gl.getExtension('OES_texture_float');
+                        const ext4 = gl.getExtension('WEBGL_depth_texture');
+                        const ext5 = gl.getExtension('OES_element_index_uint');
+                        
+                        console.log('Estensioni WebGL Android ultra:', {
+                            anisotropic: !!ext1,
+                            s3tc: !!ext2,
+                            textureFloat: !!ext3,
+                            depthTexture: !!ext4,
+                            elementIndex: !!ext5,
+                            maxTextureSize: scene.renderer.capabilities.maxTextureSize,
+                            maxAnisotropy: ext1 ? gl.getParameter(ext1.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 'N/A'
+                        });
+                    }
+                }
+                
+                // FOV migliorato anche per navigazione normale su Android
+                const camera = scene.querySelector('[camera]');
+                if (camera) {
+                    const androidFOV = 90; // FOV più ampio per navigazione normale
+                    camera.setAttribute('camera', 'fov', androidFOV);
+                    
+                    const cameraObj = camera.getObject3D('camera');
+                    if (cameraObj) {
+                        cameraObj.fov = androidFOV;
+                        cameraObj.updateProjectionMatrix();
+                    }
+                    
+                    console.log('FOV Android normale impostato:', androidFOV);
+                }
+                
+                console.log('Ottimizzazioni Android ultra aggressive applicate:', {
+                    pixelRatio: scene.renderer.getPixelRatio(),
+                    webglVersion: scene.renderer.capabilities?.isWebGL2 ? 'WebGL2' : 'WebGL1',
+                    maxTextureSize: scene.renderer.capabilities?.maxTextureSize,
+                    antialias: scene.renderer.antialias
+                });
+            }
+            
+            // Ottimizzazioni texture ultra aggressive per Android
+            if (sky) {
+                setTimeout(() => {
+                    const material = sky.getObject3D('mesh')?.material;
+                    if (material) {
+                        // Configurazione texture ultra per Android
+                        material.minFilter = THREE.LinearMipMapLinearFilter; // Qualità massima
+                        material.magFilter = THREE.LinearFilter;
+                        material.generateMipmaps = true; // Abilita mipmaps per qualità
+                        material.wrapS = THREE.ClampToEdgeWrapping;
+                        material.wrapT = THREE.ClampToEdgeWrapping;
+                        
+                        // Se c'è già una texture, ottimizzala
+                        if (material.map) {
+                            const texture = material.map;
+                            texture.anisotropy = Math.min(16, scene.renderer.capabilities.getMaxAnisotropy());
+                            texture.format = THREE.RGBFormat;
+                            texture.type = THREE.UnsignedByteType;
+                            texture.needsUpdate = true;
+                        }
+                        
+                        material.needsUpdate = true;
+                        
+                        console.log('Texture Android ultra aggressive ottimizzata');
+                    }
+                }, 1000);
+            }
+        }
+        
+        // Variabile per controllare il rendering continuo su Android
+        let androidFullscreenRenderLoop = null;
+        
+        // Funzione per mantenere ultra alta qualità durante fullscreen su Android
+        function startAndroidFullscreenRenderLoop() {
+            if (androidFullscreenRenderLoop) return; // Già attivo
+            
+            console.log('Avvio loop rendering ultra aggressivo per Android fullscreen');
+            
+            const scene = document.querySelector('#main-scene');
+            if (!scene || !scene.renderer) return;
+            
+            androidFullscreenRenderLoop = setInterval(() => {
+                if (document.fullscreenElement && isAndroidDevice()) {
+                    // Verifica e mantieni dimensioni ultra HD
+                    const canvas = scene.renderer.domElement;
+                    const currentPixelRatio = scene.renderer.getPixelRatio();
+                    const targetPixelRatio = Math.min(window.devicePixelRatio * 3.0, 4.0);
+                    
+                    const expectedWidth = Math.min(window.innerWidth * targetPixelRatio, 6144);
+                    const expectedHeight = Math.min(window.innerHeight * targetPixelRatio, 6144);
+                    
+                    // Controllo e correzione aggressiva delle dimensioni
+                    if (canvas.width !== expectedWidth || canvas.height !== expectedHeight || 
+                        Math.abs(currentPixelRatio - targetPixelRatio) > 0.1) {
+                        
+                        console.log('Correzione aggressiva qualità Android:', {
+                            current: `${canvas.width}x${canvas.height}`,
+                            expected: `${expectedWidth}x${expectedHeight}`,
+                            currentPixelRatio: currentPixelRatio,
+                            targetPixelRatio: targetPixelRatio
+                        });
+                        
+                        // Ripristina pixel ratio
+                        scene.renderer.setPixelRatio(targetPixelRatio);
+                        
+                        // Ripristina dimensioni canvas
+                        canvas.width = expectedWidth;
+                        canvas.height = expectedHeight;
+                        
+                        // Ripristina viewport
+                        scene.renderer.setViewport(0, 0, expectedWidth, expectedHeight);
+                        scene.renderer.setScissor(0, 0, expectedWidth, expectedHeight);
+                        scene.renderer.setScissorTest(true);
+                        
+                        // Verifica FOV
+                        const camera = scene.querySelector('[camera]');
+                        if (camera) {
+                            const cameraObj = camera.getObject3D('camera');
+                            if (cameraObj && cameraObj.fov !== 95) {
+                                cameraObj.fov = 95;
+                                cameraObj.updateProjectionMatrix();
+                                console.log('FOV corretto a 95° per Android fullscreen');
+                            }
+                        }
+                    }
+                    
+                    // Forza re-render continuo per ultra qualità
+                    const camera = scene.camera || scene.querySelector('[camera]');
+                    if (camera) {
+                        scene.renderer.render(scene.object3D, camera.getObject3D('camera'));
+                    }
+                    
+                    // Controlla e ottimizza texture ogni ciclo
+                    const sky = scene.querySelector('a-sky');
+                    if (sky) {
+                        const material = sky.getObject3D('mesh')?.material;
+                        if (material && material.map) {
+                            if (material.map.anisotropy < 16) {
+                                material.map.anisotropy = Math.min(16, scene.renderer.capabilities.getMaxAnisotropy());
+                                material.map.needsUpdate = true;
+                            }
+                        }
+                    }
+                    
+                } else {
+                    // Ferma il loop se non siamo più in fullscreen
+                    stopAndroidFullscreenRenderLoop();
+                }
+            }, 50); // Ogni 50ms per rendering ultra fluido
+        }
+        
+        function stopAndroidFullscreenRenderLoop() {
+            if (androidFullscreenRenderLoop) {
+                console.log('Interruzione loop rendering Android fullscreen');
+                clearInterval(androidFullscreenRenderLoop);
+                androidFullscreenRenderLoop = null;
+            }
+        }
+        
+        // Funzione per ottimizzare la qualità in fullscreen
+        function optimizeForFullscreen() {
+            console.log('Ottimizzazione per fullscreen attivata');
+            
+            const scene = document.querySelector('a-scene');
+            const sky = document.querySelector('a-sky');
+            const camera = document.querySelector('a-camera');
+            
+            // Applica ottimizzazioni conservative per Android se necessario
+            if (isAndroidDevice()) {
+                applyAndroidOptimizations();
+            }
+            
+            if (scene && scene.renderer) {
+                // Pixel ratio ottimizzato basato sul dispositivo
+                const optimalPixelRatio = isAndroidDevice() ? 
+                    Math.min(window.devicePixelRatio * 0.9, 1.8) : 
+                    Math.min(window.devicePixelRatio, 2);
+                
+                scene.renderer.setPixelRatio(optimalPixelRatio);
+                scene.renderer.setSize(window.innerWidth, window.innerHeight, true);
+                
+                // Abilita antialiasing migliorato
+                if (scene.renderer.capabilities && scene.renderer.capabilities.isWebGL2) {
+                    scene.renderer.antialias = true;
+                }
+                
+                console.log('Renderer ottimizzato:', {
+                    device: isAndroidDevice() ? 'Android' : 'Altri',
+                    pixelRatio: scene.renderer.getPixelRatio(),
+                    size: scene.renderer.getSize(new THREE.Vector2()),
+                    antialias: scene.renderer.antialias
+                });
+            }
+            
+            if (sky) {
+                // Ottimizza il materiale della sky per fullscreen
+                const material = sky.getObject3D('mesh').material;
+                if (material) {
+                    material.minFilter = THREE.LinearFilter;
+                    material.magFilter = THREE.LinearFilter;
+                    material.generateMipmaps = false;
+                    material.needsUpdate = true;
+                    console.log('Materiale sky ottimizzato per fullscreen');
+                }
+            }
+            
+            if (camera) {
+                // Ottimizza la camera per fullscreen
+                const cameraEl = camera.getObject3D('camera');
+                if (cameraEl) {
+                    cameraEl.aspect = window.innerWidth / window.innerHeight;
+                    cameraEl.updateProjectionMatrix();
+                    console.log('Camera aggiornata per fullscreen');
+                }
+            }
+            
+            // Forza un re-render della scena
+            if (scene && scene.renderer) {
+                scene.renderer.render(scene.object3D, camera.getObject3D('camera'));
+            }
+        }
+        
+        // Funzione per il caricamento ottimizzato delle immagini
+        function loadHighQualityImage(imageUrl) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                
+                // Ottimizzazioni specifiche per Android
+                if (isAndroidDevice()) {
+                    img.style.imageRendering = 'high-quality'; // Forza alta qualità su Android
+                    img.decoding = 'sync'; // Caricamento sincrono per evitare problemi
+                    
+                    // Preload hints per Android
+                    img.loading = 'eager';
+                } else {
+                    // Impostazioni conservative per altri dispositivi
+                    img.style.imageRendering = 'auto';
+                    img.decoding = 'auto';
+                }
+                
+                img.onload = function() {
+                    console.log('Immagine caricata ad alta qualità:', {
+                        device: isAndroidDevice() ? 'Android' : 'Altri',
+                        width: this.naturalWidth,
+                        height: this.naturalHeight,
+                        size: (this.naturalWidth * this.naturalHeight / 1000000).toFixed(1) + 'MP',
+                        rendering: img.style.imageRendering
+                    });
+                    
+                    // Post-processing per Android
+                    if (isAndroidDevice()) {
+                        console.log('Applicando post-processing Android per texture...');
+                        // L'immagine è pronta per essere ottimizzata nelle texture
+                    }
+                    
+                    resolve(img);
+                };
+                
+                img.onerror = function() {
+                    console.error('Errore nel caricamento immagine:', imageUrl);
+                    reject(new Error('Impossibile caricare l\'immagine'));
+                };
+                
+                img.src = imageUrl;
+            });
+        }
+        
+        // Ottimizza quando si entra in fullscreen
+        document.addEventListener('fullscreenchange', function() {
+            const isFullscreen = !!document.fullscreenElement;
+            
+            if (isFullscreen) {
+                console.log('Entrato in fullscreen, ottimizzazione in corso...');
+                setTimeout(() => {
+                    optimizeForFullscreen();
+                    
+                    // Ottimizzazioni aggiuntive per Android in fullscreen
+                    if (isAndroidDevice()) {
+                        console.log('Applicando re-rendering ultra aggressivo per Android...');
+                        
+                        const scene = document.querySelector('#main-scene');
+                        if (scene && scene.renderer) {
+                            const displayWidth = window.innerWidth;
+                            const displayHeight = window.innerHeight;
+                            
+                            // Risoluzione target MOLTO più alta per Android
+                            const targetPixelRatio = Math.min(window.devicePixelRatio * 3.0, 4.0);
+                            const targetWidth = Math.min(displayWidth * targetPixelRatio, 6144);
+                            const targetHeight = Math.min(displayHeight * targetPixelRatio, 6144);
+                            
+                            console.log('Forzando re-rendering ultra HD Android:', {
+                                oldSize: `${scene.renderer.domElement.width}x${scene.renderer.domElement.height}`,
+                                targetSize: `${targetWidth}x${targetHeight}`,
+                                pixelRatio: targetPixelRatio,
+                                megapixels: ((targetWidth * targetHeight) / 1000000).toFixed(1) + 'MP'
+                            });
+                            
+                            // STEP 1: Pixel ratio ultra aggressivo
+                            scene.renderer.setPixelRatio(targetPixelRatio);
+                            
+                            // STEP 2: Configurazione renderer per massima qualità
+                            scene.renderer.antialias = true;
+                            scene.renderer.shadowMap.enabled = false;
+                            scene.renderer.sortObjects = true;
+                            scene.renderer.autoClear = true;
+                            
+                            // STEP 3: Forza resize con flag di aggiornamento
+                            scene.renderer.setSize(displayWidth, displayHeight, true);
+                            
+                            // STEP 4: Configura FOV aumentato per Android
+                            const camera = scene.querySelector('[camera]');
+                            if (camera) {
+                                // FOV più ampio per Android (da default ~80° a ~95°)
+                                const androidFOV = 95;
+                                camera.setAttribute('camera', 'fov', androidFOV);
+                                
+                                console.log('FOV Android impostato:', {
+                                    fov: androidFOV,
+                                    aspect: displayWidth / displayHeight
+                                });
+                                
+                                // Forza aggiornamento camera
+                                const cameraObj = camera.getObject3D('camera');
+                                if (cameraObj) {
+                                    cameraObj.fov = androidFOV;
+                                    cameraObj.aspect = displayWidth / displayHeight;
+                                    cameraObj.updateProjectionMatrix();
+                                }
+                            }
+                            
+                            // STEP 5: Dimensioni canvas ultra HD
+                            requestAnimationFrame(() => {
+                                const canvas = scene.renderer.domElement;
+                                
+                                // Buffer interno ad altissima risoluzione
+                                canvas.width = targetWidth;
+                                canvas.height = targetHeight;
+                                
+                                // Display normale
+                                canvas.style.width = displayWidth + 'px';
+                                canvas.style.height = displayHeight + 'px';
+                                
+                                // Viewport e scissor per rendering preciso
+                                scene.renderer.setViewport(0, 0, targetWidth, targetHeight);
+                                scene.renderer.setScissor(0, 0, targetWidth, targetHeight);
+                                scene.renderer.setScissorTest(true);
+                                
+                                // Configura WebGL per massima qualità
+                                const gl = scene.renderer.getContext();
+                                if (gl) {
+                                    // Abilita tutte le estensioni disponibili
+                                    const anisotropicExt = gl.getExtension('EXT_texture_filter_anisotropic');
+                                    if (anisotropicExt) {
+                                        const maxAnisotropy = gl.getParameter(anisotropicExt.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
+                                        console.log('Anisotropia massima Android:', maxAnisotropy);
+                                    }
+                                }
+                                
+                                // Forza render immediato ultra HD
+                                const camera = scene.camera || scene.querySelector('[camera]');
+                                if (camera) {
+                                    scene.renderer.render(scene.object3D, camera.getObject3D('camera'));
+                                }
+                                
+                                console.log('Re-rendering ultra HD Android completato:', {
+                                    canvasBuffer: `${canvas.width}x${canvas.height}`,
+                                    canvasDisplay: `${canvas.style.width} x ${canvas.style.height}`,
+                                    viewport: `${targetWidth}x${targetHeight}`,
+                                    actualPixelRatio: scene.renderer.getPixelRatio(),
+                                    totalPixels: (targetWidth * targetHeight).toLocaleString()
+                                });
+                            });
+                            
+                            // STEP 6: Texture ultra HD
+                            setTimeout(() => {
+                                const sky = scene.querySelector('a-sky');
+                                if (sky) {
+                                    const material = sky.getObject3D('mesh')?.material;
+                                    if (material && material.map) {
+                                        const texture = material.map;
+                                        
+                                        // Configurazione texture per ultra HD
+                                        texture.minFilter = THREE.LinearMipMapLinearFilter;
+                                        texture.magFilter = THREE.LinearFilter;
+                                        texture.anisotropy = Math.min(16, scene.renderer.capabilities.getMaxAnisotropy());
+                                        texture.generateMipmaps = true;
+                                        texture.format = THREE.RGBFormat;
+                                        texture.type = THREE.UnsignedByteType;
+                                        
+                                        material.needsUpdate = true;
+                                        texture.needsUpdate = true;
+                                        
+                                        console.log('Texture ultra HD Android:', {
+                                            anisotropy: texture.anisotropy,
+                                            filter: 'LinearMipMapLinear',
+                                            format: 'RGB',
+                                            mipmaps: texture.generateMipmaps
+                                        });
+                                    }
+                                }
+                                
+                                // Avvia loop rendering continuo ultra aggressivo
+                                startAndroidFullscreenRenderLoop();
+                                
+                            }, 100);
+                        }
+                    }
+                }, 100);
+            } else {
+                // Ritorna alle impostazioni normali quando si esce dal fullscreen
+                console.log('Uscito dal fullscreen, ripristino impostazioni...');
+                
+                // Ferma il loop di rendering continuo per Android
+                if (isAndroidDevice()) {
+                    stopAndroidFullscreenRenderLoop();
+                }
+                
+                setTimeout(() => {
+                    if (isAndroidDevice()) {
+                        applyAndroidOptimizations();
+                    }
+                }, 100);
+            }
+        });
+        
+        // Gestione eventi fullscreen per browser webkit
+        document.addEventListener('webkitfullscreenchange', function() {
+            const isFullscreen = !!document.webkitFullscreenElement;
+            if (isFullscreen && isAndroidDevice()) {
+                setTimeout(() => {
+                    optimizeForFullscreen();
+                }, 100);
+            }
+        });
+        
+        // Ottimizza anche al ridimensionamento della finestra
+        window.addEventListener('resize', function() {
+            if (document.fullscreenElement) {
+                setTimeout(optimizeForFullscreen, 100);
+            }
+        });
+        
+        // Funzione di debug per monitorare la qualità del rendering
+        function debugRenderingQuality() {
+            console.log('=== DEBUG QUALITÀ RENDERING ===');
+            
+            const scene = document.querySelector('#main-scene');
+            const sky = document.querySelector('a-sky');
+            
+            if (scene && scene.renderer) {
+                const renderer = scene.renderer;
+                const gl = renderer.getContext();
+                
+                console.log('Informazioni Renderer:', {
+                    device: isAndroidDevice() ? 'Android' : (isIOSDevice() ? 'iOS' : 'Desktop'),
+                    pixelRatio: renderer.getPixelRatio(),
+                    devicePixelRatio: window.devicePixelRatio,
+                    webglVersion: renderer.capabilities?.isWebGL2 ? 'WebGL2' : 'WebGL1',
+                    maxTextureSize: renderer.capabilities?.maxTextureSize,
+                    maxAnisotropy: renderer.capabilities?.getMaxAnisotropy(),
+                    canvasSize: `${renderer.domElement.width}x${renderer.domElement.height}`,
+                    displaySize: `${window.innerWidth}x${window.innerHeight}`,
+                    antialias: renderer.antialias,
+                    precision: renderer.capabilities?.precision
+                });
+                
+                if (gl) {
+                    console.log('Estensioni WebGL:', {
+                        anisotropic: !!gl.getExtension('EXT_texture_filter_anisotropic'),
+                        s3tc: !!gl.getExtension('WEBGL_compressed_texture_s3tc'),
+                        textureFloat: !!gl.getExtension('OES_texture_float'),
+                        depthTexture: !!gl.getExtension('WEBGL_depth_texture'),
+                        elementIndex: !!gl.getExtension('OES_element_index_uint')
+                    });
+                }
+            }
+            
+            if (sky) {
+                const material = sky.getObject3D('mesh')?.material;
+                if (material && material.map) {
+                    const texture = material.map;
+                    console.log('Informazioni Texture:', {
+                        format: texture.format,
+                        type: texture.type,
+                        anisotropy: texture.anisotropy,
+                        minFilter: texture.minFilter,
+                        magFilter: texture.magFilter,
+                        generateMipmaps: texture.generateMipmaps,
+                        imageSize: texture.image ? `${texture.image.width}x${texture.image.height}` : 'N/A'
+                    });
+                }
+            }
+            
+            console.log('=== FINE DEBUG ===');
+        }
+        
+        // Aggiungi comando per debug dalla console
+        window.debugQuality = debugRenderingQuality;
+        
+        // Funzione per forzare reload texture ultra HD su Android
+        function forceAndroidTextureReload() {
+            if (!isAndroidDevice()) return;
+            
+            console.log('Forzando reload texture ultra HD per Android...');
+            
+            const sky = document.querySelector('a-sky');
+            if (!sky) return;
+            
+            const currentSrc = sky.getAttribute('src');
+            if (!currentSrc) return;
+            
+            // Rimuovi e ricrea la texture con parametri ottimali
+            sky.removeAttribute('src');
+            
+            setTimeout(() => {
+                // Ricrea con ottimizazioni ultra aggressive
+                const material = sky.getObject3D('mesh')?.material;
+                if (material) {
+                    // Pre-configura il materiale per ultra qualità
+                    material.minFilter = THREE.LinearMipMapLinearFilter;
+                    material.magFilter = THREE.LinearFilter;
+                    material.generateMipmaps = true;
+                }
+                
+                // Ricarica la texture
+                sky.setAttribute('src', currentSrc);
+                
+                // Post-processo dopo caricamento
+                sky.addEventListener('materialtextureloaded', function onTextureLoaded() {
+                    setTimeout(() => {
+                        const newMaterial = sky.getObject3D('mesh')?.material;
+                        if (newMaterial && newMaterial.map) {
+                            const texture = newMaterial.map;
+                            
+                            // Configurazione ultra HD
+                            texture.anisotropy = Math.min(16, sky.sceneEl.renderer.capabilities.getMaxAnisotropy());
+                            texture.minFilter = THREE.LinearMipMapLinearFilter;
+                            texture.magFilter = THREE.LinearFilter;
+                            texture.generateMipmaps = true;
+                            texture.format = THREE.RGBFormat;
+                            texture.type = THREE.UnsignedByteType;
+                            texture.needsUpdate = true;
+                            
+                            newMaterial.needsUpdate = true;
+                            
+                            console.log('Texture ultra HD Android ricaricata:', {
+                                size: texture.image ? `${texture.image.width}x${texture.image.height}` : 'unknown',
+                                anisotropy: texture.anisotropy,
+                                format: texture.format,
+                                mipmaps: texture.generateMipmaps
+                            });
+                        }
+                    }, 500);
+                    
+                    // Rimuovi listener per evitare duplicati
+                    sky.removeEventListener('materialtextureloaded', onTextureLoaded);
+                }, { once: true });
+                
+            }, 100);
+        }
+        
+        // Esponi funzione per test manuali
+        window.forceAndroidTextureReload = forceAndroidTextureReload;
+        
+        // Sistema di smoothing giroscopio per Android
+        let gyroSmoothingEnabled = false;
+        let lastGyroValues = { alpha: 0, beta: 0, gamma: 0 };
+        let smoothedGyroValues = { alpha: 0, beta: 0, gamma: 0 };
+        const gyroSmoothingFactor = 0.1; // Più basso = più smooth (0.1 = molto smooth)
+        const gyroThreshold = 0.5; // Soglia minima per registrare movimento
+        
+        // Funzione per inizializzare controlli giroscopio Android
+        function initAndroidGyroSmoothing() {
+            if (!isAndroidDevice()) return;
+            
+            console.log('Inizializzazione smoothing giroscopio per Android...');
+            
+            // Intercetta eventi di orientamento del dispositivo
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener('deviceorientation', function(event) {
+                    if (!gyroSmoothingEnabled) return;
+                    
+                    const alpha = event.alpha || 0;
+                    const beta = event.beta || 0;
+                    const gamma = event.gamma || 0;
+                    
+                    // Calcola differenza dal frame precedente
+                    const alphaDiff = Math.abs(alpha - lastGyroValues.alpha);
+                    const betaDiff = Math.abs(beta - lastGyroValues.beta);
+                    const gammaDiff = Math.abs(gamma - lastGyroValues.gamma);
+                    
+                    // Applica smoothing solo se il movimento supera la soglia
+                    if (alphaDiff > gyroThreshold || betaDiff > gyroThreshold || gammaDiff > gyroThreshold) {
+                        smoothedGyroValues.alpha = smoothedGyroValues.alpha + (alpha - smoothedGyroValues.alpha) * gyroSmoothingFactor;
+                        smoothedGyroValues.beta = smoothedGyroValues.beta + (beta - smoothedGyroValues.beta) * gyroSmoothingFactor;
+                        smoothedGyroValues.gamma = smoothedGyroValues.gamma + (gamma - smoothedGyroValues.gamma) * gyroSmoothingFactor;
+                        
+                        // Aggiorna valori precedenti
+                        lastGyroValues = { alpha, beta, gamma };
+                    }
+                }, { passive: true });
+                
+                console.log('Smoothing giroscopio Android attivato');
+            }
+        }
+        
+        // Funzione per configurare look-controls A-Frame per Android
+        function configureAndroidLookControls() {
+            if (!isAndroidDevice()) return;
+            
+            console.log('Configurazione look-controls ottimizzati per Android...');
+            
+            const camera = document.querySelector('[camera]');
+            if (!camera) return;
+            
+            // Configurazione look-controls con sensibilità ridotta per Android
+            const lookControlsConfig = {
+                enabled: true,
+                hmdEnabled: true,
+                touchEnabled: true,
+                mouseEnabled: true,
+                pointerLockEnabled: false,
+                reverseMouseDrag: false,
+                reverseTouchDrag: false,
+                touchSensitivity: 0.3,  // Ridotta da default (più bassa = meno sensibile)
+                mouseSensitivity: 0.4,  // Ridotta da default
+                gyroSensitivity: 0.2,   // Molto ridotta per Android (default ~1.0)
+                accelerationEnabled: false, // Disabilita accelerazione per movimento più fluido
+                flyEnabled: false,
+                rollEnabled: false      // Disabilita roll per evitare disorientamento
+            };
+            
+            // Applica configurazione
+            camera.setAttribute('look-controls', lookControlsConfig);
+            
+            console.log('Look-controls Android configurati:', lookControlsConfig);
+            
+            // Attiva smoothing aggiuntivo dopo configurazione
+            setTimeout(() => {
+                gyroSmoothingEnabled = true;
+            }, 1000);
+        }
+        
+        // Funzione per regolare dinamicamente la sensibilità in base al movimento
+        function adaptiveGyroSensitivity() {
+            if (!isAndroidDevice() || !gyroSmoothingEnabled) return;
+            
+            const camera = document.querySelector('[camera]');
+            if (!camera) return;
+            
+            setInterval(() => {
+                // Calcola intensità del movimento
+                const movementIntensity = Math.abs(lastGyroValues.alpha) + 
+                                        Math.abs(lastGyroValues.beta) + 
+                                        Math.abs(lastGyroValues.gamma);
+                
+                let adaptiveSensitivity = 0.2; // Base sensitivity
+                
+                // Se il movimento è molto intenso, riduci ulteriormente la sensibilità
+                if (movementIntensity > 50) {
+                    adaptiveSensitivity = 0.1; // Ultra bassa per tremori forti
+                } else if (movementIntensity > 20) {
+                    adaptiveSensitivity = 0.15; // Bassa per tremori medi
+                }
+                
+                // Aggiorna look-controls con nuova sensibilità
+                const currentConfig = camera.getAttribute('look-controls');
+                if (currentConfig && currentConfig.gyroSensitivity !== adaptiveSensitivity) {
+                    camera.setAttribute('look-controls', 'gyroSensitivity', adaptiveSensitivity);
+                    
+                    console.log('Sensibilità adattiva Android:', {
+                        movementIntensity: movementIntensity.toFixed(2),
+                        sensitivity: adaptiveSensitivity
+                    });
+                }
+            }, 500); // Controlla ogni 500ms
+        }
+        
+        // Funzioni di controllo per debug/test
+        window.toggleGyroSmoothing = function() {
+            gyroSmoothingEnabled = !gyroSmoothingEnabled;
+            console.log('Gyro smoothing Android:', gyroSmoothingEnabled ? 'ATTIVO' : 'DISATTIVO');
+        };
+        
+        window.setGyroSensitivity = function(sensitivity) {
+            const camera = document.querySelector('[camera]');
+            if (camera && isAndroidDevice()) {
+                camera.setAttribute('look-controls', 'gyroSensitivity', sensitivity);
+                console.log('Sensibilità giroscopio Android impostata a:', sensitivity);
+            }
+        };
         
         // Funzione per ottenere il parametro img dall'URL
         function getImageParameter() {
@@ -390,19 +1200,38 @@
                         </div>
                     `;
                 }
-            }, 15000); // 15 secondi di timeout
+            }, 20000); // 20 secondi di timeout per immagini ad alta qualità
             
-            panoramaImg.onload = function() {
+            // Caricamento ottimizzato ad alta qualità
+            loadHighQualityImage(imageUrl).then((highQualityImg) => {
                 clearTimeout(loadTimeout);
-                console.log('Immagine caricata con successo');
-                console.log('Dimensioni immagine:', this.naturalWidth, 'x', this.naturalHeight);
+                console.log('Immagine caricata con successo ad alta qualità');
+                console.log('Dimensioni immagine:', highQualityImg.naturalWidth, 'x', highQualityImg.naturalHeight);
+                
+                // Sostituisci l'immagine nel DOM con quella ad alta qualità
+                panoramaImg.src = highQualityImg.src;
+                panoramaImg.width = highQualityImg.naturalWidth;
+                panoramaImg.height = highQualityImg.naturalHeight;
                 
                 // Get rotation parameter
                 const rotation = getRotationParameter();
                 
                 // Aspetta che A-Frame sia completamente inizializzato
                 setTimeout(() => {
+                    // Applica texture ottimizzata
                     sky.setAttribute('src', '#panorama');
+                    
+                    // Ottimizza il materiale per alta qualità con specifiche Android
+                    setTimeout(() => {
+                        const skyMaterial = sky.components.material;
+                        if (skyMaterial && skyMaterial.material) {
+                            skyMaterial.material.minFilter = THREE.LinearFilter;
+                            skyMaterial.material.magFilter = THREE.LinearFilter;
+                            skyMaterial.material.generateMipmaps = false;
+                            skyMaterial.material.needsUpdate = true;
+                            console.log('Materiale sky ottimizzato per alta qualità');
+                        }
+                    }, 500);
                     
                     // Apply rotation to the sky element
                     if (rotation !== 0) {
@@ -500,15 +1329,13 @@
                         }
                     }, 3000); // Attendi 3 secondi per permettere il caricamento completo
                 }
-            };
-            
-            panoramaImg.onerror = function() {
+            }).catch((error) => {
                 clearTimeout(loadTimeout);
-                console.error('Errore nel caricamento dell\'immagine:', imageUrl);
+                console.error('Errore nel caricamento dell\'immagine ad alta qualità:', error);
                 loadingScreen.innerHTML = `
                     <div style="text-align: center; color: white;">
                         <div style="color: red; font-size: 20px; margin-bottom: 10px;">⚠️ Errore Caricamento</div>
-                        <div style="margin-bottom: 10px;">Impossibile caricare l'immagine panoramica</div>
+                        <div style="margin-bottom: 10px;">Impossibile caricare l'immagine panoramica ad alta qualità</div>
                         <div style="font-size: 14px; opacity: 0.8; word-break: break-all;">${imageUrl}</div>
                         <button onclick="location.reload()" style="
                             margin-top: 15px;
@@ -521,9 +1348,7 @@
                         ">🔄 Riprova</button>
                     </div>
                 `;
-            };
-            
-            panoramaImg.src = imageUrl;
+            });
         }
         
         // Funzioni globali per i controlli
@@ -892,10 +1717,41 @@
             console.log('VR supportato:', AFRAME.utils.device.checkHeadsetConnected());
             console.log('VR disponibile:', AFRAME.utils.device.isVRAvailable());
             
-            // Aggiungi listener per entrata e uscita VR
+            // Ottimizzazioni automatiche alla scena caricata
             const scene = document.querySelector('a-scene');
             
-            scene.addEventListener('enter-vr', function() {
+            // Ottimizza il renderer per la massima qualità
+            if (scene.renderer) {
+                scene.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                scene.renderer.antialias = true;
+                scene.renderer.shadowMap.enabled = false; // Disabilita ombre per performance
+                console.log('Renderer ottimizzato al caricamento della scena');
+            }
+            
+            // Inizializza controlli giroscopio ottimizzati per Android
+            if (isAndroidDevice()) {
+                console.log('Dispositivo Android rilevato, inizializzazione controlli ottimizzati...');
+                
+                // Configura look-controls per Android
+                configureAndroidLookControls();
+                
+                // Inizializza smoothing giroscopio
+                setTimeout(() => {
+                    initAndroidGyroSmoothing();
+                }, 1000);
+                
+                // Avvia sensibilità adattiva
+                setTimeout(() => {
+                    adaptiveGyroSensitivity();
+                }, 2000);
+                
+                console.log('Controlli Android inizializzati con smoothing anti-tremore');
+            }
+            
+            // Aggiungi listener per entrata e uscita VR
+            const sceneEl = document.querySelector('a-scene');
+            
+            sceneEl.addEventListener('enter-vr', function() {
                 console.log('🕶️ Entrato in modalità VR');
                 
                 // Debug texture in VR
