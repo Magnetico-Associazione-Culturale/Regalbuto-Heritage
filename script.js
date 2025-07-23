@@ -2215,7 +2215,7 @@ function simulateFullscreen() {
         if (/Android/i.test(navigator.userAgent)) {
             console.log('Avvio monitoraggio continuo per Android (solo fullscreen)');
             startAndroidFullscreenMonitoring();
-            showAndroidEmergencyOverlay();
+            // Rimosso showAndroidEmergencyOverlay() per evitare il messaggio di countdown
         }
     } else {
         console.log('Modalità VR attiva - NON creando pulsanti fullscreen (Android usa quello nativo)');
@@ -2687,156 +2687,63 @@ function createFullscreenExitButton() {
     const isAndroid = /Android/i.test(navigator.userAgent);
     
     if (isAndroid) {
-        // Su Android, crea un overlay completo con area di uscita
-        const androidOverlay = document.createElement('div');
-        androidOverlay.id = 'android-fullscreen-overlay';
-        androidOverlay.innerHTML = `
-            <div id="android-exit-area">
-                <div id="android-exit-button">✕</div>
-                <div id="android-exit-text">TOCCA QUI PER USCIRE</div>
-            </div>
-        `;
-        
-        androidOverlay.style.cssText = `
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
-            z-index: 2147483647 !important;
-            pointer-events: none !important;
-            background: transparent !important;
-        `;
-        
-        const styleSheet = document.createElement('style');
-        styleSheet.id = 'android-fullscreen-overlay-styles';
-        styleSheet.textContent = `
-            #android-exit-area {
-                position: absolute !important;
-                top: 0 !important;
-                right: 0 !important;
-                width: 300px !important;
-                height: 300px !important;
-                background: radial-gradient(circle, rgba(255, 0, 0, 0.8) 0%, rgba(255, 0, 0, 0.4) 50%, transparent 100%) !important;
-                border-radius: 0 0 0 150px !important;
-                pointer-events: auto !important;
-                cursor: pointer !important;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: flex-start !important;
-                padding-top: 30px !important;
-                animation: androidPulse 1.5s infinite !important;
-            }
-            
-            #android-exit-button {
-                font-size: 60px !important;
-                color: white !important;
-                font-weight: 900 !important;
-                text-shadow: 0 0 10px rgba(0, 0, 0, 0.8) !important;
-                margin-bottom: 10px !important;
-                font-family: Arial, sans-serif !important;
-            }
-            
-            #android-exit-text {
-                font-size: 12px !important;
-                color: white !important;
-                font-weight: bold !important;
-                text-shadow: 0 0 5px rgba(0, 0, 0, 0.8) !important;
-                text-align: center !important;
-                font-family: Arial, sans-serif !important;
-            }
-            
-            @keyframes androidPulse {
-                0% { opacity: 0.6; transform: scale(1); }
-                50% { opacity: 1; transform: scale(1.05); }
-                100% { opacity: 0.6; transform: scale(1); }
-            }
-        `;
-        
-        document.head.appendChild(styleSheet);
-        document.body.appendChild(androidOverlay);
-        
-        // Event listeners per l'area di uscita
-        const exitArea = document.getElementById('android-exit-area');
-        
-        exitArea.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Android exit area clicked');
-            exitFullscreenMode();
-        });
-        
-        exitArea.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Android exit area touched');
-            exitFullscreenMode();
-        }, { passive: false });
-        
-        exitArea.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Android exit area touch end');
-            exitFullscreenMode();
-        }, { passive: false });
-        
-        console.log('Android fullscreen overlay created');
-        
-    } else {
-        // Desktop/iOS - usa il pulsante normale
-        const fullscreenExitBtn = document.createElement('button');
-        fullscreenExitBtn.id = 'fullscreen-only-exit-btn';
-        fullscreenExitBtn.innerHTML = '×';
-        fullscreenExitBtn.title = 'Esci dallo schermo intero';
-        
-        fullscreenExitBtn.style.cssText = `
-            position: fixed !important;
-            top: 20px !important;
-            right: 20px !important;
-            width: 60px !important;
-            height: 60px !important;
-            background: rgba(0, 0, 0, 0.8) !important;
-            color: white !important;
-            border: 2px solid rgba(255, 255, 255, 0.5) !important;
-            border-radius: 50% !important;
-            font-size: 32px !important;
-            font-weight: bold !important;
-            cursor: pointer !important;
-            z-index: 99999 !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-            transition: all 0.3s ease !important;
-            line-height: 1 !important;
-            user-select: none !important;
-            -webkit-user-select: none !important;
-            -webkit-tap-highlight-color: transparent !important;
-            touch-action: manipulation !important;
-            font-family: Arial, sans-serif !important;
-            backdrop-filter: blur(10px) !important;
-        `;
-        
-        // Event handlers per desktop
-        fullscreenExitBtn.onclick = function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Desktop fullscreen exit button clicked');
-            exitFullscreenMode();
-        };
-        
-        fullscreenExitBtn.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Desktop fullscreen exit button touched');
-            exitFullscreenMode();
-        }, { passive: false });
-        
-        document.body.appendChild(fullscreenExitBtn);
-        
-        console.log('Desktop fullscreen exit button created');
+        // Su Android, NON creare più la X nativa con testo, solo il cerchio rosso già gestito da createExitButton()
+        console.log('Android detected - usando solo il pulsante nel cerchio rosso');
+        return;
     }
+    
+    // Desktop/iOS - usa il pulsante normale
+    const fullscreenExitBtn = document.createElement('button');
+    fullscreenExitBtn.id = 'fullscreen-only-exit-btn';
+    fullscreenExitBtn.innerHTML = '×';
+    fullscreenExitBtn.title = 'Esci dallo schermo intero';
+    
+    fullscreenExitBtn.style.cssText = `
+        position: fixed !important;
+        top: 20px !important;
+        right: 20px !important;
+        width: 60px !important;
+        height: 60px !important;
+        background: rgba(0, 0, 0, 0.8) !important;
+        color: white !important;
+        border: 2px solid rgba(255, 255, 255, 0.5) !important;
+        border-radius: 50% !important;
+        font-size: 32px !important;
+        font-weight: bold !important;
+        cursor: pointer !important;
+        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+        transition: all 0.3s ease !important;
+        line-height: 1 !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        font-family: Arial, sans-serif !important;
+        backdrop-filter: blur(10px) !important;
+    `;
+    
+    // Event handlers per desktop
+    fullscreenExitBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Desktop fullscreen exit button clicked');
+        exitFullscreenMode();
+    };
+    
+    fullscreenExitBtn.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Desktop fullscreen exit button touched');
+        exitFullscreenMode();
+    }, { passive: false });
+    
+    document.body.appendChild(fullscreenExitBtn);
+    
+    console.log('Desktop fullscreen exit button created');
 }
 
 function removeFullscreenExitButton() {
