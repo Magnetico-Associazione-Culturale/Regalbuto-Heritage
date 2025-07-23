@@ -215,6 +215,7 @@ p {
 /* Home section full height */
 #home.section {
     min-height: 100vh;
+    background: var(--background-light); /* Sfondo chiaro standard invece dell'immagine */
 }
 
 .content-section {
@@ -226,8 +227,8 @@ p {
 /* Rounded corners for content section in home only */
 #home .content-section {
     border-radius: 20px 20px 0 0;
-    background: white;
-    margin-top: -200px; /* Increased negative margin to bring content closer to title */
+    background: transparent; /* Reso trasparente per mostrare lo sfondo */
+    margin-top: -280px; /* Increased negative margin to bring content closer to title */
     position: relative;
     z-index: 1;
 }
@@ -623,21 +624,21 @@ p {
 
 /* Hero Section */
 .hero-section {
-    height: 60vh; /* Maximum height to fully extend behind the white section */
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.5)),
-                url('src/imgs/flat/DJI_20250711110855_0056_D.JPG') center/cover;
+    height: 100vh; /* Esteso a tutta l'altezza dello schermo */
+    background: transparent; /* Sfondo rimosso, ora è sulla sezione home */
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     position: relative;
     margin: 0;
     padding: 1.5rem;
-    padding-bottom: 7rem; /* Maximum padding to ensure full coverage behind white section */
+    padding-bottom: 15rem; /* Padding maggiore per estendere dietro tutta la sezione content */
 }
 
 .hero-overlay {
-    color: white;
+    color: var(--text-primary); /* Cambiato da bianco a nero */
     padding: 0;
+    padding-top: 1.5rem; /* Posizionamento equilibrato del titolo */
     max-width: 600px;
     flex: 1;
     display: flex;
@@ -679,8 +680,8 @@ p {
     font-size: 2.5rem;
     font-weight: 700;
     margin: 0 0 0.5rem 0;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    color: var(--text-primary); /* Cambiato da bianco a nero */
+    text-shadow: none; /* Rimossa ombra del testo */
     line-height: 1.2;
 }
 
@@ -702,8 +703,8 @@ p {
 }
 
 .hero-info-button {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.1); /* Sfondo nero trasparente */
+    border: 2px solid rgba(0, 0, 0, 0.2); /* Bordo nero trasparente */
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -712,8 +713,7 @@ p {
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    /* Rimosso backdrop-filter */
     /* iOS Safari fixes */
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
@@ -722,16 +722,16 @@ p {
 }
 
 .hero-info-button:hover {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(0, 0, 0, 0.2); /* Hover nero più scuro */
+    border-color: rgba(0, 0, 0, 0.3);
     transform: scale(1.05);
 }
 
 .hero-info-button i {
-    color: white !important;
+    color: var(--text-primary) !important; /* Icona nera */
     font-size: 1.2rem;
     /* Additional iOS Safari overrides */
-    -webkit-text-fill-color: white !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
     text-decoration: none !important;
 }
 
@@ -746,8 +746,8 @@ p {
 .hero-info-button:active i,
 .hero-info-button:focus i,
 .hero-info-button:visited i {
-    color: white !important;
-    -webkit-text-fill-color: white !important;
+    color: var(--text-primary) !important; /* Icona nera anche negli stati attivi */
+    -webkit-text-fill-color: var(--text-primary) !important;
 }
 
 /* Force override for all iOS Safari link behaviors */
@@ -758,8 +758,8 @@ p {
 .hero-info-button:hover,
 .hero-info-button:active,
 .hero-info-button:focus {
-    color: white !important;
-    -webkit-text-fill-color: white !important;
+    color: var(--text-primary) !important; /* Tutti gli stati con colore nero */
+    -webkit-text-fill-color: var(--text-primary) !important;
     text-decoration: none !important;
 }
 
@@ -767,11 +767,11 @@ p {
 .hero-info-button svg,
 .hero-info-button i[data-feather],
 .hero-info-button .feather {
-    color: white !important;
+    color: var(--text-primary) !important; /* Icone nere */
     fill: none !important;
-    stroke: white !important;
+    stroke: var(--text-primary) !important; /* Stroke nero */
     stroke-width: 2 !important;
-    -webkit-text-fill-color: white !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
 }
 
 /* iOS Safari specific overrides */
@@ -782,15 +782,15 @@ p {
     .header-info-btn,
     .header-info-btn *,
     .header-info-btn i {
-        color: white !important;
-        -webkit-text-fill-color: white !important;
+        color: var(--text-primary) !important; /* Nero su tutti i dispositivi */
+        -webkit-text-fill-color: var(--text-primary) !important;
         text-decoration: none !important;
     }
     
     .hero-info-button svg,
     .header-info-btn svg {
         fill: none !important;
-        stroke: white !important;
+        stroke: var(--text-primary) !important; /* Stroke nero */
         stroke-width: 2 !important;
     }
 }
@@ -799,14 +799,14 @@ p {
 @media screen and (-webkit-min-device-pixel-ratio: 2) {
     .hero-info-button i,
     .header-info-btn i {
-        color: white !important;
-        -webkit-text-fill-color: white !important;
+        color: var(--text-primary) !important; /* Nero anche su iOS */
+        -webkit-text-fill-color: var(--text-primary) !important;
     }
     
     .hero-info-button svg,
     .header-info-btn svg {
         fill: none !important;
-        stroke: white !important;
+        stroke: var(--text-primary) !important; /* Stroke nero */
         stroke-width: 2 !important;
     }
 }
@@ -2632,61 +2632,15 @@ body.navigation-active {
     color: var(--text-secondary);
 }
 
-/* Floating QR Button */
-.floating-qr-btn {
-    position: fixed;
-    bottom: 80px;
-    right: 20px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    border: none;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 16px rgba(32, 178, 170, 0.3);
-    z-index: 999;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.floating-qr-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 20px rgba(32, 178, 170, 0.4);
-}
-
-.floating-qr-btn i {
-    width: 24px;
-    height: 24px;
-}
-
-/* Hide floating QR button on Home section */
-#home .floating-qr-btn {
-    display: none;
-}
-
-/* Alternative: Hide when home section is active */
-.section.active#home ~ .floating-qr-btn {
-    display: none !important;
-}
-
-/* Or hide it when body has home active */
-body:has(#home.section.active) .floating-qr-btn {
-    display: none !important;
-}
-
 /* Home QR Section */
 .home-qr-section {
     text-align: center;
     margin-top: 2rem;
     padding: 2rem 1rem;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: white; /* Sfondo bianco solido */
+    border: 1px solid rgba(0, 0, 0, 0.1); /* Bordo sottile grigio */
     border-radius: 20px;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    /* Rimosso backdrop-filter */
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
@@ -2888,11 +2842,14 @@ body:has(#home.section.active) .floating-qr-btn {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    
     .hero-section {
-        height: 45vh; /* Increased height to contain buttons */
+        height: 100vh; /* Altezza piena anche su mobile per coprire tutto */
         padding: 1rem;
         flex-direction: column;
         align-items: flex-start;
+        background: transparent; /* Sfondo rimosso, ora è sulla sezione home */
+        padding-bottom: 20rem; /* Padding maggiore per estendersi dietro le card */
     }
     
     .hero-overlay {
@@ -2900,6 +2857,7 @@ body:has(#home.section.active) .floating-qr-btn {
         max-width: 100%;
         align-items: flex-start;
         width: 100%;
+        padding-top: 1rem; /* Padding proporzionale su mobile */
     }
     
     .hero-overlay .hero-actions {
@@ -4693,52 +4651,6 @@ button:focus,
     }
 }
 
-/* Floating QR Scanner Button */
-.floating-qr-btn {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 60px;
-    height: 60px;
-    background: rgba(255, 193, 7, 0.9);
-    border: none;
-    border-radius: 50%;
-    box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-}
-
-.floating-qr-btn:hover {
-    transform: scale(1.1);
-    box-shadow: 0 12px 35px rgba(255, 193, 7, 0.4);
-    background: rgba(255, 193, 7, 1);
-}
-
-.floating-qr-btn i {
-    color: white;
-    font-size: 24px;
-}
-
-/* Responsive adjustments for floating button */
-@media (max-width: 768px) {
-    .floating-qr-btn {
-        width: 55px;
-        height: 55px;
-        bottom: 1.5rem;
-        right: 1.5rem;
-    }
-    
-    .floating-qr-btn i {
-        font-size: 20px;
-    }
-}
-
 /* Privacy Policy Popup */
 .privacy-popup-overlay {
     position: fixed;
@@ -4971,8 +4883,8 @@ button:focus,
 }
 
 .experience-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: white; /* Sfondo bianco solido */
+    border: 1px solid rgba(0, 0, 0, 0.1); /* Bordo sottile grigio */
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -4982,8 +4894,7 @@ button:focus,
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    /* Rimosso backdrop-filter */
 }
 
 .experience-card::before {
@@ -5001,10 +4912,9 @@ button:focus,
 .experience-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
+    background: white; /* Mantiene lo sfondo bianco anche in hover */
+    border-color: rgba(0, 0, 0, 0.15); /* Bordo leggermente più scuro in hover */
+    /* Rimosso backdrop-filter */
 }
 
 .experience-card:hover::before {
