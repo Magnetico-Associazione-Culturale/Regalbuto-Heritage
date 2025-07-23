@@ -4897,6 +4897,30 @@ button:focus,
     /* Rimosso backdrop-filter */
 }
 
+.experience-image {
+    flex-shrink: 0;
+    width: 3800px;
+    height: 120px;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+.experience-card:hover .card-image {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
 .experience-card::before {
     content: '';
     position: absolute;
@@ -4922,31 +4946,27 @@ button:focus,
 }
 
 .experience-icon {
-    flex-shrink: 0;
-    width: 80px;
-    height: 80px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
     background: linear-gradient(135deg, var(--primary-color), #1e7e7a);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 2rem;
-    position: relative;
+    font-size: 1.5rem;
+    z-index: 2;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
 }
 
-.experience-icon::after {
-    content: '';
-    position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
-    background: linear-gradient(135deg, var(--primary-color), #1e7e7a);
-    border-radius: 50%;
-    opacity: 0.2;
-    z-index: -1;
-    animation: pulse 3s ease-in-out infinite;
+.experience-card:hover .experience-icon {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .experience-content {
@@ -4984,7 +5004,7 @@ button:focus,
     background: linear-gradient(135deg, #6a5acd, #4b0082);
 }
 
-.virtual-card .experience-icon::after {
+.virtual-card:hover .experience-icon {
     background: linear-gradient(135deg, #6a5acd, #4b0082);
 }
 
@@ -5054,10 +5074,22 @@ button:focus,
         gap: 1.5rem;
     }
     
+    .experience-image {
+        width: 280px;
+        height: 120px;
+        border-radius: 12px;
+        order: -2; /* Posiziona l'immagine per prima */
+    }
+    
     .experience-icon {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+        /* Mantiene il posizionamento assoluto al centro dell'immagine anche su mobile */
+    }
+    
+    .experience-content {
+        order: 0; /* Contenuto per ultimo */
     }
     
     .experience-content h3 {
