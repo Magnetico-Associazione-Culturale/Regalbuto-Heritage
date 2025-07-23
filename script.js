@@ -750,7 +750,6 @@ function getMonumentDisplayName(monumentId) {
         'teatro-urania': 'Teatro Urania',
         'lago-pozzillo': 'Lago Pozzillo',
         'parco-avventura': 'Parco Avventura',
-        'tecnopolo': 'Tecnopolo Magnetico',
         'chiesa-maria-ss-della-croce': 'Chiesa di Santa Maria della Croce',
         'chiesa-san-basilio': 'Chiesa di San Basilio',
         'cine-teatro-urania': 'Teatro Urania',
@@ -1525,8 +1524,6 @@ function openMapLocation(monumentId) {
         'lago-pozzillo': 'https://maps.google.com/maps?q=37.6587117,14.5975772&ll=37.6587117,14.5975772&z=16',
         'parco-avventura': 'https://maps.google.com/maps?q=37.6589778,14.6188852&ll=37.6589778,14.6188852&z=16',
         'calvario': 'https://maps.google.com/maps?q=37.6264741,14.7434425&ll=37.6264741,14.7434425&z=15',
-        'tecnopolo': 'https://www.google.com/maps/place/Tecnopolo+Magnetico/@37.6555336,14.6233514,17z/data=!3m1!4b1!4m6!3m5!1s0x131135004bd582e3:0xcdd4146a12d3cf67!8m2!3d37.6555295!4d14.6282223!16s%2Fg%2F11yf2nsc88?entry=ttu&g_ep=EgoyMDI1MDcxMy4wIKXMDSoASAFQAw%3D%3D',
-        'tecnopolo-magnetico': 'https://www.google.com/maps/place/Tecnopolo+Magnetico/@37.6555336,14.6233514,17z/data=!3m1!4b1!4m6!3m5!1s0x131135004bd582e3:0xcdd4146a12d3cf67!8m2!3d37.6555295!4d14.6282223!16s%2Fg%2F11yf2nsc88?entry=ttu&g_ep=EgoyMDI1MDcxMy4wIKXMDSoASAFQAw%3D%3D',
         'default': 'https://maps.google.com/maps?q=37.650573,14.640587&ll=37.650573,14.640587&z=16'
     };
     

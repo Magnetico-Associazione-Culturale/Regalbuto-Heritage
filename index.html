@@ -52,18 +52,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Action Buttons inside hero section -->
-                    <div class="hero-actions">
-                        <button class="btn btn-primary" onclick="switchTab('navigazione')">
-                            <i data-feather="navigation"></i>
-                            Inizia Itinerario
-                        </button>
-                        <button class="btn btn-warning" onclick="startQRScanner()">
-                            <i data-feather="camera"></i>
-                            Scansiona QR
-                        </button>
-                    </div>
                 </div>
                 <!-- Info button in top right of hero section -->
                 <div class="hero-info-btn">
@@ -74,307 +62,47 @@
             </div>
 
             <div class="content-section">
-                <h2 class="section-title">In Evidenza</h2>
-                
-                <!-- Categoria Separata: Natura e Paesaggio -->
-                <div class="category-section">
-                    <h4 class="category-subtitle">
-                        <i data-feather="sun"></i>
-                        Natura e Paesaggio
-                    </h4>
-                    
-                    <!-- Lago Pozzillo -->
-                    <div class="featured-card" onclick="toggleFeaturedCard('lago-pozzillo')">
-                        <div class="card-header">
-                            <div class="card-thumbnail">
-                                <img src="src/imgs/flat/lago-pozzillo.webp" alt="Lago Pozzillo">
-                            </div>
-                            <div class="card-category-badge">Natura</div>
+                <!-- Esplora l'itinerario -->
+                <div class="experience-section">
+                    <div class="experience-card itinerary-card">
+                        <div class="experience-icon">
+                            <i data-feather="map"></i>
                         </div>
-                        <div class="card-content">
-                            <h4>Lago Pozzillo</h4>
-                            <p>Un'oasi di tranquillità circondata da colline verdi</p>
-                            <div class="monument-details">
-                                <div class="card-distance">
-                                    <i data-feather="map-pin"></i>
-                                    <span>2.1 km</span>
-                                </div>
-                                <button class="card-expand-btn" id="expand-lago-pozzillo">
-                                    <i data-feather="chevron-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-expanded-info" id="expanded-lago-pozzillo">
-                            <p>Il Lago Pozzillo è un bacino artificiale creato negli anni '80 che ha trasformato il paesaggio della zona, diventando un'importante risorsa idrica e un'area di grande valore naturalistico e ricreativo.</p>
-                            <p>Le acque del lago, circondate da colline coperte di macchia mediterranea, ospitano diverse specie di uccelli acquatici e costituiscono un ecosistema ricco di biodiversità.</p>
-                            <p><strong>Attività:</strong> Pesca sportiva, canottaggio, birdwatching e escursioni naturalistiche guidate.</p>
-                            <div class="card-actions">
-                                <button class="btn btn-primary" onclick="playAudioGuide('lago-pozzillo')">
-                                    <i data-feather="headphones"></i>
-                                    Ascolta Audio Guida
-                                </button>
-                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('lago-pozzillo')">
-                                    <i data-feather="map-pin"></i>
-                                    Portami lì
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Parco Avventura Pozzillo -->
-                    <div class="featured-card" onclick="toggleFeaturedCard('parco-avventura')">
-                        <div class="card-header">
-                            <div class="card-thumbnail">
-                                <img src="src/imgs/flat/parco-avventura.webp" alt="Parco Avventura Pozzillo">
-                            </div>
-                            <div class="card-category-badge">Natura</div>
-                        </div>
-                        <div class="card-content">
-                            <h4>Parco Avventura Pozzillo</h4>
-                            <p>Avventure nella natura per tutta la famiglia</p>
-                            <div class="monument-details">
-                                <div class="card-distance">
-                                    <i data-feather="map-pin"></i>
-                                    <span>2.3 km</span>
-                                </div>
-                                <button class="card-expand-btn" id="expand-parco-avventura">
-                                    <i data-feather="chevron-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-expanded-info" id="expanded-parco-avventura">
-                            <p>Il Parco Avventura Pozzillo è una struttura ricreativa immersa nella natura che offre percorsi acrobatici tra gli alberi, attività outdoor e esperienze di educazione ambientale per visitatori di tutte le età.</p>
-                            <p><strong>Percorsi disponibili:</strong> Baby Park (3-6 anni), Junior Park (7-11 anni), Adventure Park (dai 12 anni), percorsi per famiglie e per team building aziendali.</p>
-                            <div class="card-actions">
-                                <button class="btn btn-primary" onclick="playAudioGuide('parco-avventura')">
-                                    <i data-feather="headphones"></i>
-                                    Ascolta Audio Guida
-                                </button>
-                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('parco-avventura')">
-                                    <i data-feather="map-pin"></i>
-                                    Portami lì
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-
-                </div>
-
-                <!-- Categoria Separata: Cultura e Storia -->
-                <div class="category-section">
-                    <h4 class="category-subtitle">
-                        <i data-feather="bookmark"></i>
-                        Cultura e Storia
-                    </h4>
-                    
-                    <!-- Chiesa Madre di San Basilio -->
-                    <div class="featured-card" onclick="toggleFeaturedCard('san-basilio')">
-                        <div class="card-header">
-                            <div class="card-thumbnail">
-                                <img src="src/imgs/flat/chiesa-san-basilio.jpg" alt="Chiesa di San Basilio">
-                            </div>
-                            <div class="card-category-badge">Religioso</div>
-                        </div>
-                        <div class="card-content">
-                            <h4>Chiesa di San Basilio</h4>
-                            <p>Antica chiesa risalente al XVI secolo, esempio di architettura barocca</p>
-                            <div class="monument-details">
-                                <div class="card-distance">
-                                    <i data-feather="map-pin"></i>
-                                    <span>0.5 km</span>
-                                </div>
-                                <button class="card-expand-btn" id="expand-san-basilio">
-                                    <i data-feather="chevron-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-expanded-info" id="expanded-san-basilio">
-                            <p>La Chiesa Madre, dedicata a San Basilio Magno, rappresenta il cuore spirituale di Regalbuto. Costruita nel XVIII secolo su un precedente edificio di culto, la chiesa presenta una facciata imponente in stile barocco siciliano.</p>
-                            <p>All'interno, l'edificio conserva preziose opere d'arte sacra tra cui dipinti settecenteschi, statue lignee policrome e affreschi di grande valore artistico.</p>
-                            <p><strong>Particolarità:</strong> Durante i lavori di restauro sono stati rinvenuti resti di mosaici bizantini che testimoniano l'antica presenza cristiana sul territorio.</p>
-                            <div class="card-actions">
-                                <button class="btn btn-primary" onclick="playAudioGuide('san-basilio')">
-                                    <i data-feather="headphones"></i>
-                                    Ascolta Audio Guida
-                                </button>
-                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('san-basilio')">
-                                    <i data-feather="map-pin"></i>
-                                    Portami lì
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Convento di Sant'Antonio -->
-                    <div class="featured-card" onclick="toggleFeaturedCard('santantonio')">
-                        <div class="card-header">
-                            <div class="card-thumbnail">
-                                <img src="src/imgs/flat/convento-santantonio.avif" alt="Convento di Sant'Antonio">
-                            </div>
-                            <div class="card-category-badge">Religioso</div>
-                        </div>
-                        <div class="card-content">
-                            <h4>Convento di Sant'Antonio</h4>
-                            <p>Architettura sacra e storia millenaria</p>
-                            <div class="monument-details">
-                                <div class="card-distance">
-                                    <i data-feather="map-pin"></i>
-                                    <span>1.2 km</span>
-                                </div>
-                                <button class="card-expand-btn" id="expand-santantonio">
-                                    <i data-feather="chevron-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-expanded-info" id="expanded-santantonio">
-                            <p>Il Convento di Sant'Antonio è un complesso monastico del XVI secolo che domina il paesaggio circostante da una posizione panoramica privilegiata. L'architettura combina elementi rinascimentali e barocchi.</p>
-                            <p>Il chiostro interno, con i suoi archi a tutto sesto e il pozzo centrale, rappresenta un esempio perfetto dell'architettura monastica siciliana.</p>
-                            <p><strong>Storia:</strong> Fondato dai frati francescani, il convento ha svolto un ruolo cruciale nella vita religiosa e culturale della comunità per oltre quattro secoli.</p>
-                            <div class="card-actions">
-                                <button class="btn btn-primary" onclick="playAudioGuide('santantonio')">
-                                    <i data-feather="headphones"></i>
-                                    Ascolta Audio Guida
-                                </button>
-                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('santantonio')">
-                                    <i data-feather="map-pin"></i>
-                                    Portami lì
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Chiesa di San Rocco -->
-                    <div class="featured-card" onclick="toggleFeaturedCard('purgatorio')">
-                        <div class="card-header">
-                            <div class="card-thumbnail">
-                                <img src="src/imgs/flat/srocco-flat.png" alt="Chiesa di San Rocco">
-                            </div>
-                            <div class="card-category-badge">Religioso</div>
-                        </div>
-                        <div class="card-content">
-                            <h4>Chiesa di San Rocco</h4>
-                            <p>Arte barocca e devozione popolare (anche detta Chiesa del Purgatorio)</p>
-                            <div class="monument-details">
-                                <div class="card-distance">
-                                    <i data-feather="map-pin"></i>
-                                    <span>0.8 km</span>
-                                </div>
-                                <button class="card-expand-btn" id="expand-purgatorio">
-                                    <i data-feather="chevron-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-expanded-info" id="expanded-purgatorio">
-                            <p>La Chiesa di San Rocco, conosciuta anche come Chiesa del Purgatorio, è una piccola ma preziosa chiesa barocca caratterizzata da decorazioni elaborate e affreschi dedicati alle anime del purgatorio.</p>
-                            <p>La facciata presenta elementi decorativi tipici del barocco siciliano con motivi floreali e angeli scolpiti. L'interno è arricchito da stucchi policromi e dipinti murali.</p>
-                            <p><strong>Tradizioni:</strong> La chiesa è particolarmente cara ai reggalbuttesi per le celebrazioni legate al culto delle anime del purgatorio.</p>
-                            <div class="card-actions">
-                                <button class="btn btn-primary" onclick="playAudioGuide('purgatorio')">
-                                    <i data-feather="headphones"></i>
-                                    Ascolta Audio Guida
-                                </button>
-                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('purgatorio')">
-                                    <i data-feather="map-pin"></i>
-                                    Portami lì
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Chiesa di Santa Maria della Croce -->
-                    <div class="featured-card" onclick="toggleFeaturedCard('santa-maria-croce')">
-                        <div class="card-header">
-                            <div class="card-thumbnail">
-                                <img src="src/imgs/flat/DJI_20250711100218_0035_D.JPG" alt="Chiesa di Santa Maria della Croce">
-                            </div>
-                            <div class="card-category-badge">Religioso</div>
-                        </div>
-                        <div class="card-content">
-                            <h4>Chiesa di Santa Maria della Croce</h4>
-                            <p>Antica chiesa ricca di storia e tradizione</p>
-                            <div class="monument-details">
-                                <div class="card-distance">
-                                    <i data-feather="map-pin"></i>
-                                    <span>0.6 km</span>
-                                </div>
-                                <button class="card-expand-btn" id="expand-santa-maria-croce">
-                                    <i data-feather="chevron-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-expanded-info" id="expanded-santa-maria-croce">
-                            <p>La Chiesa di Santa Maria della Croce è un importante edificio religioso che testimonia la ricca tradizione spirituale di Regalbuto. La sua architettura rappresenta un esempio significativo dell'arte sacra siciliana.</p>
-                            <p>La chiesa conserva al suo interno preziose opere d'arte e arredi sacri che raccontano secoli di devozione e fede della comunità locale.</p>
-                            <p><strong>Tradizioni:</strong> La chiesa è centro di importanti celebrazioni religiose che coinvolgono l'intera comunità di Regalbuto, mantenendo vive le tradizioni secolari del territorio.</p>
-                            <div class="card-actions">
-                                <button class="btn btn-primary" onclick="playAudioGuide('santa-maria-croce')">
-                                    <i data-feather="headphones"></i>
-                                    Ascolta Audio Guida
-                                </button>
-                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('santa-maria-croce')">
-                                    <i data-feather="map-pin"></i>
-                                    Portami lì
-                                </button>
-                                <button class="btn btn-secondary" onclick="event.stopPropagation(); switchTab('virtual-tour'); loadLocation('santa-maria-croce')">
-                                    <i data-feather="eye"></i>
-                                    Tour Virtuale 360°
-                                </button>
-                            </div>
+                        <div class="experience-content">
+                            <h3>Esplora l'itinerario di Regalbuto</h3>
+                            <p>Avvia la navigazione su mappa interattiva e inizia l'itinerario da Monte San Calogero al Lago Pozzillo. Segui il sentiero a piedi, scopri i punti panoramici e lasciati guidare passo dopo passo tra natura e cultura.</p>
+                            <button class="btn btn-glow" onclick="switchTab('navigazione')">
+                                <i data-feather="navigation"></i>
+                                <span>Inizia Itinerario</span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Categoria Separata: Tecnologia -->
-                <div class="category-section">
-                    <h4 class="category-subtitle">
-                        <i data-feather="cpu"></i>
-                        Tecnologia
-                    </h4>
-                    
-                    <!-- Tecnopolo Magnetico -->
-                    <div class="featured-card" onclick="toggleFeaturedCard('tecnopolo')">
-                        <div class="card-header">
-                            <div class="card-thumbnail">
-                                <img src="src/imgs/flat/tecnopolo-logo.png" alt="Tecnopolo Magnetico">
-                            </div>
-                            <div class="card-category-badge">Tecnologia</div>
+                <!-- Esplora virtualmente -->
+                <div class="experience-section">
+                    <div class="experience-card virtual-card">
+                        <div class="experience-icon">
+                            <i data-feather="eye"></i>
                         </div>
-                        <div class="card-content">
-                            <h4>Tecnopolo Magnetico</h4>
-                            <p>Lab formativo e spazio di co-working ICT</p>
-                            <div class="monument-details">
-                                <div class="card-distance">
-                                    <i data-feather="map-pin"></i>
-                                    <span>0.8 km</span>
-                                </div>
-                                <button class="card-expand-btn" id="expand-tecnopolo">
-                                    <i data-feather="chevron-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="card-expanded-info" id="expanded-tecnopolo">
-                            <p>Il Tecnopolo Magnetico è un innovativo laboratorio formativo e spazio di co-working dedicato alle tecnologie dell'informazione e della comunicazione (ICT), nato per favorire lo sviluppo digitale e l'innovazione nel territorio di Regalbuto.</p>
-                            <p>La struttura ospita corsi di formazione professionale, workshop tecnici e iniziative dedicate ai giovani e alla comunità locale, con l'obiettivo di ridurre il divario digitale e promuovere nuove competenze tecnologiche.</p>
-                            <p><strong>Servizi offerti:</strong> Corsi di programmazione, web design, digital marketing, robotica educativa, stampa 3D e making digitale.</p>
-                            <div class="card-actions">
-                                <button class="btn btn-primary" onclick="playAudioGuide('tecnopolo')">
-                                    <i data-feather="headphones"></i>
-                                    Ascolta Audio Guida
-                                </button>
-                                <button class="btn btn-secondary" onclick="event.stopPropagation(); openMapLocation('tecnopolo')">
-                                    <i data-feather="map-pin"></i>
-                                    Portami lì
-                                </button>
-                                <button class="btn btn-outline" onclick="event.stopPropagation(); window.open('https://www.magnetico.cloud', '_blank')">
-                                    <i data-feather="external-link"></i>
-                                    Sito Web
-                                </button>
-                            </div>
+                        <div class="experience-content">
+                            <h3>Esplora virtualmente Monte Sant'Antonio</h3>
+                            <p>Vivi un'esperienza immersiva a 360° e visita virtualmente il Convento di Sant'Antonio e l'insediamento rupestre circostante. Oggi il sito è inaccessibile, ma puoi esplorarlo con un visore o da smartphone, scoprendo un luogo sospeso nel tempo.</p>
+                            <button class="btn btn-secondary" onclick="switchTab('virtual-tour')">
+                                <i data-feather="eye"></i>
+                                <span>Esplora a 360°</span>
+                            </button>
                         </div>
                     </div>
+                </div>
+
+                <!-- QR Scanner Button -->
+                <div class="home-qr-section">
+                    <button class="btn btn-warning btn-qr-home" onclick="startQRScanner()">
+                        <i data-feather="camera"></i>
+                        <span>Scansiona QR Code</span>
+                    </button>
+                    <p class="qr-description">Scansiona un QR code per accedere direttamente alle informazioni di un monumento</p>
                 </div>
             </div>
         </section>
@@ -1090,6 +818,11 @@
             </div>
         </section>
     </main>
+
+    <!-- Floating QR Scanner Button -->
+    <button class="floating-qr-btn" onclick="startQRScanner()" title="Scansiona QR Code">
+        <i data-feather="camera"></i>
+    </button>
 
     <!-- Global Footer - always visible -->
     <footer class="footer">
