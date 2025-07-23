@@ -45,6 +45,44 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        /* Stile per pulsante VR manuale */
+        #manual-vr-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #007bff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        #manual-vr-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+        
+        #manual-vr-btn:active {
+            transform: scale(0.95);
+        }
+        
+        #manual-vr-btn.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -52,6 +90,11 @@
         <div class="loading-spinner"></div>
         <span>Caricamento panorama...</span>
     </div>
+
+    <!-- Pulsante VR manuale -->
+    <button id="manual-vr-btn" title="Attiva modalità VR" class="hidden">
+        🕶️
+    </button>
 
     <a-scene 
         background="color: #000"
@@ -71,7 +114,7 @@
             look-controls="reverseMouseDrag: true; reverseTouchDrag: true"
             wasd-controls="enabled: false"
             position="0 1.6 0"
-            fov="80">
+            fov="50">
         </a-camera>
     </a-scene>
 
@@ -184,6 +227,12 @@
                 loadingScreen.style.display = 'none';
                 panoramaLoaded = true;
                 
+                // Mostra il pulsante VR manuale
+                const manualVRBtn = document.getElementById('manual-vr-btn');
+                if (manualVRBtn) {
+                    manualVRBtn.classList.remove('hidden');
+                }
+                
                 // Controlla se deve entrare automaticamente in VR
                 const shouldEnterVR = getVRParameter();
                 if (shouldEnterVR) {
@@ -209,9 +258,17 @@
                             <div style="font-size: 24px; margin-bottom: 10px;">🕶️</div>
                             <div style="font-size: 18px; margin-bottom: 10px;">Attivazione VR...</div>
                             <div style="font-size: 14px; opacity: 0.8;">Preparazione modalità immersiva</div>
+                            <div style="font-size: 12px; margin-top: 10px; opacity: 0.6;">
+                                Tocca il pulsante 🕶️ se non si attiva automaticamente
+                            </div>
                         </div>
                     `;
                     document.body.appendChild(vrIndicator);
+                    
+                    // Nascondi il pulsante manuale durante l'auto-attivazione
+                    if (manualVRBtn) {
+                        manualVRBtn.style.display = 'none';
+                    }
                     
                     // Attendi che A-Frame sia completamente inizializzato prima di entrare in VR
                     setTimeout(() => {
@@ -220,7 +277,20 @@
                         if (indicator) {
                             indicator.remove();
                         }
-                        enterVR();
+                        
+                        // Rimostra il pulsante manuale come fallback
+                        if (manualVRBtn) {
+                            manualVRBtn.style.display = 'flex';
+                        }
+                        
+                        // Prova auto-attivazione VR
+                        console.log('Tentativo auto-attivazione VR...');
+                        try {
+                            enterVR();
+                        } catch (error) {
+                            console.error('Auto-attivazione VR fallita:', error);
+                            // Il pulsante manuale è già visibile come fallback
+                        }
                     }, 3000); // Attendi 3 secondi per permettere il caricamento completo
                 }
             };
@@ -442,6 +512,11 @@
         function performVRActivation(scene) {
             console.log('Esecuzione attivazione VR...');
             
+            // Prova attivazione VR più aggressiva per Custom Tab
+            const isCustomTab = window.location !== window.parent.location;
+            console.log('Custom Tab rilevata:', isCustomTab);
+            
+            // Prima tenta l'attivazione normale
             scene.enterVR().then(() => {
                 console.log('✅ VR attivato con successo');
                 window.parent.postMessage({ 
@@ -456,12 +531,51 @@
                 }, '*');
                 
             }).catch(error => {
-                console.error('❌ Errore attivazione VR:', error);
-                window.parent.postMessage({ 
-                    action: 'vrActivated', 
-                    success: false, 
-                    error: 'Errore VR: ' + error.message 
-                }, '*');
+                console.error('❌ Errore attivazione VR normale:', error);
+                
+                // Fallback: tenta attivazione VR forzata per Custom Tab
+                if (isCustomTab) {
+                    console.log('Tentativo VR forzato per Custom Tab...');
+                    
+                    // Simula un evento di interazione utente
+                    const fakeEvent = new Event('click', { bubbles: true, cancelable: true });
+                    document.body.dispatchEvent(fakeEvent);
+                    
+                    setTimeout(() => {
+                        scene.enterVR().then(() => {
+                            console.log('✅ VR forzato attivato con successo');
+                            window.parent.postMessage({ 
+                                action: 'vrActivated', 
+                                success: true 
+                            }, '*');
+                            
+                            window.parent.postMessage({ 
+                                action: 'vrEntered',
+                                success: true 
+                            }, '*');
+                            
+                        }).catch(secondError => {
+                            console.error('❌ Anche VR forzato fallito:', secondError);
+                            
+                            // Ultimo tentativo: attiva il flag VR manualmente
+                            console.log('Ultimo tentativo: attivazione manuale attributi VR...');
+                            scene.setAttribute('vr-mode-ui', 'enabled: true');
+                            scene.render();
+                            
+                            window.parent.postMessage({ 
+                                action: 'vrActivated', 
+                                success: false, 
+                                error: 'VR non supportato in Custom Tab: ' + secondError.message 
+                            }, '*');
+                        });
+                    }, 500);
+                } else {
+                    window.parent.postMessage({ 
+                        action: 'vrActivated', 
+                        success: false, 
+                        error: 'Errore VR: ' + error.message 
+                    }, '*');
+                }
             });
         }
         
@@ -604,6 +718,69 @@
                     inVR: false 
                 }, '*');
             });
+        });
+        
+        // Event listener per il pulsante VR manuale
+        document.addEventListener('DOMContentLoaded', function() {
+            const manualVRBtn = document.getElementById('manual-vr-btn');
+            if (manualVRBtn) {
+                manualVRBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Pulsante VR manuale cliccato');
+                    
+                    // Nascondi il pulsante durante l'attivazione
+                    this.style.display = 'none';
+                    
+                    // Mostra indicatore
+                    const vrIndicator = document.createElement('div');
+                    vrIndicator.id = 'manual-vr-activating';
+                    vrIndicator.innerHTML = `
+                        <div style="
+                            position: fixed;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            background: rgba(0, 0, 0, 0.9);
+                            color: white;
+                            padding: 20px;
+                            border-radius: 10px;
+                            text-align: center;
+                            z-index: 2000;
+                            font-family: Arial, sans-serif;
+                        ">
+                            <div style="font-size: 24px; margin-bottom: 10px;">🕶️</div>
+                            <div style="font-size: 18px; margin-bottom: 10px;">Attivazione VR manuale...</div>
+                            <div style="font-size: 14px; opacity: 0.8;">Indossa il visore o ruota il telefono</div>
+                        </div>
+                    `;
+                    document.body.appendChild(vrIndicator);
+                    
+                    // Attiva VR
+                    setTimeout(() => {
+                        const indicator = document.getElementById('manual-vr-activating');
+                        if (indicator) {
+                            indicator.remove();
+                        }
+                        
+                        try {
+                            enterVR();
+                        } catch (error) {
+                            console.error('Attivazione VR manuale fallita:', error);
+                            // Rimostra il pulsante
+                            manualVRBtn.style.display = 'flex';
+                        }
+                    }, 1000);
+                });
+                
+                // Event listener per touch
+                manualVRBtn.addEventListener('touchstart', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Pulsante VR manuale toccato');
+                    this.click();
+                }, { passive: false });
+            }
         });
     </script>
 </body>
