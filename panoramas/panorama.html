@@ -95,6 +95,15 @@
             return rotation;
         }
         
+        // Funzione per ottenere il parametro VR dall'URL
+        function getVRParameter() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const vrParam = urlParams.get('vr');
+            const shouldEnterVR = vrParam === '1';
+            console.log('Parametro VR:', vrParam, 'Should enter VR:', shouldEnterVR);
+            return shouldEnterVR;
+        }
+        
         // Funzione per caricare l'immagine panoramica
         function loadPanorama() {
             const loadingScreen = document.getElementById('loadingScreen');
@@ -174,6 +183,46 @@
                 
                 loadingScreen.style.display = 'none';
                 panoramaLoaded = true;
+                
+                // Controlla se deve entrare automaticamente in VR
+                const shouldEnterVR = getVRParameter();
+                if (shouldEnterVR) {
+                    console.log('Auto-attivazione VR richiesta dal parametro URL');
+                    
+                    // Mostra indicatore di attivazione VR
+                    const vrIndicator = document.createElement('div');
+                    vrIndicator.id = 'vr-activating';
+                    vrIndicator.innerHTML = `
+                        <div style="
+                            position: fixed;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            background: rgba(0, 0, 0, 0.9);
+                            color: white;
+                            padding: 20px;
+                            border-radius: 10px;
+                            text-align: center;
+                            z-index: 2000;
+                            font-family: Arial, sans-serif;
+                        ">
+                            <div style="font-size: 24px; margin-bottom: 10px;">🕶️</div>
+                            <div style="font-size: 18px; margin-bottom: 10px;">Attivazione VR...</div>
+                            <div style="font-size: 14px; opacity: 0.8;">Preparazione modalità immersiva</div>
+                        </div>
+                    `;
+                    document.body.appendChild(vrIndicator);
+                    
+                    // Attendi che A-Frame sia completamente inizializzato prima di entrare in VR
+                    setTimeout(() => {
+                        // Rimuovi indicatore
+                        const indicator = document.getElementById('vr-activating');
+                        if (indicator) {
+                            indicator.remove();
+                        }
+                        enterVR();
+                    }, 3000); // Attendi 3 secondi per permettere il caricamento completo
+                }
             };
             
             panoramaImg.onerror = function() {
