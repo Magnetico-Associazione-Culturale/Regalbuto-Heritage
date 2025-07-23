@@ -4553,4 +4553,106 @@ function updateMonumentCardsForNavigation() {
     feather.replace();
 }
 
+// Privacy Policy Functions
+async function showPrivacyPolicy() {
+    const popup = document.getElementById('privacy-popup');
+    const body = document.getElementById('privacy-popup-body');
+    
+    try {
+        // Load privacy policy content
+        const response = await fetch('src/docs/privacy-policy.md');
+        const markdownText = await response.text();
+        
+        // Convert markdown to HTML (simple conversion)
+        const htmlContent = convertMarkdownToHTML(markdownText);
+        body.innerHTML = htmlContent;
+        
+        // Show popup
+        popup.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // Refresh feather icons
+        setTimeout(() => {
+            feather.replace();
+        }, 100);
+        
+    } catch (error) {
+        console.error('Error loading privacy policy:', error);
+        body.innerHTML = '<p>Errore nel caricamento dell\'informativa privacy.</p>';
+        popup.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closePrivacyPolicy() {
+    const popup = document.getElementById('privacy-popup');
+    popup.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Simple markdown to HTML converter for privacy policy
+function convertMarkdownToHTML(markdown) {
+    let html = markdown;
+    
+    // Convert headers
+    html = html.replace(/^### (.*$)/gim, '<h3><i data-feather="info"></i>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h3><i data-feather="shield"></i>$1</h3>');
+    html = html.replace(/^# (.*$)/gim, '<h2><i data-feather="file-text"></i>$1</h2>');
+    
+    // Convert bold text
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Convert checkmarks
+    html = html.replace(/✅/g, '<span class="checkmark">✅</span>');
+    
+    // Convert permission sections with icons
+    html = html.replace(/\*\*📍 POSIZIONE\*\*/g, '<div class="permission-section"><h4><i data-feather="map-pin"></i>POSIZIONE</h4>');
+    html = html.replace(/\*\*📷 FOTOCAMERA\*\*/g, '<div class="permission-section"><h4><i data-feather="camera"></i>FOTOCAMERA</h4>');
+    html = html.replace(/\*\*🔄 GIROSCOPIO\*\*/g, '<div class="permission-section"><h4><i data-feather="smartphone"></i>GIROSCOPIO</h4>');
+    
+    // Close permission sections (look for the pattern where next permission starts or section ends)
+    html = html.replace(/(<div class="permission-section">[\s\S]*?)\n\n(?=(\*\*📍|\*\*📷|\*\*🔄|\*\*Tali dati|## ))/g, '$1</div>\n\n');
+    html = html.replace(/(<div class="permission-section">[\s\S]*?)(\*\*Tali dati)/g, '$1</div>\n\n$2');
+    
+    // Convert bullet points
+    html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    
+    // Convert paragraphs
+    html = html.replace(/\n\n/g, '</p><p>');
+    html = '<p>' + html + '</p>';
+    
+    // Clean up empty paragraphs and fix formatting
+    html = html.replace(/<p><\/p>/g, '');
+    html = html.replace(/<p>(<h[2-3])/g, '$1');
+    html = html.replace(/(<\/h[2-3]>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<ul>)/g, '$1');
+    html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+    html = html.replace(/<p>(<div)/g, '$1');
+    html = html.replace(/(<\/div>)<\/p>/g, '$1');
+    
+    // Add contact info styling
+    html = html.replace(/(Email:|PEC:)/g, '<strong>$1</strong>');
+    
+    return html;
+}
+
+// Close popup when clicking outside
+document.addEventListener('click', function(event) {
+    const popup = document.getElementById('privacy-popup');
+    if (event.target === popup) {
+        closePrivacyPolicy();
+    }
+});
+
+// Close popup with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        const popup = document.getElementById('privacy-popup');
+        if (popup.classList.contains('active')) {
+            closePrivacyPolicy();
+        }
+    }
+});
+
 console.log('Regalbuto Heritage - Script loaded successfully');

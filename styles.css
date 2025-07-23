@@ -4620,4 +4620,230 @@ button:focus,
     }
 }
 
+/* Privacy Policy Popup */
+.privacy-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.privacy-popup-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.privacy-popup-content {
+    background: white;
+    border-radius: 20px;
+    max-width: 800px;
+    max-height: 90vh;
+    width: 100%;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.privacy-popup-overlay.active .privacy-popup-content {
+    transform: scale(1) translateY(0);
+}
+
+.privacy-popup-header {
+    background: linear-gradient(135deg, var(--primary-color), #1e7e7a);
+    color: white;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.privacy-popup-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.privacy-popup-header .close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 1.2rem;
+}
+
+.privacy-popup-header .close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.privacy-popup-body {
+    padding: 2rem;
+    overflow-y: auto;
+    flex: 1;
+    line-height: 1.6;
+}
+
+.privacy-popup-body h3 {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    margin: 1.5rem 0 1rem 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.privacy-popup-body h3:first-child {
+    margin-top: 0;
+}
+
+.privacy-popup-body p {
+    margin: 0.75rem 0;
+    color: #444;
+}
+
+.privacy-popup-body ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.privacy-popup-body li {
+    margin: 0.5rem 0;
+    color: #444;
+}
+
+.privacy-popup-body strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.privacy-popup-body .highlight {
+    background: rgba(32, 178, 170, 0.1);
+    padding: 1rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--primary-color);
+    margin: 1rem 0;
+}
+
+.privacy-popup-body .contact-info {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+}
+
+.privacy-popup-body .permissions-table {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+.privacy-popup-body .permissions-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.privacy-popup-body .permissions-table th {
+    background: var(--primary-color);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.privacy-popup-body .permissions-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.privacy-popup-body .permissions-table tr:last-child td {
+    border-bottom: none;
+}
+
+.privacy-popup-body .checkmark {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.privacy-popup-body .permission-section {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border-left: 4px solid var(--primary-color);
+}
+
+.privacy-popup-body .permission-section h4 {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.privacy-popup-body .permission-section p {
+    margin: 0.5rem 0;
+    color: #555;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .privacy-popup-content {
+        max-height: 95vh;
+        margin: 0.5rem;
+        border-radius: 16px;
+    }
+    
+    .privacy-popup-header {
+        padding: 1rem 1.5rem;
+    }
+    
+    .privacy-popup-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .privacy-popup-body {
+        padding: 1.5rem;
+    }
+    
+    .privacy-popup-body .permissions-table {
+        font-size: 0.9rem;
+    }
+    
+    .privacy-popup-body .permissions-table th,
+    .privacy-popup-body .permissions-table td {
+        padding: 0.75rem;
+    }
+}
+
 

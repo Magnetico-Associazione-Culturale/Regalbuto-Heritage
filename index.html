@@ -1060,7 +1060,7 @@
                                 <span>Fotocamera solo per QR code</span>
                             </div>
                             <div class="privacy-link">
-                                <button class="btn btn-outline" onclick="showNotification('Informativa completa disponibile sul sito del Comune', 'info')">
+                                <button class="btn btn-outline" onclick="showPrivacyPolicy()">
                                     <i data-feather="shield"></i>
                                     Informativa completa
                                 </button>
@@ -1144,6 +1144,24 @@
         <source src="" type="audio/mpeg">
         Il tuo browser non supporta l'elemento audio.
     </audio>
+
+    <!-- Privacy Policy Popup -->
+    <div id="privacy-popup" class="privacy-popup-overlay">
+        <div class="privacy-popup-content">
+            <div class="privacy-popup-header">
+                <h2>
+                    <i data-feather="shield"></i>
+                    Informativa Privacy
+                </h2>
+                <button class="close-btn" onclick="closePrivacyPolicy()">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="privacy-popup-body" id="privacy-popup-body">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
