@@ -3108,78 +3108,112 @@ document.addEventListener('msfullscreenchange', function() {
 });
 
 function toggleVRMode() {
-    const viewer = document.getElementById('pano-viewer');
-    const iframe = viewer ? viewer.querySelector('iframe') : null;
-    
+    const vrBtn = document.getElementById('vr-mode-btn');
+    const panoViewer = document.getElementById('pano-viewer');
+    const iframe = panoViewer ? panoViewer.querySelector('iframe') : null;
+
     console.log('toggleVRMode chiamata');
-    console.log('Viewer:', viewer);
+    console.log('VR Button:', vrBtn);
+    console.log('Pano Viewer:', panoViewer);
     console.log('Iframe src:', iframe ? iframe.src : 'no iframe');
-    
-    // Verifica se siamo su iPhone
-    if (isIPhone()) {
-        console.log('iPhone rilevato - VR non supportato');
-        // Removed notification
-        return;
-    }
-    
+
     if (!iframe) {
         console.error('Iframe non trovato');
-        // Removed notification
+        showNotification('Visualizzatore non disponibile', 'error');
         return;
     }
 
+    const currentSrc = iframe.src;
+    
+    // Verifica se siamo in una WebView Android
+    const isInWebView = typeof window.AndroidBridge !== 'undefined';
+    
+    console.log('WebView rilevata:', isInWebView);
+
     // Verifica se è un panorama A-Frame
-    if (iframe.src.includes('panorama.html')) {
+    if (currentSrc.includes('panorama.html')) {
         console.log('Panorama A-Frame rilevato');
+        
+        // Verifica se siamo su iPhone
+        if (isIPhone()) {
+            console.log('iPhone rilevato - VR non supportato');
+            showNotification('VR non supportato su iPhone', 'warning');
+            return;
+        }
         
         // Controlla se siamo su dispositivo mobile
         if (!isMobileDevice()) {
             console.log('Dispositivo desktop rilevato - VR non supportato');
-            // Removed notification
+            showNotification('VR disponibile solo su dispositivi mobili', 'warning');
             return;
         }
-        
-        console.log('Dispositivo mobile rilevato - attivando VR');
-        
-        try {
-            // Attiva modalità landscape automaticamente per VR
-            console.log('VR: Attivando orientamento landscape per VR');
-            activateLandscapeForVR();
+
+        if (!vrBtn.classList.contains('vr-active')) {
+            // ATTIVAZIONE VR
+            console.log('Attivando modalità VR...');
             
-            // Attiva solo la modalità VR, senza fullscreen automatico
-            console.log('VR: Attivando modalità VR A-Frame');
+            if (isInWebView) {
+                // WEBVIEW: Apri in Custom Tab
+                const standaloneURL = currentSrc.includes('&vr=1') ? currentSrc : currentSrc + '&vr=1';
+                console.log('Aprendo VR in Custom Tab:', standaloneURL);
+                
+                try {
+                    window.AndroidBridge.openInCustomTab(standaloneURL);
+                    showNotification('Apertura VR in corso...', 'info');
+                } catch (error) {
+                    console.error('Errore apertura Custom Tab:', error);
+                    showNotification('Errore apertura VR', 'error');
+                }
+                return; // Fermati qui per WebView
+            }
+
+            // WEB BROWSER: Modalità VR normale
+            vrBtn.innerHTML = '<i data-feather="eye-off"></i> Esci da VR';
+            vrBtn.classList.add('vr-active');
+            panoViewer.classList.add('vr-mode');
+            
+            // Attiva orientamento landscape per VR
+            activateLandscapeForVR();
+
+            // Aggiungi parametro VR all'iframe se necessario
+            if (!currentSrc.includes('&vr=1')) {
+                iframe.src = currentSrc + '&vr=1';
+            }
+
+            // Invia comando VR all'iframe
             iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
             
             // Segna che il VR è attivo
-            const viewer = document.getElementById('pano-viewer');
-            viewer.setAttribute('data-vr-active', 'true');
+            panoViewer.setAttribute('data-vr-active', 'true');
+
+            showNotification('Ruota il dispositivo per la modalità VR', 'info');
+
+        } else {
+            // DISATTIVAZIONE VR (solo per web browser)
+            console.log('Disattivando modalità VR...');
             
-            // NON creare pulsante X per VR - Android ha il suo nativo
-            console.log('VR: Modalità VR attivata senza pulsanti custom');
+            vrBtn.innerHTML = '<i data-feather="eye"></i> Modalità VR';
+            vrBtn.classList.remove('vr-active');
+            panoViewer.classList.remove('vr-mode');
             
-            // Su Android, non creare pulsanti aggiuntivi
-            if (/Android/i.test(navigator.userAgent)) {
-                console.log('Android rilevato - usando pulsanti VR nativi');
-            }
+            // Ripristina orientamento precedente
+            restorePreviousOrientation();
+
+            // Rimuovi parametro VR dall'iframe
+            iframe.src = currentSrc.replace('&vr=1', '');
             
-            // Mostra un messaggio per suggerire il fullscreen manualmente
-            setTimeout(() => {
-                console.log('VR: Modalità VR attivata, suggerimento fullscreen');
-                // Potremmo aggiungere un pulsante per fullscreen se necessario
-            }, 500);
-            
-        } catch (err) {
-            console.error('Errore nell\'attivazione VR:', err);
-            // Removed notification
+            // Rimuovi flag VR attivo
+            panoViewer.removeAttribute('data-vr-active');
+
+            showNotification('Modalità VR disattivata', 'info');
         }
-        
+
     } else {
-        // Metodo tradizionale per iframe Kuula
+        // KUULA: Metodo tradizionale per iframe Kuula
+        console.log('Iframe Kuula rilevato');
+        
         let src = iframe.src;
         let isVRMode = src.includes('vr=1');
-        
-        // Check if it's a single tour (Santa Maria della Croce)
-        let isSingleTour = src.includes('hdWFx');
         
         if (isVRMode) {
             // Disable VR mode
@@ -3190,8 +3224,8 @@ function toggleVRMode() {
                 vrBtn.classList.remove('btn-primary');
                 vrBtn.classList.add('btn-outline');
             }
-            removeVRExitButton(); // Rimuovi il pulsante X del VR
-            // Removed notification
+            removeVRExitButton();
+            showNotification('Modalità VR disattivata', 'info');
         } else {
             // Enable VR mode
             src = src.replace('vr=0', 'vr=1');
@@ -3202,19 +3236,14 @@ function toggleVRMode() {
                 vrBtn.classList.add('btn-primary');
             }
             
-            // Crea il pulsante X per uscire dal VR dopo un delay
             setTimeout(() => {
                 createVRExitButton();
-            }, 1000); // Delay per permettere al VR di attivarsi
+            }, 1000);
             
-            if (isSingleTour) {
-                // Removed notification
-            } else {
-                // Removed notification
-            }
+            showNotification('Modalità VR attivata', 'info');
         }
         
-        // Force iframe reload by temporarily changing src
+        // Force iframe reload
         iframe.src = 'about:blank';
         setTimeout(() => {
             iframe.src = src;
