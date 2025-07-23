@@ -1590,70 +1590,38 @@ function getCategoryDisplayName(category) {
     return names[category] || category;
 }
 
-function openMapLocation(monumentId) {
+async function openMapLocation(monumentId) {
     console.log('Opening map location for:', monumentId);
     
-    // Define Google Maps URLs based on monuments.json data
-    const mapUrls = {
-        // Chiese
-        'chiesa-maria-ss-della-croce': 'https://maps.app.goo.gl/36n3wGo6KZ3wdWKa7',
-        'santa-maria-croce': 'https://maps.app.goo.gl/36n3wGo6KZ3wdWKa7', // alias
-        'chiesa-san-giovanni': 'https://maps.app.goo.gl/othA2S9tDMcGK3FBA',
-        'chiesa-san-basilio': 'https://maps.app.goo.gl/vSNW8QEorSkNDE487',
-        'san-basilio': 'https://maps.app.goo.gl/vSNW8QEorSkNDE487', // alias
-        'chiesa-san-rocco': 'https://maps.app.goo.gl/RnocN7suTUtA44dcA',
-        'purgatorio': 'https://maps.app.goo.gl/RnocN7suTUtA44dcA', // alias
-        'chiesa-del-collegio': 'https://maps.app.goo.gl/uoby9MpGjr3MShXR8',
-        'chiesa-madonna-del-carmelo': 'https://maps.app.goo.gl/JmebSSTwzJs3wbBj6',
-        'chiesa-san-domenico': 'https://maps.app.goo.gl/9YNxj1NhouS5oJ7FA',
-        'chiesa-san-sebastiano': 'https://maps.app.goo.gl/qfcQQjYUEF8nXwbbA',
-        'chiesa-san-francesco-assisi': 'https://maps.app.goo.gl/BQKrtvufPcqWstZu8',
-        'chiesa-sm-delle-grazie-convento': 'https://maps.app.goo.gl/QKmP4c3c6zWVSHiGA',
-        'chiesa-sant-antonio-padova': 'https://maps.app.goo.gl/xsGJdJe1ZfeZeLWK8',
-        'chiesa-rurale-san-calogero': 'https://maps.google.com/maps?q=37.649874,14.646600&ll=37.649874,14.646600&z=16',
+    try {
+        // Carica i dati dal file monuments.json
+        const response = await fetch('data/monuments.json');
+        const monuments = await response.json();
         
-        // Conventi
-        'convento-sant-agostino': 'https://maps.app.goo.gl/tV7agQC2Wzuy9DdH8',
-        'san-agostino': 'https://maps.app.goo.gl/tV7agQC2Wzuy9DdH8', // alias
-        'convento-sant-antonio': 'https://maps.app.goo.gl/bwwdjx9qspeiSmxS6',
-        'santantonio': 'https://maps.app.goo.gl/bwwdjx9qspeiSmxS6', // alias
-        'convento-s-m-delle-grazie': 'https://maps.app.goo.gl/zFR6uWHiXjoAvJgd9',
+        // Trova il monumento con l'ID corrispondente
+        const monument = monuments.find(m => m.id === monumentId);
         
-        // Edifici civici
-        'caserma-cc-ex-convento-san-domenico': 'https://maps.app.goo.gl/w3B61q3drdJNbEPU6',
-        'collegio-di-maria': 'https://maps.app.goo.gl/dXbkhcBzdCwct2WAA',
-        'palazzo-comunale': 'https://maps.app.goo.gl/smMJq1Q86eirZLrb6',
+        let url;
+        if (monument && monument.lat && monument.lon) {
+            // Genera URL Google Maps con formato directions API
+            url = `https://www.google.com/maps/dir/?api=1&destination=${monument.lat},${monument.lon}`;
+            console.log(`Generated directions URL for ${monument.name}: ${url}`);
+        } else {
+            // Fallback al centro di Regalbuto se il monumento non viene trovato
+            url = 'https://www.google.com/maps/dir/?api=1&destination=37.650573,14.640587';
+            console.log(`Monument not found or missing coordinates, using fallback URL: ${url}`);
+        }
         
-        // Monumenti
-        'monumento-ai-caduti': 'https://maps.app.goo.gl/Y8ZdEJJdnEfLNZfg7',
-        'monumento-caduti': 'https://maps.app.goo.gl/Y8ZdEJJdnEfLNZfg7', // alias
+        // Apri l'URL generato
+        openInMapsApp(url);
         
-        // Teatro
-        'cine-teatro-urania': 'https://maps.app.goo.gl/bxz44Y7xddcPseqr5',
-        'teatro-urania': 'https://maps.app.goo.gl/bxz44Y7xddcPseqr5', // alias
-        
-        // Istituti finanziari
-        'istituto-credito-cooperativo-la-riscossa': 'https://maps.app.goo.gl/1CTjLE8i9ZPcWBSr5',
-        'credito-cooperativo-la-riscossa-2': 'https://maps.app.goo.gl/zrWq99t9Cv2TFvTk8',
-        'istituto-intesa-san-paolo': 'https://maps.google.com/maps?q=37.6450,14.6380&ll=37.6450,14.6380&z=17',
-        
-        // Palazzi
-        'palazzo-marletta': 'https://maps.app.goo.gl/jnY3iJbPuJmnLMKE6',
-        'palazzo-falcone': 'https://maps.app.goo.gl/11szoYS55Rk12owd6',
-        'palazzo-gerardi': 'https://maps.app.goo.gl/TGeLkq3mGc6MSkYM7',
-        'palazzo-barone-carchiolo': 'https://maps.google.com/maps?q=37.6480,14.6350&ll=37.6480,14.6350&z=17',
-        
-        // Natura e luoghi esistenti
-        'lago-pozzillo': 'https://maps.google.com/maps?q=37.6587117,14.5975772&ll=37.6587117,14.5975772&z=16',
-        'parco-avventura': 'https://maps.google.com/maps?q=37.6589778,14.6188852&ll=37.6589778,14.6188852&z=16',
-        'calvario': 'https://maps.google.com/maps?q=37.6264741,14.7434425&ll=37.6264741,14.7434425&z=15',
-        'default': 'https://maps.google.com/maps?q=37.650573,14.640587&ll=37.650573,14.640587&z=16'
-    };
-    
-    const url = mapUrls[monumentId] || mapUrls['default'];
-    
-    // Funzione per aprire Maps nell'app nativa
-    openInMapsApp(url);
+    } catch (error) {
+        console.error('Error loading monument data:', error);
+        // Fallback in caso di errore
+        const fallbackUrl = 'https://www.google.com/maps/dir/?api=1&destination=37.650573,14.640587';
+        console.log(`Using fallback URL due to error: ${fallbackUrl}`);
+        openInMapsApp(fallbackUrl);
+    }
 }
 
 // Nuova funzione per gestire l'apertura dell'app Maps nativa
