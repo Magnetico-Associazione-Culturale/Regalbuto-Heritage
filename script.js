@@ -1529,10 +1529,78 @@ function openMapLocation(monumentId) {
     
     const url = mapUrls[monumentId] || mapUrls['default'];
     
-    // Open in a new window/tab to trigger the Maps app
-    window.open(url, '_blank', 'noopener,noreferrer');
+    // Funzione per aprire Maps nell'app nativa
+    openInMapsApp(url);
+}
+
+// Nuova funzione per gestire l'apertura dell'app Maps nativa
+function openInMapsApp(mapsUrl) {
+    // Rileva il tipo di dispositivo
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     
-    // Removed notification
+    // Funzione per tentare apertura app nativa
+    function tryOpenNativeApp() {
+        if (isAndroid) {
+            // Per Android, prova prima con intent:// scheme
+            const intentUrl = `intent://maps.google.com/maps?${mapsUrl.split('?')[1] || 'q=Regalbuto,+Sicily,+Italy'}#Intent;scheme=https;package=com.google.android.apps.maps;end`;
+            
+            // Prova ad aprire con intent
+            window.location.href = intentUrl;
+            
+            // Fallback dopo 2 secondi se l'intent non funziona
+            setTimeout(() => {
+                // Se siamo ancora qui, l'intent non ha funzionato
+                // Prova con geo: scheme
+                if (mapsUrl.includes('q=') && mapsUrl.includes(',')) {
+                    const coords = mapsUrl.match(/q=([0-9.-]+),([0-9.-]+)/);
+                    if (coords) {
+                        const geoUrl = `geo:${coords[1]},${coords[2]}?q=${coords[1]},${coords[2]}`;
+                        window.location.href = geoUrl;
+                        return;
+                    }
+                }
+                // Ultimo fallback: apri nel browser
+                window.open(mapsUrl, '_system');
+            }, 2000);
+            
+        } else if (isIOS) {
+            // Per iOS, prova prima con Apple Maps
+            let appleUrl = mapsUrl;
+            
+            // Converti URL Google Maps in Apple Maps se possibile
+            if (mapsUrl.includes('google.com/maps') && mapsUrl.includes('q=')) {
+                const coords = mapsUrl.match(/q=([0-9.-]+),([0-9.-]+)/);
+                if (coords) {
+                    appleUrl = `maps://maps.apple.com/?q=${coords[1]},${coords[2]}&ll=${coords[1]},${coords[2]}`;
+                } else {
+                    // Se non ci sono coordinate, usa la query testuale
+                    const query = mapsUrl.split('q=')[1]?.split('&')[0];
+                    if (query) {
+                        appleUrl = `maps://maps.apple.com/?q=${encodeURIComponent(query)}`;
+                    }
+                }
+            }
+            
+            // Prova ad aprire Apple Maps
+            window.location.href = appleUrl;
+            
+            // Fallback a Google Maps dopo 2 secondi
+            setTimeout(() => {
+                window.open(mapsUrl, '_system');
+            }, 2000);
+            
+        } else {
+            // Per altri dispositivi (desktop), apri nel browser
+            window.open(mapsUrl, '_blank', 'noopener,noreferrer');
+        }
+    }
+    
+    // Tenta di aprire l'app nativa
+    tryOpenNativeApp();
+    
+    // Mostra notifica all'utente
+    showNotification('Apertura mappa in corso...', 'info');
 }
 
 // Featured Card Functions (Home Page)
