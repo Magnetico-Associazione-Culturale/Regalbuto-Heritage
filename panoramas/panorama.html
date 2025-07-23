@@ -51,20 +51,20 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 60px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 2px solid #007bff;
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #007bff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 32px;
             cursor: pointer;
             z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             user-select: none;
             -webkit-user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -73,11 +73,17 @@
         
         #manual-vr-btn:hover {
             background: rgba(255, 255, 255, 1);
-            transform: scale(1.1);
+            transform: scale(1.15);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
         }
         
         #manual-vr-btn:active {
             transform: scale(0.95);
+        }
+        
+        /* Nascondi il pulsante VR quando è in iframe */
+        .iframe-mode #manual-vr-btn {
+            display: none !important;
         }
         
         #manual-vr-btn.hidden {
@@ -120,6 +126,25 @@
 
     <script>
         let panoramaLoaded = false;
+        
+        // Rileva se siamo in un iframe e nascondi il pulsante VR di conseguenza
+        function detectIframeMode() {
+            const isInIframe = window.self !== window.top;
+            console.log('In iframe:', isInIframe);
+            
+            if (isInIframe) {
+                // Aggiungi classe per nascondere pulsante VR in iframe
+                document.body.classList.add('iframe-mode');
+                console.log('Modalità iframe rilevata - pulsante VR nascosto');
+            } else {
+                // Rimuovi classe se non siamo in iframe
+                document.body.classList.remove('iframe-mode');
+                console.log('Modalità standalone rilevata - pulsante VR visibile');
+            }
+        }
+        
+        // Rileva modalità iframe all'avvio
+        detectIframeMode();
         
         // Funzione per ottenere il parametro img dall'URL
         function getImageParameter() {
@@ -206,10 +231,13 @@
                     overlay.remove();
                 }
                 
-                // Rimostra il pulsante VR manuale
+                // Rimostra il pulsante VR manuale solo se non siamo in iframe
                 const manualVRBtn = document.getElementById('manual-vr-btn');
-                if (manualVRBtn) {
+                const isInIframe = window.self !== window.top;
+                
+                if (manualVRBtn && !isInIframe) {
                     manualVRBtn.style.display = 'flex';
+                    console.log('Pulsante VR rimostrato dopo annullamento countdown');
                 }
             });
             
@@ -305,10 +333,12 @@
                                 enterVR();
                             } catch (error) {
                                 console.error('Auto-attivazione VR fallita:', error);
-                                // Rimostra il pulsante manuale come fallback
+                                // Rimostra il pulsante manuale come fallback solo se non siamo in iframe
                                 const manualVRBtn = document.getElementById('manual-vr-btn');
-                                if (manualVRBtn) {
+                                const isInIframe = window.self !== window.top;
+                                if (manualVRBtn && !isInIframe) {
                                     manualVRBtn.style.display = 'flex';
+                                    console.log('Pulsante VR rimostrato dopo errore auto-attivazione');
                                 }
                             }
                         }, 1000);
@@ -397,10 +427,15 @@
                 loadingScreen.style.display = 'none';
                 panoramaLoaded = true;
                 
-                // Mostra il pulsante VR manuale
+                // Mostra il pulsante VR manuale solo se non siamo in iframe
                 const manualVRBtn = document.getElementById('manual-vr-btn');
-                if (manualVRBtn) {
+                const isInIframe = window.self !== window.top;
+                
+                if (manualVRBtn && !isInIframe) {
                     manualVRBtn.classList.remove('hidden');
+                    console.log('Pulsante VR mostrato (modalità standalone)');
+                } else if (isInIframe) {
+                    console.log('Pulsante VR nascosto (modalità iframe)');
                 }
                 
                 // Controlla se deve entrare automaticamente in VR
@@ -448,9 +483,11 @@
                             indicator.remove();
                         }
                         
-                        // Rimostra il pulsante manuale come fallback
-                        if (manualVRBtn) {
+                        // Rimostra il pulsante manuale come fallback solo se non siamo in iframe
+                        const isInIframe = window.self !== window.top;
+                        if (manualVRBtn && !isInIframe) {
                             manualVRBtn.style.display = 'flex';
+                            console.log('Pulsante VR rimostrato come fallback');
                         }
                         
                         // Prova auto-attivazione VR
@@ -972,8 +1009,12 @@
                             enterVR();
                         } catch (error) {
                             console.error('Attivazione VR manuale fallita:', error);
-                            // Rimostra il pulsante
-                            manualVRBtn.style.display = 'flex';
+                            // Rimostra il pulsante solo se non siamo in iframe
+                            const isInIframe = window.self !== window.top;
+                            if (!isInIframe) {
+                                manualVRBtn.style.display = 'flex';
+                                console.log('Pulsante VR rimostrato dopo errore attivazione manuale');
+                            }
                         }
                     }, 1000);
                 });
