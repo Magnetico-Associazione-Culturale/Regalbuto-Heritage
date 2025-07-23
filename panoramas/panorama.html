@@ -147,6 +147,176 @@
             return shouldEnterVR;
         }
         
+        // Funzione per avviare il countdown automatico VR
+        function startVRCountdown() {
+            console.log('Avvio countdown automatico VR...');
+            
+            let countdownSeconds = 5; // Countdown di 5 secondi
+            let countdownCancelled = false;
+            
+            // Crea overlay countdown
+            const countdownOverlay = document.createElement('div');
+            countdownOverlay.id = 'vr-countdown';
+            countdownOverlay.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    z-index: 3000;
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                ">
+                    <div style="font-size: 80px; margin-bottom: 20px;">🕶️</div>
+                    <div style="font-size: 24px; margin-bottom: 20px; font-weight: bold;">Attivazione VR automatica</div>
+                    <div style="font-size: 48px; font-weight: bold; color: #007bff; margin-bottom: 20px;" id="countdown-number">${countdownSeconds}</div>
+                    <div style="font-size: 16px; margin-bottom: 30px; opacity: 0.9;">La modalità VR si attiverà automaticamente</div>
+                    <button id="cancel-countdown" style="
+                        padding: 12px 24px;
+                        background: #dc3545;
+                        color: white;
+                        border: none;
+                        border-radius: 25px;
+                        font-size: 16px;
+                        cursor: pointer;
+                        transition: background 0.3s ease;
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                    ">❌ Annulla</button>
+                </div>
+            `;
+            
+            document.body.appendChild(countdownOverlay);
+            
+            // Event listener per il pulsante annulla
+            const cancelBtn = document.getElementById('cancel-countdown');
+            cancelBtn.addEventListener('click', function() {
+                console.log('Countdown VR annullato dall\'utente');
+                countdownCancelled = true;
+                
+                // Rimuovi overlay
+                const overlay = document.getElementById('vr-countdown');
+                if (overlay) {
+                    overlay.remove();
+                }
+                
+                // Rimostra il pulsante VR manuale
+                const manualVRBtn = document.getElementById('manual-vr-btn');
+                if (manualVRBtn) {
+                    manualVRBtn.style.display = 'flex';
+                }
+            });
+            
+            // Hover effects per il pulsante annulla
+            cancelBtn.addEventListener('mouseenter', function() {
+                this.style.background = '#c82333';
+                this.style.transform = 'scale(1.05)';
+            });
+            
+            cancelBtn.addEventListener('mouseleave', function() {
+                this.style.background = '#dc3545';
+                this.style.transform = 'scale(1)';
+            });
+            
+            // Touch effects per mobile
+            cancelBtn.addEventListener('touchstart', function() {
+                this.style.background = '#c82333';
+                this.style.transform = 'scale(1.05)';
+            });
+            
+            cancelBtn.addEventListener('touchend', function() {
+                this.style.background = '#dc3545';
+                this.style.transform = 'scale(1)';
+            });
+            
+            // Countdown interval
+            const countdownInterval = setInterval(() => {
+                if (countdownCancelled) {
+                    clearInterval(countdownInterval);
+                    return;
+                }
+                
+                countdownSeconds--;
+                const countdownNumber = document.getElementById('countdown-number');
+                
+                if (countdownNumber) {
+                    countdownNumber.textContent = countdownSeconds;
+                    
+                    // Effetto visivo quando cambia il numero
+                    countdownNumber.style.transform = 'scale(1.2)';
+                    countdownNumber.style.color = countdownSeconds <= 2 ? '#ff4757' : '#007bff';
+                    
+                    setTimeout(() => {
+                        countdownNumber.style.transform = 'scale(1)';
+                    }, 200);
+                }
+                
+                // Quando il countdown arriva a 0, attiva il VR
+                if (countdownSeconds <= 0) {
+                    clearInterval(countdownInterval);
+                    
+                    if (!countdownCancelled) {
+                        console.log('Countdown terminato - attivazione VR automatica!');
+                        
+                        // Rimuovi overlay countdown
+                        const overlay = document.getElementById('vr-countdown');
+                        if (overlay) {
+                            overlay.remove();
+                        }
+                        
+                        // Mostra indicatore di attivazione
+                        const vrIndicator = document.createElement('div');
+                        vrIndicator.id = 'vr-activating';
+                        vrIndicator.innerHTML = `
+                            <div style="
+                                position: fixed;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                background: rgba(0, 0, 0, 0.9);
+                                color: white;
+                                padding: 20px;
+                                border-radius: 10px;
+                                text-align: center;
+                                z-index: 2000;
+                                font-family: Arial, sans-serif;
+                            ">
+                                <div style="font-size: 24px; margin-bottom: 10px;">🕶️</div>
+                                <div style="font-size: 18px; margin-bottom: 10px;">Attivazione VR...</div>
+                                <div style="font-size: 14px; opacity: 0.8;">Indossa il visore o ruota il telefono</div>
+                            </div>
+                        `;
+                        document.body.appendChild(vrIndicator);
+                        
+                        // Attiva VR dopo un breve delay
+                        setTimeout(() => {
+                            const indicator = document.getElementById('vr-activating');
+                            if (indicator) {
+                                indicator.remove();
+                            }
+                            
+                            try {
+                                enterVR();
+                            } catch (error) {
+                                console.error('Auto-attivazione VR fallita:', error);
+                                // Rimostra il pulsante manuale come fallback
+                                const manualVRBtn = document.getElementById('manual-vr-btn');
+                                if (manualVRBtn) {
+                                    manualVRBtn.style.display = 'flex';
+                                }
+                            }
+                        }, 1000);
+                    }
+                }
+            }, 1000); // Aggiorna ogni secondo
+        }
+        
         // Funzione per caricare l'immagine panoramica
         function loadPanorama() {
             const loadingScreen = document.getElementById('loadingScreen');
@@ -238,60 +408,13 @@
                 if (shouldEnterVR) {
                     console.log('Auto-attivazione VR richiesta dal parametro URL');
                     
-                    // Mostra indicatore di attivazione VR
-                    const vrIndicator = document.createElement('div');
-                    vrIndicator.id = 'vr-activating';
-                    vrIndicator.innerHTML = `
-                        <div style="
-                            position: fixed;
-                            top: 50%;
-                            left: 50%;
-                            transform: translate(-50%, -50%);
-                            background: rgba(0, 0, 0, 0.9);
-                            color: white;
-                            padding: 20px;
-                            border-radius: 10px;
-                            text-align: center;
-                            z-index: 2000;
-                            font-family: Arial, sans-serif;
-                        ">
-                            <div style="font-size: 24px; margin-bottom: 10px;">🕶️</div>
-                            <div style="font-size: 18px; margin-bottom: 10px;">Attivazione VR...</div>
-                            <div style="font-size: 14px; opacity: 0.8;">Preparazione modalità immersiva</div>
-                            <div style="font-size: 12px; margin-top: 10px; opacity: 0.6;">
-                                Tocca il pulsante 🕶️ se non si attiva automaticamente
-                            </div>
-                        </div>
-                    `;
-                    document.body.appendChild(vrIndicator);
-                    
                     // Nascondi il pulsante manuale durante l'auto-attivazione
                     if (manualVRBtn) {
                         manualVRBtn.style.display = 'none';
                     }
                     
-                    // Attendi che A-Frame sia completamente inizializzato prima di entrare in VR
-                    setTimeout(() => {
-                        // Rimuovi indicatore
-                        const indicator = document.getElementById('vr-activating');
-                        if (indicator) {
-                            indicator.remove();
-                        }
-                        
-                        // Rimostra il pulsante manuale come fallback
-                        if (manualVRBtn) {
-                            manualVRBtn.style.display = 'flex';
-                        }
-                        
-                        // Prova auto-attivazione VR
-                        console.log('Tentativo auto-attivazione VR...');
-                        try {
-                            enterVR();
-                        } catch (error) {
-                            console.error('Auto-attivazione VR fallita:', error);
-                            // Il pulsante manuale è già visibile come fallback
-                        }
-                    }, 3000); // Attendi 3 secondi per permettere il caricamento completo
+                    // Avvia countdown automatico per VR
+                    startVRCountdown();
                 }
             };
             
