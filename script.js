@@ -3,6 +3,129 @@ let currentQuizQuestion = 1;
 let quizAnswers = {};
 let qrScanner = null;
 let currentFilter = 'all';
+let previousOrientation = null; // Store previous orientation for VR mode
+
+// WebView Orientation Control Functions for VR Mode
+function activateLandscapeForVR() {
+    console.log('Activating landscape mode for VR...');
+    
+    // Store current orientation if available
+    if (typeof window.Android !== 'undefined' && window.Android.getCurrentOrientation) {
+        try {
+            previousOrientation = window.Android.getCurrentOrientation();
+            console.log('Stored previous orientation:', previousOrientation);
+        } catch (e) {
+            console.log('Could not get current orientation:', e);
+            previousOrientation = 'portrait'; // Default fallback
+        }
+    }
+    
+    // Activate landscape orientation for Android WebView
+    if (typeof window.Android !== 'undefined' && window.Android.setOrientation) {
+        try {
+            console.log('Setting landscape orientation via Android interface...');
+            window.Android.setOrientation('landscape');
+            console.log('✅ Android landscape orientation activated');
+        } catch (e) {
+            console.error('❌ Error setting landscape orientation:', e);
+        }
+    } else {
+        console.log('⚠️ Android WebView interface not available');
+    }
+    
+    // Activate landscape orientation for iOS WebView
+    if (typeof window.webkit !== 'undefined' && 
+        window.webkit.messageHandlers && 
+        window.webkit.messageHandlers.setOrientation) {
+        try {
+            console.log('Setting landscape orientation via iOS interface...');
+            window.webkit.messageHandlers.setOrientation.postMessage({
+                orientation: 'landscape'
+            });
+            console.log('✅ iOS landscape orientation activated');
+        } catch (e) {
+            console.error('❌ Error setting landscape orientation on iOS:', e);
+        }
+    } else {
+        console.log('⚠️ iOS WebView interface not available');
+    }
+    
+    // Fallback: Use CSS orientation lock if available (modern browsers)
+    if (screen.orientation && screen.orientation.lock) {
+        try {
+            console.log('Attempting CSS orientation lock...');
+            screen.orientation.lock('landscape').then(() => {
+                console.log('✅ CSS landscape lock successful');
+            }).catch(e => {
+                console.log('❌ CSS landscape lock failed:', e);
+            });
+        } catch (e) {
+            console.log('⚠️ CSS orientation lock not available:', e);
+        }
+    } else {
+        console.log('⚠️ CSS orientation lock not supported');
+    }
+    
+    // Debug: Check what WebView interfaces are available
+    console.log('🔍 WebView Debug Info:');
+    console.log('- Android interface available:', typeof window.Android !== 'undefined');
+    console.log('- iOS webkit available:', typeof window.webkit !== 'undefined');
+    console.log('- Screen orientation API available:', typeof screen.orientation !== 'undefined');
+    console.log('- User agent:', navigator.userAgent);
+}
+
+function restorePreviousOrientation() {
+    console.log('Restoring previous orientation after VR exit...');
+    
+    // Restore orientation for Android WebView
+    if (typeof window.Android !== 'undefined' && window.Android.setOrientation) {
+        try {
+            const orientationToRestore = previousOrientation || 'portrait';
+            console.log('Restoring orientation via Android interface:', orientationToRestore);
+            window.Android.setOrientation(orientationToRestore);
+            console.log('✅ Android orientation restored');
+        } catch (e) {
+            console.error('❌ Error restoring orientation:', e);
+        }
+    } else {
+        console.log('⚠️ Android WebView interface not available for restore');
+    }
+    
+    // Restore orientation for iOS WebView
+    if (typeof window.webkit !== 'undefined' && 
+        window.webkit.messageHandlers && 
+        window.webkit.messageHandlers.setOrientation) {
+        try {
+            const orientationToRestore = previousOrientation || 'portrait';
+            console.log('Restoring orientation via iOS interface:', orientationToRestore);
+            window.webkit.messageHandlers.setOrientation.postMessage({
+                orientation: orientationToRestore
+            });
+            console.log('✅ iOS orientation restored');
+        } catch (e) {
+            console.error('❌ Error restoring orientation on iOS:', e);
+        }
+    } else {
+        console.log('⚠️ iOS WebView interface not available for restore');
+    }
+    
+    // Fallback: Unlock orientation if available
+    if (screen.orientation && screen.orientation.unlock) {
+        try {
+            console.log('Unlocking CSS orientation...');
+            screen.orientation.unlock();
+            console.log('✅ CSS orientation unlocked');
+        } catch (e) {
+            console.log('❌ CSS orientation unlock failed:', e);
+        }
+    } else {
+        console.log('⚠️ CSS orientation unlock not available');
+    }
+    
+    // Clear stored orientation
+    console.log('🔄 Clearing stored orientation state');
+    previousOrientation = null;
+}
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -2993,7 +3116,11 @@ window.addEventListener('message', function(event) {
     
     // Gestione uscita dalla modalità VR
     if (event.data && event.data.action === 'vrExited') {
-        console.log('Uscito dalla modalità VR - uscendo anche dal fullscreen');
+        console.log('Uscito dalla modalità VR - ripristinando orientamento e uscendo dal fullscreen');
+        
+        // Ripristina l'orientamento precedente
+        restorePreviousOrientation();
+        
         // Rimuovi il flag VR attivo
         const viewer = document.getElementById('pano-viewer');
         if (viewer) {
@@ -3081,6 +3208,10 @@ function toggleVRMode() {
         console.log('Dispositivo mobile rilevato - attivando VR');
         
         try {
+            // Attiva modalità landscape automaticamente per VR
+            console.log('VR: Attivando orientamento landscape per VR');
+            activateLandscapeForVR();
+            
             // Attiva solo la modalità VR, senza fullscreen automatico
             console.log('VR: Attivando modalità VR A-Frame');
             iframe.contentWindow.postMessage({ action: 'enterVR' }, '*');
