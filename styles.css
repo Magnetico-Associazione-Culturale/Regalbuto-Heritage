@@ -216,7 +216,7 @@ p {
 #home .content-section {
     border-radius: 20px 20px 0 0;
     background: transparent; /* Reso trasparente per mostrare lo sfondo */
-    margin-top: -780px; /* Margin negativo ultra mega aggressivo */
+    margin-top: -290px; /* Margin negativo ultra mega aggressivo */
     position: relative;
     z-index: 1;
     padding: 0rem 1.5rem 1rem 1.5rem; /* Padding top azzerato completamente */
