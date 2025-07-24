@@ -1,15 +1,3 @@
-.main-action-btn {
-    /* ...regole desktop già presenti... */
-}
-
-@media (max-width: 768px) {
-  .main-action-btn {
-    bottom: env(safe-area-inset-bottom, 0px);
-    right: 16px;
-    left: auto;
-    /* Così il tasto va a filo con la safe area e la navbar su smartphone */
-  }
-}
 /* Reset and Base Styles */
 * {
     margin: 0;
@@ -228,9 +216,10 @@ p {
 #home .content-section {
     border-radius: 20px 20px 0 0;
     background: transparent; /* Reso trasparente per mostrare lo sfondo */
-    margin-top: -280px; /* Increased negative margin to bring content closer to title */
+    margin-top: -780px; /* Margin negativo ultra mega aggressivo */
     position: relative;
     z-index: 1;
+    padding: 0rem 1.5rem 1rem 1.5rem; /* Padding top azzerato completamente */
 }
 
 .section-title {
@@ -632,7 +621,7 @@ p {
     position: relative;
     margin: 0;
     padding: 1.5rem;
-    padding-bottom: 15rem; /* Padding maggiore per estendere dietro tutta la sezione content */
+    padding-bottom: 0.5rem; /* Padding bottom minimo assoluto per mobile */
 }
 
 .hero-overlay {
@@ -1264,6 +1253,16 @@ p {
     align-self: end;
     margin-bottom: 0;
     transition: bottom 0.2s;
+}
+
+/* Media query per mobile - Corretto posizionamento */
+@media (max-width: 768px) {
+    .main-action-btn {
+        bottom: env(safe-area-inset-bottom, 0px);
+        right: 16px;
+        left: auto;
+        /* Così il tasto va a filo con la safe area e la navbar su smartphone */
+    }
 }
 
 .btn-overlay {
@@ -3367,6 +3366,64 @@ button:focus,
     .mobile-only {
         display: none !important;
     }
+    
+    /* Assicura visibilità elementi desktop SOLO per home attiva */
+    #home.section.active .hero-title {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        font-size: 2.5rem !important;
+        color: var(--text-primary) !important;
+    }
+    
+    #home.section.active .hero-subtitle {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 0.9 !important;
+    }
+    
+    #home.section.active .hero-section {
+        display: flex !important;
+        visibility: visible !important;
+    }
+    
+    #home.section.active .hero-overlay {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    #home.section.active .hero-title-container {
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    #home.section.active .hero-title-with-logo {
+        display: flex !important;
+        visibility: visible !important;
+    }
+    
+    /* Assicura visibilità cards desktop SOLO per home attiva */
+    #home.section.active .featured-card,
+    #home.section.active .experience-card {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    #home.section.active .card-content {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    #home.section.active .card-title,
+    #home.section.active .card-description {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        color: inherit !important;
+    }
 }
 
 /* Show VR button only on mobile */
@@ -4124,6 +4181,20 @@ button:focus,
         grid-template-columns: 1fr 1fr;
         gap: 1.25rem;
     }
+    
+    /* Fix per pulsante "Inizia itinerario" su tablet - target ultra-specifico */
+    .main-action-btn {
+        right: 20px;
+    }
+
+    .main-action-btn .btn-overlay {
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+    }
 }
 
 /* Remaining mobile styles for checkpoints */
@@ -4570,6 +4641,40 @@ button:focus,
     }
 }
 
+/* Controlled pulse for tablet/desktop - scale ridotta per evitare overflow */
+@keyframes heartbeat-glow-tablet {
+    0% {
+        transform: scale(1) translateY(0);
+        box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3), 0 0 20px rgba(74, 85, 104, 0.1);
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+    25% {
+        transform: scale(1.04) translateY(-1px);
+        box-shadow: 0 6px 20px rgba(74, 85, 104, 0.4), 0 0 30px rgba(74, 85, 104, 0.3);
+        background: linear-gradient(135deg, var(--primary-color), #5a6b79);
+        border-color: rgba(255, 255, 255, 0.7);
+    }
+    50% {
+        transform: scale(1.06) translateY(-2px);
+        box-shadow: 0 8px 25px rgba(74, 85, 104, 0.5), 0 0 40px rgba(74, 85, 104, 0.4), 0 0 60px rgba(255, 255, 255, 0.15);
+        background: linear-gradient(135deg, #6b7c8a, var(--primary-color));
+        border-color: rgba(255, 255, 255, 0.9);
+    }
+    75% {
+        transform: scale(1.04) translateY(-1px);
+        box-shadow: 0 6px 20px rgba(74, 85, 104, 0.4), 0 0 30px rgba(74, 85, 104, 0.3);
+        background: linear-gradient(135deg, var(--primary-color), #5a6b79);
+        border-color: rgba(255, 255, 255, 0.7);
+    }
+    100% {
+        transform: scale(1) translateY(0);
+        box-shadow: 0 4px 15px rgba(74, 85, 104, 0.3), 0 0 20px rgba(74, 85, 104, 0.1);
+        background: var(--primary-color);
+        border-color: var(--primary-color);
+    }
+}
+
 /* Apply heartbeat animation to "Inizia Itinerario" button */
 .hero-actions .btn-primary {
     animation: heartbeat-glow 2.5s ease-in-out infinite;
@@ -4899,7 +5004,7 @@ button:focus,
 
 .experience-image {
     flex-shrink: 0;
-    width: 3800px;
+    width: 180px;
     height: 120px;
     border-radius: 15px;
     overflow: hidden;
@@ -4992,6 +5097,84 @@ button:focus,
 .itinerary-card {
     background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 100%);
     border-color: rgba(32, 178, 170, 0.2);
+}
+
+/* Responsive design per experience-card */
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* Tablet */
+    .experience-section {
+        margin: 2.5rem 0;
+    }
+    
+    .experience-card {
+        padding: 2.5rem;
+        gap: 2.5rem;
+    }
+    
+    .experience-image {
+        width: 200px;
+        height: 130px;
+    }
+    
+    .experience-content h3 {
+        font-size: 1.6rem;
+    }
+    
+    .experience-content p {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+    
+    /* Riduce gap su tablet - massimo aggressivo */
+    #home .content-section {
+        padding: 0rem 1.5rem 1rem 1.5rem; /* Padding top azzerato */
+        margin-top: -700px; /* Margin negativo massimo aggressivo per tablet */
+    }
+    
+    /* Riduce padding bottom hero section su tablet */
+    .hero-section {
+        padding-bottom: 0.5rem; /* Padding minimo assoluto su tablet */
+    }
+}
+
+@media (min-width: 1025px) {
+    /* Desktop */
+    .experience-section {
+        margin: 3rem auto;
+        max-width: 1200px;
+    }
+    
+    .experience-card {
+        padding: 3rem;
+        gap: 3rem;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .experience-image {
+        width: 220px;
+        height: 140px;
+    }
+    
+    .experience-content h3 {
+        font-size: 1.8rem;
+    }
+    
+    .experience-content p {
+        font-size: 1.1rem;
+        line-height: 1.7;
+    }
+    
+    /* Riduce gap su desktop - massimo assoluto */
+    #home .content-section {
+        padding: 0rem 1.5rem 1rem 1.5rem; /* Padding top azzerato completamente */
+        margin-top: -750px; /* Margin negativo massimo assoluto per desktop */
+    }
+    
+    /* Riduce padding bottom hero section su desktop */
+    .hero-section {
+        padding-bottom: 0.25rem; /* Padding minimo assoluto su desktop */
+    }
 }
 
 /* Special styling for virtual card */
@@ -5109,6 +5292,112 @@ button:focus,
     
     .experience-section {
         margin: 1.5rem 0;
+    }
+}
+
+/* FIX DESKTOP - Forza visibilità elementi HOME su schermi larghi */
+@media (min-width: 1025px) {
+    /* Forza visibilità elementi SOLO quando la sezione home è attiva */
+    #home.section.active .hero-section,
+    #home.section.active .hero-overlay,
+    #home.section.active .hero-title-container,
+    #home.section.active .hero-title,
+    #home.section.active .hero-subtitle,
+    #home.section.active .content-section,
+    #home.section.active .featured-card,
+    #home.section.active .experience-section,
+    #home.section.active .card-content,
+    #home.section.active .card-title,
+    #home.section.active .card-description {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Mantieni display appropriato per experience-card (flex non block) */
+    #home.section.active .experience-card {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    #home.section.active .hero-title-with-logo {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    #home.section.active .hero-overlay {
+        display: flex !important;
+    }
+    
+    #home.section.active .hero-section {
+        display: flex !important;
+    }
+    
+    /* Assicura colori corretti su desktop SOLO per home attiva */
+    #home.section.active .hero-title {
+        color: var(--text-primary) !important;
+        font-size: 2.5rem !important;
+    }
+    
+    #home.section.active .card-title {
+        color: var(--text-primary) !important;
+    }
+    
+    #home.section.active .card-description {
+        color: var(--text-secondary) !important;
+    }
+    
+    /* Assicura che le altre sezioni attive mantengano la loro visibilità normale */
+    .section.active {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    .section.active .section-title {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Fix per pulsante "Inizia itinerario" su desktop */
+    .main-action-btn {
+        right: 30px;
+    }
+    
+    .main-action-btn .btn-overlay {
+        max-width: 250px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0.75rem 1.2rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* FIX FINALE - Controllo dimensioni pulsante "Inizia Itinerario" senza interferire con layout card */
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* Solo il pulsante specifico, non altri elementi del layout */
+    button.btn.btn-glow[onclick="switchTab('navigazione')"] {
+        max-width: 200px !important;
+        font-size: 0.9rem !important;
+        animation: heartbeat-glow-tablet 2.5s ease-in-out infinite !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+}
+
+@media (min-width: 1025px) {
+    /* Solo il pulsante specifico su desktop */
+    button.btn.btn-glow[onclick="switchTab('navigazione')"] {
+        max-width: 250px !important;
+        font-size: 1rem !important;
+        animation: heartbeat-glow-tablet 2.5s ease-in-out infinite !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
 }
 
