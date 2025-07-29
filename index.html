@@ -244,56 +244,98 @@
             <div class="content-section">
                 <h2 class="section-title">
                     <i data-feather="book"></i>
-                    Sezione Didattica
+                    Quiz
                 </h2>
 
                 <!-- Quiz Section -->
                 <div class="educational-block">
                     <div id="quiz-intro" class="quiz-intro">
-                        <h3>Quiz: Scopri quanto conosci Regalbuto</h3>
+                        <div class="quiz-intro-icon">
+                            <i data-feather="help-circle"></i>
+                        </div>
+                        <h3>🏛️ Quiz: Scopri quanto conosci Regalbuto</h3>
                         <p>Metti alla prova le tue conoscenze sulla storia, la cultura e il territorio di Regalbuto con questo quiz di 10 domande.</p>
-                        <button class="btn btn-primary" onclick="startQuiz()">
+                        <div class="quiz-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">10</span>
+                                <span class="stat-label">Domande</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">5</span>
+                                <span class="stat-label">Minuti</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">📜</span>
+                                <span class="stat-label">Storia & Cultura</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary quiz-start-btn" onclick="startQuiz()">
                             <i data-feather="play"></i>
-                            Avvia il Quiz
+                            Inizia il Quiz
                         </button>
                     </div>
                     
                     <div id="quiz-container" style="display: none;">
+                        <div class="quiz-header">
+                            <div class="quiz-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 10%"></div>
+                                </div>
+                                <span class="progress-text">Domanda 1 di 10</span>
+                            </div>
+                        </div>
+                        
                         <div class="quiz-question active" data-question="1">
-                            <h4>Domanda 1/10</h4>
-                            <p>In quale provincia si trova Regalbuto?</p>
-                            <div class="quiz-options">
-                                <label>
-                                    <input type="radio" name="q1" value="a">
-                                    Palermo
-                                </label>
-                                <label>
-                                    <input type="radio" name="q1" value="b">
-                                    Enna
-                                </label>
-                                <label>
-                                    <input type="radio" name="q1" value="c">
-                                    Catania
-                                </label>
+                            <div class="question-card">
+                                <div class="question-header">
+                                    <span class="question-category">🏛️ Geografia</span>
+                                    <span class="question-number">1/10</span>
+                                </div>
+                                <h4 class="question-title">In quale provincia si trova Regalbuto?</h4>
+                                <div class="quiz-options">
+                                    <label class="option-card">
+                                        <input type="radio" name="q1" value="a">
+                                        <span class="option-text">Palermo</span>
+                                        <span class="option-checkmark">✓</span>
+                                    </label>
+                                    <label class="option-card">
+                                        <input type="radio" name="q1" value="b">
+                                        <span class="option-text">Enna</span>
+                                        <span class="option-checkmark">✓</span>
+                                    </label>
+                                    <label class="option-card">
+                                        <input type="radio" name="q1" value="c">
+                                        <span class="option-text">Catania</span>
+                                        <span class="option-checkmark">✓</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
                         <div class="quiz-question" data-question="2">
-                            <h4>Domanda 2/10</h4>
-                            <p>Qual è il nome del lago artificiale vicino a Regalbuto?</p>
-                            <div class="quiz-options">
-                                <label>
-                                    <input type="radio" name="q2" value="a">
-                                    Lago di Pergusa
-                                </label>
-                                <label>
-                                    <input type="radio" name="q2" value="b">
-                                    Lago Pozzillo
-                                </label>
-                                <label>
-                                    <input type="radio" name="q2" value="c">
-                                    Lago Arancio
-                                </label>
+                            <div class="question-card">
+                                <div class="question-header">
+                                    <span class="question-category">🌊 Natura</span>
+                                    <span class="question-number">2/10</span>
+                                </div>
+                                <h4 class="question-title">Qual è il nome del lago artificiale vicino a Regalbuto?</h4>
+                                <div class="quiz-options">
+                                    <label class="option-card">
+                                        <input type="radio" name="q2" value="a">
+                                        <span class="option-text">Lago di Pergusa</span>
+                                        <span class="option-checkmark">✓</span>
+                                    </label>
+                                    <label class="option-card">
+                                        <input type="radio" name="q2" value="b">
+                                        <span class="option-text">Lago Pozzillo</span>
+                                        <span class="option-checkmark">✓</span>
+                                    </label>
+                                    <label class="option-card">
+                                        <input type="radio" name="q2" value="c">
+                                        <span class="option-text">Lago Arancio</span>
+                                        <span class="option-checkmark">✓</span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
 
@@ -473,49 +515,6 @@
                             <i data-feather="refresh-cw"></i>
                             Riprova
                         </button>
-                    </div>
-                </div>
-
-                <!-- Educational Materials -->
-                <div class="educational-block">
-                    <h3>Materiali Didattici</h3>
-                    <div class="materials-grid">
-                        <div class="material-card">
-                            <div class="material-icon">📖</div>
-                            <h4>Storia di Regalbuto</h4>
-                            <p>Guida completa alla storia della città dalle origini ai giorni nostri</p>
-                            <a href="src/docs/storia-regalbuto.pdf" download="Storia-di-Regalbuto.pdf" class="btn btn-outline">
-                                <i data-feather="download"></i>
-                                Scarica PDF
-                            </a>
-                        </div>
-                        <div class="material-card">
-                            <div class="material-icon">🏛️</div>
-                            <h4>Architettura Sacra</h4>
-                            <p>Approfondimento sulle chiese e i conventi del territorio</p>
-                            <a href="src/docs/regalbuto-guida.pdf" download="Guida-Architettura-Sacra-Regalbuto.pdf" class="btn btn-outline">
-                                <i data-feather="download"></i>
-                                Scarica PDF
-                            </a>
-                        </div>
-                        <div class="material-card">
-                            <div class="material-icon">🌿</div>
-                            <h4>Natura e Ambiente</h4>
-                            <p>Flora, fauna e caratteristiche geografiche del territorio</p>
-                            <a href="src/docs/natura-ambiente-pozzillo.pdf" download="Natura-Ambiente-Lago-Pozzillo.pdf" class="btn btn-outline">
-                                <i data-feather="download"></i>
-                                Scarica PDF
-                            </a>
-                        </div>
-                        <div class="material-card">
-                            <div class="material-icon">🎭</div>
-                            <h4>Tradizioni e Folklore</h4>
-                            <p>Feste, tradizioni e cultura popolare di Regalbuto</p>
-                            <button class="btn btn-outline">
-                                <i data-feather="download"></i>
-                                Scarica PDF
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -869,7 +868,7 @@
         </button>
         <button class="nav-item" onclick="switchTab('didattica')" data-tab="didattica">
             <i data-feather="book"></i>
-            <span>Didattica</span>
+            <span>Quiz</span>
         </button>
     </nav>
 
