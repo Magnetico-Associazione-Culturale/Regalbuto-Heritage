@@ -1829,53 +1829,6 @@ function restartQuiz() {
 }
 
 // Virtual Tour Functions
-function loadLocation(locationId) {
-    console.log('Loading location:', locationId);
-    
-    // Remove active class from all location cards
-    const locationCards = document.querySelectorAll('.location-card');
-    locationCards.forEach(card => card.classList.remove('active'));
-    
-    // Add active class to selected location
-    const selectedCard = event.target.closest('.location-card');
-    if (selectedCard) {
-        selectedCard.classList.add('active');
-    }
-    W
-    // Location URLs for virtual tours
-    const locations = {
-        'convento': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
-        'santa-maria-croce': 'panoramas/panorama.html?img=src/imgs/360/smaria-altare.JPG',
-        'san-basilio': 'panoramas/panorama.html?img=src/imgs/360/sbasilio-altare.JPG',
-        'panorama': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
-        'piazza': 'https://kuula.co/share/collection/7l2K7?logo=1&info=1&fs=1&vr=1&sd=1&thumbs=1',
-        'monumento-caduti': 'panoramas/panorama.html?img=src/imgs/360/caduti.JPG',
-        'san-agostino': 'panoramas/panorama.html?img=src/imgs/360/sagostino-altare.JPG',
-        'teatro-urania': 'panoramas/panorama.html?img=src/imgs/360/teatro.JPG',
-        'purgatorio': 'panoramas/panorama.html?img=src/imgs/360/srocco-ingresso.JPG'
-    };
-    
-    const iframe = document.querySelector('#pano-viewer iframe');
-    if (iframe && locations[locationId]) {
-        console.log('Setting iframe src to:', locations[locationId]);
-        iframe.src = locations[locationId];
-        
-        // Aggiungi listener per debug
-        iframe.onload = function() {
-            console.log('Iframe caricato con successo');
-        };
-        
-        iframe.onerror = function() {
-            console.error('Errore caricamento iframe');
-        };
-        
-        // Removed notification
-    } else {
-        console.error('Iframe o location non trovati');
-    }
-    
-    console.log(`Loading virtual tour location: ${locationId}`);
-}
 
 // New function to load location using JSON data dynamically
 function loadLocationFromJSON(monumentId, imagePath) {
@@ -2134,16 +2087,34 @@ function loadLocationAndScrollFromJSON(monumentId, imagePath) {
 }
 
 function loadLocationAndScroll(locationId) {
-    // Prima carica la location
-    loadLocation(locationId);
+    console.log('loadLocationAndScroll called for:', locationId);
     
-    // Poi scroll automatico verso l'iframe
-    const iframe = document.querySelector('#pano-viewer');
-    if (iframe) {
-        iframe.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-        });
+    // Find the location card with this locationId and trigger its click event
+    const locationCard = document.querySelector(`.location-card[data-monument-id="${locationId}"]`);
+    if (locationCard && locationCard.onclick) {
+        locationCard.onclick();
+    } else {
+        console.warn('Location card not found for:', locationId);
+        // Fallback: try to load from JSON directly
+        loadFromJSONFallback(locationId);
+    }
+}
+
+// Fallback function to load location from JSON when card is not found
+async function loadFromJSONFallback(locationId) {
+    try {
+        const response = await fetch('data/monuments.json');
+        const monuments = await response.json();
+        
+        const monument = monuments.find(m => m.id === locationId);
+        if (monument && monument.images) {
+            const firstImage360 = monument.images.find(img => img.format === '360');
+            if (firstImage360) {
+                loadLocationAndScrollFromJSON(monument.id, firstImage360.path);
+            }
+        }
+    } catch (error) {
+        console.error('Error in loadFromJSONFallback:', error);
     }
 }
 
@@ -3130,7 +3101,7 @@ function toggleVRMode() {
     
     console.log('WebView rilevata:', isInWebView);
 
-    // Verifica se è un panorama A-Frame
+    // Verifica se è un panorama A-Frame (tutti i panorami ora sono A-Frame)
     if (currentSrc.includes('panorama.html')) {
         console.log('Panorama A-Frame rilevato');
         
@@ -3189,7 +3160,7 @@ function toggleVRMode() {
             showNotification('Ruota il dispositivo per la modalità VR', 'info');
 
         } else {
-            // DISATTIVAZIONE VR (solo per web browser)
+            // DISATTIVAZIONE VR
             console.log('Disattivando modalità VR...');
             
             vrBtn.innerHTML = '<i data-feather="eye"></i> Modalità VR';
@@ -3208,50 +3179,13 @@ function toggleVRMode() {
             showNotification('Modalità VR disattivata', 'info');
         }
 
-    } else {
-        // KUULA: Metodo tradizionale per iframe Kuula
-        console.log('Iframe Kuula rilevato');
-        
-        let src = iframe.src;
-        let isVRMode = src.includes('vr=1');
-        
-        if (isVRMode) {
-            // Disable VR mode
-            src = src.replace('vr=1', 'vr=0');
-            const vrBtn = document.querySelector('.btn[onclick="toggleVRMode()"]');
-            if (vrBtn) {
-                vrBtn.innerHTML = '<i data-feather="eye"></i> Modalità VR';
-                vrBtn.classList.remove('btn-primary');
-                vrBtn.classList.add('btn-outline');
-            }
-            removeVRExitButton();
-            showNotification('Modalità VR disattivata', 'info');
-        } else {
-            // Enable VR mode
-            src = src.replace('vr=0', 'vr=1');
-            const vrBtn = document.querySelector('.btn[onclick="toggleVRMode()"]');
-            if (vrBtn) {
-                vrBtn.innerHTML = '<i data-feather="eye"></i> VR Attiva';
-                vrBtn.classList.remove('btn-outline');
-                vrBtn.classList.add('btn-primary');
-            }
-            
-            setTimeout(() => {
-                createVRExitButton();
-            }, 1000);
-            
-            showNotification('Modalità VR attivata', 'info');
+        // Re-initialize feather icons for the updated button
+        if (typeof feather !== 'undefined') {
+            feather.replace();
         }
-        
-        // Force iframe reload
-        iframe.src = 'about:blank';
-        setTimeout(() => {
-            iframe.src = src;
-            // Re-initialize feather icons for the updated button
-            if (typeof feather !== 'undefined') {
-                feather.replace();
-            }
-        }, 100);
+    } else {
+        console.warn('URL non riconosciuto come panorama A-Frame:', currentSrc);
+        showNotification('Formato panorama non supportato', 'error');
     }
 }
 
