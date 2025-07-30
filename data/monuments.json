@@ -4,8 +4,8 @@
         "id": "chiesa-santa-maria-la-croce",
         "short_description": "Chiesa di Santa Maria la Croce, importante punto di culto locale",
         "category": "church",
-        "lat": 37.649969,
-        "lon": 14.640583,
+        "lat": 37.6497412053464,
+        "lon": 14.64096397161484,
         "address": "Regalbuto, EN, Italia",
         "audio": {
             "path": "src/audio/chiesa-santa-maria-la-croce.mp3",
@@ -68,8 +68,8 @@
         "id": "chiesa-san-giovanni",
         "short_description": "Chiesa dedicata a San Giovanni, importante edificio religioso del patrimonio locale",
         "category": "church",
-        "lat": 37.6497325,
-        "lon": 14.6404821,
+        "lat": 37.64964988770097,
+        "lon": 14.640467762947084,
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -110,8 +110,8 @@
         "id": "chiesa-san-basilio",
         "short_description": "Chiesa dedicata a San Basilio, importante testimonianza dell'architettura religiosa locale",
         "category": "church",
-        "lat": 37.652803,
-        "lon": 14.639812,
+        "lat": 37.65259747966456,
+        "lon": 14.640803039073946,
         "address": "Regalbuto, EN, Italia",
         "audio": {
             "path": "src/audio/chiesa-san-basilio.mp3",
@@ -160,8 +160,8 @@
         "id": "chiesa-purgatorio",
         "short_description": "Chiesa dedicata a San Rocco, conosciuta anche come Chiesa del Purgatorio, caratteristico esempio di architettura religiosa popolare",
         "category": "church",
-        "lat": 37.652933,
-        "lon": 14.640170,
+        "lat": 37.65291176931143,
+        "lon": 14.640113711357118,
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -189,8 +189,8 @@
         "id": "chiesa-del-collegio",
         "short_description": "Chiesa annessa al collegio, importante centro di formazione religiosa e culturale",
         "category": "church",
-        "lat": 37.650658,
-        "lon": 14.640722,
+        "lat": 37.65066711745658,
+        "lon": 14.640644788742065,
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -254,8 +254,8 @@
         "id": "chiesa-san-domenico",
         "short_description": "Chiesa dedicata a San Domenico, parte del patrimonio domenicano locale",
         "category": "church",
-        "lat": 37.654306,
-        "lon": 14.638889,
+        "lat": 37.65428358557397,
+        "lon": 14.638780653476717,
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -283,8 +283,8 @@
         "id": "chiesa-san-sebastiano",
         "short_description": "Chiesa dedicata a San Sebastiano, protettore dalla peste e dalle epidemie",
         "category": "church",
-        "lat": 37.654191,
-        "lon": 14.636747,
+        "lat": 37.65414767921148,
+        "lon": 14.636720716953278,
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -337,12 +337,12 @@
         ]
     },
     {
-        "name": "Chiesa di Santa Maria delle Grazie e convento annesso",
+        "name": "Chiesa di Santa Maria delle Grazie",
         "id": "chiesa-sm-delle-grazie-convento",
         "short_description": "Chiesa di Santa Maria delle Grazie con convento annesso, sede dell'Istituto Femminile S. Giuseppe",
         "category": "church",
-        "lat": 37.650709,
-        "lon": 14.641753,
+        "lat": 37.650766928393864,
+        "lon": 14.641669392585756,
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -369,8 +369,8 @@
         "id": "chiesa-sant-antonio-padova",
         "short_description": "Chiesa dedicata a Sant'Antonio da Padova, importante centro di devozione antoniana",
         "category": "church",
-        "lat": 37.650606,
-        "lon": 14.642021,
+        "lat": 37.65056730638518,
+        "lon": 14.642058312892916,
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -481,19 +481,19 @@
         ]
     },
     {
-        "name": "Convento di Sant'Agostino",
-        "id": "convento-sant-agostino",
-        "short_description": "Convento dedicato a Sant'Agostino, importante complesso monastico agostiniano",
+        "name": "Convento di San Giovanni",
+        "id": "convento-san-giovanni",
+        "short_description": "Convento dedicato a San Giovanni, importante complesso monastico",
         "category": "convent",
-        "lat": 37.649602,
-        "lon": 14.640310,
+        "lat": 37.64959679599503,
+        "lon": 14.640274643898012,
         "address": "Regalbuto, EN, Italia",
         "audio": {
-            "path": "src/audio/convento-sant-agostino.mp3",
-            "duration": 300,
-            "language": "it",
-            "title": "Sistema Audio Guida Regalbuto",
-            "description": "Audio guida per il Convento di Sant'Agostino"
+            "path": "",
+            "duration": null,
+            "language": "",
+            "title": "",
+            "description": ""
         },
         "images": [
             {
@@ -783,8 +783,8 @@
         "id": "istituto-intesa-sanpaolo",
         "short_description": "Sede locale dell'Istituto Bancario Intesa Sanpaolo",
         "category": "financial",
-        "lat": 37.6450,
-        "lon": 14.6380,
+        "lat": 37.65291176931143,
+        "lon": 14.640113711357118,
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -845,8 +845,8 @@
         "id": "palazzo-falcone",
         "short_description": "Palazzo storico della famiglia Falcone, testimonianza dell'architettura signorile",
         "category": "palace",
-        "lat": 37.651814,
-        "lon": 14.640389,
+        "lat": 37.651862716246086,
+        "lon": 14.640545547008516,
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -879,8 +879,8 @@
         "id": "palazzo-gerardi",
         "short_description": "Palazzo storico della famiglia Gerardi, importante esempio di architettura civile",
         "category": "palace",
-        "lat": 37.652067,
-        "lon": 14.640949,
+        "lat": 37.65186908705838,
+        "lon": 14.640845954418184,
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -913,8 +913,8 @@
         "id": "palazzo-comunale",
         "short_description": "Sede del Municipio di Regalbuto, centro amministrativo della città",
         "category": "civic",
-        "lat": 37.652236,
-        "lon": 14.640434,
+        "lat": 37.65225133479798,
+        "lon": 14.640824496746065,
         "address": "Piazza della Repubblica, 1, Regalbuto, EN, Italia",
         "images": [
             {
