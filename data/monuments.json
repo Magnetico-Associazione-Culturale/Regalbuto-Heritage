@@ -6,7 +6,6 @@
         "category": "church",
         "lat": 37.649969,
         "lon": 14.640583,
-        "maps_url": "https://maps.app.goo.gl/36n3wGo6KZ3wdWKa7",
         "address": "Regalbuto, EN, Italia",
         "audio": {
             "path": "src/audio/chiesa-santa-maria-la-croce.mp3",
@@ -71,7 +70,6 @@
         "category": "church",
         "lat": 37.6497325,
         "lon": 14.6404821,
-        "maps_url": "https://maps.app.goo.gl/othA2S9tDMcGK3FBA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -114,7 +112,6 @@
         "category": "church",
         "lat": 37.652803,
         "lon": 14.639812,
-        "maps_url": "https://maps.app.goo.gl/vSNW8QEorSkNDE487",
         "address": "Regalbuto, EN, Italia",
         "audio": {
             "path": "src/audio/chiesa-san-basilio.mp3",
@@ -165,7 +162,6 @@
         "category": "church",
         "lat": 37.652933,
         "lon": 14.640170,
-        "maps_url": "https://maps.app.goo.gl/RnocN7suTUtA44dcA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -195,7 +191,6 @@
         "category": "church",
         "lat": 37.650658,
         "lon": 14.640722,
-        "maps_url": "https://maps.app.goo.gl/uoby9MpGjr3MShXR8",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -232,7 +227,6 @@
         "category": "church",
         "lat": 37.650585,
         "lon": 14.644247,
-        "maps_url": "https://maps.app.goo.gl/JmebSSTwzJs3wbBj6",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -262,7 +256,6 @@
         "category": "church",
         "lat": 37.654306,
         "lon": 14.638889,
-        "maps_url": "https://maps.app.goo.gl/9YNxj1NhouS5oJ7FA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -292,7 +285,6 @@
         "category": "church",
         "lat": 37.654191,
         "lon": 14.636747,
-        "maps_url": "https://maps.app.goo.gl/qfcQQjYUEF8nXwbbA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -322,7 +314,6 @@
         "category": "church",
         "lat": 37.653628,
         "lon": 14.634098,
-        "maps_url": "https://maps.app.goo.gl/BQKrtvufPcqWstZu8",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -352,7 +343,6 @@
         "category": "church",
         "lat": 37.650709,
         "lon": 14.641753,
-        "maps_url": "https://maps.app.goo.gl/QKmP4c3c6zWVSHiGA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -381,7 +371,6 @@
         "category": "church",
         "lat": 37.650606,
         "lon": 14.642021,
-        "maps_url": "https://maps.app.goo.gl/xsGJdJe1ZfeZeLWK8",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -411,7 +400,6 @@
         "category": "civic",
         "lat": 37.654446,
         "lon": 14.638834,
-        "maps_url": "https://maps.app.goo.gl/w3B61q3drdJNbEPU6",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -449,7 +437,6 @@
         "category": "church",
         "lat": 37.649874,
         "lon": 14.646600,
-        "maps_url": "",
         "address": "Contrada San Calogero, Regalbuto, EN, Italia",
         "images": [
             {
@@ -500,7 +487,6 @@
         "category": "convent",
         "lat": 37.649602,
         "lon": 14.640310,
-        "maps_url": "https://maps.app.goo.gl/tV7agQC2Wzuy9DdH8",
         "address": "Regalbuto, EN, Italia",
         "audio": {
             "path": "src/audio/convento-sant-agostino.mp3",
@@ -558,7 +544,6 @@
         "category": "convent",
         "lat": 37.669940,
         "lon": 14.625629,
-        "maps_url": "https://maps.app.goo.gl/bwwdjx9qspeiSmxS6",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -622,7 +607,6 @@
         "category": "convent",
         "lat": 37.650955,
         "lon": 14.641503,
-        "maps_url": "https://maps.app.goo.gl/zFR6uWHiXjoAvJgd9",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -652,7 +636,6 @@
         "category": "educational",
         "lat": 37.650481,
         "lon": 14.640677,
-        "maps_url": "https://maps.app.goo.gl/dXbkhcBzdCwct2WAA",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -689,7 +672,6 @@
         "category": "civic",
         "lat": 37.649513,
         "lon": 14.640744,
-        "maps_url": "https://maps.app.goo.gl/Y8ZdEJJdnEfLNZfg7",
         "address": "Piazza Centrale, Regalbuto, EN, Italia",
         "audio": {
             "path": "src/audio/monumento-ai-caduti.mp3",
@@ -732,7 +714,6 @@
         "category": "theater",
         "lat": 37.649339,
         "lon": 14.640664,
-        "maps_url": "https://maps.app.goo.gl/bxz44Y7xddcPseqr5",
         "address": "Via Teatro, Regalbuto, EN, Italia",
         "audio": {
             "path": "src/audio/cine-teatro-urania.mp3",
@@ -776,7 +757,6 @@
         "category": "financial",
         "lat": 37.650063,
         "lon": 14.640791,
-        "maps_url": "https://maps.app.goo.gl/1CTjLE8i9ZPcWBSr5",
         "address": "Via Gian Filippo Ingrassia, 96, Regalbuto, EN, Italia",
         "images": [
             {
@@ -805,7 +785,6 @@
         "category": "financial",
         "lat": 37.6450,
         "lon": 14.6380,
-        "maps_url": "https://www.google.com/maps/place/Intesa+San+Paolo,+Regalbuto/@37.6450,14.6380,17z",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -834,7 +813,6 @@
         "category": "palace",
         "lat": 37.650160,
         "lon": 14.640799,
-        "maps_url": "https://maps.app.goo.gl/jnY3iJbPuJmnLMKE6",
         "address": "Via Gian Filippo Ingrassia, 71, Regalbuto, EN, Italia",
         "images": [
             {
@@ -869,7 +847,6 @@
         "category": "palace",
         "lat": 37.651814,
         "lon": 14.640389,
-        "maps_url": "https://maps.app.goo.gl/11szoYS55Rk12owd6",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -904,7 +881,6 @@
         "category": "palace",
         "lat": 37.652067,
         "lon": 14.640949,
-        "maps_url": "https://maps.app.goo.gl/TGeLkq3mGc6MSkYM7",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -939,7 +915,6 @@
         "category": "civic",
         "lat": 37.652236,
         "lon": 14.640434,
-        "maps_url": "https://maps.app.goo.gl/smMJq1Q86eirZLrb6",
         "address": "Piazza della Repubblica, 1, Regalbuto, EN, Italia",
         "images": [
             {
@@ -968,7 +943,6 @@
         "category": "palace",
         "lat": null,
         "lon": null,
-        "maps_url": "",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
@@ -1003,7 +977,6 @@
         "category": "palace",
         "lat": 37.653959,
         "lon": 14.638464,
-        "maps_url": "https://maps.app.goo.gl/tWpLkJ9wTckdtrYRA",
         "address": "Via Dante, 92",
         "images": [
             {
@@ -1039,7 +1012,6 @@
         "category": "technology",
         "lat": 37.6555295,
         "lon": 14.6282223,
-        "maps_url": "https://www.google.com/maps/place/Tecnopolo+Magnetico/@37.6555336,14.6233514,17z/data=!3m1!4b1!4m6!3m5!1s0x131135004bd582e3:0xcdd4146a12d3cf67!8m2!3d37.6555295!4d14.6282223!16s%2Fg%2F11yf2nsc88?entry=ttu&g_ep=EgoyMDI1MDcxMy4wIKXMDSoASAFQAw%3D%3D",
         "address": "Regalbuto, EN, Italia",
         "images": [
             {
