@@ -24,28 +24,28 @@
                 "alt": "Chiesa di Santa Maria la Croce vista esterna"
             },
             {
-                "title": "Chiesa di Santa Maria la Croce - Interno",
+                "title": "Navata centrale",
                 "description": "Vista dell'interno della chiesa con l'altare principale",
                 "format": "360",
                 "path": "src/imgs/360/smaria-ingresso.JPG",
                 "alt": "Vista panoramica 360° dell'interno della Chiesa di Santa Maria la Croce"
             },
             {
-                "title": "Chiesa di Santa Maria la Croce - Altare maggiora",
-                "description": "Altare maggiore della chiesa",
+                "title": "Altare maggiore",
+                "description": "Vista panoramica dell'altare maggiore",
                 "format": "360",
                 "path": "src/imgs/360/smaria-altare.JPG",
                 "alt": "Vista panoramica 360° dell'altare maggiore"
             },
             {
-                "title": "Chiesa di Santa Maria la Croce - Navata destra",
+                "title": "Navata destra",
                 "description": "Vista della navata destra della chiesa",
                 "format": "360",
                 "path": "src/imgs/360/smaria-dx.JPG",
                 "alt": "Vista panoramica 360° della navata destra della chiesa"
             },
             {
-                "title": "Chiesa di Santa Maria la Croce - Navata sinistra",
+                "title": "Navata sinistra",
                 "description": "Vista della navata sinistra della chiesa",
                 "format": "360",
                 "path": "src/imgs/360/smaria-sx.JPG",
@@ -80,14 +80,14 @@
                 "alt": "Chiesa di Sant'Agostino vista esterna"
             },
             {
-                "title": "Ingresso della Chiesa di Sant'Agostino",
+                "title": "Ingresso",
                 "description": "Vista dell'ingresso della Chiesa di Sant'Agostino",
                 "format": "360",
                 "path": "src/imgs/360/sagostino-ingresso.JPG",
                 "alt": "Chiesa di Sant'Agostino - Ingresso"
             },
             {
-                "title": "Altare maggiore della chiesa di Sant'Agostino",
+                "title": "Altare maggiore",
                 "description": "Vista a 360 dell'altare maggiore della Chiesa di Sant'Agostino",
                 "format": "360",
                 "path": "src/imgs/360/sagostino-altare.JPG",
@@ -123,21 +123,21 @@
         },
         "images": [
             {
-                "title": "Chiesa Madre di San Basilio - Ingresso",
-                "description": "Vista dell'ingresso principale della Chiesa di San Basilio",
+                "title": "Navata centrale",
+                "description": "Vista della navata centrale della Chiesa di San Basilio",
                 "format": "360",
                 "path": "src/imgs/360/sbasilio-ingresso.JPG",
-                "alt": "Vista panoramica 360° dell'ingresso della Chiesa di San Basilio"
+                "alt": "Vista panoramica 360° della navata centrale della Chiesa di San Basilio"
             },
             {
-                "title": "Chiesa Madre di San Basilio - Altare",
+                "title": "Altare maggiore",
                 "description": "Altare principale della Chiesa di San Basilio",
                 "format": "360",
                 "path": "src/imgs/360/sbasilio-altare.JPG",
                 "alt": "Vista panoramica 360° dell'altare della Chiesa di San Basilio"
             },
             {
-                "title": "Chiesa Madre di San Basilio - Esterno",
+                "title": "Esterno della Chiesa Madre di San Basilio",
                 "description": "Vista esterna della Chiesa di San Basilio",
                 "format": "standard",
                 "path": "src/imgs/flat/chiesa-san-basilio.jpg",
@@ -171,6 +171,13 @@
                 "role": "thumbnail",
                 "path": "src/imgs/flat/chiesa-purgatorio.jpg",
                 "alt": "Chiesa di San Rocco"
+            },
+            {
+                "title": "Interno - ingresso",
+                "description": "Vista dell'interno della Chiesa del Purgatorio",
+                "format": "360",
+                "path": "src/imgs/360/srocco-ingresso.JPG",
+                "alt": "Vista panoramica 360° dell'interno della Chiesa del Purgatorio"
             }
         ],
         "history": [
@@ -202,7 +209,7 @@
                 "alt": "Vista panoramica 360° dell'ingresso della Chiesa del Collegio"
             },
             {
-                "title": "Interno della Chiesa del Collegio",
+                "title": "Interno - ingresso",
                 "description": "Unica navata della Chiesa del Collegio con altare maggiore",
                 "format": "360",
                 "path": "src/imgs/360/chiesa-collegio.JPG",
@@ -394,7 +401,7 @@
         ]
     },
     {
-        "name": "Caserma C.C. (ex Convento di San Domenico)",
+        "name": "Caserma dei Carabinieri (ex Convento di San Domenico)",
         "id": "caserma-cc-ex-convento-san-domenico",
         "short_description": "Edificio che ospita la Caserma dei Carabinieri, originariamente Convento di San Domenico",
         "category": "civic",
@@ -448,15 +455,15 @@
                 "alt": "Chiesa rurale di San Calogero"
             },
             {
-                "title": "Interno della Chiesa rurale di San Calogero",
+                "title": "Interno",
                 "description": "Interno della chiesa",
                 "format": "360",
                 "path": "src/imgs/360/chiesa-san-calogero.JPG",
                 "alt": "Vista panoramica 360° dell'interno della Chiesa rurale di San Calogero"
             },
              {
-                "title": "Panorama dalla Chiesa rurale di San Calogero",
-                "description": "Panorama su Regalbuto",
+                "title": "Panorama",
+                "description": "Panorama su Regalbuto dalla Chiesa rurale di San Calogero",
                 "format": "360",
                 "path": "src/imgs/360/vista-san-calogero.JPG",
                 "alt": "Vista panoramica 360° su Regalbuto dalla Chiesa rurale di San Calogero"
@@ -481,9 +488,9 @@
         ]
     },
     {
-        "name": "Convento di San Giovanni",
+        "name": "Convento di San Giovanni (Sant'Agostino)",
         "id": "convento-san-giovanni",
-        "short_description": "Convento dedicato a San Giovanni, importante complesso monastico",
+        "short_description": "Convento dedicato a San Giovanni, oggi noto come Convento di Sant'Agostino",
         "category": "convent",
         "lat": 37.64959679599503,
         "lon": 14.640274643898012,
@@ -502,27 +509,6 @@
                 "format": "standard",
                 "role": "thumbnail",
                 "path": "src/imgs/flat/chiesa-sant-agostino.JPG",
-                "alt": "Convento di Sant'Agostino vista esterna"
-            },
-            {
-                "title": "Convento di Sant'Agostino - Ingresso",
-                "description": "Vista dell'ingresso del Convento di Sant'Agostino",
-                "format": "360",
-                "path": "src/imgs/360/sagostino-ingresso.JPG",
-                "alt": "Vista panoramica 360° dell'ingresso del Convento di Sant'Agostino"
-            },
-            {
-                "title": "Convento di Sant'Agostino - Altare",
-                "description": "Altare principale del Convento di Sant'Agostino",
-                "format": "360",
-                "path": "src/imgs/360/sagostino-altare.JPG",
-                "alt": "Vista panoramica 360° dell'altare del Convento di Sant'Agostino"
-            },
-            {
-                "title": "Convento di Sant'Agostino - Esterno",
-                "description": "Vista esterna del Convento di Sant'Agostino",
-                "format": "standard",
-                "path": "src/imgs/flat/convento-santantonio.avif",
                 "alt": "Convento di Sant'Agostino vista esterna"
             }
         ],
@@ -554,35 +540,35 @@
                 "alt": "Convento di Sant'Antonio"
             },
             {
-                "title": "Chiostro del Convento di Sant'Antonio",
+                "title": "Interno del chiostro",
                 "description": "Chiostro del convento",
                 "format": "360",
                 "path": "src/imgs/360/chiostro-convento-sant-antonio.JPG",
                 "alt": "Vista panoramica 360° dell'interno del chiostro del Convento di Sant'Antonio"
             },
             {
-                "title": "Chiesa del Convento di Sant'Antonio",
+                "title": "Interno della chiesa",
                 "description": "Interno della chiesa del Convento",
                 "format": "360",
                 "path": "src/imgs/360/chiesa-convento-sant-antonio.JPG",
                 "alt": "Vista panoramica 360° dell'interno del Convento di Sant'Antonio"
             },
             {
-                "title": "TEST optimized Chiesa del Convento di Sant'Antonio",
+                "title": "TEST optimized Chiesa",
                 "description": "Chiesa del Convento di Sant'Antonio",
                 "format": "360",
                 "path": "src/imgs/360/test-optimized.JPG",
                 "alt": "Convento di Sant'Antonio vista esterna"
             },
             {
-                "title": "Vista esterna del Convento di Sant'Antonio con insediamento rupestre",
+                "title": "Panorama dell'insediamento rupestre",
                 "description": "Vista esterna del Convento di Sant'Antonio con insediamento rupestre",
                 "format": "360",
                 "path": "src/imgs/360/vista-convento-sant-antonio.JPG",
                 "alt": "Vista panoramica 360° del Convento di Sant'Antonio con insediamento rupestre"
             },
             {
-                "title": "Grotta dell'insediamento rupestre di monte Sant'Antonio",
+                "title": "Interno di una grotta",
                 "description": "Grotta dell'insediamento rupestre di monte Sant'Antonio",
                 "format": "360",
                 "path": "src/imgs/360/grotta-insediamento-sant-antonio.JPG",
@@ -648,7 +634,7 @@
             },
             {
                 "title": "Chiostro del Collegio di Maria",
-                "description": "Chiostro del Collegio di Maria con aula didattica",
+                "description": "Chiostro",
                 "format": "360",
                 "path": "src/imgs/360/chiostro-collegio-maria.JPG",
                 "alt": "Vista panoramica 360° del Chiostro del Collegio di Maria"
@@ -689,7 +675,7 @@
                 "alt": "Vista panoramica 360° del Monumento ai Caduti"
             },
             {
-                "title": "Monumento ai Caduti - Vista frontale",
+                "title": "Vista frontale",
                 "description": "Vista frontale del Monumento ai Caduti",
                 "format": "standard",
                 "path": "src/imgs/flat/cadutiflat.png",
@@ -732,8 +718,8 @@
                 "alt": "CineTeatro Urania vista esterna"
             },
             {
-                "title": "CineTeatro Urania",
-                "description": "Vista del CineTeatro Urania",
+                "title": "Interno",
+                "description": "Vista interna del CineTeatro Urania",
                 "format": "360",
                 "path": "src/imgs/360/teatro.JPG",
                 "alt": "Vista panoramica 360° del CineTeatro Urania"
