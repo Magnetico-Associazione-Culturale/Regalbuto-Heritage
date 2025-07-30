@@ -3811,6 +3811,7 @@ async function initializeGPSMap() {
             console.log('GPS Map loaded');
             await loadRouteData();
             setupRouteVisualization();
+            await loadMonumentsOnMap();
             updateCheckpointsList();
         });
         
@@ -3861,20 +3862,26 @@ async function loadRouteData() {
         const data = await response.json();
         routeData = data;
         
-        // Extract checkpoints from GeoJSON
+        // Load monuments data for checkpoints (since Points are no longer in GeoJSON)
+        const monumentsResponse = await fetch('data/monuments.json');
+        const monumentsData = await monumentsResponse.json();
+        
+        // Create checkpoints from monuments.json instead of GeoJSON Points
         checkpoints = [];
-        data.features.forEach(feature => {
-            if (feature.geometry.type === 'Point' && feature.properties.name) {
+        monumentsData.forEach(monument => {
+            if (monument.lat && monument.lon && 
+                !isNaN(parseFloat(monument.lat)) && 
+                !isNaN(parseFloat(monument.lon))) {
                 checkpoints.push({
-                    name: feature.properties.name,
-                    coordinates: feature.geometry.coordinates,
-                    monument_id: feature.properties.monument_id || null,
+                    name: monument.name,
+                    coordinates: [parseFloat(monument.lon), parseFloat(monument.lat)],
+                    monument_id: monument.id,
                     visited: false
                 });
             }
         });
         
-        console.log('Route data loaded:', checkpoints.length, 'checkpoints');
+        console.log('Route data loaded:', checkpoints.length, 'checkpoints from monuments.json');
         
         // Update total count
         document.getElementById('total-count').textContent = checkpoints.length;
@@ -3920,45 +3927,6 @@ function setupRouteVisualization() {
             }
         });
         
-        // Add checkpoints layer
-        gpsMap.addLayer({
-            id: 'checkpoints',
-            type: 'circle',
-            source: 'route',
-            filter: ['==', '$type', 'Point'],
-            paint: {
-                'circle-radius': 12,
-                'circle-color': '#ffd700',
-                'circle-stroke-color': '#4a5568',
-                'circle-stroke-width': 3
-            }
-        });
-        
-        // Add checkpoint labels with error handling
-        try {
-            gpsMap.addLayer({
-                id: 'checkpoint-labels',
-                type: 'symbol',
-                source: 'route',
-                filter: ['==', '$type', 'Point'],
-                layout: {
-                    'text-field': ['get', 'name'],
-                    'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
-                    'text-offset': [0, 2],
-                    'text-anchor': 'top',
-                    'text-size': 12
-                },
-                paint: {
-                    'text-color': '#2c2c2c',
-                    'text-halo-color': '#ffffff',
-                    'text-halo-width': 2
-                }
-            });
-        } catch (error) {
-            console.warn('Could not add text labels to map:', error.message);
-            // Continue without text labels - checkpoints will still be visible as circles
-        }
-        
         console.log('Route visualization setup completed successfully');
         
     } catch (error) {
@@ -3967,71 +3935,7 @@ function setupRouteVisualization() {
         return;
     }
     
-    // Add click events for checkpoints
-    gpsMap.on('click', 'checkpoints', async (e) => {
-        console.log('Checkpoint clicked, creating popup...');
-        
-        // Close any existing popups first
-        const existingPopups = document.querySelectorAll('.maplibregl-popup');
-        existingPopups.forEach(popup => popup.remove());
-        
-        const coordinates = e.features[0].geometry.coordinates.slice();
-        const name = e.features[0].properties.name;
-        const monumentId = e.features[0].properties.monument_id;
-        
-        console.log('Popup coordinates:', coordinates);
-        console.log('Monument ID:', monumentId);
-        
-        // Try to get monument data if monument_id is available
-        let popupContent = '';
-        if (monumentId) {
-            try {
-                const response = await fetch('data/monuments.json');
-                const monumentsData = await response.json();
-                const monument = monumentsData.find(m => m.id === monumentId);
-                
-                if (monument) {
-                    // Check if monument has virtual tour and audio guide
-                    const hasVirtualTour = monument.images && monument.images.some(img => img.format === '360');
-                    const hasAudioGuide = monument.audio && monument.audio.path;
-                    
-                    // Use the same enhanced tooltip as the OpenStreetMap
-                    popupContent = createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide);
-                    console.log('Created enhanced popup for:', monument.name);
-                } else {
-                    // Fallback if monument not found
-                    popupContent = createCheckpointTooltip(name, coordinates);
-                    console.log('Monument not found, using simple tooltip');
-                }
-            } catch (error) {
-                console.error('Error loading monument data for popup:', error);
-                popupContent = createCheckpointTooltip(name, coordinates);
-            }
-        } else {
-            // No monument_id, create simple checkpoint tooltip
-            popupContent = createCheckpointTooltip(name, coordinates);
-            console.log('No monument ID, using simple tooltip');
-        }
-        
-        // Create popup
-        const popup = createOptimallyPositionedPopup(coordinates, popupContent, gpsMap);
-        console.log('Popup created:', popup);
-        
-        // Force visibility after a delay
-        setTimeout(() => {
-            const popupElement = popup.getElement();
-            console.log('Popup element:', popupElement);
-            if (popupElement) {
-                popupElement.style.display = 'block';
-                popupElement.style.visibility = 'visible';
-                popupElement.style.opacity = '1';
-                popupElement.style.zIndex = '1000';
-                console.log('Popup forced visible');
-            }
-        }, 200);
-    });
-    
-    // Fit map to route bounds
+    // Fit map to route bounds (only LineString, no Points)
     const routeFeature = routeData.features.find(f => f.geometry.type === 'LineString');
     if (routeFeature) {
         const coordinates = routeFeature.geometry.coordinates;
@@ -4040,6 +3944,182 @@ function setupRouteVisualization() {
         }, new maplibregl.LngLatBounds(coordinates[0], coordinates[0]));
         
         gpsMap.fitBounds(bounds, { padding: 50 });
+    }
+}
+
+async function loadMonumentsOnMap() {
+    if (!gpsMap) {
+        console.warn('GPS map not available for monuments loading');
+        return;
+    }
+    
+    try {
+        console.log('Loading monuments on map...');
+        
+        // Load monuments data from JSON
+        const response = await fetch('data/monuments.json');
+        const monumentsData = await response.json();
+        
+        // Filter monuments that have valid coordinates
+        const validMonuments = monumentsData.filter(monument => 
+            monument.lat && monument.lon && 
+            !isNaN(parseFloat(monument.lat)) && 
+            !isNaN(parseFloat(monument.lon))
+        );
+        
+        console.log(`Found ${validMonuments.length} monuments with valid coordinates`);
+        
+        if (validMonuments.length === 0) {
+            console.warn('No monuments with valid coordinates found');
+            return;
+        }
+        
+        // Create GeoJSON data for monuments
+        const monumentsGeoJSON = {
+            type: 'FeatureCollection',
+            features: validMonuments.map(monument => ({
+                type: 'Feature',
+                properties: {
+                    id: monument.id,
+                    name: monument.name,
+                    category: monument.category,
+                    short_description: monument.short_description
+                },
+                geometry: {
+                    type: 'Point',
+                    coordinates: [parseFloat(monument.lon), parseFloat(monument.lat)]
+                }
+            }))
+        };
+        
+        // Add monuments source to map
+        gpsMap.addSource('monuments', {
+            type: 'geojson',
+            data: monumentsGeoJSON
+        });
+        
+        // Add monuments markers layer (same style as old checkpoints)
+        gpsMap.addLayer({
+            id: 'monuments-markers',
+            type: 'circle',
+            source: 'monuments',
+            paint: {
+                'circle-radius': 12,
+                'circle-color': '#ffd700', // Same yellow color as old checkpoints
+                'circle-stroke-color': '#4a5568', // Same dark stroke as old checkpoints
+                'circle-stroke-width': 3
+            }
+        });
+        
+        // Add monuments labels (same style as old checkpoints)
+        try {
+            gpsMap.addLayer({
+                id: 'monuments-labels',
+                type: 'symbol',
+                source: 'monuments',
+                layout: {
+                    'text-field': ['get', 'name'],
+                    'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+                    'text-offset': [0, 2],
+                    'text-anchor': 'top',
+                    'text-size': 12 // Same size as old checkpoints
+                },
+                paint: {
+                    'text-color': '#2c2c2c', // Same color as old checkpoints
+                    'text-halo-color': '#ffffff',
+                    'text-halo-width': 2
+                }
+            });
+        } catch (error) {
+            console.warn('Could not add monument text labels to map:', error.message);
+        }
+        
+        // Add click events for monuments
+        gpsMap.on('click', 'monuments-markers', async (e) => {
+            console.log('Monument marker clicked, creating popup...');
+            
+            // Close any existing popups first
+            const existingPopups = document.querySelectorAll('.maplibregl-popup');
+            existingPopups.forEach(popup => popup.remove());
+            
+            const coordinates = e.features[0].geometry.coordinates.slice();
+            const monumentId = e.features[0].properties.id;
+            
+            console.log('Monument popup coordinates:', coordinates);
+            console.log('Monument ID:', monumentId);
+            
+            try {
+                // Find the monument data
+                const monument = monumentsData.find(m => m.id === monumentId);
+                
+                if (monument) {
+                    // Check if monument has virtual tour and audio guide
+                    const hasVirtualTour = monument.images && monument.images.some(img => img.format === '360');
+                    const hasAudioGuide = monument.audio && monument.audio.path;
+                    
+                    // Use the same enhanced tooltip as the checkpoints
+                    const popupContent = createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide);
+                    console.log('Created enhanced popup for monument:', monument.name);
+                    
+                    // Create popup with the same positioning as checkpoints
+                    const popup = createOptimallyPositionedPopup(coordinates, popupContent, gpsMap);
+                    console.log('Monument popup created:', popup);
+                    
+                    // Force visibility after a delay
+                    setTimeout(() => {
+                        const popupElement = popup.getElement();
+                        console.log('Monument popup element:', popupElement);
+                        if (popupElement) {
+                            popupElement.style.display = 'block';
+                            popupElement.style.visibility = 'visible';
+                            popupElement.style.opacity = '1';
+                            popupElement.style.zIndex = '1000';
+                            console.log('Monument popup forced visible');
+                        }
+                    }, 200);
+                    
+                } else {
+                    console.error('Monument not found for ID:', monumentId);
+                }
+            } catch (error) {
+                console.error('Error creating monument popup:', error);
+            }
+        });
+        
+        // Add cursor pointer for monuments
+        gpsMap.on('mouseenter', 'monuments-markers', () => {
+            gpsMap.getCanvas().style.cursor = 'pointer';
+        });
+        
+        gpsMap.on('mouseleave', 'monuments-markers', () => {
+            gpsMap.getCanvas().style.cursor = '';
+        });
+        
+        // Fit map to include both route and monuments
+        const routeFeature = routeData?.features.find(f => f.geometry.type === 'LineString');
+        let bounds = new maplibregl.LngLatBounds();
+        
+        // Include route coordinates if available
+        if (routeFeature) {
+            routeFeature.geometry.coordinates.forEach(coord => {
+                bounds.extend(coord);
+            });
+        }
+        
+        // Include all monument coordinates
+        validMonuments.forEach(monument => {
+            bounds.extend([parseFloat(monument.lon), parseFloat(monument.lat)]);
+        });
+        
+        // Fit map to combined bounds
+        if (!bounds.isEmpty()) {
+            gpsMap.fitBounds(bounds, { padding: 50 });
+        }
+        
+        console.log('Monuments loaded successfully on map');
+        
+    } catch (error) {
+        console.error('Error loading monuments on map:', error);
     }
 }
 
