@@ -30,7 +30,7 @@ Ogni file audio deve essere referenziato nel campo `audio_guide` del monuments.j
     "path": "src/audio/nome-monumento.mp3",
     "duration": 180,
     "language": "it",
-    "narrator": "Sistema Audio Guida Regalbuto",
-    "description": "Audio guida per il monumento"
+    "narrator": "Sistema audioguida Regalbuto",
+    "description": "audioguida per il monumento"
 }
 ```

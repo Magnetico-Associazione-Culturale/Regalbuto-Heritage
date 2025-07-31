@@ -11,8 +11,8 @@
             "path": "src/audio/chiesa-santa-maria-la-croce.mp3",
             "duration": 180,
             "language": "it",
-            "title": "Sistema Audio Guida Regalbuto",
-            "description": "Audio guida per la Chiesa di Santa Maria della Croce"
+            "title": "Sistema audioguida Regalbuto",
+            "description": "audioguida per la Chiesa di Santa Maria della Croce"
         },
         "images": [
             {
@@ -117,8 +117,8 @@
             "path": "src/audio/chiesa-san-basilio.mp3",
             "duration": 120,
             "language": "it",
-            "title": "Sistema Audio Guida Regalbuto",
-            "description": "Audio guida per la Chiesa di San Basilio",
+            "title": "Sistema audioguida Regalbuto",
+            "description": "audioguida per la Chiesa di San Basilio",
             "role": "audioguide"
         },
         "images": [
@@ -663,8 +663,8 @@
             "path": "src/audio/monumento-ai-caduti.mp3",
             "duration": 180,
             "language": "it",
-            "title": "Sistema Audio Guida Regalbuto",
-            "description": "Audio guida per il Monumento ai Caduti"
+            "title": "Sistema audioguida Regalbuto",
+            "description": "audioguida per il Monumento ai Caduti"
         },
         "images": [
             {
@@ -705,8 +705,8 @@
             "path": "src/audio/cine-teatro-urania.mp3",
             "duration": 200,
             "language": "it",
-            "title": "Sistema Audio Guida Regalbuto",
-            "description": "Audio guida per il Cine Teatro Urania"
+            "title": "Sistema audioguida Regalbuto",
+            "description": "audioguida per il Cine Teatro Urania"
         },
         "images": [
             {

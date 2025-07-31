@@ -567,7 +567,7 @@ function handleQRResult(qrText) {
             expandMonument(monumentId);
             playAudioGuide(monumentId);
         }, 500);
-        showNotification(`Monumento ${monumentId} aperto con audio guida!`, 'success');
+        showNotification(`Monumento ${monumentId} aperto con audioguida!`, 'success');
         return;
     } else {
         resultDiv.innerHTML = `
@@ -604,7 +604,7 @@ function showMonumentInfo(monumentId) {
                 <p>${monument.info}</p>
                 <button class="btn btn-primary" onclick="playAudioGuide('${monumentId}')">
                     <i data-feather="headphones"></i>
-                    Ascolta Audio Guida
+                    Ascolta audioguida
                 </button>
             </div>
         `;
@@ -949,7 +949,7 @@ async function loadAudioGuideData(monumentId, playerContainer) {
                 
                 if (audioUrl) {
                     initializeAudioWithUrl(audioUrl, playerContainer, { 
-                        description: `Audio guida per ${monumentId}`,
+                        description: `audioguida per ${monumentId}`,
                         duration: null 
                     });
                 } else {
@@ -1264,7 +1264,7 @@ function restoreOriginalButton(playerContainer) {
     originalButton.onclick = () => playAudioGuide(monumentId);
     originalButton.innerHTML = `
         <i data-feather="headphones"></i>
-        Ascolta Audio Guida
+        Ascolta audioguida
     `;
     
     // Replace player with original button
@@ -1346,7 +1346,7 @@ function createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide) {
             <div class="monument-actions has-audio">
                 <button class="btn btn-primary" onclick="playAudioGuideFromMap('${monument.id}')">
                     <i class="fas fa-headphones"></i>
-                    <span>Ascolta Audio Guida</span>
+                    <span>Ascolta audioguida</span>
                 </button>
                 <div class="secondary-actions">
                     <button class="btn btn-secondary" onclick="openVirtualTourFromMap('${monument.id}')">
@@ -1362,7 +1362,7 @@ function createEnhancedTooltip(monument, hasVirtualTour, hasAudioGuide) {
             <div class="monument-actions has-audio">
                 <button class="btn btn-primary" onclick="playAudioGuideFromMap('${monument.id}')">
                     <i class="fas fa-headphones"></i>
-                    <span>Ascolta Audio Guida</span>
+                    <span>Ascolta audioguida</span>
                 </button>
             </div>
         `;
@@ -3626,7 +3626,7 @@ function generateMonumentActions(monument) {
         actions += `
             <button class="btn btn-primary" onclick="playAudioGuide('${monument.id}')">
                 <i data-feather="headphones"></i>
-                Ascolta Audio Guida
+                Ascolta audioguida
             </button>
         `;
     }
