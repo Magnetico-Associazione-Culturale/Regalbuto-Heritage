@@ -3560,10 +3560,7 @@ function createMonumentCard(monument) {
                 <h4>${monument.name}</h4>
                 <p class="monument-description">${monument.short_description || 'Monumento storico di Regalbuto'}</p>
                 <div class="monument-details">
-                    <span class="distance">
-                        <i data-feather="map-pin"></i>
-                        ${monument.address ? '0.5 km' : 'Posizione da definire'}
-                    </span>
+                    ${generateDistanceInfo(monument)}
                     <button class="expand-btn" onclick="toggleMonument('${monument.id}')">
                         <i data-feather="chevron-right"></i>
                     </button>
@@ -4106,6 +4103,9 @@ function startNavigation() {
                 updateUserLocationOnMap();
                 updateNavigationInstructions();
                 checkCheckpointProximity();
+                
+                // Update monument cards with new distance calculations
+                updateMonumentCardsForNavigation();
             },
             (error) => {
                 console.warn('Geolocation error:', error);
@@ -4352,6 +4352,49 @@ function calculateRemainingDistance() {
     }
     
     return totalDistance;
+}
+
+// Generate distance information for monument cards
+function generateDistanceInfo(monument) {
+    // If navigation is not active, don't show distance
+    if (!navigationActive) {
+        return '';
+    }
+    
+    // If navigation is active but no user location available yet
+    if (!userLocation) {
+        return `<span class="distance">
+            <i data-feather="map-pin"></i>
+            Localizzazione in corso...
+        </span>`;
+    }
+    
+    // If monument doesn't have coordinates, can't calculate distance
+    if (!monument.lat || !monument.lon) {
+        return `<span class="distance">
+            <i data-feather="map-pin"></i>
+            Posizione non disponibile
+        </span>`;
+    }
+    
+    // Calculate distance from user location to monument
+    const distance = calculateDistance(
+        userLocation[1], userLocation[0], // user lat, lon
+        parseFloat(monument.lat), parseFloat(monument.lon) // monument lat, lon
+    );
+    
+    // Format distance appropriately
+    let distanceText;
+    if (distance < 1) {
+        distanceText = `${Math.round(distance * 1000)} m`;
+    } else {
+        distanceText = `${distance.toFixed(1)} km`;
+    }
+    
+    return `<span class="distance">
+        <i data-feather="map-pin"></i>
+        ${distanceText}
+    </span>`;
 }
 
 function updateNextDestination() {
@@ -4625,6 +4668,31 @@ function updateMonumentCardsForNavigation() {
             const monument = monumentsData.find(m => m.id === monumentId);
             if (monument) {
                 monumentActionsContainer.innerHTML = generateMonumentActions(monument);
+            }
+        }
+        
+        // Update distance information in monument details
+        const monumentDetailsContainer = card.querySelector('.monument-details');
+        if (monumentDetailsContainer) {
+            // Find the monument data to regenerate distance info
+            const monument = monumentsData.find(m => m.id === monumentId);
+            if (monument) {
+                // Find existing distance span or create container for it
+                let distanceContainer = monumentDetailsContainer.querySelector('.distance');
+                const expandBtn = monumentDetailsContainer.querySelector('.expand-btn');
+                
+                // Remove existing distance span
+                if (distanceContainer) {
+                    distanceContainer.remove();
+                }
+                
+                // Generate new distance info
+                const newDistanceInfo = generateDistanceInfo(monument);
+                
+                // Insert new distance info before the expand button
+                if (newDistanceInfo && expandBtn) {
+                    expandBtn.insertAdjacentHTML('beforebegin', newDistanceInfo);
+                }
             }
         }
     });
