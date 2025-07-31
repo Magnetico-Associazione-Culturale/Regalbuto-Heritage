@@ -1263,7 +1263,10 @@
         document.querySelector('a-scene').addEventListener('loaded', function() {
             console.log('A-Frame scene caricata');
             console.log('VR supportato:', AFRAME.utils.device.checkHeadsetConnected());
-            console.log('VR disponibile:', AFRAME.utils.device.isVRAvailable());
+            console.log('Headset connesso:', AFRAME.utils.device.checkHeadsetConnected());
+            console.log('È mobile:', AFRAME.utils.device.isMobile());
+            console.log('È tablet:', AFRAME.utils.device.isTablet());
+            console.log('È mobile VR:', AFRAME.utils.device.isMobileVR());
             
             // Aggiungi listener per entrata e uscita VR
             const scene = document.querySelector('a-scene');
