@@ -4490,16 +4490,16 @@ button:focus,
     align-items: center;
     justify-content: center;
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 600;
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* Special styling for current step number to ensure readability */
 .navigation-badge.current .step-number {
-    background: rgba(255, 255, 255, 1);
-    color: #f97316;
-    font-weight: 800;
-    border: 1px solid rgba(249, 115, 22, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-weight: 600;
+    border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 /* Ensure visited badge icon is visible */
@@ -4511,10 +4511,10 @@ button:focus,
 
 /* Ensure upcoming badge step numbers are readable */
 .navigation-badge.upcoming .step-number {
-    background: rgba(255, 255, 255, 0.95);
-    color: #6366f1;
-    font-weight: 800;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-weight: 600;
+    border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .navigation-badge i {
@@ -4646,7 +4646,7 @@ button:focus,
         width: 20px;
         height: 20px;
         font-size: 0.7rem;
-        font-weight: 800;
+        font-weight: 600;
     }
     
     /* Ensure current badge is highly visible on mobile */
