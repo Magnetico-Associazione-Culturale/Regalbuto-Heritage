@@ -229,6 +229,168 @@
     <script>
         let panoramaLoaded = false;
         
+        // Variabili globali per il supporto dei formati immagine
+        let avifSupported = false;
+        let webpSupported = false;
+        
+        // Funzione per testare il supporto AVIF
+        function checkAvifSupport() {
+            return new Promise((resolve) => {
+                const avif = new Image();
+                avif.onload = avif.onerror = () => resolve(avif.height === 2);
+                avif.src = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgABogQEAwgMg8f8D///8WfhwB8+ErK42A=';
+            });
+        }
+        
+        // Funzione per testare il supporto WebP
+        function checkWebpSupport() {
+            return new Promise((resolve) => {
+                const webp = new Image();
+                webp.onload = webp.onerror = () => resolve(webp.height === 2);
+                webp.src = 'data:image/webp;base64,UklGRjoAAABXRUJQVlA4IC4AAACyAgCdASoCAAIALmk0mk0iIiIiIgBoSygABc6WWgAA/veff/0PP8bA//LwYAAA';
+            });
+        }
+        
+        // Funzione per ottenere il percorso dell'immagine con il formato migliore supportato
+        function getBestImageFormat(imagePath) {
+            // Estrae il nome del file senza estensione
+            const pathParts = imagePath.split('/');
+            const fileName = pathParts[pathParts.length - 1];
+            const nameWithoutExt = fileName.replace(/\.(jpg|jpeg|JPG|JPEG)$/i, '');
+            const basePath = pathParts.slice(0, -1).join('/');
+            
+            console.log('Original path:', imagePath);
+            console.log('Base name:', nameWithoutExt);
+            console.log('AVIF supported:', avifSupported, 'WebP supported:', webpSupported);
+            
+            // Determina il formato migliore supportato
+            let bestFormat;
+            if (avifSupported) {
+                bestFormat = 'avif';
+            } else if (webpSupported) {
+                bestFormat = 'webp';
+            } else {
+                bestFormat = 'JPG'; // Fallback a JPG
+            }
+            
+            // Costruisce il nuovo percorso
+            const newPath = basePath + '/' + nameWithoutExt + '.' + bestFormat;
+            console.log('Selected format:', bestFormat, 'New path:', newPath);
+            
+            return newPath;
+        }
+        
+        // Funzione per verificare se un'immagine esiste
+        function imageExists(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                
+                // Set a timeout to avoid hanging on slow responses
+                const timeout = setTimeout(() => {
+                    img.onload = img.onerror = null;
+                    resolve(false);
+                }, 5000);
+                
+                img.onload = () => {
+                    clearTimeout(timeout);
+                    resolve(true);
+                };
+                
+                img.onerror = () => {
+                    clearTimeout(timeout);
+                    resolve(false);
+                };
+                
+                // Set crossorigin to handle CORS for external images
+                img.crossOrigin = 'anonymous';
+                img.src = url;
+            });
+        }
+        
+        // Funzione per ottenere l'URL dell'immagine con fallback progressivo
+        async function getImageWithFallback(originalPath) {
+            // Se il percorso non inizia con http:// o https:// e non inizia con ../
+            // aggiungi ../ per tornare alla root del sito
+            let imagePath = originalPath;
+            if (!imagePath.startsWith('http') && !imagePath.startsWith('../')) {
+                imagePath = '../' + imagePath;
+            }
+            
+            // Estrae informazioni dal percorso
+            const pathParts = imagePath.split('/');
+            const fileName = pathParts[pathParts.length - 1];
+            const nameWithoutExt = fileName.replace(/\.(jpg|jpeg|JPG|JPEG)$/i, '');
+            const basePath = pathParts.slice(0, -1).join('/');
+            
+            // Array dei formati da testare in ordine di preferenza
+            const formatOptions = [];
+            
+            // Aggiungi formati basandosi sul supporto del browser
+            if (avifSupported) {
+                formatOptions.push('avif');
+            }
+            if (webpSupported) {
+                formatOptions.push('webp');
+            }
+            
+            // Aggiungi formati JPG/jpg come fallback
+            formatOptions.push('JPG', 'jpg');
+            
+            console.log('Testing image formats for:', nameWithoutExt);
+            console.log('Format options to test:', formatOptions);
+            
+            // Testa ogni formato nell'ordine di preferenza
+            for (const format of formatOptions) {
+                const testPath = basePath + '/' + nameWithoutExt + '.' + format;
+                console.log('Testing:', testPath);
+                
+                try {
+                    const exists = await imageExists(testPath);
+                    if (exists) {
+                        console.log('✅ Found working image:', testPath);
+                        
+                        // Invia messaggio di debug al parent
+                        try {
+                            window.parent.postMessage({
+                                type: 'log',
+                                message: `Selected format: ${format} for ${nameWithoutExt}`
+                            }, '*');
+                        } catch (e) {
+                            // Ignore errors if not in iframe
+                        }
+                        
+                        return testPath;
+                    } else {
+                        console.log('❌ Image not found:', testPath);
+                    }
+                } catch (error) {
+                    console.log('⚠️ Error testing image:', testPath, error);
+                }
+            }
+            
+            // Se nessun formato funziona, restituisce il percorso originale
+            console.warn('🔄 No working image format found, using original:', imagePath);
+            return imagePath;
+        }
+        
+        // Inizializza il supporto dei formati all'avvio
+        async function initializeFormatSupport() {
+            console.log('🔍 Checking image format support...');
+            avifSupported = await checkAvifSupport();
+            webpSupported = await checkWebpSupport();
+            console.log('📊 Format support results:', { avif: avifSupported, webp: webpSupported });
+            
+            // Invia messaggio al parent per il debugging (se in iframe)
+            try {
+                window.parent.postMessage({
+                    type: 'log',
+                    message: `Format support - AVIF: ${avifSupported}, WebP: ${webpSupported}`
+                }, '*');
+            } catch (e) {
+                // Ignore errors if not in iframe
+            }
+        }
+        
         // Funzione per rilevare tablet
         function isTabletDevice() {
             const userAgent = navigator.userAgent.toLowerCase();
@@ -544,7 +706,7 @@
         }
         
         // Funzione per caricare l'immagine panoramica
-        function loadPanorama() {
+        async function loadPanorama() {
             const loadingScreen = document.getElementById('loadingScreen');
             const panoramaImg = document.getElementById('panorama');
             const sky = document.getElementById('sky');
@@ -557,10 +719,18 @@
                 return;
             }
             
-            // Se il percorso non inizia con http:// o https:// e non inizia con ../
-            // aggiungi ../ per tornare alla root del sito
-            if (!imageUrl.startsWith('http') && !imageUrl.startsWith('../')) {
-                imageUrl = '../' + imageUrl;
+            console.log('Original image URL:', imageUrl);
+            
+            // Utilizza il sistema di fallback per ottenere il formato migliore
+            try {
+                imageUrl = await getImageWithFallback(imageUrl);
+                console.log('Final image URL after fallback:', imageUrl);
+            } catch (error) {
+                console.error('Error in fallback system:', error);
+                // Continua con l'URL originale in caso di errore
+                if (!imageUrl.startsWith('http') && !imageUrl.startsWith('../')) {
+                    imageUrl = '../' + imageUrl;
+                }
             }
             
             console.log('Caricamento immagine:', imageUrl);
@@ -1052,8 +1222,11 @@
         };
         
         // Inizializza al caricamento della pagina
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             console.log('DOM caricato, inizializzazione panorama');
+            
+            // Inizializza il supporto dei formati immagine
+            await initializeFormatSupport();
             
             // Applica fix per tablet prima di caricare il panorama
             ensureTextVisibilityOnTablet();
