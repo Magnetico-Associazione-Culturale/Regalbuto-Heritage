@@ -5,6 +5,7 @@ let qrScanner = null;
 let currentFilter = 'all';
 let map = null; // Leaflet map instance
 let markers = []; // Array to store map markers
+let isVirtualTourNavigationActive = false; // Track virtual tour navigation state
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -158,6 +159,12 @@ function switchTab(tabName) {
         closeQRScanner();
     }
     
+    // Reset virtual tour navigation state when switching away from virtual-tour
+    if (tabName !== 'virtual-tour') {
+        isVirtualTourNavigationActive = false;
+        updateQRButtonVisibility();
+    }
+    
     // Force scroll to top immediately
     window.scrollTo(0, 0);
     
@@ -227,6 +234,20 @@ function switchTab(tabName) {
 function startTour() {
     switchTab('virtual-tour');
     // Removed notification
+}
+
+// Function to update QR button visibility based on navigation state
+function updateQRButtonVisibility() {
+    const qrButtons = document.querySelectorAll('.qr-scan-btn');
+    qrButtons.forEach(button => {
+        if (isVirtualTourNavigationActive) {
+            button.style.display = 'none';
+            console.log('QR button hidden due to active virtual tour navigation');
+        } else {
+            button.style.display = '';
+            console.log('QR button shown - navigation not active');
+        }
+    });
 }
 
 // QR Scanner Functions
@@ -2245,6 +2266,10 @@ function restartQuiz() {
 function loadLocation(locationId) {
     console.log('Loading location:', locationId);
     
+    // Set virtual tour navigation as active
+    isVirtualTourNavigationActive = true;
+    updateQRButtonVisibility();
+    
     // Remove active class from all location cards
     const locationCards = document.querySelectorAll('.location-card');
     locationCards.forEach(card => card.classList.remove('active'));
@@ -2293,6 +2318,10 @@ function loadLocation(locationId) {
 // New function to load location using JSON data dynamically
 function loadLocationFromJSON(monumentId, imagePath) {
     console.log('Loading location from JSON for monument:', monumentId, 'with image:', imagePath);
+    
+    // Set virtual tour navigation as active
+    isVirtualTourNavigationActive = true;
+    updateQRButtonVisibility();
     
     // Remove active class from all location cards
     const locationCards = document.querySelectorAll('.location-card');
