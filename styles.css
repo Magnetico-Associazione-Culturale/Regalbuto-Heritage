@@ -10,7 +10,7 @@ body {
     line-height: 1.6;
     color: var(--text-primary);
     background-color: var(--background-light);
-    padding-bottom: 80px; /* Space for bottom navigation */
+    padding-bottom: 70px; /* Space for bottom navigation - exact height match */
 }
 
 /* Color Palette - Modern Neutral Design */
@@ -3909,7 +3909,7 @@ button:focus,
     position: relative !important;
     z-index: 1000 !important;
     display: block !important;
-    margin-top: 2rem !important;
+    margin-top: 0 !important; /* Removed margin to eliminate gap */
 }
 
 .footer-content {
