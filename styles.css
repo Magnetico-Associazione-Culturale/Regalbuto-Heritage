@@ -10,7 +10,7 @@ body {
     line-height: 1.6;
     color: var(--text-primary);
     background-color: var(--background-light);
-    padding-bottom: 70px; /* Space for bottom navigation - exact height match */
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 20px)); /* Navigation height + safe area with fallback */
 }
 
 /* Color Palette - Modern Neutral Design */
@@ -2887,12 +2887,13 @@ body.navigation-active {
     display: flex;
     justify-content: space-around;
     padding: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px); /* Add safe area padding for system navigation */
     box-shadow: 0 -4px 15px var(--shadow-light);
     z-index: 1000; /* Higher z-index to ensure it stays above map */
     /* Prevent any scrolling interference */
     touch-action: manipulation;
     --bottom-nav-height: 70px;
-    height: var(--bottom-nav-height);
+    height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px)); /* Adjust height for safe area */
 }
 
 .nav-item {
