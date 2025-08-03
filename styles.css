@@ -5432,10 +5432,10 @@ button:focus,
         line-height: 1.7;
     }
     
-    /* Riduce gap su desktop - massimo assoluto */
+    /* Riduce gap su desktop - bilanciato per non coprire il titolo */
     #home .content-section {
-        padding: 0rem 1.5rem 1rem 1.5rem; /* Padding top azzerato completamente */
-        margin-top: -750px; /* Margin negativo massimo assoluto per desktop */
+        padding: 2rem 1.5rem 1rem 1.5rem; /* Padding top aumentato per dare spazio al titolo */
+        margin-top: -600px; /* Margin negativo ridotto per evitare sovrapposizione */
     }
     
     /* Riduce padding bottom hero section su desktop */
