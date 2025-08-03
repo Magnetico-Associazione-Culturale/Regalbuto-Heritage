@@ -554,13 +554,6 @@
                 "alt": "Vista panoramica 360° dell'interno del Convento di Sant'Antonio"
             },
             {
-                "title": "TEST optimized Chiesa",
-                "description": "Chiesa del Convento di Sant'Antonio",
-                "format": "360",
-                "path": "src/imgs/360/test-optimized.JPG",
-                "alt": "Convento di Sant'Antonio vista esterna"
-            },
-            {
                 "title": "Panorama dell'insediamento rupestre",
                 "description": "Vista esterna del Convento di Sant'Antonio con insediamento rupestre",
                 "format": "360",
