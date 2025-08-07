@@ -3920,7 +3920,16 @@ button:focus,
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 0.5rem !important;
+    gap: 1rem !important;
+}
+
+.footer-logos {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    margin-bottom: 0.5rem !important;
 }
 
 .footer-logo {
@@ -3928,6 +3937,11 @@ button:focus,
     width: auto !important;
     opacity: 0.8 !important;
     display: block !important;
+    transition: opacity 0.3s ease !important;
+}
+
+.footer-logo:hover {
+    opacity: 1 !important;
 }
 
 .footer-text {
@@ -4425,6 +4439,11 @@ button:focus,
     .footer-text {
         font-size: 0.7rem !important;
         padding: 0 0.5rem !important;
+    }
+    
+    .footer-logos {
+        gap: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
     }
     
     .footer-logo {
