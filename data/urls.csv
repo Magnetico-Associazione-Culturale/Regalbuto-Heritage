@@ -1,0 +1,44 @@
+n_stop,name_relation,name_app,id,url
+1,Chiesa rurale San Calogero,Chiesa di San Calogero,chiesa-san-calogero,https://itinerarioregalbuto.magnetico.cloud/chiesa-san-calogero
+2,Vecchio Serbatoio Idrico,Vecchio Serbatoio Idrico,vecchio-serbatoio-idrico,https://itinerarioregalbuto.magnetico.cloud/vecchio-serbatoio-idrico
+3,Chiesa Madonna del Carmelo,Chiesa della Madonna del Carmelo,chiesa-madonna-carmelo,https://itinerarioregalbuto.magnetico.cloud/chiesa-madonna-carmelo
+4,Casa Di Marco,Casa Di Marco,casa-di-marco,https://itinerarioregalbuto.magnetico.cloud/casa-di-marco
+5,Casa Polizzi,Casa Polizzi,casa-polizzi,https://itinerarioregalbuto.magnetico.cloud/casa-polizzi
+6,Casa Insinga,Casa Insinga,casa-insinga,https://itinerarioregalbuto.magnetico.cloud/casa-insinga
+7,Chiesa S.M. delle Grazie e Convento Annesso (Istituto Femminile S. Giuseppe),Chiesa di Santa Maria delle Grazie,chiesa-santa-maria-grazie,https://itinerarioregalbuto.magnetico.cloud/chiesa-santa-maria-grazie
+7,Chiesa S.M. delle Grazie e Convento Annesso (Istituto Femminile S. Giuseppe),Convento di Santa Maria delle Grazie (Istituto femminile San Giuseppe),convento-santa-maria-grazie,https://itinerarioregalbuto.magnetico.cloud/convento-santa-maria-grazie
+8,Casa Stancanelli,Casa Stancanelli,casa-stancanelli,https://itinerarioregalbuto.magnetico.cloud/casa-stancanelli
+9,Casa Carambia,Casa Carambia,casa-carambia,https://itinerarioregalbuto.magnetico.cloud/casa-carambia
+10,Scuola Elementare G.F. Ingrassia,Scuola Elementare G.F. Ingrassia,scuola-elementare-ingrassia,https://itinerarioregalbuto.magnetico.cloud/scuola-elementare-ingrassia
+11,Casa Blasco,Casa Blasco,casa-blasco,https://itinerarioregalbuto.magnetico.cloud/casa-blasco
+12,Chiesa Maria S.S. della Croce,Chiesa di Santa Maria la Croce,chiesa-santa-maria-croce,https://itinerarioregalbuto.magnetico.cloud/chiesa-santa-maria-croce
+13,Palazzo piazza Matteotti,Palazzo piazza Matteotti,palazzo-piazza-matteotti,https://itinerarioregalbuto.magnetico.cloud/palazzo-piazza-matteotti
+14,Convento S. Agostino,Convento di Sant'Agostino,convento-sant-agostino,https://itinerarioregalbuto.magnetico.cloud/convento-sant-agostino
+15,Monumento ai Caduti,Monumento ai Caduti,monumento-caduti,https://itinerarioregalbuto.magnetico.cloud/monumento-caduti
+16,Cine Teatro Urania,CineTeatro Urania ,cineteatro-urania,https://itinerarioregalbuto.magnetico.cloud/cineteatro-urania
+17,Casa Spitalieri,Casa Spitalieri,casa-spitalieri,https://itinerarioregalbuto.magnetico.cloud/casa-spitalieri
+18,Chiesa S. Giovanni e Convento Annesso,Chiesa di Sant'Agostino in San Giovanni,chiesa-sant-agostino,https://itinerarioregalbuto.magnetico.cloud/chiesa-sant-agostino
+18,Chiesa S. Giovanni e Convento Annesso,Convento di San Giovanni (Sant'Agostino),convento-san-giovanni,https://itinerarioregalbuto.magnetico.cloud/convento-san-giovanni
+19,Casa Manno,Casa Manno,casa-manno,https://itinerarioregalbuto.magnetico.cloud/casa-manno
+20,"Istituto di Credito Cooperativo ""La Riscossa""","Istituto di Credito Cooperativo ""La Riscossa""",la-riscossa,https://itinerarioregalbuto.magnetico.cloud/la-riscossa
+21,Palazzo Marletta,Palazzo Marletta,palazzo-marletta,https://itinerarioregalbuto.magnetico.cloud/palazzo-marletta
+22,Collegio di Maria,Collegio di Maria,collegio-maria,https://itinerarioregalbuto.magnetico.cloud/collegio-maria
+22,Chiesa del Collegio,Chiesa del Collegio,chiesa-collegio,https://itinerarioregalbuto.magnetico.cloud/chiesa-collegio
+23,Chiesa S. Antonio da Padova,Chiesa di Sant'Antonio da Padova,chiesa-sant-antonio-padova,https://itinerarioregalbuto.magnetico.cloud/chiesa-sant-antonio-padova
+24,Casa Monaco,Casa Monaco,casa-monaco,https://itinerarioregalbuto.magnetico.cloud/casa-monaco
+25,Casa Palazzolo,Casa Palazzolo,casa-palazzolo,https://itinerarioregalbuto.magnetico.cloud/casa-palazzolo
+26,Palazzo Falcone,Palazzo Falcone,palazzo-falcone,https://itinerarioregalbuto.magnetico.cloud/palazzo-falcone
+27,Palazzo Gerardi,Palazzo Gerardi,palazzo-gerardi,https://itinerarioregalbuto.magnetico.cloud/palazzo-gerardi
+28,Palazzo Comunale,Palazzo Comunale,palazzo-comunale,https://itinerarioregalbuto.magnetico.cloud/palazzo-comunale
+29,Istituto Intesa S. Paolo (Pal. Maccarrone),Istituto Intesa Sanpaolo,sanpaolo,https://itinerarioregalbuto.magnetico.cloud/sanpaolo
+30,Chiesa S. Basilio,Chiesa Madre di San Basilio,chiesa-san-basilio,https://itinerarioregalbuto.magnetico.cloud/chiesa-san-basilio
+31,Palazzo Maccarrone,Palazzo Maccarrone,palazzo-maccarrone,https://itinerarioregalbuto.magnetico.cloud/palazzo-maccarrone
+32,Chiesa del Purgatorio,Chiesa del Purgatorio (San Rocco),chiesa-purgatorio,https://itinerarioregalbuto.magnetico.cloud/chiesa-purgatorio
+33,Casa Conte Azzaro,Casa Conte Azzaro,casa-azzaro,https://itinerarioregalbuto.magnetico.cloud/casa-azzaro
+34,Casa Oliva,Casa Oliva,casa-oliva,https://itinerarioregalbuto.magnetico.cloud/casa-oliva
+35,Caserma C.C. (ex Convento S. Domenico),Caserma dei Carabinieri (Convento di San Domenico),convento-san-domenico,https://itinerarioregalbuto.magnetico.cloud/convento-san-domenico
+36,Chiesa S. Domenico,Chiesa di San Domenico,chiesa-san-domenico,https://itinerarioregalbuto.magnetico.cloud/chiesa-san-domenico
+37,Palazzo Barone Carchiolo,Palazzo Carchiolo (via Dante),palazzo-carchiolo-dante,https://itinerarioregalbuto.magnetico.cloud/palazzo-carchiolo-dante
+38,Chiesa S. Sebastiano,Chiesa di San Sebastiano,chiesa-san-sebastiano,https://itinerarioregalbuto.magnetico.cloud/chiesa-san-sebastiano
+39,Chiesa S. Francesco d’Assisi,Chiesa di San Francesco d'Assisi,chiesa-san-francesco,https://itinerarioregalbuto.magnetico.cloud/chiesa-san-francesco
+0,Convento di Sant'Antonio,Convento di Sant'Antonio,convento-sant-antonio,https://itinerarioregalbuto.magnetico.cloud/convento-sant-antonio
