@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Link Test - Regalbuto Heritage</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .qr-url {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Deep Link Test - Regalbuto Heritage</h1>
+        <p>Test page per verificare il sistema di deep linking per QR code dei monumenti.</p>
+        
+        <div class="test-section">
+            <h2>📱 URL Testing</h2>
+            <p>Testa i deep link simulando la scansione di QR code:</p>
+            
+            <button class="test-button" onclick="testDeepLink('chiesa-santa-maria-la-croce')">
+                Chiesa Santa Maria la Croce
+            </button>
+            
+            <button class="test-button" onclick="testDeepLink('chiesa-madre-san-basilio')">
+                Chiesa Madre San Basilio
+            </button>
+            
+            <button class="test-button" onclick="testDeepLink('palazzo-comunale')">
+                Palazzo Comunale
+            </button>
+            
+            <button class="test-button" onclick="testDeepLink('monumento-ai-caduti')">
+                Monumento ai Caduti
+            </button>
+            
+            <button class="test-button" onclick="testDeepLink('cineteatro-urania')">
+                CineTeatro Urania
+            </button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🏛️ QR Code URLs</h2>
+            <p>URL che verranno utilizzati nei QR code fisici sui monumenti:</p>
+            <button class="test-button" onclick="showQRUrls()">Mostra tutti gli URL</button>
+            <div id="qr-urls-container"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📄 Generate CSV</h2>
+            <p>Genera file CSV per la stampa dei QR code:</p>
+            <button class="test-button" onclick="generateCSV()">Scarica CSV QR Codes</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔧 Manual Testing</h2>
+            <p>Test manuale aggiungendo parametri all'URL:</p>
+            <div class="qr-url">
+                <strong>Formato:</strong> ?deep=monument-id<br>
+                <strong>Esempio:</strong> ?deep=chiesa-santa-maria-la-croce
+            </div>
+            <p>Copia questo URL e aggiungi il parametro per testare:</p>
+            <div class="qr-url" id="current-url"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 Test Results</h2>
+            <div id="test-results"></div>
+        </div>
+    </div>
+
+    <script>
+        // Mostra URL corrente
+        document.getElementById('current-url').textContent = window.location.href;
+        
+        function testDeepLink(monumentId) {
+            const testUrl = `${window.location.origin}/Regalbuto-Heritage/?deep=${monumentId}`;
+            logResult(`Testing: ${monumentId}`, 'info');
+            logResult(`URL: ${testUrl}`, 'info');
+            
+            // Apri in nuova finestra per test
+            window.open(testUrl, '_blank');
+        }
+        
+        function showQRUrls() {
+            const container = document.getElementById('qr-urls-container');
+            
+            // Simula gli URL che verranno generati
+            const sampleUrls = [
+                'chiesa-santa-maria-la-croce',
+                'chiesa-madre-san-basilio',
+                'palazzo-comunale',
+                'monumento-ai-caduti',
+                'cineteatro-urania',
+                'chiesa-san-giovanni',
+                'collegio-di-maria'
+            ];
+            
+            let html = '<h3>URL per QR Code:</h3>';
+            sampleUrls.forEach(monumentId => {
+                html += `<div class="qr-url">https://itinerarioregalbuto.magnetico.cloud/${monumentId}</div>`;
+            });
+            
+            container.innerHTML = html;
+            logResult('QR URLs displayed', 'success');
+        }
+        
+        function generateCSV() {
+            // Simula la generazione CSV
+            logResult('CSV generation would be triggered in main app', 'info');
+            logResult('Use deepLinkUtils.generateQRCodeCSV() in main app console', 'info');
+        }
+        
+        function logResult(message, type = 'info') {
+            const container = document.getElementById('test-results');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = type;
+            logEntry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            container.appendChild(logEntry);
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // Check per deep link all'avvio
+        window.addEventListener('load', () => {
+            const url = new URL(window.location.href);
+            const deepParam = url.searchParams.get('deep');
+            
+            if (deepParam) {
+                logResult(`Deep link detected: ${deepParam}`, 'success');
+                logResult('In main app, this would navigate to monument card', 'info');
+            } else {
+                logResult('No deep link detected - this is the test page', 'info');
+            }
+        });
+    </script>
+</body>
+</html>
