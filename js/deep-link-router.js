@@ -348,6 +348,11 @@ class DeepLinkRouter {
                 // Evidenziazione
                 this.highlightElement(monumentCard);
                 
+                // NUOVO: Apri automaticamente la card del monumento
+                setTimeout(() => {
+                    this.expandMonumentCard(monument.id);
+                }, 500); // Aspetta che lo scroll sia completato
+                
                 console.log('📍 Successfully scrolled to monument card:', monument.id);
                 resolve();
             } else {
@@ -356,6 +361,36 @@ class DeepLinkRouter {
                 resolve();
             }
         });
+    }
+    
+    // Espande automaticamente la card del monumento
+    expandMonumentCard(monumentId) {
+        console.log('📂 Expanding monument card:', monumentId);
+        
+        // Usa la funzione toggleMonument esistente se disponibile
+        if (window.toggleMonument && typeof window.toggleMonument === 'function') {
+            // Controlla se la card è già espansa
+            const content = document.getElementById('content-' + monumentId);
+            const isExpanded = content ? content.classList.contains('expanded') : false;
+            
+            if (!isExpanded) {
+                console.log('🔧 Using toggleMonument function to expand card');
+                window.toggleMonument(monumentId);
+            } else {
+                console.log('ℹ️ Monument card already expanded');
+            }
+        } else {
+            // Fallback: simula click sulla freccetta
+            console.log('🔧 Fallback: simulating arrow click');
+            const expandBtn = document.querySelector('[data-monument-id="' + monumentId + '"] .expand-btn');
+            
+            if (expandBtn) {
+                expandBtn.click();
+                console.log('✅ Simulated click on expand button');
+            } else {
+                console.warn('⚠️ Expand button not found for monument:', monumentId);
+            }
+        }
     }
     
     // Evidenziazione temporanea dell'elemento
@@ -634,6 +669,27 @@ window.deepLinkUtils = {
         });
         console.groupEnd();
         return urls;
+    },
+    
+    // Test espansione card monumento
+    testExpansion: (monumentId) => {
+        console.log('🧪 Testing monument card expansion for:', monumentId);
+        deepLinkRouter.expandMonumentCard(monumentId);
+    },
+    
+    // Test completo: naviga e espandi
+    testFullFlow: (monumentId) => {
+        console.log('🧪 Testing complete deep link flow for:', monumentId);
+        
+        // Naviga alla sezione tappe
+        if (window.switchTab) {
+            window.switchTab('tappe');
+        }
+        
+        // Aspetta e poi espandi
+        setTimeout(() => {
+            deepLinkRouter.expandMonumentCard(monumentId);
+        }, 1000);
     }
 };
 
