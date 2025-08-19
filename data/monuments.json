@@ -8,7 +8,7 @@
         "lon": 14.64096397161484,
         "address": "Regalbuto, EN, Italia",
         "audio": {
-            "path": "src/audio/chiesa-santa-maria-la-croce.mp3",
+            "path": "https://raw.githubusercontent.com/regalbutoinside/audioguida/main/assets/audio/it/7_santa_maria.mp3",
             "duration": 180,
             "language": "it",
             "title": "Sistema audioguida Regalbuto",
@@ -114,11 +114,11 @@
         "lon": 14.640803039073946,
         "address": "Regalbuto, EN, Italia",
         "audio": {
-            "path": "src/audio/chiesa-san-basilio.mp3",
-            "duration": 120,
+            "path": "https://raw.githubusercontent.com/regalbutoinside/audioguida/main/assets/audio/it/3_chiesa_madre.mp3",
+            "duration": 180,
             "language": "it",
             "title": "Sistema audioguida Regalbuto",
-            "description": "audioguida per la Chiesa di San Basilio",
+            "description": "audioguida per la Chiesa Madre di San Basilio",
             "role": "audioguide"
         },
         "images": [
@@ -163,6 +163,13 @@
         "lat": 37.65291176931143,
         "lon": 14.640113711357118,
         "address": "Regalbuto, EN, Italia",
+        "audio": {
+            "path": "https://raw.githubusercontent.com/regalbutoinside/audioguida/main/assets/audio/it/6_corso.mp3",
+            "duration": 180,
+            "language": "it",
+            "title": "Sistema audioguida Regalbuto",
+            "description": "audioguida per la Chiesa del Purgatorio (San Rocco)"
+        },
         "images": [
             {
                 "title": "Chiesa di San Rocco",
@@ -653,7 +660,7 @@
         "lon": 14.640744,
         "address": "Piazza Centrale, Regalbuto, EN, Italia",
         "audio": {
-            "path": "src/audio/monumento-ai-caduti.mp3",
+            "path": "https://raw.githubusercontent.com/regalbutoinside/audioguida/main/assets/audio/it/2_monumento_caduti.mp3",
             "duration": 180,
             "language": "it",
             "title": "Sistema audioguida Regalbuto",
@@ -695,7 +702,7 @@
         "lon": 14.640664,
         "address": "Via Teatro, Regalbuto, EN, Italia",
         "audio": {
-            "path": "src/audio/cine-teatro-urania.mp3",
+            "path": "https://raw.githubusercontent.com/regalbutoinside/audioguida/main/assets/audio/it/4_teatro_urania.mp3",
             "duration": 200,
             "language": "it",
             "title": "Sistema audioguida Regalbuto",
@@ -895,6 +902,13 @@
         "lat": 37.65225133479798,
         "lon": 14.640824496746065,
         "address": "Piazza della Repubblica, 1, Regalbuto, EN, Italia",
+        "audio": {
+            "path": "https://raw.githubusercontent.com/regalbutoinside/audioguida/main/assets/audio/it/2_comune.mp3",
+            "duration": 180,
+            "language": "it",
+            "title": "Sistema audioguida Regalbuto",
+            "description": "audioguida per il Palazzo Comunale"
+        },
         "images": [
             {
                 "title": "Palazzo Comunale",
