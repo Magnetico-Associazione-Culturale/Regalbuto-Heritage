@@ -1,8 +1,8 @@
 /**
- * Deep Link Router per Regalbuto Heritage App v2.0
+ * Deep Link Router per Regalbuto Heritage App v2.1
  * Gestisce collegamenti diretti ai monumenti tramite QR codes
  * Supporta Android App Links e iOS Universal Links
- * Integrazione migliorata con GitHub Pages e sistema di navigazione esistente
+ * Fix per integrazione con GitHub Pages e sistema di navigazione
  */
 class DeepLinkRouter {
     constructor() {
@@ -20,7 +20,7 @@ class DeepLinkRouter {
         this.lastDeepLinkId = null;
         this.pendingDeepLink = null;
         
-        console.log('🔗 Deep Link Router v2.0 initialized');
+        console.log('🔗 Deep Link Router v2.1 initialized');
         console.log('📍 Base Web URL:', this.baseWebURL);
         console.log('🌐 App Domain:', this.appDomain);
     }
@@ -34,7 +34,7 @@ class DeepLinkRouter {
         
         console.log('🚀 Initializing Deep Link Router...');
         
-        // Gestisce deep link dal lancio app - usando multiple event listeners
+        // Gestisce deep link dal lancio app
         this.setupEventListeners();
         
         // Gestore per Android WebView
@@ -55,30 +55,18 @@ class DeepLinkRouter {
     
     // Configura event listeners per diversi stati di caricamento
     setupEventListeners() {
-        // Caso 1: DOM non ancora caricato
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', () => {
-                this.handleAppLaunchWithDelay();
-            });
-        }
-        // Caso 2: DOM già caricato
-        else if (document.readyState === 'interactive' || document.readyState === 'complete') {
-            setTimeout(() => this.handleAppLaunchWithDelay(), 100);
-        }
+        // Aspetta che tutto sia caricato prima di processare deep links
+        const initializeDeepLink = () => {
+            setTimeout(() => {
+                this.handleAppLaunch();
+            }, 1000); // Aspetta 1 secondo per assicurare caricamento completo
+        };
         
-        // Backup: listener su window load
-        window.addEventListener('load', () => {
-            if (!this.lastDeepLinkId && !this.pendingDeepLink) {
-                this.handleAppLaunchWithDelay();
-            }
-        });
-    }
-    
-    // Gestisce lancio app con delay per assicurare caricamento
-    handleAppLaunchWithDelay() {
-        setTimeout(() => {
-            this.handleAppLaunch();
-        }, 500); // Delay per assicurare caricamento completo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeDeepLink);
+        } else {
+            initializeDeepLink();
+        }
     }
     
     // Gestisce lancio app da App Link/Universal Link
@@ -97,6 +85,8 @@ class DeepLinkRouter {
     
     // Estrae monument ID dall'URL con supporto multi-formato
     extractMonumentId(url) {
+        console.log('🔍 Extracting monument ID from URL:', url.href);
+        
         // Format 1: ?monument=id (da redirect web)
         const monumentParam = url.searchParams.get('monument');
         if (monumentParam) {
@@ -132,6 +122,7 @@ class DeepLinkRouter {
             return pathMatch[1];
         }
         
+        console.log('❌ No monument ID found in URL');
         return null;
     }
     
@@ -176,152 +167,195 @@ class DeepLinkRouter {
         }
     }
     
-    // Apre monumento nell'app - LOGICA PRINCIPALE MIGLIORATA
+    // Apre monumento nell'app - LOGICA PRINCIPALE
     async openMonumentInApp(monumentId) {
         try {
             console.log('🏛️ Opening monument in app:', monumentId);
             
-            // Step 1: Verifica e carica dati monumenti se necessario
+            // Step 1: Carica dati monumenti
             await this.ensureMonumentData();
             
             // Step 2: Trova il monumento
             const monument = await this.findMonument(monumentId);
             if (!monument) {
-                console.error('❌ Monument not found:', monumentId);
+                console.error('❌ Monument not found in data:', monumentId);
                 this.handleMonumentNotFound(monumentId);
                 return;
             }
             
             console.log('✅ Monument found:', monument.name);
             
-            // Step 3: Naviga alla sezione corretta
-            await this.navigateToMonumentSection(monument);
+            // Step 3: Naviga alla sezione tappe
+            console.log('🧭 Navigating to tappe section...');
+            if (window.switchTab && typeof window.switchTab === 'function') {
+                window.switchTab('tappe');
+                console.log('✅ Navigated to tappe section');
+            } else {
+                console.error('❌ switchTab function not available');
+                throw new Error('Navigation function not available');
+            }
             
-            // Step 4: Aspetta rendering e scrolla al monumento
-            await this.scrollToMonumentWithFeedback(monument);
+            // Step 4: Aspetta rendering e cerca il monumento
+            await this.waitForMonumentCards();
             
-            // Step 5: Mostra feedback di successo
+            // Step 5: Scrolla al monumento
+            await this.scrollToMonument(monument);
+            
+            // Step 6: Mostra feedback di successo
             this.showSuccessFeedback(monument);
             
         } catch (error) {
             console.error('💥 Error in deep link flow:', error);
-            this.showErrorFeedback('Errore nell\'apertura del monumento');
+            this.showErrorFeedback('Errore nell\'apertura del monumento: ' + error.message);
         }
     }
     
-    // Assicura che i dati dei monumenti siano caricati
+    // Carica dati monumenti con fetch diretto
     ensureMonumentData() {
         return new Promise((resolve, reject) => {
-            // Caso 1: Dati già caricati
+            console.log('📦 Loading monument data...');
+            
+            // Se dati già presenti, usa quelli
             if (window.monumentsData && window.monumentsData.length > 0) {
+                console.log('✅ Monument data already available:', window.monumentsData.length, 'monuments');
                 resolve();
                 return;
             }
             
-            // Caso 2: Funzione di caricamento disponibile
-            if (window.loadMonumentsFromJSON && typeof window.loadMonumentsFromJSON === 'function') {
-                console.log('📦 Loading monument data...');
-                window.loadMonumentsFromJSON()
-                    .then(resolve)
-                    .catch(reject);
-            }
-            // Caso 3: Dati non ancora disponibili, aspetta
-            else {
-                console.log('⏳ Waiting for monument data to load...');
-                const checkData = () => {
-                    if (window.monumentsData && window.monumentsData.length > 0) {
-                        resolve();
-                    } else {
-                        setTimeout(checkData, 200);
+            // Carica direttamente da JSON
+            fetch('data/monuments.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('HTTP ' + response.status + ': ' + response.statusText);
                     }
-                };
-                setTimeout(checkData, 500);
-            }
+                    return response.json();
+                })
+                .then(data => {
+                    if (!data || !Array.isArray(data) || data.length === 0) {
+                        throw new Error('Invalid or empty monument data');
+                    }
+                    
+                    window.monumentsData = data;
+                    console.log('✅ Monument data loaded successfully:', data.length, 'monuments');
+                    resolve();
+                })
+                .catch(error => {
+                    console.error('❌ Failed to load monument data:', error);
+                    reject(error);
+                });
         });
     }
     
     // Trova monumento nei dati
     findMonument(monumentId) {
         return new Promise((resolve) => {
-            if (!window.monumentsData) {
+            if (!window.monumentsData || !Array.isArray(window.monumentsData)) {
+                console.error('❌ No monument data available');
                 resolve(null);
                 return;
             }
             
             const monument = window.monumentsData.find(m => m.id === monumentId);
-            resolve(monument);
-        });
-    }
-    
-    // Naviga alla sezione appropriata per il monumento
-    navigateToMonumentSection(monument) {
-        return new Promise((resolve) => {
-            console.log('🧭 Navigating to monument section for:', monument.name);
             
-            // Determina la sezione target (per ora usa sempre 'monumenti')
-            const targetSection = 'monumenti';
-            
-            // Naviga usando la funzione esistente
-            if (window.switchTab && typeof window.switchTab === 'function') {
-                window.switchTab(targetSection);
-                console.log('✅ Navigated to section:', targetSection);
+            if (monument) {
+                console.log('✅ Monument found in data:', monument.name);
             } else {
-                console.warn('⚠️ switchTab function not available');
+                console.error('❌ Monument not found in data:', monumentId);
+                console.log('📋 Available monument IDs:', window.monumentsData.map(m => m.id).slice(0, 10).join(', '));
             }
             
             resolve(monument);
         });
     }
     
-    // Scrolla al monumento con feedback visivo
-    scrollToMonumentWithFeedback(monument) {
+    // Aspetta che le card monumenti siano renderizzate
+    waitForMonumentCards() {
         return new Promise((resolve) => {
-            // Aspetta rendering sezione
-            setTimeout(() => {
-                this.scrollToMonumentCard(monument.id);
-                resolve(monument);
-            }, 800);
+            console.log('⏳ Waiting for monument cards to render...');
+            
+            let attempts = 0;
+            const maxAttempts = 20; // 4 secondi max
+            
+            const checkCards = () => {
+                attempts++;
+                const tappeSection = document.getElementById('tappe');
+                const monumentCards = tappeSection ? tappeSection.querySelectorAll('.monument-card') : [];
+                
+                console.log('🔍 Attempt ' + attempts + ': Section active: ' + (tappeSection ? tappeSection.classList.contains('active') : 'null') + ', Cards: ' + monumentCards.length);
+                
+                if (tappeSection && tappeSection.classList.contains('active') && monumentCards.length > 0) {
+                    console.log('✅ Monument cards ready:', monumentCards.length);
+                    resolve();
+                } else if (attempts >= maxAttempts) {
+                    console.warn('⚠️ Timeout waiting for monument cards, proceeding anyway...');
+                    resolve();
+                } else {
+                    setTimeout(checkCards, 200);
+                }
+            };
+            
+            checkCards();
         });
     }
     
-    // Scrolla alla card del monumento
-    scrollToMonumentCard(monumentId) {
-        // Cerca la card del monumento con diversi selettori
-        const selectors = [
-            `[data-monument-id="${monumentId}"]`,
-            `[data-id="${monumentId}"]`,
-            `.monument-card[data-monument="${monumentId}"]`,
-            `#monument-${monumentId}`
-        ];
-        
-        let monumentCard = null;
-        
-        for (const selector of selectors) {
-            monumentCard = document.querySelector(selector);
-            if (monumentCard) {
-                console.log('🎯 Found monument card with selector:', selector);
-                break;
+    // Scrolla al monumento specifico
+    scrollToMonument(monument) {
+        return new Promise((resolve) => {
+            console.log('🎯 Scrolling to monument:', monument.id);
+            
+            // Selettori per trovare la card
+            const selectors = [
+                '[data-monument-id="' + monument.id + '"]',
+                '.monument-card[data-monument-id="' + monument.id + '"]'
+            ];
+            
+            let monumentCard = null;
+            let usedSelector = null;
+            
+            for (const selector of selectors) {
+                monumentCard = document.querySelector(selector);
+                if (monumentCard) {
+                    console.log('🎯 Found monument card with selector:', selector);
+                    usedSelector = selector;
+                    break;
+                }
             }
-        }
-        
-        if (monumentCard) {
-            // Scrolla alla card
-            monumentCard.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center',
-                inline: 'nearest'
-            });
             
-            // Aggiungi evidenziazione temporanea
-            this.highlightElement(monumentCard);
+            // Debug: mostra tutte le card presenti
+            const allCards = document.querySelectorAll('.monument-card');
+            console.log('🗃️ Total monument cards in DOM:', allCards.length);
             
-            console.log('📍 Scrolled to monument:', monumentId);
-        } else {
-            console.warn('⚠️ Monument card not found in DOM:', monumentId);
+            if (allCards.length > 0) {
+                console.log('📋 Available monument card IDs:');
+                for (let i = 0; i < Math.min(allCards.length, 10); i++) {
+                    const card = allCards[i];
+                    const cardId = card.getAttribute('data-monument-id') || 'no-id';
+                    console.log('  ' + (i + 1) + '. "' + cardId + '"');
+                }
+                if (allCards.length > 10) {
+                    console.log('  ... and ' + (allCards.length - 10) + ' more');
+                }
+            }
             
-            // Fallback: cerca per nome o descrizione
-            this.fallbackScrollSearch(monumentId);
-        }
+            if (monumentCard) {
+                // Scrolla alla card
+                monumentCard.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center',
+                    inline: 'nearest'
+                });
+                
+                // Evidenziazione
+                this.highlightElement(monumentCard);
+                
+                console.log('📍 Successfully scrolled to monument card:', monument.id);
+                resolve();
+            } else {
+                console.warn('⚠️ Monument card not found, trying fallback search...');
+                this.fallbackScrollSearch(monument.id);
+                resolve();
+            }
+        });
     }
     
     // Evidenziazione temporanea dell'elemento
@@ -344,12 +378,13 @@ class DeepLinkRouter {
                     box-shadow: 0 0 20px rgba(255, 165, 0, 0.8) !important;
                     border: 2px solid #FFA500 !important;
                     border-radius: 8px !important;
+                    transform: scale(1.02);
                 }
                 
                 @keyframes deepLinkPulse {
-                    0% { transform: scale(1); }
-                    50% { transform: scale(1.02); }
-                    100% { transform: scale(1); }
+                    0% { transform: scale(1.02); box-shadow: 0 0 20px rgba(255, 165, 0, 0.8); }
+                    50% { transform: scale(1.05); box-shadow: 0 0 30px rgba(255, 165, 0, 1); }
+                    100% { transform: scale(1.02); box-shadow: 0 0 20px rgba(255, 165, 0, 0.8); }
                 }
             `;
             document.head.appendChild(style);
@@ -358,17 +393,26 @@ class DeepLinkRouter {
     
     // Ricerca fallback per monumento
     fallbackScrollSearch(monumentId) {
-        // Cerca elementi che contengono l'ID del monumento nel testo
-        const allElements = document.querySelectorAll('.monument-card, .featured-card, [class*="monument"]');
+        console.log('🔍 Fallback search for monument:', monumentId);
         
-        for (const element of allElements) {
-            if (element.textContent && element.textContent.toLowerCase().includes(monumentId.toLowerCase())) {
-                element.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-                this.highlightElement(element);
-                console.log('🔍 Fallback scroll found element for:', monumentId);
+        // Cerca elementi che contengono l'ID del monumento nel testo o attributi
+        const allCards = document.querySelectorAll('.monument-card, .featured-card');
+        
+        for (const card of allCards) {
+            // Controlla attributi
+            const cardId = card.getAttribute('data-monument-id') || card.getAttribute('data-id') || '';
+            if (cardId.toLowerCase().includes(monumentId.toLowerCase())) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                this.highlightElement(card);
+                console.log('🔍 Fallback found card by attribute:', cardId);
+                return;
+            }
+            
+            // Controlla contenuto testuale
+            if (card.textContent && card.textContent.toLowerCase().includes(monumentId.toLowerCase())) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                this.highlightElement(card);
+                console.log('🔍 Fallback found card by text content');
                 return;
             }
         }
@@ -378,20 +422,21 @@ class DeepLinkRouter {
     
     // Mostra feedback di successo
     showSuccessFeedback(monument) {
-        const message = `🏛️ ${monument.name}`;
+        const message = '🏛️ ' + monument.name;
         
         if (window.showNotification && typeof window.showNotification === 'function') {
             window.showNotification(message, 'success');
         } else {
-            // Fallback: mostra alert personalizzato
             this.showCustomAlert(message, 'success');
         }
         
-        console.log('✅ Monument opened successfully:', monument.name);
+        console.log('✅ Deep link completed successfully for:', monument.name);
     }
     
     // Mostra feedback di errore
     showErrorFeedback(message) {
+        console.error('💥 Deep link error:', message);
+        
         if (window.showNotification && typeof window.showNotification === 'function') {
             window.showNotification(message, 'error');
         } else {
@@ -402,10 +447,13 @@ class DeepLinkRouter {
     // Alert personalizzato se showNotification non disponibile
     showCustomAlert(message, type) {
         const alertDiv = document.createElement('div');
+        const bgColor = type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3';
+        
         alertDiv.style.cssText = `
             position: fixed;
             top: 20px;
-            right: 20px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 10000;
             padding: 15px 20px;
             border-radius: 8px;
@@ -413,8 +461,10 @@ class DeepLinkRouter {
             font-weight: bold;
             font-size: 14px;
             max-width: 300px;
-            animation: slideInRight 0.3s ease-out;
-            background-color: ${type === 'success' ? '#4CAF50' : '#f44336'};
+            text-align: center;
+            animation: slideInDown 0.3s ease-out;
+            background-color: ${bgColor};
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         `;
         
         alertDiv.textContent = message;
@@ -423,9 +473,11 @@ class DeepLinkRouter {
         // Rimuovi dopo 4 secondi
         setTimeout(() => {
             if (alertDiv.parentNode) {
-                alertDiv.style.animation = 'slideOutRight 0.3s ease-in forwards';
+                alertDiv.style.animation = 'slideOutUp 0.3s ease-in forwards';
                 setTimeout(() => {
-                    document.body.removeChild(alertDiv);
+                    if (alertDiv.parentNode) {
+                        document.body.removeChild(alertDiv);
+                    }
                 }, 300);
             }
         }, 4000);
@@ -435,13 +487,13 @@ class DeepLinkRouter {
             const style = document.createElement('style');
             style.id = 'custom-alert-styles';
             style.textContent = `
-                @keyframes slideInRight {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
+                @keyframes slideInDown {
+                    from { transform: translateX(-50%) translateY(-100%); opacity: 0; }
+                    to { transform: translateX(-50%) translateY(0); opacity: 1; }
                 }
-                @keyframes slideOutRight {
-                    from { transform: translateX(0); opacity: 1; }
-                    to { transform: translateX(100%); opacity: 0; }
+                @keyframes slideOutUp {
+                    from { transform: translateX(-50%) translateY(0); opacity: 1; }
+                    to { transform: translateX(-50%) translateY(-100%); opacity: 0; }
                 }
             `;
             document.head.appendChild(style);
@@ -452,13 +504,13 @@ class DeepLinkRouter {
     handleMonumentNotFound(monumentId) {
         console.error('❌ Monument not found:', monumentId);
         
-        // Naviga alla home
+        // Naviga alla sezione tappe comunque per mostrare i monumenti disponibili
         if (window.switchTab && typeof window.switchTab === 'function') {
-            window.switchTab('home');
+            window.switchTab('tappe');
         }
         
         // Mostra errore
-        this.showErrorFeedback(`Monumento "${monumentId}" non trovato`);
+        this.showErrorFeedback('Monumento "' + monumentId + '" non trovato');
         
         // Suggerisci monumenti alternativi dopo 2 secondi
         setTimeout(() => {
@@ -477,7 +529,7 @@ class DeepLinkRouter {
             .join(', ');
         
         if (featuredMonuments) {
-            const message = `Monumenti disponibili: ${featuredMonuments}`;
+            const message = 'Monumenti disponibili: ' + featuredMonuments;
             
             if (window.showNotification && typeof window.showNotification === 'function') {
                 window.showNotification(message, 'info');
@@ -497,8 +549,8 @@ class DeepLinkRouter {
                 monumentId: monument.id,
                 monumentName: monument.name,
                 category: monument.category,
-                qrCodeUrl: `https://${this.appDomain}/${monument.id}`,
-                webFallbackUrl: `${this.baseWebURL}?deep=${monument.id}`
+                qrCodeUrl: 'https://' + this.appDomain + '/' + monument.id,
+                webFallbackUrl: this.baseWebURL + '?deep=' + monument.id
             }));
     }
 }
@@ -506,14 +558,10 @@ class DeepLinkRouter {
 // Inizializza router globale
 const deepLinkRouter = new DeepLinkRouter();
 
-// Auto-inizializzazione
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        deepLinkRouter.init();
-    });
-} else {
+// Auto-inizializzazione con delay per assicurare caricamento script.js
+setTimeout(() => {
     deepLinkRouter.init();
-}
+}, 100);
 
 // Esponi funzione per callback iOS
 window.handleiOSDeepLink = (deepLinkData) => {
@@ -522,11 +570,29 @@ window.handleiOSDeepLink = (deepLinkData) => {
 
 // Funzioni di utilità per testing e generazione QR
 window.deepLinkUtils = {
-    // Test deep link (solo per development)
+    // Test deep link
     testDeepLink: (monumentId) => {
-        const testUrl = `${window.location.origin}${window.location.pathname}?deep=${monumentId}`;
+        const testUrl = window.location.origin + window.location.pathname + '?deep=' + monumentId;
         console.log('🧪 Testing deep link:', testUrl);
         window.location.href = testUrl;
+    },
+    
+    // Forza apertura monumento
+    forceOpenMonument: (monumentId) => {
+        console.log('🔧 Force opening monument:', monumentId);
+        deepLinkRouter.openMonumentInApp(monumentId);
+    },
+    
+    // Debug: mostra stato sistema
+    debugStatus: () => {
+        console.group('🔧 Deep Link System Status');
+        console.log('Router initialized:', deepLinkRouter.isInitialized);
+        console.log('Monument data loaded:', !!window.monumentsData);
+        console.log('Monument data count:', window.monumentsData ? window.monumentsData.length : 0);
+        console.log('switchTab available:', typeof window.switchTab);
+        console.log('Current URL:', window.location.href);
+        console.log('Monument ID in URL:', deepLinkRouter.extractMonumentId(new URL(window.location.href)));
+        console.groupEnd();
     },
     
     // Genera CSV per QR codes
@@ -540,10 +606,10 @@ window.deepLinkUtils = {
         
         const csvHeaders = 'Monument ID,Monument Name,Category,QR Code URL,Web Fallback URL';
         const csvRows = urls.map(item => 
-            `"${item.monumentId}","${item.monumentName}","${item.category}","${item.qrCodeUrl}","${item.webFallbackUrl}"`
+            '"' + item.monumentId + '","' + item.monumentName + '","' + item.category + '","' + item.qrCodeUrl + '","' + item.webFallbackUrl + '"'
         );
         
-        const csvContent = [csvHeaders, ...csvRows].join('\n');
+        const csvContent = [csvHeaders].concat(csvRows).join('\n');
         
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
@@ -564,38 +630,22 @@ window.deepLinkUtils = {
         const urls = deepLinkRouter.generateQRUrls();
         console.group('🏛️ QR Code URLs for Monuments');
         urls.forEach(item => {
-            console.log(`${item.monumentName}: ${item.qrCodeUrl}`);
+            console.log(item.monumentName + ': ' + item.qrCodeUrl);
         });
         console.groupEnd();
         return urls;
-    },
-    
-    // Forza apertura monumento (per debug)
-    forceOpenMonument: (monumentId) => {
-        console.log('🔧 Force opening monument:', monumentId);
-        deepLinkRouter.openMonumentInApp(monumentId);
-    },
-    
-    // Test tutti i formati URL
-    testAllUrlFormats: (monumentId) => {
-        const baseUrl = `${window.location.origin}${window.location.pathname}`;
-        const testUrls = [
-            `${baseUrl}?monument=${monumentId}`,
-            `${baseUrl}?qr=${monumentId}`,
-            `${baseUrl}?deep=${monumentId}`,
-            `${baseUrl}#${monumentId}`
-        ];
-        
-        console.group('🧪 Testing all URL formats for monument:', monumentId);
-        testUrls.forEach(url => {
-            console.log('Test URL:', url);
-        });
-        console.groupEnd();
-        
-        return testUrls;
     }
 };
 
+// Debug automatico se presente parametro deep nell'URL
+if (window.location.search.includes('deep=') || window.location.search.includes('monument=') || window.location.search.includes('qr=')) {
+    setTimeout(() => {
+        console.log('🔍 Deep link detected in URL, debugging...');
+        window.deepLinkUtils.debugStatus();
+    }, 2000);
+}
+
 // Log di inizializzazione
-console.log('🏛️ Deep Link Router v2.0 loaded and ready');
+console.log('🏛️ Deep Link Router v2.1 loaded and ready');
 console.log('🔧 Available utils: window.deepLinkUtils');
+console.log('🧪 Test command: window.deepLinkUtils.testDeepLink("chiesa-santa-maria-croce")');
