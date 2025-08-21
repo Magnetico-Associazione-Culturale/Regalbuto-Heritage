@@ -2148,6 +2148,7 @@ body.navigation-active {
     gap: 1rem;
     margin-top: 1.5rem;
     flex-wrap: wrap;
+    justify-content: center; /* Centra i pulsanti anche su desktop */
 }
 
 /* Modal Styles */
@@ -2712,6 +2713,7 @@ body.navigation-active {
     justify-content: center;
     background: var(--background-white);
     border-top: 1px solid var(--border-color);
+    align-items: center; /* Aggiunto per centraggio verticale */
 }
 
 .tour-locations {
@@ -3171,6 +3173,47 @@ body.navigation-active {
     
     .monument-actions {
         flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .monument-actions .btn {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .monument-actions .secondary-actions {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .monument-actions .secondary-actions .btn {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+    }
+    
+    /* Assicura che tutti i pulsanti nelle monument-card siano centrati su mobile */
+    .monument-card .btn {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+        text-align: center;
+        margin: 0 auto;
+    }
+    
+    /* Centra anche i contenitori dei pulsanti */
+    .monument-card .monument-actions,
+    .monument-card .secondary-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
     }
     
     .quiz-navigation {
@@ -3180,6 +3223,40 @@ body.navigation-active {
     
     .tour-controls {
         flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .tour-controls .btn {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+        text-align: center;
+        margin: 0 auto;
+    }
+    
+    /* Assicura che anche i pulsanti outline siano centrati */
+    .tour-controls .btn-outline {
+        width: 100%;
+        max-width: 280px;
+        justify-content: center;
+        text-align: center;
+    }
+    
+    /* Regola generale per centrare tutti i pulsanti su mobile */
+    .btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Centraggio specifico per container con flex-direction column */
+    [style*="flex-direction: column"] .btn,
+    .monument-actions .btn,
+    .tour-controls .btn,
+    .quiz-navigation .btn {
+        margin-left: auto;
+        margin-right: auto;
     }
     
     .modal-content {
