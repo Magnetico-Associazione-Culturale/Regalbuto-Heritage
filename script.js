@@ -4108,6 +4108,12 @@ function getCategoryDisplayName(category) {
 function generateMonumentDescription(monument) {
     let description = '';
     
+    // Add historical period if available
+    const historicalPeriod = getHistoricalPeriod(monument);
+    if (historicalPeriod) {
+        description += `<div class="monument-period">${historicalPeriod}</div>`;
+    }
+    
     if (monument.history && monument.history.length > 0) {
         monument.history.forEach(period => {
             description += `<p><strong>${period.title}:</strong> ${period.description}</p>`;
@@ -4117,6 +4123,51 @@ function generateMonumentDescription(monument) {
     }
     
     return description;
+}
+
+// Helper function to extract historical period from monument data
+function getHistoricalPeriod(monument) {
+    if (!monument.history || monument.history.length === 0) {
+        return null;
+    }
+    
+    // Get the earliest start and latest end dates
+    let earliestStart = null;
+    let latestEnd = null;
+    
+    monument.history.forEach(period => {
+        if (period.period) {
+            const start = parseInt(period.period.start);
+            const end = parseInt(period.period.end);
+            
+            if (!isNaN(start)) {
+                if (!earliestStart || start < earliestStart) {
+                    earliestStart = start;
+                }
+            }
+            
+            if (!isNaN(end)) {
+                if (!latestEnd || end > latestEnd) {
+                    latestEnd = end;
+                }
+            }
+        }
+    });
+    
+    // Format the period display
+    if (earliestStart && latestEnd) {
+        if (earliestStart === latestEnd) {
+            return `📅 Anno di costruzione: ${earliestStart}`;
+        } else {
+            return `📅 Periodo di costruzione: ${earliestStart} - ${latestEnd}`;
+        }
+    } else if (earliestStart) {
+        return `📅 Costruzione dal: ${earliestStart}`;
+    } else if (latestEnd) {
+        return `📅 Costruzione fino al: ${latestEnd}`;
+    }
+    
+    return null;
 }
 
 // Generate monument actions based on available features

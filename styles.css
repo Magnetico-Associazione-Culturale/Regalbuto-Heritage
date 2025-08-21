@@ -2079,6 +2079,20 @@ body.navigation-active {
     margin-bottom: 0.5rem;
 }
 
+/* Historical period badge */
+.monument-period {
+    display: inline-block;
+    color: #888;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.25rem 0.6rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
 .monument-description {
     color: var(--text-secondary);
     font-size: 0.9rem;
