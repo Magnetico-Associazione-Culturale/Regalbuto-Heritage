@@ -5771,3 +5771,121 @@ button:focus,
     }
 }
 
+/* Quiz Results Detailed Feedback Styles */
+.quiz-detailed-results {
+    background: var(--background-white);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: 0 4px 20px var(--shadow-light);
+}
+
+.quiz-detailed-results h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    text-align: center;
+}
+
+.result-question {
+    background: var(--background-secondary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid transparent;
+}
+
+.result-question.correct {
+    border-left-color: #22c55e;
+    background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+}
+
+.result-question.incorrect {
+    border-left-color: #ef4444;
+    background: linear-gradient(135deg, #fecaca 0%, #fef2f2 100%);
+}
+
+.result-question-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.result-answer {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.result-answer.user-answer {
+    background: #e0e7ff;
+    border: 2px solid #6366f1;
+}
+
+.result-answer.user-answer.correct {
+    background: #d1fae5;
+    border-color: #22c55e;
+    color: #065f46;
+}
+
+.result-answer.user-answer.incorrect {
+    background: #fecaca;
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+.result-answer.correct-answer {
+    background: #d1fae5;
+    border: 2px solid #22c55e;
+    color: #065f46;
+    font-weight: 600;
+}
+
+.result-answer-icon {
+    margin-right: 0.75rem;
+    font-size: 1.2rem;
+}
+
+.result-answer-text {
+    flex: 1;
+}
+
+.result-summary {
+    background: var(--gradient-warm);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.result-summary h4 {
+    color: white;
+    margin-bottom: 0.5rem;
+}
+
+.score-breakdown {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 1rem;
+}
+
+.score-item {
+    text-align: center;
+}
+
+.score-number {
+    font-size: 2rem;
+    font-weight: bold;
+    display: block;
+}
+
+.score-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+

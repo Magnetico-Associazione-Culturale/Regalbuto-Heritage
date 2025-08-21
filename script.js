@@ -1779,24 +1779,92 @@ function submitQuiz() {
     
     quizAnswers[`q${currentQuizQuestion}`] = selectedAnswer.value;
     
-    // Calculate score with new correct answers
-    const correctAnswers = { 
-        q1: 'b', q2: 'b', q3: 'b', q4: 'b', q5: 'b', 
-        q6: 'b', q7: 'c', q8: 'b', q9: 'b', q10: 'c' 
+    // Quiz data structure with questions, options and correct answers
+    const quizData = {
+        q1: {
+            question: "In quale provincia si trova Regalbuto?",
+            category: "🏛️ Geografia",
+            options: { a: "Palermo", b: "Enna", c: "Catania" },
+            correct: "b"
+        },
+        q2: {
+            question: "Qual è il nome del lago artificiale vicino a Regalbuto?",
+            category: "🌊 Natura",
+            options: { a: "Lago di Pergusa", b: "Lago Pozzillo", c: "Lago Arancio" },
+            correct: "b"
+        },
+        q3: {
+            question: "Quale importante edificio religioso si trova nel centro di Regalbuto?",
+            category: "⛪ Religione",
+            options: { a: "Duomo di San Giorgio", b: "Chiesa Madre di San Basilio Magno", c: "Santuario di Tindari" },
+            correct: "b"
+        },
+        q4: {
+            question: "In quale secolo fu fondato Regalbuto?",
+            category: "📜 Storia",
+            options: { a: "XI secolo", b: "XIV secolo", c: "XVII secolo" },
+            correct: "b"
+        },
+        q5: {
+            question: "Qual è la caratteristica principale del Convento di Sant'Antonio?",
+            category: "🏛️ Architettura",
+            options: { a: "È costruito interamente in marmo", b: "È inaccessibile e si trova in una zona rurale", c: "Ospita un museo d'arte moderna" },
+            correct: "b"
+        },
+        q6: {
+            question: "Qual è la principale festa religiosa celebrata a Regalbuto?",
+            category: "🎉 Tradizioni",
+            options: { a: "Festa di San Sebastiano", b: "Festa del Patrono San Vito", c: "Festa della Madonna del Carmelo" },
+            correct: "b"
+        },
+        q7: {
+            question: "Cosa significa il nome \"Regalbuto\"?",
+            category: "📖 Etimologia",
+            options: { a: "Paese reale", b: "Campo del re", c: "Fortezza del re" },
+            correct: "c"
+        },
+        q8: {
+            question: "Quale importante struttura medievale sorgeva sulla collina di Regalbuto?",
+            category: "🏰 Medievale",
+            options: { a: "Una torre normanna", b: "Un castello", c: "Un monastero templare" },
+            correct: "b"
+        },
+        q9: {
+            question: "Regalbuto è situata lungo quale importante fiume siciliano?",
+            category: "🌊 Geografia",
+            options: { a: "Fiume Alcantara", b: "Fiume Simeto", c: "Fiume Belice" },
+            correct: "b"
+        },
+        q10: {
+            question: "Quale prodotto tipico è legato alla tradizione agricola di Regalbuto?",
+            category: "🌾 Agricoltura",
+            options: { a: "Lenticchie", b: "Mandorle", c: "Olive" },
+            correct: "c"
+        }
     };
-    let score = 0;
     
-    for (let q in correctAnswers) {
-        if (quizAnswers[q] === correctAnswers[q]) {
+    // Calculate score
+    let score = 0;
+    let correctCount = 0;
+    let incorrectCount = 0;
+    
+    for (let q in quizData) {
+        if (quizAnswers[q] === quizData[q].correct) {
             score++;
+            correctCount++;
+        } else {
+            incorrectCount++;
         }
     }
     
-    // Show results
+    // Hide quiz container
     document.getElementById('quiz-container').style.display = 'none';
+    
+    // Get result container
     const resultDiv = document.getElementById('quiz-result');
     const scoreText = document.getElementById('quiz-score');
     
+    // Generate message based on score
     let message = '';
     if (score >= 9) {
         message = 'Perfetto! Conosci molto bene Regalbuto!';
@@ -1810,8 +1878,80 @@ function submitQuiz() {
         message = 'Sembra che tu debba esplorare meglio Regalbuto!';
     }
     
-    scoreText.textContent = `Hai risposto correttamente a ${score} su 10 domande. ${message}`;
+    // Create detailed results HTML
+    let detailedResultsHTML = `
+        <div class="quiz-detailed-results">
+            <div class="result-summary">
+                <h4>Risultato Quiz</h4>
+                <p>Hai risposto correttamente a ${score} su 10 domande. ${message}</p>
+                <div class="score-breakdown">
+                    <div class="score-item">
+                        <span class="score-number" style="color: #22c55e;">${correctCount}</span>
+                        <span class="score-label">Corrette</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-number" style="color: #ef4444;">${incorrectCount}</span>
+                        <span class="score-label">Errate</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="score-number" style="color: #ffd700;">${Math.round((score/10)*100)}%</span>
+                        <span class="score-label">Punteggio</span>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>Revisione delle Risposte</h3>
+    `;
+    
+    // Add detailed results for each question
+    for (let i = 1; i <= 10; i++) {
+        const qKey = `q${i}`;
+        const questionData = quizData[qKey];
+        const userAnswer = quizAnswers[qKey];
+        const isCorrect = userAnswer === questionData.correct;
+        
+        detailedResultsHTML += `
+            <div class="result-question ${isCorrect ? 'correct' : 'incorrect'}">
+                <div class="result-question-title">
+                    ${questionData.category} Domanda ${i}: ${questionData.question}
+                </div>
+        `;
+        
+        // Show user's answer
+        if (userAnswer) {
+            detailedResultsHTML += `
+                <div class="result-answer user-answer ${isCorrect ? 'correct' : 'incorrect'}">
+                    <span class="result-answer-icon">${isCorrect ? '✅' : '❌'}</span>
+                    <span class="result-answer-text">
+                        <strong>La tua risposta:</strong> ${questionData.options[userAnswer]}
+                    </span>
+                </div>
+            `;
+        }
+        
+        // Show correct answer if user was wrong
+        if (!isCorrect) {
+            detailedResultsHTML += `
+                <div class="result-answer correct-answer">
+                    <span class="result-answer-icon">✅</span>
+                    <span class="result-answer-text">
+                        <strong>Risposta corretta:</strong> ${questionData.options[questionData.correct]}
+                    </span>
+                </div>
+            `;
+        }
+        
+        detailedResultsHTML += `</div>`;
+    }
+    
+    detailedResultsHTML += `</div>`;
+    
+    // Update the result display
+    scoreText.innerHTML = detailedResultsHTML;
     resultDiv.style.display = 'block';
+    
+    // Scroll to top of results
+    resultDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function restartQuiz() {
