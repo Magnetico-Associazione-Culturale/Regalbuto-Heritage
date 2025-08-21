@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test QR Codes - Regalbuto Heritage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: #f5f5f5;
+        }
+        
+        .qr-test-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .qr-code {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 0.5rem 0;
+        }
+        
+        .test-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #4a5568;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .test-button:hover {
+            background: #2d3748;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        h2 {
+            color: #4a5568;
+            border-bottom: 2px solid #ffd700;
+            padding-bottom: 0.5rem;
+        }
+        
+        .success {
+            border-left: 4px solid #27ae60;
+        }
+        
+        .info {
+            border-left: 4px solid #3498db;
+        }
+        
+        .warning {
+            border-left: 4px solid #f39c12;
+        }
+        
+        .note {
+            background: #e8f4f8;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            border-left: 4px solid #3498db;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test QR Codes - Regalbuto Heritage</h1>
+    
+    <div class="note">
+        <strong>📱 Come testare:</strong>
+        <ol>
+            <li>Apri l'app Regalbuto Heritage</li>
+            <li>Vai nella sezione Home o Tappe</li>
+            <li>Clicca su "Scansione QR Code"</li>
+            <li>Scansiona uno dei QR codes qui sotto</li>
+        </ol>
+    </div>
+
+    <h2>🏛️ QR Codes Monumenti (Deep Links)</h2>
+    
+    <div class="qr-test-card success">
+        <h3>Chiesa Madre di San Basilio</h3>
+        <div class="qr-code">https://itinerarioregalbuto.magnetico.cloud/san-basilio</div>
+        <p><strong>Test:</strong> Dovrebbe aprire la sezione tappe, espandere la Chiesa di San Basilio e avviare l'audioguida automaticamente.</p>
+        <button class="test-button" onclick="window.open('https://itinerarioregalbuto.magnetico.cloud/san-basilio', '_blank')">
+            🔗 Testa Link Diretto
+        </button>
+    </div>
+    
+    <div class="qr-test-card success">
+        <h3>Convento di Sant'Antonio</h3>
+        <div class="qr-code">https://itinerarioregalbuto.magnetico.cloud/santantonio</div>
+        <p><strong>Test:</strong> Dovrebbe aprire il Convento di Sant'Antonio con tutte le sue funzionalità.</p>
+        <button class="test-button" onclick="window.open('https://itinerarioregalbuto.magnetico.cloud/santantonio', '_blank')">
+            🔗 Testa Link Diretto
+        </button>
+    </div>
+    
+    <div class="qr-test-card success">
+        <h3>Chiesa di Santa Maria La Croce</h3>
+        <div class="qr-code">https://itinerarioregalbuto.magnetico.cloud/santa-maria-croce</div>
+        <p><strong>Test:</strong> Dovrebbe aprire la Chiesa di Santa Maria La Croce.</p>
+        <button class="test-button" onclick="window.open('https://itinerarioregalbuto.magnetico.cloud/santa-maria-croce', '_blank')">
+            🔗 Testa Link Diretto
+        </button>
+    </div>
+    
+    <div class="qr-test-card success">
+        <h3>Cine Teatro Urania</h3>
+        <div class="qr-code">https://itinerarioregalbuto.magnetico.cloud/teatro-urania</div>
+        <p><strong>Test:</strong> Dovrebbe aprire il Teatro Urania con tour virtuale 360°.</p>
+        <button class="test-button" onclick="window.open('https://itinerarioregalbuto.magnetico.cloud/teatro-urania', '_blank')">
+            🔗 Testa Link Diretto
+        </button>
+    </div>
+
+    <h2>🔗 Altri Formati Supportati</h2>
+    
+    <div class="qr-test-card info">
+        <h3>Formato Legacy</h3>
+        <div class="qr-code">monument:san-basilio</div>
+        <p><strong>Test:</strong> Formato vecchio ancora supportato per compatibilità.</p>
+    </div>
+    
+    <div class="qr-test-card info">
+        <h3>Link Web Generico</h3>
+        <div class="qr-code">https://www.regalbuto.gov.it</div>
+        <p><strong>Test:</strong> Dovrebbe mostrare opzioni per aprire il link o copiarlo.</p>
+    </div>
+    
+    <div class="qr-test-card warning">
+        <h3>Testo Semplice</h3>
+        <div class="qr-code">Benvenuti a Regalbuto! 🏛️</div>
+        <p><strong>Test:</strong> Dovrebbe mostrare il testo con opzione di copia.</p>
+    </div>
+
+    <h2>🧪 Generatori QR Online</h2>
+    
+    <div class="qr-test-card">
+        <p>Per generare QR codes di test, puoi usare:</p>
+        <button class="test-button" onclick="window.open('https://qr-code-generator.com', '_blank')">
+            📱 QR Code Generator
+        </button>
+        <button class="test-button" onclick="window.open('https://www.qr-code-generator.com', '_blank')">
+            🔗 QR Code Generator (Alt)
+        </button>
+        <button class="test-button" onclick="window.open('https://qrcode.tec-it.com', '_blank')">
+            🎯 TEC-IT QR Generator
+        </button>
+    </div>
+
+    <div class="note">
+        <strong>💡 Suggerimenti per il testing:</strong>
+        <ul>
+            <li>Usa una camera reale per testare la scansione QR</li>
+            <li>Testa su dispositivi diversi (Android/iOS)</li>
+            <li>Verifica che l'audioguida si avvii automaticamente</li>
+            <li>Controlla l'evidenziazione temporanea della card</li>
+            <li>Testa la gestione errori con ID inesistenti</li>
+        </ul>
+    </div>
+
+    <script>
+        // Log delle informazioni per debugging
+        console.log('📱 Test Page Loaded');
+        console.log('🔗 Main App URL: https://itinerarioregalbuto.magnetico.cloud/');
+        console.log('📍 QR Format: https://itinerarioregalbuto.magnetico.cloud/{monument-id}');
+        
+        // Alert per copiare facilmente i link
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Link copiato negli appunti!');
+            }).catch(err => {
+                console.error('Errore copia:', err);
+            });
+        }
+        
+        // Aggiungi listener per copiare i QR codes
+        document.querySelectorAll('.qr-code').forEach(qrCode => {
+            qrCode.style.cursor = 'pointer';
+            qrCode.title = 'Clicca per copiare';
+            qrCode.addEventListener('click', () => {
+                copyToClipboard(qrCode.textContent);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -549,36 +549,371 @@ function scanQRFromFile() {
 function handleQRResult(qrText) {
     const resultDiv = document.getElementById('qr-result');
     
-    // Process different types of QR codes
-    if (qrText.startsWith('http')) {
-        resultDiv.innerHTML = `
-            <div style="padding: 1rem; background: #e8f5e8; border-radius: 10px; margin: 1rem 0;">
-                <h4>QR Code rilevato!</h4>
-                <p>Link trovato: <a href="${qrText}" target="_blank">${qrText}</a></p>
-                <button class="btn btn-primary" onclick="window.open('${qrText}', '_blank')">Apri Link</button>
-            </div>
-        `;
-    } else if (qrText.includes('monument:')) {
-        // Handle monument-specific QR codes - switch to monument tab and expand specific monument
-        const monumentId = qrText.replace('monument:', '');
-        closeQRScanner();
-        switchTab('tappe');
-        setTimeout(() => {
-            expandMonument(monumentId);
-            playAudioGuide(monumentId);
-        }, 500);
-        showNotification(`Monumento ${monumentId} aperto con audioguida!`, 'success');
-        return;
-    } else {
-        resultDiv.innerHTML = `
-            <div style="padding: 1rem; background: #fff3cd; border-radius: 10px; margin: 1rem 0;">
-                <h4>QR Code rilevato!</h4>
-                <p>Contenuto: ${qrText}</p>
-            </div>
-        `;
+    console.log('QR Code scansionato:', qrText);
+    
+    // Pulisci il risultato precedente
+    resultDiv.innerHTML = '';
+    
+    // 1. GESTIONE DEEP LINKS MONUMENTI - Priorità massima
+    if (qrText.includes('itinerarioregalbuto.magnetico.cloud/')) {
+        console.log('Deep link monumento rilevato:', qrText);
+        
+        // Estrai l'ID del monumento dall'URL
+        let monumentId = '';
+        
+        // Supporta diversi formati di URL
+        const urlPatterns = [
+            /itinerarioregalbuto\.magnetico\.cloud\/([a-zA-Z0-9\-]+)\/?$/,
+            /itinerarioregalbuto\.magnetico\.cloud\/([a-zA-Z0-9\-]+)\?/,
+            /monument:([a-zA-Z0-9\-]+)$/
+        ];
+        
+        for (const pattern of urlPatterns) {
+            const match = qrText.match(pattern);
+            if (match) {
+                monumentId = match[1];
+                break;
+            }
+        }
+        
+        if (monumentId) {
+            console.log('Monument ID estratto:', monumentId);
+            
+            // Verifica che il monumento esista nei dati
+            verifyAndOpenMonument(monumentId, qrText);
+            return;
+        } else {
+            console.warn('Impossibile estrarre ID monumento da:', qrText);
+            showQRError('Link monumento non valido');
+            return;
+        }
     }
     
-    showNotification('QR Code scansionato con successo!', 'success');
+    // 2. GESTIONE FORMATO monument:id (legacy)
+    if (qrText.startsWith('monument:')) {
+        const monumentId = qrText.replace('monument:', '');
+        console.log('QR monumento legacy rilevato:', monumentId);
+        verifyAndOpenMonument(monumentId, qrText);
+        return;
+    }
+    
+    // 3. GESTIONE LINK HTTP GENERICI
+    if (qrText.startsWith('http://') || qrText.startsWith('https://')) {
+        console.log('Link HTTP rilevato:', qrText);
+        
+        resultDiv.innerHTML = `
+            <div class="qr-result-card success">
+                <div class="qr-result-header">
+                    <i data-feather="link"></i>
+                    <h4>Link Rilevato</h4>
+                </div>
+                <div class="qr-result-content">
+                    <p class="qr-url">${qrText}</p>
+                    <div class="qr-actions">
+                        <button class="btn btn-primary" onclick="openQRLink('${qrText}')">
+                            <i data-feather="external-link"></i>
+                            Apri Link
+                        </button>
+                        <button class="btn btn-secondary" onclick="copyQRText('${qrText}')">
+                            <i data-feather="copy"></i>
+                            Copia
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        showNotification('Link QR Code scansionato con successo!', 'success');
+        feather.replace();
+        return;
+    }
+    
+    // 4. GESTIONE TESTO GENERICO
+    console.log('QR testo generico rilevato');
+    resultDiv.innerHTML = `
+        <div class="qr-result-card info">
+            <div class="qr-result-header">
+                <i data-feather="file-text"></i>
+                <h4>Testo QR Code</h4>
+            </div>
+            <div class="qr-result-content">
+                <p class="qr-text">${escapeHtml(qrText)}</p>
+                <div class="qr-actions">
+                    <button class="btn btn-primary" onclick="copyQRText('${escapeHtml(qrText)}')">
+                        <i data-feather="copy"></i>
+                        Copia Testo
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    showNotification('QR Code scansionato!', 'info');
+    feather.replace();
+}
+
+// Funzione per verificare e aprire un monumento
+async function verifyAndOpenMonument(monumentId, originalUrl) {
+    try {
+        console.log('Verifica monumento:', monumentId);
+        
+        // Carica i dati dei monumenti
+        const response = await fetch('data/monuments.json');
+        const monuments = await response.json();
+        
+        // Cerca il monumento per ID
+        const monument = monuments.find(m => m.id === monumentId);
+        
+        if (monument) {
+            console.log('Monumento trovato:', monument.name);
+            
+            // Mostra risultato di successo
+            showMonumentQRResult(monument, originalUrl);
+            
+            // Chiudi il scanner QR
+            closeQRScanner();
+            
+            // Aspetta un momento per permettere al modal di chiudersi
+            setTimeout(() => {
+                // Vai alla sezione monumenti
+                switchTab('tappe');
+                
+                // Aspetta che la tab si carichi completamente
+                setTimeout(() => {
+                    // Espandi il monumento specifico
+                    expandMonumentFromQR(monumentId);
+                    
+                    // Avvia automaticamente l'audioguida se disponibile
+                    if (monument.audio && monument.audio.path) {
+                        setTimeout(() => {
+                            playAudioGuide(monumentId);
+                        }, 1000);
+                    }
+                }, 500);
+            }, 300);
+            
+        } else {
+            console.warn('Monumento non trovato:', monumentId);
+            
+            // Controlla ID alternativi comuni
+            const alternativeIds = generateAlternativeIds(monumentId);
+            let foundAlternative = false;
+            
+            for (const altId of alternativeIds) {
+                const altMonument = monuments.find(m => m.id === altId);
+                if (altMonument) {
+                    console.log('Monumento trovato con ID alternativo:', altId, altMonument.name);
+                    verifyAndOpenMonument(altId, originalUrl);
+                    foundAlternative = true;
+                    break;
+                }
+            }
+            
+            if (!foundAlternative) {
+                showQRError(`Monumento "${monumentId}" non trovato nell'itinerario`);
+            }
+        }
+        
+    } catch (error) {
+        console.error('Errore verifica monumento:', error);
+        showQRError('Errore nel caricamento dei dati del monumento');
+    }
+}
+
+// Genera ID alternativi per compatibilità
+function generateAlternativeIds(monumentId) {
+    const alternatives = [
+        monumentId.replace(/-/g, '_'),      // trattini -> underscore
+        monumentId.replace(/_/g, '-'),      // underscore -> trattini
+        monumentId.toLowerCase(),           // tutto minuscolo
+        monumentId.toUpperCase(),           // tutto maiuscolo
+    ];
+    
+    // ID mapping specifici per Regalbuto
+    const specificMappings = {
+        'san-basilio': ['chiesa-san-basilio', 'chiesa-madre-san-basilio', 'san_basilio'],
+        'chiesa-san-basilio': ['san-basilio', 'chiesa-madre-san-basilio'],
+        'santantonio': ['convento-sant-antonio', 'sant-antonio', 'convento-santantonio'],
+        'convento-sant-antonio': ['santantonio', 'sant-antonio'],
+        'santa-maria-croce': ['chiesa-santa-maria-croce', 'chiesa-maria-ss-della-croce'],
+        'purgatorio': ['chiesa-purgatorio', 'chiesa-del-purgatorio'],
+        'teatro-urania': ['cine-teatro-urania', 'urania'],
+        'lago-pozzillo': ['pozzillo', 'lago_pozzillo']
+    };
+    
+    if (specificMappings[monumentId]) {
+        alternatives.push(...specificMappings[monumentId]);
+    }
+    
+    // Rimuovi duplicati
+    return [...new Set(alternatives)];
+}
+
+// Mostra il risultato per un monumento trovato
+function showMonumentQRResult(monument, originalUrl) {
+    const resultDiv = document.getElementById('qr-result');
+    
+    // Trova l'immagine thumbnail per il monumento
+    let thumbnailImage = 'src/imgs/flat/regalbuto-plaza.jpg'; // default
+    if (monument.images && monument.images.length > 0) {
+        const thumb = monument.images.find(img => img.role === 'thumbnail') ||
+                     monument.images.find(img => img.format === 'standard') ||
+                     monument.images[0];
+        if (thumb) thumbnailImage = thumb.path;
+    }
+    
+    // Determina le funzionalità disponibili
+    const hasAudio = monument.audio && monument.audio.path;
+    const hasVirtualTour = monument.images && monument.images.some(img => img.format === '360');
+    const hasCoordinates = monument.lat && monument.lon;
+    
+    resultDiv.innerHTML = `
+        <div class="qr-result-card monument-found">
+            <div class="qr-result-header success">
+                <i data-feather="map-pin"></i>
+                <h4>Monumento Trovato!</h4>
+            </div>
+            <div class="monument-qr-content">
+                <div class="monument-qr-image">
+                    <img src="${thumbnailImage}" alt="${monument.name}">
+                    <div class="monument-qr-category">${getCategoryDisplayName(monument.category)}</div>
+                </div>
+                <div class="monument-qr-info">
+                    <h5>${monument.name}</h5>
+                    <p>${monument.short_description || 'Monumento dell\'itinerario turistico di Regalbuto'}</p>
+                    <div class="monument-qr-features">
+                        ${hasAudio ? '<span class="feature-badge audio"><i data-feather="headphones"></i>Audioguida</span>' : ''}
+                        ${hasVirtualTour ? '<span class="feature-badge vr"><i data-feather="eye"></i>Tour 360°</span>' : ''}
+                        ${hasCoordinates ? '<span class="feature-badge gps"><i data-feather="navigation"></i>GPS</span>' : ''}
+                    </div>
+                    <div class="qr-url-info">
+                        <small>QR: ${originalUrl}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="qr-monument-actions">
+                <p class="qr-opening-text">
+                    <i data-feather="arrow-right"></i>
+                    Apertura automatica del monumento...
+                    ${hasAudio ? ' Audioguida in avvio!' : ''}
+                </p>
+            </div>
+        </div>
+    `;
+    
+    showNotification(`${monument.name} trovato! Apertura in corso...`, 'success');
+    feather.replace();
+}
+
+// Funzione per espandere un monumento specifico da QR
+function expandMonumentFromQR(monumentId) {
+    console.log('Espansione monumento da QR:', monumentId);
+    
+    // Trova la card del monumento
+    const monumentCard = document.querySelector(`[data-monument-id="${monumentId}"]`);
+    
+    if (monumentCard) {
+        console.log('Card monumento trovata:', monumentCard);
+        
+        // Scrolla alla card del monumento
+        monumentCard.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+        });
+        
+        // Espandi la card dopo lo scroll
+        setTimeout(() => {
+            // Trigger dell'espansione
+            toggleMonument(monumentId);
+            
+            // Evidenzia la card temporaneamente
+            monumentCard.classList.add('qr-highlighted');
+            setTimeout(() => {
+                monumentCard.classList.remove('qr-highlighted');
+            }, 3000);
+            
+        }, 800);
+        
+    } else {
+        console.warn('Card monumento non trovata per ID:', monumentId);
+        
+        // Fallback: mostra notifica
+        showNotification('Monumento trovato ma non ancora caricato. Riprova tra qualche istante.', 'warning');
+    }
+}
+
+// Mostra errore QR
+function showQRError(message) {
+    const resultDiv = document.getElementById('qr-result');
+    
+    resultDiv.innerHTML = `
+        <div class="qr-result-card error">
+            <div class="qr-result-header">
+                <i data-feather="alert-circle"></i>
+                <h4>QR Code non riconosciuto</h4>
+            </div>
+            <div class="qr-result-content">
+                <p>${message}</p>
+                <div class="qr-help">
+                    <p><strong>QR Code supportati:</strong></p>
+                    <ul>
+                        <li>📍 Link monumenti: itinerarioregalbuto.magnetico.cloud/id-monumento</li>
+                        <li>🔗 Link web generici</li>
+                        <li>📝 Testo semplice</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    showNotification(message, 'error');
+    feather.replace();
+}
+
+// Funzioni di utilità per i risultati QR
+window.openQRLink = function(url) {
+    console.log('Apertura link QR:', url);
+    window.open(url, '_blank', 'noopener,noreferrer');
+    closeQRScanner();
+};
+
+window.copyQRText = function(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showNotification('Testo copiato negli appunti!', 'success');
+        }).catch(err => {
+            console.error('Errore copia clipboard:', err);
+            fallbackCopyText(text);
+        });
+    } else {
+        fallbackCopyText(text);
+    }
+};
+
+// Fallback per la copia del testo
+function fallbackCopyText(text) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        showNotification('Testo copiato negli appunti!', 'success');
+    } catch (err) {
+        console.error('Fallback copy failed:', err);
+        showNotification('Impossibile copiare il testo', 'error');
+    }
+    document.body.removeChild(textArea);
+}
+
+// Escape HTML per sicurezza
+function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
 }
 
 function showMonumentInfo(monumentId) {
