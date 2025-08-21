@@ -361,11 +361,23 @@ function startTour() {
 function startQRScanner() {
     const modal = document.getElementById('qr-modal');
     const qrReaderDiv = document.getElementById('qr-reader');
+    const resultDiv = document.getElementById('qr-result');
     
     if (!modal || !qrReaderDiv) {
         console.error('QR modal elements not found');
         return;
     }
+    
+    // Pulisci i risultati precedenti
+    if (resultDiv) {
+        resultDiv.innerHTML = '';
+        resultDiv.style.display = 'none'; // Nascondi anche il div
+        console.log('QR risultati precedenti puliti e nascosti');
+    }
+    
+    // Reset dello stato dello scanner
+    qrScanner = null;
+    console.log('Scanner QR stato resettato');
     
     // Close any existing scanner first
     if (qrScanner) {
@@ -551,8 +563,12 @@ function handleQRResult(qrText) {
     
     console.log('QR Code scansionato:', qrText);
     
-    // Pulisci il risultato precedente
-    resultDiv.innerHTML = '';
+    // Pulisci completamente il risultato precedente
+    if (resultDiv) {
+        resultDiv.innerHTML = '';
+        resultDiv.style.display = 'block'; // Assicurati che sia visibile per i nuovi risultati
+        console.log('Contenuto QR precedente rimosso completamente');
+    }
     
     // 1. GESTIONE DEEP LINKS MONUMENTI - Priorità massima
     if (qrText.includes('itinerarioregalbuto.magnetico.cloud/')) {
@@ -670,8 +686,17 @@ async function verifyAndOpenMonument(monumentId, originalUrl) {
             // Mostra risultato di successo
             showMonumentQRResult(monument, originalUrl);
             
-            // Chiudi il scanner QR
-            closeQRScanner();
+            // Pulisci i risultati prima di chiudere lo scanner
+            setTimeout(() => {
+                const resultDiv = document.getElementById('qr-result');
+                if (resultDiv) {
+                    resultDiv.innerHTML = '';
+                    console.log('QR risultati puliti prima della chiusura');
+                }
+                
+                // Chiudi il scanner QR
+                closeQRScanner();
+            }, 2000); // Mostra il risultato per 2 secondi prima di pulire
             
             // Aspetta un momento per permettere al modal di chiudersi
             setTimeout(() => {
@@ -990,9 +1015,11 @@ function closeQRScanner() {
     
     if (qrReaderDiv) {
         qrReaderDiv.innerHTML = '';
+        console.log('QR reader content cleared');
     }
     if (qrResultDiv) {
         qrResultDiv.innerHTML = '';
+        console.log('QR result content cleared');
     }
     
     // Reset the flag after a short delay
