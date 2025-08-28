@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Regalbuto Heritage - Scarica l'App</title>
+    <meta name="description" content="Scarica l'app Regalbuto Heritage per scoprire il patrimonio storico e culturale di Regalbuto con tour virtuali, guide audio e mappe interattive.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../../src/imgs/flat/logo-comune-regalbuto.jpg">
+    
+    <!-- Font Awesome per icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Variabili CSS */
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #f8f9fa;
+            --accent-color: #ffa500;
+            --text-dark: #333;
+            --text-light: #666;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+        }
+
+        /* Body e layout principale */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #1a4480 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+        }
+
+        /* Container principale */
+        .landing-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Header con logo */
+        .landing-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: var(--white);
+            padding: 2rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .app-title h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        /* Sezione principale con bottone */
+        .download-section {
+            text-align: center;
+            background: var(--white);
+            padding: 2.5rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 3rem;
+        }
+
+        .download-title {
+            color: var(--text-dark);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .download-description {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        /* Bottone Google Play Store */
+        .play-store-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            color: var(--white);
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+        }
+
+        .play-store-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-store-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .play-store-icon {
+            margin-right: 0.8rem;
+            font-size: 1.5rem;
+        }
+
+        .play-store-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .play-store-main {
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .play-store-sub {
+            font-size: 0.8rem;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        /* Footer con loghi sponsor */
+        .landing-footer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 1rem;
+            margin-top: auto;
+            width: 100%;
+        }
+
+        .footer-content {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo {
+            height: 40px;
+            max-width: 60px;
+            object-fit: contain;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .footer-logo:hover {
+            opacity: 1;
+        }
+
+        .footer-text {
+            color: var(--text-light);
+            font-size: 0.8rem;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* Features preview */
+        .features-preview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem 1rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .feature-desc {
+            font-size: 0.7rem;
+            color: var(--text-light);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .landing-container {
+                padding: 1rem 0.5rem;
+            }
+            
+            .landing-header,
+            .download-section {
+                padding: 1.5rem 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .app-title h1 {
+                font-size: 1.5rem;
+            }
+            
+            .download-title {
+                font-size: 1.2rem;
+            }
+            
+            .features-preview {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+            
+            .footer-logos {
+                gap: 0.8rem;
+            }
+            
+            .footer-logo {
+                height: 35px;
+                max-width: 50px;
+            }
+        }
+
+        /* Animazioni */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .landing-header {
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .download-section {
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .features-preview {
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .landing-footer {
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        /* Pulsante con effetto brillante */
+        .play-store-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .play-store-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-store-btn:hover::before {
+            left: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Container principale -->
+    <div class="landing-container">
+        <!-- Header con logo e titolo -->
+        <header class="landing-header">
+            <div class="app-logo">
+                <img src="../../src/imgs/flat/logo-comune-regalbuto.jpg" alt="Comune di Regalbuto" class="logo-img">
+            </div>
+            <div class="app-title">
+                <h1>Regalbuto Heritage</h1>
+                <p class="app-subtitle">Itinerario Turistico</p>
+            </div>
+        </header>
+
+        <!-- Sezione download principale -->
+        <section class="download-section">
+            <h2 class="download-title">Scarica l'App Gratuita</h2>
+            <p class="download-description">
+                Scopri il patrimonio storico e culturale di Regalbuto con tour virtuali a 360°, guide audio e mappe GPS interattive.
+            </p>
+            
+            <!-- Bottone Google Play Store -->
+            <a href="https://play.google.com/store/apps/details?id=org.magnetico.heritage" 
+               class="play-store-btn" 
+               target="_blank" 
+               rel="noopener noreferrer">
+                <i class="fab fa-google-play play-store-icon" aria-hidden="true"></i>
+                <div class="play-store-text">
+                    <span class="play-store-main">Scarica su</span>
+                    <span class="play-store-sub">Google Play</span>
+                </div>
+            </a>
+        </section>
+
+        <!-- Preview delle funzionalità -->
+        <section class="features-preview">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-vr-cardboard" aria-hidden="true"></i>
+                </div>
+                <h3 class="feature-title">Tour VR 360°</h3>
+                <p class="feature-desc">Esplora monumenti in realtà virtuale</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-headphones" aria-hidden="true"></i>
+                </div>
+                <h3 class="feature-title">Guide Audio</h3>
+                <p class="feature-desc">Ascolta la storia dei luoghi</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                </div>
+                <h3 class="feature-title">Mappe GPS</h3>
+                <p class="feature-desc">Navigazione e itinerari turistici</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-qrcode" aria-hidden="true"></i>
+                </div>
+                <h3 class="feature-title">QR Scanner</h3>
+                <p class="feature-desc">Scansiona i monumenti del percorso</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer con loghi sponsor -->
+    <footer class="landing-footer">
+        <div class="footer-content">
+            <div class="footer-logos">
+                <img src="../../src/imgs/flat/ue.webp" alt="Unione Europea" class="footer-logo">
+                <img src="../../src/imgs/flat/repubblica.svg" alt="Repubblica Italiana" class="footer-logo">
+                <img src="../../src/imgs/flat/regionesicilia.png" alt="Regione Sicilia" class="footer-logo">
+                <img src="../../src/imgs/flat/psr.png" alt="PSR Sicilia 2014-2020" class="footer-logo">
+                <img src="../../src/imgs/flat/cerere.png" alt="GAL Rocca di Cerere" class="footer-logo">
+            </div>
+            <p class="footer-text">
+                Finanziato nell'ambito del PSR Sicilia 2014-2020 – Azione PAL 1.2.2 "Turismo Sostenibile" – GAL Rocca di Cerere.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Script di analytics e tracking (opzionale) -->
+    <script>
+        // Debug per rilevamento WebView
+        console.log('🛬 Landing Page loaded');
+        console.log('📱 User Agent:', navigator.userAgent);
+        console.log('🔍 Current URL:', window.location.href);
+        
+        // Tracking click del bottone Play Store
+        document.querySelector('.play-store-btn').addEventListener('click', function() {
+            console.log('📲 Play Store button clicked');
+            
+            // Opzionale: analytics event
+            if (window.gtag) {
+                gtag('event', 'click', {
+                    'event_category': 'download',
+                    'event_label': 'play_store_button'
+                });
+            }
+        });
+
+        // Rilevamento WebView per debug
+        function detectWebView() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            const hasAndroidInterface = !!(window.Android);
+            const hasiOSInterface = !!(window.webkit && window.webkit.messageHandlers);
+            const isAndroidWebView = /wv/.test(userAgent) || hasAndroidInterface;
+            const isiOSWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(userAgent) || hasiOSInterface;
+            
+            return isAndroidWebView || isiOSWebView || hasAndroidInterface || hasiOSInterface;
+        }
+
+        // Debug info
+        const isWebView = detectWebView();
+        console.log('🔍 Is WebView:', isWebView);
+        
+        if (isWebView) {
+            console.log('📱 Running inside mobile app - deep link router should handle redirect');
+        } else {
+            console.log('🌐 Running in browser - showing landing page');
+        }
+        
+        // Prevenzione cache per testing
+        if (window.location.search.includes('nocache')) {
+            console.log('🔄 No-cache mode enabled for testing');
+        }
+    </script>
+</body>
+</html>

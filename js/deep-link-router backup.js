@@ -1,9 +1,8 @@
 /**
- * Deep Link Router per Regalbuto Heritage App v2.2
+ * Deep Link Router per Regalbuto Heritage App v2.1
  * Gestisce collegamenti diretti ai monumenti tramite QR codes
  * Supporta Android App Links e iOS Universal Links
  * Fix per integrazione con GitHub Pages e sistema di navigazione
- * NUOVO: Gestione landing page vs app home per WebView
  */
 class DeepLinkRouter {
     constructor() {
@@ -21,68 +20,9 @@ class DeepLinkRouter {
         this.lastDeepLinkId = null;
         this.pendingDeepLink = null;
         
-        // NUOVO: Rilevamento ambiente esecuzione
-        this.isWebView = this.detectWebView();
-        this.isMobileApp = this.detectMobileApp();
-        
-        console.log('🔗 Deep Link Router v2.2 initialized');
+        console.log('🔗 Deep Link Router v2.1 initialized');
         console.log('📍 Base Web URL:', this.baseWebURL);
         console.log('🌐 App Domain:', this.appDomain);
-        console.log('📱 Is WebView:', this.isWebView);
-        console.log('📲 Is Mobile App:', this.isMobileApp);
-    }
-    
-    // NUOVO: Rileva se siamo in una WebView (app mobile)
-    detectWebView() {
-        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        
-        // Controlla presenza di interfacce native Android/iOS
-        const hasAndroidInterface = !!(window.Android);
-        const hasiOSInterface = !!(window.webkit && window.webkit.messageHandlers);
-        
-        // Controlla User Agent per WebView
-        const isAndroidWebView = /wv/.test(userAgent) || hasAndroidInterface;
-        const isiOSWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(userAgent) || hasiOSInterface;
-        
-        return isAndroidWebView || isiOSWebView || hasAndroidInterface || hasiOSInterface;
-    }
-    
-    // NUOVO: Rileva se siamo nella app mobile (non browser)
-    detectMobileApp() {
-        // Se siamo in WebView, probabilmente siamo nell'app
-        return this.isWebView;
-    }
-    
-    // NUOVO: Gestisce redirect dalla landing page
-    handleLandingPageRedirect() {
-        const currentPath = window.location.pathname;
-        const isLandingPage = currentPath.includes('landing-page') || 
-                             currentPath.endsWith('/landing-page') ||
-                             currentPath.endsWith('/landing-page/') ||
-                             currentPath.includes('/src/docs/landing-page') ||
-                             currentPath.endsWith('/src/docs/landing-page.html') ||
-                             window.location.href.includes('landing-page');
-        
-        console.log('🛬 Checking landing page redirect...');
-        console.log('📍 Current path:', currentPath);
-        console.log('📍 Full URL:', window.location.href);
-        console.log('🏠 Is landing page:', isLandingPage);
-        console.log('📱 Is mobile app:', this.isMobileApp);
-        
-        // Se siamo nella landing page E siamo nell'app mobile
-        if (isLandingPage && this.isMobileApp) {
-            console.log('🏠 Landing page detected in mobile app - redirecting to home...');
-            
-            // Redirect alla home dell'app
-            const homeUrl = this.baseWebURL;
-            console.log('🏠 Redirecting to home:', homeUrl);
-            
-            // Usa replace per evitare loop nella history
-            window.location.replace(homeUrl);
-            return true; // Indica che abbiamo fatto redirect
-        }
-        
-        return false; // Nessun redirect necessario
     }
     
     // Inizializza il router
@@ -93,13 +33,6 @@ class DeepLinkRouter {
         }
         
         console.log('🚀 Initializing Deep Link Router...');
-        
-        // NUOVO: Prima controlla se dobbiamo fare redirect dalla landing page
-        const didRedirect = this.handleLandingPageRedirect();
-        if (didRedirect) {
-            console.log('🔄 Landing page redirect in progress, skipping further initialization...');
-            return;
-        }
         
         // Gestisce deep link dal lancio app
         this.setupEventListeners();
@@ -138,20 +71,6 @@ class DeepLinkRouter {
     
     // Gestisce lancio app da App Link/Universal Link
     handleAppLaunch() {
-        // NUOVO: Non processare deep link se siamo nella landing page
-        const currentPath = window.location.pathname;
-        const isLandingPage = currentPath.includes('landing-page') || 
-                             currentPath.endsWith('/landing-page') ||
-                             currentPath.endsWith('/landing-page/') ||
-                             currentPath.includes('/src/docs/landing-page') ||
-                             currentPath.endsWith('/src/docs/landing-page.html') ||
-                             window.location.href.includes('landing-page');
-        
-        if (isLandingPage) {
-            console.log('🛬 Skipping deep link processing - on landing page');
-            return;
-        }
-        
         const url = new URL(window.location.href);
         const monumentId = this.extractMonumentId(url);
         
@@ -167,19 +86,6 @@ class DeepLinkRouter {
     // Estrae monument ID dall'URL con supporto multi-formato
     extractMonumentId(url) {
         console.log('🔍 Extracting monument ID from URL:', url.href);
-        
-        // NUOVO: Ignora se siamo nella landing page
-        const isLandingPage = url.pathname.includes('landing-page') || 
-                             url.pathname.endsWith('/landing-page') ||
-                             url.pathname.endsWith('/landing-page/') ||
-                             url.pathname.includes('/src/docs/landing-page') ||
-                             url.pathname.endsWith('/src/docs/landing-page.html') ||
-                             url.href.includes('landing-page');
-        
-        if (isLandingPage) {
-            console.log('🛬 Skipping monument extraction - on landing page');
-            return null;
-        }
         
         // Format 1: ?monument=id (da redirect web)
         const monumentParam = url.searchParams.get('monument');
@@ -706,49 +612,7 @@ window.deepLinkUtils = {
         window.location.href = testUrl;
     },
     
-    // NUOVO: Test redirect dalla landing page
-    testLandingPageRedirect: () => {
-        const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
-        const landingUrl = baseUrl + 'src/docs/landing-page.html';
-        console.log('🛬 Testing landing page redirect:', landingUrl);
-        window.location.href = landingUrl;
-    },
-    
-    // NUOVO: Forza rilevamento WebView
-    forceWebViewDetection: () => {
-        console.group('🔧 WebView Detection Results');
-        console.log('User Agent:', navigator.userAgent);
-        console.log('Has Android Interface:', !!window.Android);
-        console.log('Has iOS Interface:', !!(window.webkit && window.webkit.messageHandlers));
-        console.log('Android WebView Pattern:', /wv/.test(navigator.userAgent));
-        console.log('iOS WebView Pattern:', /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(navigator.userAgent));
-        console.log('Final Result - Is WebView:', deepLinkRouter.isWebView);
-        console.log('Final Result - Is Mobile App:', deepLinkRouter.isMobileApp);
-        console.groupEnd();
-    },
-    
-    // NUOVO: Simula ambiente WebView per testing
-    simulateWebView: () => {
-        console.log('🔧 Simulating WebView environment...');
-        
-        // Crea interfaccia Android fittizia
-        window.Android = {
-            getDeepLinkData: () => null
-        };
-        
-        // Ricarica il rilevamento
-        deepLinkRouter.isWebView = deepLinkRouter.detectWebView();
-        deepLinkRouter.isMobileApp = deepLinkRouter.detectMobileApp();
-        
-        console.log('✅ WebView simulation activated');
-        console.log('📱 Is WebView:', deepLinkRouter.isWebView);
-        console.log('📲 Is Mobile App:', deepLinkRouter.isMobileApp);
-        
-        // Test automatico della landing page
-        setTimeout(() => {
-            window.deepLinkUtils.testLandingPageRedirect();
-        }, 1000);
-    },
+    // Forza apertura monumento
     forceOpenMonument: (monumentId) => {
         console.log('🔧 Force opening monument:', monumentId);
         deepLinkRouter.openMonumentInApp(monumentId);
@@ -756,16 +620,12 @@ window.deepLinkUtils = {
     
     // Debug: mostra stato sistema
     debugStatus: () => {
-        console.group('🔧 Deep Link System Status v2.2');
+        console.group('🔧 Deep Link System Status');
         console.log('Router initialized:', deepLinkRouter.isInitialized);
-        console.log('Is WebView:', deepLinkRouter.isWebView);
-        console.log('Is Mobile App:', deepLinkRouter.isMobileApp);
         console.log('Monument data loaded:', !!window.monumentsData);
         console.log('Monument data count:', window.monumentsData ? window.monumentsData.length : 0);
         console.log('switchTab available:', typeof window.switchTab);
         console.log('Current URL:', window.location.href);
-        console.log('Current Path:', window.location.pathname);
-        console.log('Is Landing Page:', window.location.pathname.includes('landing-page') || window.location.pathname.includes('/src/docs/landing-page') || window.location.href.includes('landing-page'));
         console.log('Monument ID in URL:', deepLinkRouter.extractMonumentId(new URL(window.location.href)));
         console.groupEnd();
     },
@@ -841,22 +701,7 @@ if (window.location.search.includes('deep=') || window.location.search.includes(
     }, 2000);
 }
 
-// NUOVO: Debug automatico per landing page
-if (window.location.pathname.includes('landing-page') || 
-    window.location.pathname.includes('/src/docs/landing-page') ||
-    window.location.href.includes('landing-page')) {
-    setTimeout(() => {
-        console.log('🛬 Landing page detected, debugging...');
-        window.deepLinkUtils.forceWebViewDetection();
-        window.deepLinkUtils.debugStatus();
-    }, 1000);
-}
-
 // Log di inizializzazione
-console.log('🏛️ Deep Link Router v2.2 loaded and ready');
+console.log('🏛️ Deep Link Router v2.1 loaded and ready');
 console.log('🔧 Available utils: window.deepLinkUtils');
-console.log('🧪 New test commands:');
-console.log('  - window.deepLinkUtils.testLandingPageRedirect()');
-console.log('  - window.deepLinkUtils.forceWebViewDetection()');
-console.log('  - window.deepLinkUtils.simulateWebView()');
-console.log('  - window.deepLinkUtils.testDeepLink("chiesa-santa-maria-croce")');
+console.log('🧪 Test command: window.deepLinkUtils.testDeepLink("chiesa-santa-maria-croce")');
