@@ -502,24 +502,26 @@
             }
         });
 
-        // NUOVO: Rilevamento WebView migliorato
+        // RILEVAMENTO RIGOROSO: Solo interfacce native = app installata
         function detectWebView() {
-            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            // CONTROLLO RIGIDISSIMO: Solo interfacce native = app reale
+            const hasAndroidInterface = !!(window.Android && typeof window.Android === 'object');
+            const hasiOSInterface = !!(window.webkit && window.webkit.messageHandlers && typeof window.webkit.messageHandlers === 'object');
             
-            // Debug dettagliato
-            console.log('🔍 Detailed WebView Detection:');
-            console.log('  - User Agent:', userAgent);
-            console.log('  - Has window.Android:', !!window.Android);
-            console.log('  - Has iOS webkit:', !!(window.webkit && window.webkit.messageHandlers));
-            console.log('  - Android WebView pattern (/wv/):', /wv/.test(userAgent));
-            console.log('  - iOS WebView pattern:', /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(userAgent));
+            console.log('🔍 STRICT WebView Detection:');
+            console.log('  - window.Android exists:', !!window.Android);
+            console.log('  - Android is object:', typeof window.Android === 'object');
+            console.log('  - Android native interface:', hasAndroidInterface);
+            console.log('  - iOS webkit exists:', !!(window.webkit && window.webkit.messageHandlers));
+            console.log('  - iOS webkit is object:', !!(window.webkit && window.webkit.messageHandlers && typeof window.webkit.messageHandlers === 'object'));
+            console.log('  - iOS native interface:', hasiOSInterface);
             
-            const hasAndroidInterface = !!(window.Android);
-            const hasiOSInterface = !!(window.webkit && window.webkit.messageHandlers);
-            const isAndroidWebView = /wv/.test(userAgent) || hasAndroidInterface;
-            const isiOSWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(userAgent) || hasiOSInterface;
+            // SOLO se abbiamo interfacce native = WebView app installata
+            const isRealAppWebView = hasAndroidInterface || hasiOSInterface;
             
-            return isAndroidWebView || isiOSWebView || hasAndroidInterface || hasiOSInterface;
+            console.log('  - Is REAL App WebView:', isRealAppWebView);
+            
+            return isRealAppWebView;
         }
 
         // NUOVO: Redirect manuale se il deep-link-router non funziona
@@ -554,23 +556,34 @@
             return false;
         }
 
-        // NUOVO: Controllo di fallback per il redirect
+        // AGGIORNATO: Controllo di fallback molto più rigoroso
         function checkRedirectFallback() {
             console.log('🔍 Checking redirect fallback...');
             
-            // Controlla se il deep-link-router è disponibile
+            // CONTROLLO PRIMARIO: interfacce native
+            const hasNativeInterface = !!(window.Android && typeof window.Android === 'object') || 
+                                       !!(window.webkit && window.webkit.messageHandlers && typeof window.webkit.messageHandlers === 'object');
+            
+            console.log('🔍 Native interface check:', hasNativeInterface);
+            
+            if (!hasNativeInterface) {
+                console.log('🌐 NO native interfaces detected - this is a BROWSER, staying on landing page');
+                return;
+            }
+            
+            // Se abbiamo interfacce native, controlla il router
             if (window.deepLinkRouter) {
                 console.log('✅ DeepLinkRouter available');
                 console.log('📱 Is WebView (router):', window.deepLinkRouter.isWebView);
                 console.log('📲 Is Mobile App (router):', window.deepLinkRouter.isMobileApp);
                 
-                // Se il router rileva WebView ma non ha fatto redirect, forziamolo
-                if (window.deepLinkRouter.isWebView && window.location.pathname.includes('landing-page')) {
-                    console.log('🚨 Router detected WebView but no redirect happened - forcing manual redirect');
+                // Solo se router E interfacce native
+                if (window.deepLinkRouter.isMobileApp && hasNativeInterface && window.location.pathname.includes('landing-page')) {
+                    console.log('🚨 Router + Native interface detected - forcing redirect');
                     handleLandingPageRedirect();
                 }
             } else {
-                console.log('⚠️ DeepLinkRouter not available - using manual detection');
+                console.log('⚠️ DeepLinkRouter not available but native interface present - using manual detection');
                 handleLandingPageRedirect();
             }
         }

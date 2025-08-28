@@ -32,28 +32,34 @@ class DeepLinkRouter {
         console.log('📲 Is Mobile App:', this.isMobileApp);
     }
     
-    // NUOVO: Rileva se siamo in una WebView (app mobile)
+    // AGGIORNATO: Rileva se siamo in una WebView (app mobile) - criterio più rigoroso
     detectWebView() {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         
-        // Controlla presenza di interfacce native Android/iOS
-        const hasAndroidInterface = !!(window.Android);
-        const hasiOSInterface = !!(window.webkit && window.webkit.messageHandlers);
+        // CONTROLLO MOLTO SPECIFICO: Solo interfacce native = app reale
+        const hasAndroidInterface = !!(window.Android && typeof window.Android === 'object');
+        const hasiOSInterface = !!(window.webkit && window.webkit.messageHandlers && typeof window.webkit.messageHandlers === 'object');
         
-        // Controlla User Agent per WebView
-        const isAndroidWebView = /wv/.test(userAgent) || hasAndroidInterface;
-        const isiOSWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(userAgent) || hasiOSInterface;
+        console.log('🔍 WebView Detection (Rigorous):');
+        console.log('  - Android native interface:', hasAndroidInterface);
+        console.log('  - iOS native interface:', hasiOSInterface);
         
-        return isAndroidWebView || isiOSWebView || hasAndroidInterface || hasiOSInterface;
+        // SOLO se abbiamo interfacce native = WebView app installata
+        const isRealAppWebView = hasAndroidInterface || hasiOSInterface;
+        
+        console.log('  - Is REAL App WebView:', isRealAppWebView);
+        
+        return isRealAppWebView;
     }
     
-    // NUOVO: Rileva se siamo nella app mobile (non browser)
+    // AGGIORNATO: Rileva se siamo nella app mobile (criterio più rigoroso)
     detectMobileApp() {
-        // Se siamo in WebView, probabilmente siamo nell'app
-        return this.isWebView;
+        // Solo se abbiamo interfacce native = app installata
+        const hasNativeInterface = !!(window.Android) || !!(window.webkit && window.webkit.messageHandlers);
+        return hasNativeInterface;
     }
     
-    // NUOVO: Gestisce redirect dalla landing page
+    // AGGIORNATO: Gestisce redirect dalla landing page (criterio più rigoroso)
     handleLandingPageRedirect() {
         const currentPath = window.location.pathname;
         const isLandingPage = currentPath.includes('landing-page') || 
@@ -63,15 +69,20 @@ class DeepLinkRouter {
                              currentPath.endsWith('/src/docs/landing-page.html') ||
                              window.location.href.includes('landing-page');
         
-        console.log('🛬 Checking landing page redirect...');
+        // CONTROLLO RIGOROSO: solo interfacce native = app installata
+        const hasNativeInterface = !!(window.Android && typeof window.Android === 'object') || 
+                                   !!(window.webkit && window.webkit.messageHandlers && typeof window.webkit.messageHandlers === 'object');
+        
+        console.log('🛬 Checking landing page redirect (Router v2.2):');
         console.log('📍 Current path:', currentPath);
         console.log('📍 Full URL:', window.location.href);
         console.log('🏠 Is landing page:', isLandingPage);
-        console.log('📱 Is mobile app:', this.isMobileApp);
+        console.log('📱 Is mobile app (native interface):', hasNativeInterface);
+        console.log('📲 Is mobile app (this.isMobileApp):', this.isMobileApp);
         
-        // Se siamo nella landing page E siamo nell'app mobile
-        if (isLandingPage && this.isMobileApp) {
-            console.log('🏠 Landing page detected in mobile app - redirecting to home...');
+        // REDIRECT SOLO se abbiamo interfacce native E siamo in landing page
+        if (isLandingPage && hasNativeInterface) {
+            console.log('🏠 Landing page detected in REAL mobile app (native interface) - redirecting to home...');
             
             // Redirect alla home dell'app
             const homeUrl = this.baseWebURL;
@@ -80,6 +91,9 @@ class DeepLinkRouter {
             // Usa replace per evitare loop nella history
             window.location.replace(homeUrl);
             return true; // Indica che abbiamo fatto redirect
+        } else if (isLandingPage && !hasNativeInterface) {
+            console.log('🌐 Landing page detected in BROWSER (no native interface) - staying on landing page');
+            return false;
         }
         
         return false; // Nessun redirect necessario
