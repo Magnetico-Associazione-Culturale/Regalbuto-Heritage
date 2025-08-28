@@ -354,9 +354,45 @@
         .play-store-btn:hover::before {
             left: 100%;
         }
+        
+        /* NUOVO: Indicatore di caricamento per redirect */
+        .redirect-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            z-index: 10000;
+            display: none;
+        }
+        
+        .redirect-indicator.show {
+            display: block;
+            animation: slideInDown 0.3s ease-out;
+        }
+        
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- NUOVO: Indicatore di redirect -->
+    <div id="redirectIndicator" class="redirect-indicator">
+        <i class="fas fa-spinner fa-spin"></i> Apertura app in corso...
+    </div>
+
     <!-- Container principale -->
     <div class="landing-container">
         <!-- Header con logo e titolo -->
@@ -442,12 +478,16 @@
         </div>
     </footer>
 
-    <!-- Script di analytics e tracking (opzionale) -->
+    <!-- NUOVO: Include del deep-link-router.js -->
+    <script src="../../js/deep-link-router.js"></script>
+    
+    <!-- Script migliorato con gestione redirect -->
     <script>
-        // Debug per rilevamento WebView
-        console.log('🛬 Landing Page loaded');
+        // Debug per rilevamento WebView (MIGLIORATO)
+        console.log('🛬 Landing Page loaded at:', new Date().toISOString());
         console.log('📱 User Agent:', navigator.userAgent);
         console.log('🔍 Current URL:', window.location.href);
+        console.log('📍 Current Path:', window.location.pathname);
         
         // Tracking click del bottone Play Store
         document.querySelector('.play-store-btn').addEventListener('click', function() {
@@ -462,9 +502,18 @@
             }
         });
 
-        // Rilevamento WebView per debug
+        // NUOVO: Rilevamento WebView migliorato
         function detectWebView() {
             const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            
+            // Debug dettagliato
+            console.log('🔍 Detailed WebView Detection:');
+            console.log('  - User Agent:', userAgent);
+            console.log('  - Has window.Android:', !!window.Android);
+            console.log('  - Has iOS webkit:', !!(window.webkit && window.webkit.messageHandlers));
+            console.log('  - Android WebView pattern (/wv/):', /wv/.test(userAgent));
+            console.log('  - iOS WebView pattern:', /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(userAgent));
+            
             const hasAndroidInterface = !!(window.Android);
             const hasiOSInterface = !!(window.webkit && window.webkit.messageHandlers);
             const isAndroidWebView = /wv/.test(userAgent) || hasAndroidInterface;
@@ -473,20 +522,123 @@
             return isAndroidWebView || isiOSWebView || hasAndroidInterface || hasiOSInterface;
         }
 
+        // NUOVO: Redirect manuale se il deep-link-router non funziona
+        function handleLandingPageRedirect() {
+            const isWebView = detectWebView();
+            
+            console.log('🔍 Manual redirect check:');
+            console.log('  - Is WebView:', isWebView);
+            console.log('  - Current pathname:', window.location.pathname);
+            console.log('  - Is landing page:', window.location.pathname.includes('landing-page'));
+            
+            if (isWebView && window.location.pathname.includes('landing-page')) {
+                console.log('� WebView detected on landing page - initiating redirect');
+                
+                // Mostra indicatore
+                const indicator = document.getElementById('redirectIndicator');
+                if (indicator) {
+                    indicator.classList.add('show');
+                }
+                
+                // Redirect alla home dell'app
+                const homeUrl = 'https://magnetico-associazione-culturale.github.io/Regalbuto-Heritage/';
+                console.log('🏠 Redirecting to:', homeUrl);
+                
+                setTimeout(() => {
+                    window.location.replace(homeUrl);
+                }, 1500); // Delay per mostrare l'indicatore
+                
+                return true;
+            }
+            
+            return false;
+        }
+
+        // NUOVO: Controllo di fallback per il redirect
+        function checkRedirectFallback() {
+            console.log('🔍 Checking redirect fallback...');
+            
+            // Controlla se il deep-link-router è disponibile
+            if (window.deepLinkRouter) {
+                console.log('✅ DeepLinkRouter available');
+                console.log('📱 Is WebView (router):', window.deepLinkRouter.isWebView);
+                console.log('📲 Is Mobile App (router):', window.deepLinkRouter.isMobileApp);
+                
+                // Se il router rileva WebView ma non ha fatto redirect, forziamolo
+                if (window.deepLinkRouter.isWebView && window.location.pathname.includes('landing-page')) {
+                    console.log('🚨 Router detected WebView but no redirect happened - forcing manual redirect');
+                    handleLandingPageRedirect();
+                }
+            } else {
+                console.log('⚠️ DeepLinkRouter not available - using manual detection');
+                handleLandingPageRedirect();
+            }
+        }
+
         // Debug info
         const isWebView = detectWebView();
         console.log('🔍 Is WebView:', isWebView);
         
         if (isWebView) {
-            console.log('📱 Running inside mobile app - deep link router should handle redirect');
+            console.log('📱 Running inside mobile app');
+            console.log('🔄 Should redirect to app home...');
         } else {
             console.log('🌐 Running in browser - showing landing page');
         }
         
-        // Prevenzione cache per testing
+        // NUOVO: Avvio controlli di redirect con delay
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📄 DOM loaded - starting redirect checks');
+            
+            // Controllo immediato
+            const redirected = handleLandingPageRedirect();
+            
+            if (!redirected) {
+                // Controllo di fallback dopo 2 secondi (per dare tempo al deep-link-router)
+                setTimeout(checkRedirectFallback, 2000);
+                
+                // Controllo finale dopo 4 secondi
+                setTimeout(() => {
+                    if (window.location.pathname.includes('landing-page')) {
+                        console.log('🔍 Final redirect check...');
+                        handleLandingPageRedirect();
+                    }
+                }, 4000);
+            }
+        });
+        
+        // NUOVO: Prevenzione cache per testing
         if (window.location.search.includes('nocache')) {
             console.log('🔄 No-cache mode enabled for testing');
         }
+
+        // NUOVO: Utility per forzare redirect (per debug)
+        window.forceRedirect = function() {
+            console.log('🔧 Forcing redirect...');
+            handleLandingPageRedirect();
+        };
+
+        // NUOVO: Utility per mostrare info debug complete
+        window.debugLandingPage = function() {
+            console.group('🔧 Landing Page Debug Info');
+            console.log('Current URL:', window.location.href);
+            console.log('Current Path:', window.location.pathname);
+            console.log('Is WebView (manual):', detectWebView());
+            console.log('DeepLinkRouter available:', !!window.deepLinkRouter);
+            
+            if (window.deepLinkRouter) {
+                console.log('Router WebView detection:', window.deepLinkRouter.isWebView);
+                console.log('Router Mobile App detection:', window.deepLinkRouter.isMobileApp);
+            }
+            
+            console.log('Android interface available:', !!window.Android);
+            console.log('iOS webkit available:', !!(window.webkit && window.webkit.messageHandlers));
+            console.groupEnd();
+        };
+        
+        console.log('🧪 Debug utilities available:');
+        console.log('  - window.forceRedirect()');
+        console.log('  - window.debugLandingPage()');
     </script>
 </body>
 </html>
