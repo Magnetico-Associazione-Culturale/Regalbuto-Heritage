@@ -502,38 +502,61 @@
             }
         });
 
-        // RILEVAMENTO CONSERVATIVO: Solo se app ha caricato effettivamente il WebView
+        // RILEVAMENTO ULTRA-CONSERVATIVO: Solo app reali con interfacce funzionali
         function detectWebView() {
-            console.log('🔍 Conservative WebView Detection:');
+            console.log('🔍 Ultra-Conservative WebView Detection:');
             
-            // Check 1: Interfacce Android specifiche dell'app
-            const hasAndroidApp = !!(window.Android && 
-                window.Android.constructor && 
-                typeof window.Android.showToast === 'function');
+            // Check 1: Interfacce Android specifiche dell'app (MOLTO RIGOROSE)
+            let hasAndroidApp = false;
+            try {
+                hasAndroidApp = !!(window.Android && 
+                    window.Android.constructor && 
+                    typeof window.Android.showToast === 'function' &&
+                    window.Android.toString().includes('[object Object]'));
+            } catch (e) {
+                console.log('  - Android interface error:', e.message);
+                hasAndroidApp = false;
+            }
             
-            // Check 2: Interfacce iOS specifiche dell'app  
-            const hasiOSApp = !!(window.webkit && 
-                window.webkit.messageHandlers &&
-                window.webkit.messageHandlers.iosHandler);
+            // Check 2: Interfacce iOS specifiche dell'app (MOLTO RIGOROSE)
+            let hasiOSApp = false;
+            try {
+                hasiOSApp = !!(window.webkit && 
+                    window.webkit.messageHandlers &&
+                    window.webkit.messageHandlers.iosHandler &&
+                    typeof window.webkit.messageHandlers.iosHandler.postMessage === 'function');
+            } catch (e) {
+                console.log('  - iOS interface error:', e.message);
+                hasiOSApp = false;
+            }
             
             // Check 3: User Agent deve essere da app (non browser)
             const appUserAgent = navigator.userAgent || '';
             const isAppUserAgent = appUserAgent.includes('RegalbutoHeritage') || 
                                  appUserAgent.includes('Cordova') || 
-                                 appUserAgent.includes('PhoneGap');
+                                 appUserAgent.includes('PhoneGap') ||
+                                 appUserAgent.includes('wv'); // WebView marker
             
             // Check 4: Referrer deve essere vuoto (app nativa)
             const hasNoReferrer = !document.referrer || document.referrer === '';
+            
+            // Check 5: NUOVO - Verifica contesto di navigazione (solo app hanno questo)
+            const isStandalone = window.navigator.standalone === true; // iOS
+            const hasAppContext = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches; // Android
             
             console.log('  - Android App Interface:', hasAndroidApp);
             console.log('  - iOS App Interface:', hasiOSApp);
             console.log('  - App User Agent:', isAppUserAgent);
             console.log('  - No Referrer (native):', hasNoReferrer);
+            console.log('  - Is Standalone (iOS):', isStandalone);
+            console.log('  - Has App Context (Android):', hasAppContext);
             console.log('  - User Agent:', appUserAgent);
             console.log('  - Referrer:', document.referrer);
             
-            // SOLO se abbiamo almeno un'interfaccia app specifica E caratteristiche native
-            const isRealAppWebView = (hasAndroidApp || hasiOSApp) && hasNoReferrer;
+            // LOGICA ULTRA-RIGOROSA: Tutte le condizioni devono essere soddisfatte
+            const hasValidAppInterface = hasAndroidApp || hasiOSApp;
+            const hasNativeCharacteristics = hasNoReferrer && (isStandalone || hasAppContext);
+            const hasAppUserAgentMarkers = isAppUserAgent;
             
             // FALLBACK: Se abbiamo indicatori di browser normale, forza NON-WebView
             const hasBrowserFeatures = !!(window.chrome || window.opr || window.safari);
@@ -542,14 +565,31 @@
                                         appUserAgent.includes('Chrome') || 
                                         appUserAgent.includes('Safari') || 
                                         appUserAgent.includes('Edge') ||
-                                        appUserAgent.includes('Firefox');
+                                        appUserAgent.includes('Firefox') ||
+                                        appUserAgent.includes('Mozilla') ||
+                                        window.location.protocol === 'http:' ||
+                                        window.location.protocol === 'https:';
             
+            // Check aggiuntivo: se abbiamo storia di navigazione, probabilmente è browser
+            const hasBrowserHistory = window.history && window.history.length > 1;
+            
+            console.log('  - Has valid app interface:', hasValidAppInterface);
+            console.log('  - Has native characteristics:', hasNativeCharacteristics);
+            console.log('  - Has app user agent markers:', hasAppUserAgentMarkers);
             console.log('  - Has browser features:', hasBrowserFeatures);
             console.log('  - Is browser environment:', isBrowserEnvironment);
-            console.log('  - Is REAL App WebView:', isRealAppWebView);
+            console.log('  - Has browser history:', hasBrowserHistory);
             
-            // Se abbiamo chiari indicatori di browser, NON è WebView
-            return isRealAppWebView && !isBrowserEnvironment;
+            // ULTRA-RIGIDO: TUTTE le condizioni app devono essere vere E NESSUNA condizione browser
+            const isRealAppWebView = hasValidAppInterface && 
+                                   hasNativeCharacteristics && 
+                                   !isBrowserEnvironment && 
+                                   !hasBrowserHistory;
+            
+            console.log('  - Is REAL App WebView (ULTRA-STRICT):', isRealAppWebView);
+            
+            // Se abbiamo chiari indicatori di browser, NON è WebView (indipendentemente da tutto)
+            return isRealAppWebView;
         }
 
         // NUOVO: Redirect manuale se il deep-link-router non funziona
@@ -659,22 +699,61 @@
             handleLandingPageRedirect();
         };
 
-        // NUOVO: Utility per mostrare info debug complete
+        // NUOVO: Utility per debug ultra-dettagliato
         window.debugLandingPage = function() {
-            console.group('🔧 Landing Page Debug Info');
-            console.log('Current URL:', window.location.href);
-            console.log('Current Path:', window.location.pathname);
-            console.log('Is WebView (manual):', detectWebView());
-            console.log('DeepLinkRouter available:', !!window.deepLinkRouter);
+            console.group('🔧 Landing Page Ultra-Debug Info');
+            
+            // Test detection step by step
+            const androidInterface = !!(window.Android && window.Android.constructor && typeof window.Android.showToast === 'function');
+            const iosInterface = !!(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iosHandler);
+            const noReferrer = !document.referrer || document.referrer === '';
+            const isStandalone = window.navigator.standalone === true;
+            const hasAppContext = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+            const hasBrowserFeatures = !!(window.chrome || window.opr || window.safari);
+            const hasBrowserHistory = window.history && window.history.length > 1;
+            const userAgent = navigator.userAgent || '';
+            
+            const detectionResult = detectWebView();
+            
+            console.log('📍 URL Info:');
+            console.log('  Current URL:', window.location.href);
+            console.log('  Current Path:', window.location.pathname);
+            console.log('  Referrer:', document.referrer);
+            console.log('  Protocol:', window.location.protocol);
+            
+            console.log('📱 App Interface Detection:');
+            console.log('  Android App Interface:', androidInterface);
+            console.log('  iOS App Interface:', iosInterface);
+            console.log('  Valid App Interface:', androidInterface || iosInterface);
+            
+            console.log('🌐 Environment Detection:');
+            console.log('  No Referrer (native):', noReferrer);
+            console.log('  Is Standalone (iOS):', isStandalone);
+            console.log('  Has App Context (Android):', hasAppContext);
+            console.log('  Native Characteristics:', noReferrer && (isStandalone || hasAppContext));
+            
+            console.log('🌐 Browser Detection:');
+            console.log('  Has Browser Features:', hasBrowserFeatures);
+            console.log('  Has Browser History:', hasBrowserHistory);
+            console.log('  User Agent:', userAgent);
+            console.log('  Contains Chrome:', userAgent.includes('Chrome'));
+            console.log('  Contains Safari:', userAgent.includes('Safari'));
+            
+            console.log('🎯 Final Detection:');
+            console.log('  Is REAL App WebView:', detectionResult);
             
             if (window.deepLinkRouter) {
-                console.log('Router WebView detection:', window.deepLinkRouter.isWebView);
-                console.log('Router Mobile App detection:', window.deepLinkRouter.isMobileApp);
+                console.log('🔗 DeepLink Router:');
+                console.log('  Router WebView detection:', window.deepLinkRouter.isWebView);
+                console.log('  Router Mobile App detection:', window.deepLinkRouter.isMobileApp);
             }
             
-            console.log('Android interface available:', !!window.Android);
-            console.log('iOS webkit available:', !!(window.webkit && window.webkit.messageHandlers));
             console.groupEnd();
+            
+            // Mostra anche alert per test rapido
+            alert(`WebView Detection Result: ${detectionResult}\n\nAndroid Interface: ${androidInterface}\niOS Interface: ${iosInterface}\nBrowser Features: ${hasBrowserFeatures}\n\nSee console for full details.`);
+            
+            return detectionResult;
         };
         
         console.log('🧪 Debug utilities available:');

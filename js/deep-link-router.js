@@ -37,36 +37,59 @@ class DeepLinkRouter {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         
         // CONTROLLO MOLTO SPECIFICO: Solo interfacce native = app reale
-        console.log('🔍 WebView Detection (Conservative):');
+        console.log('🔍 WebView Detection (Ultra-Conservative):');
         
-        // Check 1: Interfacce Android specifiche dell'app
-        const hasAndroidApp = !!(window.Android && 
-            window.Android.constructor && 
-            typeof window.Android.showToast === 'function');
+        // Check 1: Interfacce Android specifiche dell'app (MOLTO RIGOROSE)
+        let hasAndroidApp = false;
+        try {
+            hasAndroidApp = !!(window.Android && 
+                window.Android.constructor && 
+                typeof window.Android.showToast === 'function' &&
+                window.Android.toString().includes('[object Object]'));
+        } catch (e) {
+            console.log('  - Android interface error:', e.message);
+            hasAndroidApp = false;
+        }
         
-        // Check 2: Interfacce iOS specifiche dell'app  
-        const hasiOSApp = !!(window.webkit && 
-            window.webkit.messageHandlers &&
-            window.webkit.messageHandlers.iosHandler);
+        // Check 2: Interfacce iOS specifiche dell'app (MOLTO RIGOROSE)
+        let hasiOSApp = false;
+        try {
+            hasiOSApp = !!(window.webkit && 
+                window.webkit.messageHandlers &&
+                window.webkit.messageHandlers.iosHandler &&
+                typeof window.webkit.messageHandlers.iosHandler.postMessage === 'function');
+        } catch (e) {
+            console.log('  - iOS interface error:', e.message);
+            hasiOSApp = false;
+        }
         
         // Check 3: User Agent deve essere da app (non browser)
         const appUserAgent = navigator.userAgent || '';
         const isAppUserAgent = appUserAgent.includes('RegalbutoHeritage') || 
                              appUserAgent.includes('Cordova') || 
-                             appUserAgent.includes('PhoneGap');
+                             appUserAgent.includes('PhoneGap') ||
+                             appUserAgent.includes('wv'); // WebView marker
         
         // Check 4: Referrer deve essere vuoto (app nativa)
         const hasNoReferrer = !document.referrer || document.referrer === '';
+        
+        // Check 5: NUOVO - Verifica contesto di navigazione (solo app hanno questo)
+        const isStandalone = window.navigator.standalone === true; // iOS
+        const hasAppContext = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches; // Android
         
         console.log('  - Android App Interface:', hasAndroidApp);
         console.log('  - iOS App Interface:', hasiOSApp);
         console.log('  - App User Agent:', isAppUserAgent);
         console.log('  - No Referrer (native):', hasNoReferrer);
+        console.log('  - Is Standalone (iOS):', isStandalone);
+        console.log('  - Has App Context (Android):', hasAppContext);
         console.log('  - User Agent:', appUserAgent);
         console.log('  - Referrer:', document.referrer);
         
-        // SOLO se abbiamo almeno un'interfaccia app specifica E caratteristiche native
-        const isRealAppWebView = (hasAndroidApp || hasiOSApp) && hasNoReferrer;
+        // LOGICA ULTRA-RIGOROSA: Tutte le condizioni devono essere soddisfatte
+        const hasValidAppInterface = hasAndroidApp || hasiOSApp;
+        const hasNativeCharacteristics = hasNoReferrer && (isStandalone || hasAppContext);
+        const hasAppUserAgentMarkers = isAppUserAgent;
         
         // FALLBACK: Se abbiamo indicatori di browser normale, forza NON-WebView
         const hasBrowserFeatures = !!(window.chrome || window.opr || window.safari);
@@ -75,42 +98,36 @@ class DeepLinkRouter {
                                     appUserAgent.includes('Chrome') || 
                                     appUserAgent.includes('Safari') || 
                                     appUserAgent.includes('Edge') ||
-                                    appUserAgent.includes('Firefox');
+                                    appUserAgent.includes('Firefox') ||
+                                    appUserAgent.includes('Mozilla') ||
+                                    window.location.protocol === 'http:' ||
+                                    window.location.protocol === 'https:';
         
+        // Check aggiuntivo: se abbiamo storia di navigazione, probabilmente è browser
+        const hasBrowserHistory = window.history && window.history.length > 1;
+        
+        console.log('  - Has valid app interface:', hasValidAppInterface);
+        console.log('  - Has native characteristics:', hasNativeCharacteristics);
+        console.log('  - Has app user agent markers:', hasAppUserAgentMarkers);
         console.log('  - Has browser features:', hasBrowserFeatures);
         console.log('  - Is browser environment:', isBrowserEnvironment);
-        console.log('  - Is REAL App WebView:', isRealAppWebView);
+        console.log('  - Has browser history:', hasBrowserHistory);
         
-        // Se abbiamo chiari indicatori di browser, NON è WebView
-        return isRealAppWebView && !isBrowserEnvironment;
+        // ULTRA-RIGIDO: TUTTE le condizioni app devono essere vere E NESSUNA condizione browser
+        const isRealAppWebView = hasValidAppInterface && 
+                               hasNativeCharacteristics && 
+                               !isBrowserEnvironment && 
+                               !hasBrowserHistory;
+        
+        console.log('  - Is REAL App WebView (ULTRA-STRICT):', isRealAppWebView);
+        
+        return isRealAppWebView;
     }
     
-    // AGGIORNATO: Rileva se siamo nella app mobile (criterio conservativo)
+    // AGGIORNATO: Rileva se siamo nella app mobile (criterio ultra-conservativo)
     detectMobileApp() {
-        // Check 1: Interfacce Android specifiche dell'app
-        const hasAndroidApp = !!(window.Android && 
-            window.Android.constructor && 
-            typeof window.Android.showToast === 'function');
-        
-        // Check 2: Interfacce iOS specifiche dell'app  
-        const hasiOSApp = !!(window.webkit && 
-            window.webkit.messageHandlers &&
-            window.webkit.messageHandlers.iosHandler);
-        
-        // Check 3: Referrer deve essere vuoto (app nativa)
-        const hasNoReferrer = !document.referrer || document.referrer === '';
-        
-        // Check 4: Fallback browser detection
-        const appUserAgent = navigator.userAgent || '';
-        const hasBrowserFeatures = !!(window.chrome || window.opr || window.safari);
-        const isBrowserEnvironment = hasBrowserFeatures || 
-                                    appUserAgent.includes('Chrome') || 
-                                    appUserAgent.includes('Safari') || 
-                                    appUserAgent.includes('Edge') ||
-                                    appUserAgent.includes('Firefox');
-        
-        // SOLO se abbiamo almeno un'interfaccia app specifica E caratteristiche native E NON browser
-        return (hasAndroidApp || hasiOSApp) && hasNoReferrer && !isBrowserEnvironment;
+        // Usa la stessa logica ultra-rigorosa del detectWebView
+        return this.detectWebView();
     }
     
     // AGGIORNATO: Gestisce redirect dalla landing page (criterio conservativo)
@@ -123,41 +140,19 @@ class DeepLinkRouter {
                              currentPath.endsWith('/src/docs/landing-page.html') ||
                              window.location.href.includes('landing-page');
         
-        // CONTROLLO CONSERVATIVO: solo interfacce app specifiche + fallback browser
-        const hasAndroidApp = !!(window.Android && 
-            window.Android.constructor && 
-            typeof window.Android.showToast === 'function');
-        const hasiOSApp = !!(window.webkit && 
-            window.webkit.messageHandlers &&
-            window.webkit.messageHandlers.iosHandler);
-        const hasNoReferrer = !document.referrer || document.referrer === '';
+        // CONTROLLO ULTRA-CONSERVATIVO: usa la stessa logica del detectWebView
+        const hasRealAppInterface = this.detectWebView();
         
-        // FALLBACK: Se abbiamo indicatori di browser normale, forza NON-WebView
-        const landingUserAgent = navigator.userAgent || '';
-        const hasBrowserFeatures = !!(window.chrome || window.opr || window.safari);
-        const isBrowserEnvironment = hasBrowserFeatures || 
-                                    landingUserAgent.includes('Chrome') || 
-                                    landingUserAgent.includes('Safari') || 
-                                    landingUserAgent.includes('Edge') ||
-                                    landingUserAgent.includes('Firefox');
-        
-        const hasRealAppInterface = (hasAndroidApp || hasiOSApp) && hasNoReferrer && !isBrowserEnvironment;
-        
-        console.log('🛬 Checking landing page redirect (Router v2.3 Conservative):');
+        console.log('🛬 Checking landing page redirect (Router v2.4 Ultra-Conservative):');
         console.log('📍 Current path:', currentPath);
         console.log('📍 Full URL:', window.location.href);
         console.log('🏠 Is landing page:', isLandingPage);
-        console.log('📱 Has Android app interface:', hasAndroidApp);
-        console.log('📱 Has iOS app interface:', hasiOSApp);
-        console.log('🌐 No referrer (native):', hasNoReferrer);
-        console.log('🌐 Has browser features:', hasBrowserFeatures);
-        console.log('🌐 Is browser environment:', isBrowserEnvironment);
-        console.log('📲 Has REAL app interface:', hasRealAppInterface);
+        console.log('� Has REAL app interface (ultra-strict):', hasRealAppInterface);
         console.log('📲 Is mobile app (this.isMobileApp):', this.isMobileApp);
         
-        // REDIRECT SOLO se abbiamo interfacce app specifiche E siamo in landing page
+        // REDIRECT SOLO se abbiamo interfacce app ultra-specifiche E siamo in landing page
         if (isLandingPage && hasRealAppInterface) {
-            console.log('🏠 Landing page detected in REAL mobile app (specific interface) - redirecting to home...');
+            console.log('🏠 Landing page detected in REAL mobile app (ultra-strict detection) - redirecting to home...');
             
             // Redirect alla home dell'app
             const homeUrl = this.baseWebURL;
