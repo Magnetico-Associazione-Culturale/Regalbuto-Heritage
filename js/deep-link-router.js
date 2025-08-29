@@ -1,9 +1,8 @@
 /**
- * Deep Link Router per Regalbuto Heritage App v2.2
+ * Deep Link Router per Regalbuto Heritage App v2.1
  * Gestisce collegamenti diretti ai monumenti tramite QR codes
  * Supporta Android App Links e iOS Universal Links
  * Fix per integrazione con GitHub Pages e sistema di navigazione
- * NUOVO: Gestione landing page vs app home per WebView
  */
 class DeepLinkRouter {
     constructor() {
@@ -21,152 +20,9 @@ class DeepLinkRouter {
         this.lastDeepLinkId = null;
         this.pendingDeepLink = null;
         
-        // NUOVO: Rilevamento ambiente esecuzione
-        this.isWebView = this.detectWebView();
-        this.isMobileApp = this.detectMobileApp();
-        
-        console.log('🔗 Deep Link Router v2.2 initialized');
+        console.log('🔗 Deep Link Router v2.1 initialized');
         console.log('📍 Base Web URL:', this.baseWebURL);
         console.log('🌐 App Domain:', this.appDomain);
-        console.log('📱 Is WebView:', this.isWebView);
-        console.log('📲 Is Mobile App:', this.isMobileApp);
-    }
-    
-    // AGGIORNATO: Rileva se siamo in una WebView (app mobile) - criterio più rigoroso
-    detectWebView() {
-        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        
-        // CONTROLLO MOLTO SPECIFICO: Solo interfacce native = app reale
-        console.log('🔍 WebView Detection (Ultra-Conservative):');
-        
-        // Check 1: Interfacce Android specifiche dell'app (MOLTO RIGOROSE)
-        let hasAndroidApp = false;
-        try {
-            hasAndroidApp = !!(window.Android && 
-                window.Android.constructor && 
-                typeof window.Android.showToast === 'function' &&
-                window.Android.toString().includes('[object Object]'));
-        } catch (e) {
-            console.log('  - Android interface error:', e.message);
-            hasAndroidApp = false;
-        }
-        
-        // Check 2: Interfacce iOS specifiche dell'app (MOLTO RIGOROSE)
-        let hasiOSApp = false;
-        try {
-            hasiOSApp = !!(window.webkit && 
-                window.webkit.messageHandlers &&
-                window.webkit.messageHandlers.iosHandler &&
-                typeof window.webkit.messageHandlers.iosHandler.postMessage === 'function');
-        } catch (e) {
-            console.log('  - iOS interface error:', e.message);
-            hasiOSApp = false;
-        }
-        
-        // Check 3: User Agent deve essere da app (non browser)
-        const appUserAgent = navigator.userAgent || '';
-        const isAppUserAgent = appUserAgent.includes('RegalbutoHeritage') || 
-                             appUserAgent.includes('Cordova') || 
-                             appUserAgent.includes('PhoneGap') ||
-                             appUserAgent.includes('wv'); // WebView marker
-        
-        // Check 4: Referrer deve essere vuoto (app nativa)
-        const hasNoReferrer = !document.referrer || document.referrer === '';
-        
-        // Check 5: NUOVO - Verifica contesto di navigazione (solo app hanno questo)
-        const isStandalone = window.navigator.standalone === true; // iOS
-        const hasAppContext = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches; // Android
-        
-        console.log('  - Android App Interface:', hasAndroidApp);
-        console.log('  - iOS App Interface:', hasiOSApp);
-        console.log('  - App User Agent:', isAppUserAgent);
-        console.log('  - No Referrer (native):', hasNoReferrer);
-        console.log('  - Is Standalone (iOS):', isStandalone);
-        console.log('  - Has App Context (Android):', hasAppContext);
-        console.log('  - User Agent:', appUserAgent);
-        console.log('  - Referrer:', document.referrer);
-        
-        // LOGICA ULTRA-RIGOROSA: Tutte le condizioni devono essere soddisfatte
-        const hasValidAppInterface = hasAndroidApp || hasiOSApp;
-        const hasNativeCharacteristics = hasNoReferrer && (isStandalone || hasAppContext);
-        const hasAppUserAgentMarkers = isAppUserAgent;
-        
-        // FALLBACK: Se abbiamo indicatori di browser normale, forza NON-WebView
-        const hasBrowserFeatures = !!(window.chrome || window.opr || window.safari);
-        const hasTabsOrWindows = window.tabs || window.external;
-        const isBrowserEnvironment = hasBrowserFeatures || hasTabsOrWindows || 
-                                    appUserAgent.includes('Chrome') || 
-                                    appUserAgent.includes('Safari') || 
-                                    appUserAgent.includes('Edge') ||
-                                    appUserAgent.includes('Firefox') ||
-                                    appUserAgent.includes('Mozilla') ||
-                                    window.location.protocol === 'http:' ||
-                                    window.location.protocol === 'https:';
-        
-        // Check aggiuntivo: se abbiamo storia di navigazione, probabilmente è browser
-        const hasBrowserHistory = window.history && window.history.length > 1;
-        
-        console.log('  - Has valid app interface:', hasValidAppInterface);
-        console.log('  - Has native characteristics:', hasNativeCharacteristics);
-        console.log('  - Has app user agent markers:', hasAppUserAgentMarkers);
-        console.log('  - Has browser features:', hasBrowserFeatures);
-        console.log('  - Is browser environment:', isBrowserEnvironment);
-        console.log('  - Has browser history:', hasBrowserHistory);
-        
-        // ULTRA-RIGIDO: TUTTE le condizioni app devono essere vere E NESSUNA condizione browser
-        const isRealAppWebView = hasValidAppInterface && 
-                               hasNativeCharacteristics && 
-                               !isBrowserEnvironment && 
-                               !hasBrowserHistory;
-        
-        console.log('  - Is REAL App WebView (ULTRA-STRICT):', isRealAppWebView);
-        
-        return isRealAppWebView;
-    }
-    
-    // AGGIORNATO: Rileva se siamo nella app mobile (criterio ultra-conservativo)
-    detectMobileApp() {
-        // Usa la stessa logica ultra-rigorosa del detectWebView
-        return this.detectWebView();
-    }
-    
-    // AGGIORNATO: Gestisce redirect dalla landing page (criterio conservativo)
-    handleLandingPageRedirect() {
-        const currentPath = window.location.pathname;
-        const isLandingPage = currentPath.includes('landing-page') || 
-                             currentPath.endsWith('/landing-page') ||
-                             currentPath.endsWith('/landing-page/') ||
-                             currentPath.includes('/src/docs/landing-page') ||
-                             currentPath.endsWith('/src/docs/landing-page.html') ||
-                             window.location.href.includes('landing-page');
-        
-        // CONTROLLO ULTRA-CONSERVATIVO: usa la stessa logica del detectWebView
-        const hasRealAppInterface = this.detectWebView();
-        
-        console.log('🛬 Checking landing page redirect (Router v2.4 Ultra-Conservative):');
-        console.log('📍 Current path:', currentPath);
-        console.log('📍 Full URL:', window.location.href);
-        console.log('🏠 Is landing page:', isLandingPage);
-        console.log('� Has REAL app interface (ultra-strict):', hasRealAppInterface);
-        console.log('📲 Is mobile app (this.isMobileApp):', this.isMobileApp);
-        
-        // REDIRECT SOLO se abbiamo interfacce app ultra-specifiche E siamo in landing page
-        if (isLandingPage && hasRealAppInterface) {
-            console.log('🏠 Landing page detected in REAL mobile app (ultra-strict detection) - redirecting to home...');
-            
-            // Redirect alla home dell'app
-            const homeUrl = this.baseWebURL;
-            console.log('🏠 Redirecting to home:', homeUrl);
-            
-            // Usa replace per evitare loop nella history
-            window.location.replace(homeUrl);
-            return true; // Indica che abbiamo fatto redirect
-        } else if (isLandingPage && !hasRealAppInterface) {
-            console.log('🌐 Landing page detected in BROWSER (no app interface) - staying on landing page');
-            return false;
-        }
-        
-        return false; // Nessun redirect necessario
     }
     
     // Inizializza il router
@@ -177,13 +33,6 @@ class DeepLinkRouter {
         }
         
         console.log('🚀 Initializing Deep Link Router...');
-        
-        // NUOVO: Prima controlla se dobbiamo fare redirect dalla landing page
-        const didRedirect = this.handleLandingPageRedirect();
-        if (didRedirect) {
-            console.log('🔄 Landing page redirect in progress, skipping further initialization...');
-            return;
-        }
         
         // Gestisce deep link dal lancio app
         this.setupEventListeners();
@@ -222,20 +71,6 @@ class DeepLinkRouter {
     
     // Gestisce lancio app da App Link/Universal Link
     handleAppLaunch() {
-        // NUOVO: Non processare deep link se siamo nella landing page
-        const currentPath = window.location.pathname;
-        const isLandingPage = currentPath.includes('landing-page') || 
-                             currentPath.endsWith('/landing-page') ||
-                             currentPath.endsWith('/landing-page/') ||
-                             currentPath.includes('/src/docs/landing-page') ||
-                             currentPath.endsWith('/src/docs/landing-page.html') ||
-                             window.location.href.includes('landing-page');
-        
-        if (isLandingPage) {
-            console.log('🛬 Skipping deep link processing - on landing page');
-            return;
-        }
-        
         const url = new URL(window.location.href);
         const monumentId = this.extractMonumentId(url);
         
@@ -252,16 +87,20 @@ class DeepLinkRouter {
     extractMonumentId(url) {
         console.log('🔍 Extracting monument ID from URL:', url.href);
         
-        // NUOVO: Ignora se siamo nella landing page
+        // NUOVO: Se l'URL ha source=qr, NON fare niente (è per browser normale)
+        if (url.searchParams.get('source') === 'qr') {
+            console.log('🛬 QR source detected - skipping all processing (browser mode)');
+            return null;
+        }
+        
+        // NUOVO: Se è landing page, ignora sempre
         const isLandingPage = url.pathname.includes('landing-page') || 
-                             url.pathname.endsWith('/landing-page') ||
-                             url.pathname.endsWith('/landing-page/') ||
                              url.pathname.includes('/src/docs/landing-page') ||
                              url.pathname.endsWith('/src/docs/landing-page.html') ||
                              url.href.includes('landing-page');
         
         if (isLandingPage) {
-            console.log('🛬 Skipping monument extraction - on landing page');
+            console.log('🛬 Landing page detected - skipping monument extraction');
             return null;
         }
         
@@ -790,49 +629,7 @@ window.deepLinkUtils = {
         window.location.href = testUrl;
     },
     
-    // NUOVO: Test redirect dalla landing page
-    testLandingPageRedirect: () => {
-        const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
-        const landingUrl = baseUrl + 'src/docs/landing-page.html';
-        console.log('🛬 Testing landing page redirect:', landingUrl);
-        window.location.href = landingUrl;
-    },
-    
-    // NUOVO: Forza rilevamento WebView
-    forceWebViewDetection: () => {
-        console.group('🔧 WebView Detection Results');
-        console.log('User Agent:', navigator.userAgent);
-        console.log('Has Android Interface:', !!window.Android);
-        console.log('Has iOS Interface:', !!(window.webkit && window.webkit.messageHandlers));
-        console.log('Android WebView Pattern:', /wv/.test(navigator.userAgent));
-        console.log('iOS WebView Pattern:', /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/.test(navigator.userAgent));
-        console.log('Final Result - Is WebView:', deepLinkRouter.isWebView);
-        console.log('Final Result - Is Mobile App:', deepLinkRouter.isMobileApp);
-        console.groupEnd();
-    },
-    
-    // NUOVO: Simula ambiente WebView per testing
-    simulateWebView: () => {
-        console.log('🔧 Simulating WebView environment...');
-        
-        // Crea interfaccia Android fittizia
-        window.Android = {
-            getDeepLinkData: () => null
-        };
-        
-        // Ricarica il rilevamento
-        deepLinkRouter.isWebView = deepLinkRouter.detectWebView();
-        deepLinkRouter.isMobileApp = deepLinkRouter.detectMobileApp();
-        
-        console.log('✅ WebView simulation activated');
-        console.log('📱 Is WebView:', deepLinkRouter.isWebView);
-        console.log('📲 Is Mobile App:', deepLinkRouter.isMobileApp);
-        
-        // Test automatico della landing page
-        setTimeout(() => {
-            window.deepLinkUtils.testLandingPageRedirect();
-        }, 1000);
-    },
+    // Forza apertura monumento
     forceOpenMonument: (monumentId) => {
         console.log('🔧 Force opening monument:', monumentId);
         deepLinkRouter.openMonumentInApp(monumentId);
@@ -840,16 +637,12 @@ window.deepLinkUtils = {
     
     // Debug: mostra stato sistema
     debugStatus: () => {
-        console.group('🔧 Deep Link System Status v2.2');
+        console.group('🔧 Deep Link System Status');
         console.log('Router initialized:', deepLinkRouter.isInitialized);
-        console.log('Is WebView:', deepLinkRouter.isWebView);
-        console.log('Is Mobile App:', deepLinkRouter.isMobileApp);
         console.log('Monument data loaded:', !!window.monumentsData);
         console.log('Monument data count:', window.monumentsData ? window.monumentsData.length : 0);
         console.log('switchTab available:', typeof window.switchTab);
         console.log('Current URL:', window.location.href);
-        console.log('Current Path:', window.location.pathname);
-        console.log('Is Landing Page:', window.location.pathname.includes('landing-page') || window.location.pathname.includes('/src/docs/landing-page') || window.location.href.includes('landing-page'));
         console.log('Monument ID in URL:', deepLinkRouter.extractMonumentId(new URL(window.location.href)));
         console.groupEnd();
     },
@@ -925,22 +718,7 @@ if (window.location.search.includes('deep=') || window.location.search.includes(
     }, 2000);
 }
 
-// NUOVO: Debug automatico per landing page
-if (window.location.pathname.includes('landing-page') || 
-    window.location.pathname.includes('/src/docs/landing-page') ||
-    window.location.href.includes('landing-page')) {
-    setTimeout(() => {
-        console.log('🛬 Landing page detected, debugging...');
-        window.deepLinkUtils.forceWebViewDetection();
-        window.deepLinkUtils.debugStatus();
-    }, 1000);
-}
-
 // Log di inizializzazione
-console.log('🏛️ Deep Link Router v2.2 loaded and ready');
+console.log('🏛️ Deep Link Router v2.1 loaded and ready');
 console.log('🔧 Available utils: window.deepLinkUtils');
-console.log('🧪 New test commands:');
-console.log('  - window.deepLinkUtils.testLandingPageRedirect()');
-console.log('  - window.deepLinkUtils.forceWebViewDetection()');
-console.log('  - window.deepLinkUtils.simulateWebView()');
-console.log('  - window.deepLinkUtils.testDeepLink("chiesa-santa-maria-croce")');
+console.log('🧪 Test command: window.deepLinkUtils.testDeepLink("chiesa-santa-maria-croce")');
