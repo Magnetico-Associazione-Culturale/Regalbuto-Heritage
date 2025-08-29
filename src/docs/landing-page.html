@@ -502,26 +502,54 @@
             }
         });
 
-        // RILEVAMENTO RIGOROSO: Solo interfacce native = app installata
+        // RILEVAMENTO CONSERVATIVO: Solo se app ha caricato effettivamente il WebView
         function detectWebView() {
-            // CONTROLLO RIGIDISSIMO: Solo interfacce native = app reale
-            const hasAndroidInterface = !!(window.Android && typeof window.Android === 'object');
-            const hasiOSInterface = !!(window.webkit && window.webkit.messageHandlers && typeof window.webkit.messageHandlers === 'object');
+            console.log('🔍 Conservative WebView Detection:');
             
-            console.log('🔍 STRICT WebView Detection:');
-            console.log('  - window.Android exists:', !!window.Android);
-            console.log('  - Android is object:', typeof window.Android === 'object');
-            console.log('  - Android native interface:', hasAndroidInterface);
-            console.log('  - iOS webkit exists:', !!(window.webkit && window.webkit.messageHandlers));
-            console.log('  - iOS webkit is object:', !!(window.webkit && window.webkit.messageHandlers && typeof window.webkit.messageHandlers === 'object'));
-            console.log('  - iOS native interface:', hasiOSInterface);
+            // Check 1: Interfacce Android specifiche dell'app
+            const hasAndroidApp = !!(window.Android && 
+                window.Android.constructor && 
+                typeof window.Android.showToast === 'function');
             
-            // SOLO se abbiamo interfacce native = WebView app installata
-            const isRealAppWebView = hasAndroidInterface || hasiOSInterface;
+            // Check 2: Interfacce iOS specifiche dell'app  
+            const hasiOSApp = !!(window.webkit && 
+                window.webkit.messageHandlers &&
+                window.webkit.messageHandlers.iosHandler);
             
+            // Check 3: User Agent deve essere da app (non browser)
+            const appUserAgent = navigator.userAgent || '';
+            const isAppUserAgent = appUserAgent.includes('RegalbutoHeritage') || 
+                                 appUserAgent.includes('Cordova') || 
+                                 appUserAgent.includes('PhoneGap');
+            
+            // Check 4: Referrer deve essere vuoto (app nativa)
+            const hasNoReferrer = !document.referrer || document.referrer === '';
+            
+            console.log('  - Android App Interface:', hasAndroidApp);
+            console.log('  - iOS App Interface:', hasiOSApp);
+            console.log('  - App User Agent:', isAppUserAgent);
+            console.log('  - No Referrer (native):', hasNoReferrer);
+            console.log('  - User Agent:', appUserAgent);
+            console.log('  - Referrer:', document.referrer);
+            
+            // SOLO se abbiamo almeno un'interfaccia app specifica E caratteristiche native
+            const isRealAppWebView = (hasAndroidApp || hasiOSApp) && hasNoReferrer;
+            
+            // FALLBACK: Se abbiamo indicatori di browser normale, forza NON-WebView
+            const hasBrowserFeatures = !!(window.chrome || window.opr || window.safari);
+            const hasTabsOrWindows = window.tabs || window.external;
+            const isBrowserEnvironment = hasBrowserFeatures || hasTabsOrWindows || 
+                                        appUserAgent.includes('Chrome') || 
+                                        appUserAgent.includes('Safari') || 
+                                        appUserAgent.includes('Edge') ||
+                                        appUserAgent.includes('Firefox');
+            
+            console.log('  - Has browser features:', hasBrowserFeatures);
+            console.log('  - Is browser environment:', isBrowserEnvironment);
             console.log('  - Is REAL App WebView:', isRealAppWebView);
             
-            return isRealAppWebView;
+            // Se abbiamo chiari indicatori di browser, NON è WebView
+            return isRealAppWebView && !isBrowserEnvironment;
         }
 
         // NUOVO: Redirect manuale se il deep-link-router non funziona
