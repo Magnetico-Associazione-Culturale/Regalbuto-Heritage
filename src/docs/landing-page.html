@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Regalbuto Heritage - Scarica l'App</title>
+    <meta name="description" content="Scarica l'app Regalbuto Heritage per scoprire il patrimonio storico e culturale di Regalbuto con tour virtuali, guide audio e mappe interattive.">
+    
+    <!-- Meta tags per social media -->
+    <meta property="og:title" content="Regalbuto Heritage - App Turismo Culturale">
+    <meta property="og:description" content="Esplora il patrimonio di Regalbuto con tour VR 360°, guide audio e mappe GPS interattive">
+    <meta property="og:image" content="../../src/imgs/flat/logo-comune-regalbuto.jpg">
+    <meta property="og:url" content="https://magnetico-associazione-culturale.github.io/Regalbuto-Heritage/src/docs/landing-page.html">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../../src/imgs/flat/logo-comune-regalbuto.jpg">
+    <link rel="apple-touch-icon" href="../../src/imgs/flat/logo-comune-regalbuto.jpg">
+    
+    <!-- Font Awesome per icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Variabili CSS */
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #f8f9fa;
+            --accent-color: #ffa500;
+            --text-dark: #333;
+            --text-light: #666;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --gradient-bg: linear-gradient(135deg, #2c5aa0 0%, #1a4480 100%);
+        }
+
+        /* Body e layout principale */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Container principale */
+        .landing-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Header con logo */
+        .landing-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: var(--white);
+            padding: 2rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 3px solid var(--primary-color);
+        }
+
+        .logo-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .app-title h1 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        /* Sezione principale con bottone */
+        .download-section {
+            text-align: center;
+            background: var(--white);
+            padding: 2.5rem 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .download-title {
+            color: var(--text-dark);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .download-description {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        /* Bottone Google Play Store */
+        .play-store-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            color: var(--white);
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .play-store-btn:hover {
+            background: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .play-store-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .play-store-icon {
+            margin-right: 0.8rem;
+            font-size: 1.5rem;
+        }
+
+        .play-store-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .play-store-main {
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .play-store-sub {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        /* Effetto brillante sul bottone */
+        .play-store-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+            border-radius: 8px;
+        }
+
+        .play-store-btn:hover::before {
+            left: 100%;
+        }
+
+        /* Preview delle funzionalità */
+        .features-preview {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        /* Footer con loghi sponsor */
+        .landing-footer {
+            margin-top: auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem 1rem;
+            width: 100%;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .footer-content {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .footer-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--white);
+            padding: 8px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-logo:hover {
+            transform: scale(1.1);
+        }
+
+        .footer-text {
+            color: var(--white);
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 300;
+            line-height: 1.4;
+        }
+
+        /* Badge "Scarica Gratis" */
+        .free-badge {
+            display: inline-block;
+            background: var(--accent-color);
+            color: var(--white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .landing-container {
+                padding: 1rem 0.75rem;
+            }
+            
+            .landing-header,
+            .download-section,
+            .features-preview {
+                max-width: 350px;
+            }
+            
+            .landing-header {
+                padding: 1.5rem 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .download-section {
+                padding: 2rem 1rem;
+                margin-bottom: 2rem;
+            }
+            
+            .app-title h1 {
+                font-size: 1.5rem;
+            }
+            
+            .download-title {
+                font-size: 1.2rem;
+            }
+            
+            .footer-logos {
+                gap: 1rem;
+            }
+            
+            .footer-logo {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .play-store-btn {
+                min-width: 180px;
+                padding: 0.7rem 1.2rem;
+            }
+        }
+
+        /* Animazioni */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Loading state nascosto (non serve più) */
+        .loading-indicator {
+            display: none !important;
+        }
+
+        /* Miglioramenti accessibilità */
+        .play-store-btn:focus {
+            outline: 3px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        .feature-card:focus-within {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        /* Effetti aggiuntivi */
+        .landing-header:hover {
+            transform: translateY(-2px);
+            transition: transform 0.3s ease;
+        }
+
+        .download-section:hover {
+            transform: translateY(-1px);
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- Container principale -->
+    <div class="landing-container">
+        <!-- Header con logo e titolo -->
+        <header class="landing-header">
+            <div class="app-logo">
+                <img src="../imgs/flat/logo-comune-regalbuto.jpg" alt="Logo Regalbuto Heritage" class="logo-img">
+            </div>
+            <div class="app-title">
+                <h1>Regalbuto Heritage</h1>
+                <p class="app-subtitle">Scopri la storia e la cultura di Regalbuto</p>
+            </div>
+        </header>
+
+        <!-- Sezione download principale -->
+        <section class="download-section">
+            <div class="free-badge">📱 App Gratuita</div>
+            <h2 class="download-title">Scarica l'App Ufficiale</h2>
+            <p class="download-description">
+                Esplora il patrimonio storico di Regalbuto con tour virtuali a 360°, guide audio professionali e mappe interattive GPS. Un viaggio immersivo nella cultura siciliana.
+            </p>
+            <a href="https://play.google.com/store/apps/details?id=org.magnetico.heritage" 
+               class="play-store-btn" 
+               target="_blank" 
+               rel="noopener"
+               aria-label="Scarica l'app Regalbuto Heritage dal Google Play Store">
+                <i class="fab fa-google-play play-store-icon" aria-hidden="true"></i>
+                <div class="play-store-text">
+                    <span class="play-store-main">Disponibile su</span>
+                    <span class="play-store-sub">Google Play</span>
+                </div>
+            </a>
+        </section>
+
+        <!-- Preview delle funzionalità -->
+        <section class="features-preview">
+            <div class="feature-card">
+                <div class="feature-icon">🏛️</div>
+                <h3 class="feature-title">Monumenti e Storia</h3>
+                <p class="feature-desc">Esplora chiese, conventi e siti storici con contenuti multimediali ricchi</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🎧</div>
+                <h3 class="feature-title">Guide Audio</h3>
+                <p class="feature-desc">Ascolta narrazioni professionali sui luoghi più importanti del territorio</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <h3 class="feature-title">Tour Virtuali</h3>
+                <p class="feature-desc">Vivi esperienze immersive a 360° con tecnologia VR avanzata</p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📱</div>
+                <h3 class="feature-title">QR Scanner</h3>
+                <p class="feature-desc">Scansiona i codici QR sui monumenti per accesso diretto alle informazioni</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer con loghi sponsor -->
+    <footer class="landing-footer">
+        <div class="footer-content">
+            <div class="footer-logos">
+                <img src="../imgs/flat/logo-comune-regalbuto.jpg" alt="Comune di Regalbuto" class="footer-logo">
+                <img src="../imgs/flat/logo-magnetico.jpg" alt="Associazione Magnetico" class="footer-logo">
+                <img src="../imgs/flat/logo-unione-europea.jpg" alt="Unione Europea" class="footer-logo">
+                <img src="../imgs/flat/logo-regione-sicilia.jpg" alt="Regione Sicilia" class="footer-logo">
+            </div>
+            <p class="footer-text">
+                Un progetto dell'Associazione Culturale Magnetico<br>
+                in collaborazione con il Comune di Regalbuto<br>
+                <small>Finanziato dal Programma di Sviluppo Rurale della Sicilia 2014-2020</small>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Script minimale solo per tracking (non gestisce redirect) -->
+    <script>
+        // Debug base - il redirect è gestito lato .htaccess
+        console.log('🛬 Landing Page loaded successfully - Browser Mode');
+        console.log('📍 URL:', window.location.href);
+        console.log('🌐 User Agent:', navigator.userAgent);
+        console.log('⚡ Redirect logic handled by .htaccess');
+        
+        // Se abbiamo parametri nell'URL, loggali per debug
+        if (window.location.search) {
+            console.log('🔍 URL Parameters:', window.location.search);
+        }
+        
+        // Tracking click del bottone Play Store quando DOM è pronto
+        document.addEventListener('DOMContentLoaded', function() {
+            const playStoreBtn = document.querySelector('.play-store-btn');
+            
+            if (playStoreBtn) {
+                playStoreBtn.addEventListener('click', function(e) {
+                    console.log('📲 Play Store button clicked');
+                    
+                    // Analytics se disponibile
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', 'click', {
+                            'event_category': 'download',
+                            'event_label': 'play_store_button',
+                            'event_value': 1
+                        });
+                    }
+                    
+                    // Fallback tracking
+                    if (typeof ga !== 'undefined') {
+                        ga('send', 'event', 'download', 'click', 'play_store_button');
+                    }
+                });
+            }
+            
+            console.log('✅ Landing page fully loaded and ready');
+        });
+        
+        // Debug utility semplice per verificare stato
+        window.debugLandingPage = function() {
+            const info = {
+                url: window.location.href,
+                userAgent: navigator.userAgent,
+                referrer: document.referrer,
+                timestamp: new Date().toLocaleString(),
+                hasParams: !!window.location.search,
+                params: window.location.search
+            };
+            
+            console.group('🔧 Landing Page Debug Info');
+            console.table(info);
+            console.groupEnd();
+            
+            alert('Landing Page Debug\nSee console for details');
+            return info;
+        };
+        
+        // Log finale
+        console.log('🌐 Landing page ready for browser users');
+        console.log('🧪 Debug available: window.debugLandingPage()');
+    </script>
+</body>
+</html>

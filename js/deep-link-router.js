@@ -87,23 +87,6 @@ class DeepLinkRouter {
     extractMonumentId(url) {
         console.log('🔍 Extracting monument ID from URL:', url.href);
         
-        // NUOVO: Se l'URL ha source=qr, NON fare niente (è per browser normale)
-        if (url.searchParams.get('source') === 'qr') {
-            console.log('🛬 QR source detected - skipping all processing (browser mode)');
-            return null;
-        }
-        
-        // NUOVO: Se è landing page, ignora sempre
-        const isLandingPage = url.pathname.includes('landing-page') || 
-                             url.pathname.includes('/src/docs/landing-page') ||
-                             url.pathname.endsWith('/src/docs/landing-page.html') ||
-                             url.href.includes('landing-page');
-        
-        if (isLandingPage) {
-            console.log('🛬 Landing page detected - skipping monument extraction');
-            return null;
-        }
-        
         // Format 1: ?monument=id (da redirect web)
         const monumentParam = url.searchParams.get('monument');
         if (monumentParam) {
