@@ -2003,72 +2003,67 @@ function openInMapsApp(mapsUrl) {
             const lat = coordinatesMatch[1];
             const lon = coordinatesMatch[2];
             
-            // Prova diversi URL scheme per iOS
-            const appleMapURL = `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
-            const mapsSchemeURL = `maps://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
+            // URL corretti per iOS Apple Maps
+            const appleMapsHTTP = `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
+            const appleMapsScheme = `maps://?daddr=${lat},${lon}&dirflg=d`;
             
-            console.log('Opening Apple Maps with URL:', appleMapURL);
-            console.log('Alternative Maps scheme URL:', mapsSchemeURL);
+            console.log('Opening Apple Maps with HTTP URL:', appleMapsHTTP);
+            console.log('Alternative Maps scheme URL:', appleMapsScheme);
             
-            // Nuovo approccio per iOS: prova multiple modalità
+            // Approccio semplificato per iOS
             try {
                 // Salva stato prima dell'apertura
                 sessionStorage.setItem('mapsOpeningState', 'opening');
                 
-                // Metodo 1: Prova con maps:// scheme per iOS
-                const link = document.createElement('a');
-                link.href = mapsSchemeURL;
-                link.style.display = 'none';
-                document.body.appendChild(link);
-                
-                // Simula click per attivare lo scheme
-                const clickEvent = new MouseEvent('click', {
-                    view: window,
-                    bubbles: true,
-                    cancelable: true
-                });
-                
+                // Prova prima con lo scheme nativo maps://
                 let opened = false;
                 
                 try {
-                    link.dispatchEvent(clickEvent);
+                    // Crea link invisibile con scheme nativo
+                    const link = document.createElement('a');
+                    link.href = appleMapsScheme;
+                    link.style.display = 'none';
+                    document.body.appendChild(link);
+                    link.click();
+                    
+                    console.log('Native maps:// scheme attempted');
                     opened = true;
-                    console.log('Maps scheme URL activated');
+                    
+                    // Rimuovi il link
+                    setTimeout(() => {
+                        if (link && link.parentNode) {
+                            link.parentNode.removeChild(link);
+                        }
+                    }, 1000);
+                    
                 } catch (schemeError) {
-                    console.log('Maps scheme failed:', schemeError);
+                    console.log('Native scheme failed:', schemeError);
+                    opened = false;
                 }
                 
-                // Rimuovi il link
-                setTimeout(() => {
-                    if (link && link.parentNode) {
-                        link.parentNode.removeChild(link);
-                    }
-                }, 1000);
-                
-                // Metodo 2: Fallback con window.open se scheme fallisce
+                // Se il scheme nativo fallisce, usa HTTP fallback
                 if (!opened) {
                     setTimeout(() => {
                         try {
-                            console.log('Trying window.open fallback');
-                            window.open(appleMapURL, '_system');
-                        } catch (openError) {
-                            console.log('window.open failed:', openError);
+                            console.log('Using HTTP fallback with window.location.href');
+                            window.location.href = appleMapsHTTP;
+                        } catch (httpError) {
+                            console.log('HTTP fallback failed:', httpError);
                             
-                            // Metodo 3: Ultimo fallback con location.href
+                            // Ultimo tentativo con window.open
                             try {
-                                console.log('Final fallback with location.href');
-                                window.location.href = appleMapURL;
+                                window.open(appleMapsHTTP, '_system');
                             } catch (finalError) {
                                 console.log('All methods failed:', finalError);
                             }
                         }
-                    }, 1000);
+                    }, 500);
                 }
                 
                 // Pulisci lo stato dopo un timeout
                 setTimeout(() => {
                     sessionStorage.removeItem('mapsOpeningState');
-                }, 10000);
+                }, 8000);
                 
             } catch (error) {
                 console.log('Error opening Apple Maps:', error);
@@ -2087,7 +2082,7 @@ function openInMapsApp(mapsUrl) {
                 });
                 // Pulisci anche lo stato di apertura
                 sessionStorage.removeItem('mapsOpeningState');
-            }, 5000);
+            }, 4000);
             
             return;
         } else {
