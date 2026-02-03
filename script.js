@@ -4638,20 +4638,12 @@ async function loadMonumentsOnMap() {
         return;
     }
     
-    console.log('GPS map is available, checking if style is loaded...');
+    console.log('GPS map is available, force loading monuments...');
+    console.log('Map loaded state:', gpsMap.loaded());
+    console.log('Map style loaded state:', gpsMap.isStyleLoaded());
     
-    // Wait for map style to be loaded
-    if (!gpsMap.isStyleLoaded()) {
-        console.log('Map style not loaded, waiting...');
-        return new Promise((resolve) => {
-            gpsMap.once('styledata', () => {
-                console.log('Style loaded, now proceeding with monuments loading...');
-                resolve(loadMonumentsOnMap());
-            });
-        });
-    }
-    
-    console.log('Map style is loaded, proceeding with monuments loading...');
+    // Force proceed regardless of style load state for debugging
+    console.log('Forcing monuments loading regardless of style state...');
     
     try {
         console.log('Loading monuments on map...');
@@ -4701,15 +4693,41 @@ async function loadMonumentsOnMap() {
         
         // Add monuments source to map (check if it already exists)
         const existingSource = gpsMap.getSource('monuments');
+        console.log('Existing monuments source:', existingSource);
+        
         if (existingSource) {
             console.log('Monuments source already exists, updating data...');
-            gpsMap.getSource('monuments').setData(monumentsGeoJSON);
+            try {
+                gpsMap.getSource('monuments').setData(monumentsGeoJSON);
+                console.log('Monument data updated successfully');
+            } catch (error) {
+                console.error('Error updating monument data:', error);
+                // If update fails, remove and re-add
+                try {
+                    gpsMap.removeSource('monuments');
+                    console.log('Removed existing monuments source');
+                } catch (removeError) {
+                    console.error('Error removing existing source:', removeError);
+                }
+                
+                gpsMap.addSource('monuments', {
+                    type: 'geojson',
+                    data: monumentsGeoJSON
+                });
+                console.log('Re-added monuments source');
+            }
         } else {
             console.log('Adding new monuments source to map...');
-            gpsMap.addSource('monuments', {
-                type: 'geojson',
-                data: monumentsGeoJSON
-            });
+            try {
+                gpsMap.addSource('monuments', {
+                    type: 'geojson',
+                    data: monumentsGeoJSON
+                });
+                console.log('New monuments source added successfully');
+            } catch (error) {
+                console.error('Error adding monuments source:', error);
+                return; // Exit if we can't add the source
+            }
         }
         
         // Add monuments markers layer (check if it already exists)
@@ -4718,18 +4736,22 @@ async function loadMonumentsOnMap() {
         
         if (!existingMarkersLayer) {
             console.log('Adding monuments markers layer...');
-            gpsMap.addLayer({
-                id: 'monuments-markers',
-                type: 'circle',
-                source: 'monuments',
-                paint: {
-                    'circle-radius': 12,
-                    'circle-color': '#ffd700', // Same yellow color as old checkpoints
-                    'circle-stroke-color': '#4a5568', // Same dark stroke as old checkpoints
-                    'circle-stroke-width': 3
-                }
-            });
-            console.log('Monuments markers layer added successfully');
+            try {
+                gpsMap.addLayer({
+                    id: 'monuments-markers',
+                    type: 'circle',
+                    source: 'monuments',
+                    paint: {
+                        'circle-radius': 12,
+                        'circle-color': '#ffd700', // Same yellow color as old checkpoints
+                        'circle-stroke-color': '#4a5568', // Same dark stroke as old checkpoints
+                        'circle-stroke-width': 3
+                    }
+                });
+                console.log('Monuments markers layer added successfully');
+            } catch (error) {
+                console.error('Error adding monuments markers layer:', error);
+            }
         } else {
             console.log('Monuments markers layer already exists');
         }
