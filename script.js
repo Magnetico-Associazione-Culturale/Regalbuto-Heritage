@@ -364,13 +364,26 @@ function switchTab(tabName) {
         
         // Initialize GPS map if switching to navigation tab
         if (tabName === 'navigazione') {
+            console.log('=== SWITCHING TO NAVIGATION TAB ===');
             initializeGPSMap().then(() => {
+                console.log('GPS Map initialization completed');
                 // Resize the map after initialization to ensure proper rendering
                 if (gpsMap) {
                     setTimeout(() => {
+                        console.log('Resizing GPS map...');
                         gpsMap.resize();
+                        
+                        // Force reload monuments after resize
+                        console.log('Force reloading monuments...');
+                        loadMonumentsOnMap().then(() => {
+                            console.log('Monuments force reload completed');
+                        }).catch(error => {
+                            console.error('Error in force reload monuments:', error);
+                        });
                     }, 300);
                 }
+            }).catch(error => {
+                console.error('Error initializing GPS map:', error);
             });
         }
         
@@ -4325,13 +4338,22 @@ async function initializeGPSMap() {
         console.log('GPS Map already exists, resizing and checking monuments...');
         gpsMap.resize();
         
-        // Check if monuments source exists, if not reload it
-        const monumentsSource = gpsMap.getSource('monuments');
-        if (!monumentsSource) {
-            console.log('Monuments source not found, reloading...');
-            await loadMonumentsOnMap();
+        // Wait for map to be ready, then check monuments
+        if (gpsMap.isStyleLoaded()) {
+            console.log('Map style is loaded, checking monuments...');
+            const monumentsSource = gpsMap.getSource('monuments');
+            if (!monumentsSource) {
+                console.log('Monuments source not found, reloading...');
+                await loadMonumentsOnMap();
+            } else {
+                console.log('Monuments source already exists');
+            }
         } else {
-            console.log('Monuments source already exists');
+            console.log('Map style not loaded yet, waiting for style.load event...');
+            gpsMap.once('styledata', async () => {
+                console.log('Style loaded, now loading monuments...');
+                await loadMonumentsOnMap();
+            });
         }
         return;
     }
@@ -4609,10 +4631,27 @@ function setupRouteVisualization() {
 }
 
 async function loadMonumentsOnMap() {
+    console.log('=== LOAD MONUMENTS ON MAP STARTED ===');
+    
     if (!gpsMap) {
         console.warn('GPS map not available for monuments loading');
         return;
     }
+    
+    console.log('GPS map is available, checking if style is loaded...');
+    
+    // Wait for map style to be loaded
+    if (!gpsMap.isStyleLoaded()) {
+        console.log('Map style not loaded, waiting...');
+        return new Promise((resolve) => {
+            gpsMap.once('styledata', () => {
+                console.log('Style loaded, now proceeding with monuments loading...');
+                resolve(loadMonumentsOnMap());
+            });
+        });
+    }
+    
+    console.log('Map style is loaded, proceeding with monuments loading...');
     
     try {
         console.log('Loading monuments on map...');
@@ -4675,6 +4714,8 @@ async function loadMonumentsOnMap() {
         
         // Add monuments markers layer (check if it already exists)
         const existingMarkersLayer = gpsMap.getLayer('monuments-markers');
+        console.log('Existing markers layer:', existingMarkersLayer);
+        
         if (!existingMarkersLayer) {
             console.log('Adding monuments markers layer...');
             gpsMap.addLayer({
@@ -4688,9 +4729,14 @@ async function loadMonumentsOnMap() {
                     'circle-stroke-width': 3
                 }
             });
+            console.log('Monuments markers layer added successfully');
         } else {
             console.log('Monuments markers layer already exists');
         }
+        
+        // Verify layer was added
+        const verifyLayer = gpsMap.getLayer('monuments-markers');
+        console.log('Verify monuments-markers layer exists:', !!verifyLayer);
         
         // Add monuments labels (check if it already exists)
         try {
@@ -4804,6 +4850,27 @@ async function loadMonumentsOnMap() {
         }
         
         console.log('Monuments loaded successfully on map');
+        
+        // Debug: Check if source and layers are properly loaded
+        setTimeout(() => {
+            const source = gpsMap.getSource('monuments');
+            const markersLayer = gpsMap.getLayer('monuments-markers');
+            const labelsLayer = gpsMap.getLayer('monuments-labels');
+            
+            console.log('=== MONUMENTS DEBUG INFO ===');
+            console.log('Source exists:', !!source);
+            console.log('Markers layer exists:', !!markersLayer);
+            console.log('Labels layer exists:', !!labelsLayer);
+            
+            if (source && source._data) {
+                console.log('Source data:', source._data);
+                console.log('Number of features:', source._data.features ? source._data.features.length : 'No features');
+            }
+            
+            // Force map repaint
+            gpsMap.triggerRepaint();
+            console.log('Map repaint triggered');
+        }, 1000);
         
     } catch (error) {
         console.error('Error loading monuments on map:', error);
