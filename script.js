@@ -1990,12 +1990,8 @@ async function openMapLocation(monumentId) {
 function openInMapsApp(mapsUrl) {
     console.log('Opening Maps with URL:', mapsUrl);
     
-    // Rileva il tipo di dispositivo
-    const isAndroid = /Android/i.test(navigator.userAgent);
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isMobile = isAndroid || isIOS;
     
-    // Gestione specifica per iOS - converti a Apple Maps
     if (isIOS) {
         console.log('iOS device detected, converting to Apple Maps');
         
@@ -2008,12 +2004,46 @@ function openInMapsApp(mapsUrl) {
             
             console.log('Opening Apple Maps with URL:', appleMapURL);
             
+            // Timeout di sicurezza per rimuovere eventuali stati di loading
+            const safetyTimeout = setTimeout(() => {
+                console.log('Safety timeout: clearing any loading states');
+                // Nascondi eventuali indicatori di caricamento
+                const loadingElements = document.querySelectorAll('.loading, .spinner, .loader');
+                loadingElements.forEach(el => {
+                    el.style.display = 'none';
+                });
+                
+                // Nascondi la notifica di apertura mappe se ancora visibile
+                const notifications = document.querySelectorAll('.notification');
+                notifications.forEach(notification => {
+                    if (notification.textContent.includes('Apple Maps')) {
+                        notification.remove();
+                    }
+                });
+                
+                // Riattiva le interazioni dell'interfaccia
+                document.body.style.pointerEvents = 'auto';
+            }, 5000); // 5 secondi di timeout
+            
+            // Pulisci il timeout quando la pagina torna in focus
+            const cleanupTimeout = () => {
+                clearTimeout(safetyTimeout);
+                document.removeEventListener('visibilitychange', cleanupTimeout);
+                window.removeEventListener('focus', cleanupTimeout);
+                window.removeEventListener('pageshow', cleanupTimeout);
+            };
+            
+            document.addEventListener('visibilitychange', cleanupTimeout);
+            window.addEventListener('focus', cleanupTimeout);
+            window.addEventListener('pageshow', cleanupTimeout);
+            
             // Su iOS WebView, usa window.location.href per forzare l'apertura
             try {
                 window.location.href = appleMapURL;
             } catch (error) {
                 console.log('Fallback to window.open for Apple Maps');
                 window.open(appleMapURL, '_system');
+                clearTimeout(safetyTimeout); // Pulisci il timeout se fallback
             }
             
             showNotification('Apertura Apple Maps...', 'info');
@@ -2022,6 +2052,9 @@ function openInMapsApp(mapsUrl) {
             console.log('Could not extract coordinates from URL, using fallback');
         }
     }
+    
+    // Android e Desktop - comportamento originale
+    const isAndroid = /Android/i.test(navigator.userAgent);
     
     // Crea URL Google Maps standard HTTPS per Android/Desktop
     let googleMapsUrl = mapsUrl;
@@ -2036,7 +2069,6 @@ function openInMapsApp(mapsUrl) {
     
     console.log('Final Google Maps URL:', googleMapsUrl);
     
-    // Per Android, usa _system per tentare di aprire Google Maps
     if (isAndroid) {
         console.log('Android device detected, opening with _system target');
         window.open(googleMapsUrl, '_system');
@@ -5382,5 +5414,79 @@ document.addEventListener('keydown', function(event) {
         }
     }
 });
+
+// Gestione ritorno dall'app Apple Maps su iOS
+if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+    console.log('iOS device detected - setting up Maps app return handlers');
+    
+    // Quando la pagina torna visibile dopo aver aperto un'app esterna
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+            console.log('App tornata in primo piano dopo app esterna');
+            
+            // Nascondi eventuali indicatori di caricamento
+            const loadingElements = document.querySelectorAll('.loading, .spinner, .loader');
+            loadingElements.forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Nascondi notifiche di apertura mappe se ancora visibili
+            const notifications = document.querySelectorAll('.notification');
+            notifications.forEach(notification => {
+                if (notification.textContent.includes('Apple Maps') || 
+                    notification.textContent.includes('Apertura mappa')) {
+                    notification.remove();
+                }
+            });
+            
+            // Riattiva le interazioni dell'interfaccia
+            document.body.style.pointerEvents = 'auto';
+            
+            // Re-inizializza Feather icons se necessario
+            if (typeof feather !== 'undefined') {
+                setTimeout(() => {
+                    feather.replace();
+                }, 100);
+            }
+        }
+    });
+    
+    // Gestione specifica per il ciclo di vita della pagina iOS
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            console.log('Pagina ripristinata da cache - probabile ritorno da app esterna');
+            
+            // Nascondi eventuali indicatori di loading
+            const loadingElements = document.querySelectorAll('.loading, .spinner, .loader');
+            loadingElements.forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Pulisci notifiche di mappe
+            const notifications = document.querySelectorAll('.notification');
+            notifications.forEach(notification => {
+                if (notification.textContent.includes('Apple Maps') || 
+                    notification.textContent.includes('Apertura mappa')) {
+                    notification.remove();
+                }
+            });
+        }
+    });
+    
+    // Gestione del focus della finestra
+    window.addEventListener('focus', function() {
+        console.log('Finestra tornata in focus');
+        
+        // Riattiva le interazioni
+        document.body.style.pointerEvents = 'auto';
+        
+        // Re-inizializza icone se necessario
+        if (typeof feather !== 'undefined') {
+            setTimeout(() => {
+                feather.replace();
+            }, 100);
+        }
+    });
+}
 
 console.log('Regalbuto Heritage - Script loaded successfully');
