@@ -6277,11 +6277,12 @@ button:focus,
 
 /* ===== CORREZIONI iOS WEBVIEW - ANTI-FLICKERING ===== */
 
-/* Correzioni iOS WebView per eliminare flickering */
+/* Correzioni iOS WebView per eliminare flickering - solo per touch events */
 @supports (-webkit-touch-callout: none) {
-    /* Specifico per iOS - elimina flickering sui pulsanti */
-    button, .btn, .nav-item, .monument-card, .location-card, .quiz-option,
-    .expand-btn, .card-expand-btn, .play-pause, .audio-control-btn {
+    /* Specifico per iOS - elimina flickering sui pulsanti SOLO durante touch */
+    button:active, .btn:active, .nav-item:active, .monument-card:active, 
+    .location-card:active, .quiz-option:active, .expand-btn:active, 
+    .card-expand-btn:active, .play-pause:active, .audio-control-btn:active {
         -webkit-tap-highlight-color: transparent !important;
         -webkit-touch-callout: none !important;
         -webkit-user-select: none !important;
@@ -6289,18 +6290,9 @@ button:focus,
         touch-action: manipulation !important;
         backface-visibility: hidden !important;
         -webkit-backface-visibility: hidden !important;
-        transform: translateZ(0) !important;
-        -webkit-transform: translateZ(0) !important;
-        will-change: transform !important;
     }
 
-    /* Elimina effetti hover su iOS che causano flickering */
-    button:hover, .btn:hover, .nav-item:hover {
-        -webkit-tap-highlight-color: transparent !important;
-        transition: none !important;
-    }
-
-    /* Stati touch specifici per iOS - più fluidi */
+    /* Stati touch specifici per iOS - più fluidi, SOLO per :active */
     button:active, .btn:active {
         transform: translateZ(0) scale(0.98) !important;
         -webkit-transform: translateZ(0) scale(0.98) !important;
@@ -6308,21 +6300,9 @@ button:focus,
         -webkit-transition: -webkit-transform 0.1s ease-out !important;
     }
 
-    /* Correzioni per monument cards su iOS */
-    .monument-card {
-        -webkit-transform: translateZ(0) !important;
-        transform: translateZ(0) !important;
-    }
-
     .monument-card:active {
         transform: translateZ(0) scale(0.995) !important;
         -webkit-transform: translateZ(0) scale(0.995) !important;
-    }
-
-    /* Correzioni per navigation items */
-    .nav-item {
-        -webkit-transform: translateZ(0) !important;
-        transform: translateZ(0) !important;
     }
 
     .nav-item:active {
@@ -6333,8 +6313,6 @@ button:focus,
     /* Eliminazione flickering per audio controls */
     .audio-player-container button {
         -webkit-tap-highlight-color: transparent !important;
-        outline: none !important;
-        border: none !important;
     }
 
     /* Correzioni per QR modal buttons */
@@ -6342,21 +6320,12 @@ button:focus,
         -webkit-tap-highlight-color: transparent !important;
         -webkit-appearance: none !important;
     }
-
-    /* Prevenzione flickering per elementi interattivi */
-    .featured-card, .quiz-question label, .filter-tab {
-        -webkit-tap-highlight-color: transparent !important;
-        -webkit-touch-callout: none !important;
-        -webkit-user-select: none !important;
-        backface-visibility: hidden !important;
-        -webkit-backface-visibility: hidden !important;
-    }
 }
 
 /* Correzioni aggiuntive per iOS WebView specificamente */
 @media screen and (-webkit-min-device-pixel-ratio: 1) {
-    /* iPhone/iPad specifico */
-    * {
+    /* iPhone/iPad specifico - solo elementi interattivi, non tutto */
+    button:active, .btn:active, .nav-item:active, .monument-card:active, .location-card:active {
         -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
         -webkit-focus-ring-color: rgba(0,0,0,0) !important;
         outline: none !important;
@@ -6367,26 +6336,21 @@ button:focus,
         -webkit-overflow-scrolling: touch !important;
         overflow-x: hidden !important;
     }
-
-    /* Ottimizzazioni per il rendering hardware accelerato */
-    .section {
-        -webkit-transform: translate3d(0,0,0) !important;
-        transform: translate3d(0,0,0) !important;
-    }
 }
 
 /* Disabilita completamente gli effetti hover su touch devices */
 @media (hover: none) and (pointer: coarse) {
-    /* Touch devices - elimina tutti gli hover effects */
+    /* Touch devices - elimina tutti gli hover effects ma mantieni gli stili base */
     .btn:hover, button:hover, .nav-item:hover, 
     .monument-card:hover, .featured-card:hover {
-        background: initial !important;
-        color: initial !important;
-        transform: initial !important;
-        box-shadow: initial !important;
-        opacity: initial !important;
+        background: initial;
+        color: initial;
+        transform: initial;
+        opacity: initial;
     }
-
+    
+    /* NON toccare box-shadow e border per le card */
+    
     /* Sostituisci hover con active per touch */
     .btn:active, button:active {
         opacity: 0.8 !important;
@@ -6396,16 +6360,44 @@ button:focus,
 
 /* Specifico per iOS Safari/WebView */
 @supports (-webkit-appearance: none) {
-    input, select, textarea, button {
+    /* Solo per input standard, NON toccare card e filter-tab */
+    input[type="text"], input[type="email"], input[type="password"], 
+    input[type="search"], select, textarea {
         -webkit-appearance: none !important;
         appearance: none !important;
         border-radius: 0 !important;
     }
     
-    /* Ripristina border-radius per i nostri elementi */
+    /* Mantieni esplicitamente gli stili per button e btn */
     .btn, button {
         border-radius: var(--border-radius) !important;
     }
+}
+
+/* Correzioni specifiche per garantire che gli elementi mantengano i loro stili originali */
+.filter-tab {
+    border-radius: 25px !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.filter-tab.active,
+.filter-tab:hover {
+    border-color: var(--primary-color) !important;
+}
+
+.monument-card {
+    border-radius: 16px !important;
+    box-shadow: 0 2px 12px var(--shadow-light) !important;
+}
+
+.location-card {
+    border-radius: 12px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
+    border-left: 4px solid var(--primary-color) !important;
+}
+
+.featured-card {
+    border-radius: var(--border-radius) !important;
 }
 
 /* Stili per il feedback touch iOS ottimizzato */
@@ -6416,14 +6408,11 @@ button:focus,
 }
 
 /* Specifico per iOS WebView - elimina tutti gli artefatti visivi */
-.ios-webview * {
+.ios-webview button,
+.ios-webview .btn {
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
     text-rendering: optimizeLegibility !important;
-}
-
-.ios-webview button,
-.ios-webview .btn {
     position: relative !important;
     isolation: isolate !important;
 }
