@@ -6277,6 +6277,22 @@ button:focus,
 
 /* ===== CORREZIONI iOS WEBVIEW - ANTI-FLICKERING ===== */
 
+/* PRIMA DI TUTTO: Preserviamo tutti i border-radius originali */
+.btn { border-radius: 12px !important; }
+.btn-primary, .btn-secondary, .btn-outline { border-radius: 12px !important; }
+.nav-item { border-radius: 16px !important; }
+.filter-tab { border-radius: 25px !important; }
+.header-info-btn, .info-close-btn, .close-btn { border-radius: 50% !important; }
+.monument-card { border-radius: 16px !important; }
+.location-card { border-radius: 12px !important; }
+.featured-card { border-radius: 16px !important; }
+.audio-control-btn { border-radius: 50% !important; }
+.tour-controls .btn { border-radius: 12px !important; }
+.map-monument-card .btn { border-radius: 12px !important; }
+.home-qr-section .btn { border-radius: 12px !important; }
+.experience-content .btn { border-radius: 12px !important; }
+.qr-actions .btn { border-radius: 12px !important; }
+
 /* Correzioni iOS WebView per eliminare flickering - solo per touch events */
 @supports (-webkit-touch-callout: none) {
     /* Specifico per iOS - elimina flickering sui pulsanti SOLO durante touch */
@@ -6367,37 +6383,6 @@ button:focus,
         appearance: none !important;
         border-radius: 0 !important;
     }
-    
-    /* Mantieni esplicitamente gli stili per button e btn */
-    .btn, button {
-        border-radius: var(--border-radius) !important;
-    }
-}
-
-/* Correzioni specifiche per garantire che gli elementi mantengano i loro stili originali */
-.filter-tab {
-    border-radius: 25px !important;
-    border: 1px solid var(--border-color) !important;
-}
-
-.filter-tab.active,
-.filter-tab:hover {
-    border-color: var(--primary-color) !important;
-}
-
-.monument-card {
-    border-radius: 16px !important;
-    box-shadow: 0 2px 12px var(--shadow-light) !important;
-}
-
-.location-card {
-    border-radius: 12px !important;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
-    border-left: 4px solid var(--primary-color) !important;
-}
-
-.featured-card {
-    border-radius: var(--border-radius) !important;
 }
 
 /* Stili per il feedback touch iOS ottimizzato */
