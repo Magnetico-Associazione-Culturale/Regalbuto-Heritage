@@ -4438,10 +4438,29 @@ async function initializeGPSMap() {
         gpsMap.on('load', async () => {
             console.log('GPS Map loaded successfully');
             gpsMap.resize(); // Ensure proper rendering
-            await loadRouteData();
-            setupRouteVisualization();
-            await loadMonumentsOnMap();
-            updateCheckpointsList();
+            
+            // Wait a bit more to ensure everything is ready
+            setTimeout(async () => {
+                try {
+                    console.log('Loading route data...');
+                    await loadRouteData();
+                    console.log('Route data loaded successfully');
+                    
+                    console.log('Setting up route visualization...');
+                    setupRouteVisualization();
+                    console.log('Route visualization setup complete');
+                    
+                    console.log('Loading monuments on map...');
+                    await loadMonumentsOnMap();
+                    console.log('Monuments loaded on map successfully');
+                    
+                    console.log('Updating checkpoints list...');
+                    updateCheckpointsList();
+                    console.log('Checkpoints list updated');
+                } catch (error) {
+                    console.error('Error during map initialization:', error);
+                }
+            }, 500); // Wait 500ms after map load
         });
 
         // Add error handling
@@ -4500,13 +4519,27 @@ function createOptimallyPositionedPopup(coordinates, content, map) {
 
 async function loadRouteData() {
     try {
+        console.log('Fetching route GeoJSON data...');
         const response = await fetch('data/test_itinerario_turistico.geojson');
+        
+        if (!response.ok) {
+            throw new Error(`Failed to fetch route data: ${response.status} ${response.statusText}`);
+        }
+        
         const data = await response.json();
         routeData = data;
+        console.log('Route GeoJSON loaded successfully:', data);
         
         // Load monuments data for checkpoints (since Points are no longer in GeoJSON)
+        console.log('Fetching monuments JSON data...');
         const monumentsResponse = await fetch('data/monuments.json');
+        
+        if (!monumentsResponse.ok) {
+            throw new Error(`Failed to fetch monuments data: ${monumentsResponse.status} ${monumentsResponse.statusText}`);
+        }
+        
         const monumentsData = await monumentsResponse.json();
+        console.log('Monuments JSON loaded successfully:', monumentsData.length, 'monuments');
         
         // Create checkpoints from monuments.json instead of GeoJSON Points
         checkpoints = [];
@@ -4542,15 +4575,20 @@ async function loadRouteData() {
 function setupRouteVisualization() {
     if (!gpsMap || !routeData) {
         console.warn('GPS map or route data not available for route visualization');
+        console.log('GPS map:', !!gpsMap, 'Route data:', !!routeData);
         return;
     }
     
     try {
+        console.log('Setting up route visualization...');
+        console.log('Route data features:', routeData.features?.length);
+        
         // Add route source
         gpsMap.addSource('route', {
             type: 'geojson',
             data: routeData
         });
+        console.log('Route source added to map');
         
         // Add route line layer
         gpsMap.addLayer({
@@ -4568,6 +4606,7 @@ function setupRouteVisualization() {
                 'line-opacity': 0.8
             }
         });
+        console.log('Route line layer added to map');
         
         console.log('Route visualization setup completed successfully');
         
@@ -4599,8 +4638,15 @@ async function loadMonumentsOnMap() {
         console.log('Loading monuments on map...');
         
         // Load monuments data from JSON
+        console.log('Fetching monuments data for map markers...');
         const response = await fetch('data/monuments.json');
+        
+        if (!response.ok) {
+            throw new Error(`Failed to fetch monuments data: ${response.status} ${response.statusText}`);
+        }
+        
         const monumentsData = await response.json();
+        console.log('Monuments data fetched successfully:', monumentsData.length, 'monuments');
         
         // Filter monuments that have valid coordinates
         const validMonuments = monumentsData.filter(monument => 
