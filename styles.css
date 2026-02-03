@@ -6350,38 +6350,17 @@ button:focus,
     }
 }
 
-/* iOS anti-flickering - versione RADICALE per debug */
+/* iOS anti-flickering - SOLO le regole necessarie */
 @supports (-webkit-touch-callout: none) {
-    /* DISABILITA TUTTO quello che può causare flickering */
+    /* Rimuovi tap highlights */
     * {
         -webkit-tap-highlight-color: transparent !important;
-        -webkit-touch-callout: none !important;
+    }
+    
+    /* Previeni selezione testo accidentale */
+    body {
         -webkit-user-select: none !important;
         user-select: none !important;
-    }
-    
-    /* Forza NO CHANGES su tutti gli stati attivi */
-    *:active, *:focus, *:hover {
-        background-color: inherit !important;
-        color: inherit !important;
-        border-color: inherit !important;
-        box-shadow: inherit !important;
-        transform: inherit !important;
-        opacity: inherit !important;
-        outline: none !important;
-    }
-    
-    /* Accelerazione hardware globale */
-    body, * {
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-        -webkit-backface-visibility: hidden;
-        backface-visibility: hidden;
-    }
-    
-    /* Impedisci qualsiasi transizione durante i tap */
-    *:active {
-        transition: none !important;
-        -webkit-transition: none !important;
+        -webkit-touch-callout: none !important;
     }
 }

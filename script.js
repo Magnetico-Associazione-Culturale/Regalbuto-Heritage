@@ -147,31 +147,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Populate virtual tour locations dynamically
     populateVirtualTourLocations();
     
-    // iOS WebView touch optimizations - SEMPLIFICATO per evitare flickering
+    // iOS WebView touch optimizations - SOLO viewport fix
     if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-        console.log('Applicando correzioni touch iOS semplificate...');
+        console.log('Applicando correzioni viewport iOS...');
         
-        // DEBUG: Listener per individuare la causa del flickering
-        document.addEventListener('touchstart', function(e) {
-            console.log('TOUCH START:', e.target.tagName, e.target.className);
-        }, { passive: true });
+        /* 
+         * NOTA: Il flickering sui tap in iOS WebView è un problema nativo che richiede
+         * configurazione a livello app nativa. Soluzioni CSS/JS non sono efficaci.
+         * 
+         * Possibili soluzioni native:
+         * 1. webView.isOpaque = false
+         * 2. webView.backgroundColor = UIColor.clear
+         * 3. Disabilitare hardware acceleration temporaneamente
+         * 4. Usare WKWebView invece di UIWebView
+         */
         
-        document.addEventListener('touchend', function(e) {
-            console.log('TOUCH END:', e.target.tagName, e.target.className);
-            
-            // Previeni il zoom doppio tap
-            const now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-                console.log('DOUBLE TAP PREVENTED');
-            }
-            lastTouchEnd = now;
-        }, false);
-        
-        // Solo previeni il zoom doppio tap
-        let lastTouchEnd = 0;
-        
-        // Ottimizzazione per il viewport meta tag
+        // Solo ottimizzazione viewport - il flickering è un problema WebView nativo
         const viewportMeta = document.querySelector('meta[name="viewport"]');
         if (viewportMeta) {
             viewportMeta.setAttribute('content', 
