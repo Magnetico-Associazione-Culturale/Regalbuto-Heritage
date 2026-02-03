@@ -1990,9 +1990,11 @@ async function openMapLocation(monumentId) {
 function openInMapsApp(mapsUrl) {
     console.log('Opening Maps with URL:', mapsUrl);
     
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    // Rilevamento più specifico per iOS e Android
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isAndroidDevice = /Android/i.test(navigator.userAgent);
     
-    if (isIOS) {
+    if (isIOSDevice) {
         console.log('iOS device detected, converting to Apple Maps');
         
         // Estrai coordinate dall'URL Google Maps
@@ -2004,78 +2006,81 @@ function openInMapsApp(mapsUrl) {
             
             console.log('Opening Apple Maps with URL:', appleMapURL);
             
-            // Timeout di sicurezza per rimuovere eventuali stati di loading
-            const safetyTimeout = setTimeout(() => {
-                console.log('Safety timeout: clearing any loading states');
-                // Nascondi eventuali indicatori di caricamento
-                const loadingElements = document.querySelectorAll('.loading, .spinner, .loader');
-                loadingElements.forEach(el => {
-                    el.style.display = 'none';
-                });
-                
-                // Nascondi la notifica di apertura mappe se ancora visibile
+            // NUOVO APPROCCIO per iOS: Usa iframe per evitare loading infinito
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = appleMapURL;
+            document.body.appendChild(iframe);
+            
+            // Rimuovi l'iframe dopo un breve periodo
+            setTimeout(() => {
+                if (iframe && iframe.parentNode) {
+                    iframe.parentNode.removeChild(iframe);
+                }
+            }, 2000);
+            
+            // Fallback specifico per iOS con window.open
+            setTimeout(() => {
+                try {
+                    window.open(appleMapURL, '_system');
+                } catch (error) {
+                    console.log('iOS fallback failed:', error);
+                }
+            }, 1000);
+            
+            showNotification('Apertura Apple Maps...', 'info');
+            
+            // Nascondi la notifica dopo poco tempo per iOS
+            setTimeout(() => {
                 const notifications = document.querySelectorAll('.notification');
                 notifications.forEach(notification => {
                     if (notification.textContent.includes('Apple Maps')) {
                         notification.remove();
                     }
                 });
-                
-                // Riattiva le interazioni dell'interfaccia
-                document.body.style.pointerEvents = 'auto';
-            }, 5000); // 5 secondi di timeout
+            }, 3000);
             
-            // Pulisci il timeout quando la pagina torna in focus
-            const cleanupTimeout = () => {
-                clearTimeout(safetyTimeout);
-                document.removeEventListener('visibilitychange', cleanupTimeout);
-                window.removeEventListener('focus', cleanupTimeout);
-                window.removeEventListener('pageshow', cleanupTimeout);
-            };
-            
-            document.addEventListener('visibilitychange', cleanupTimeout);
-            window.addEventListener('focus', cleanupTimeout);
-            window.addEventListener('pageshow', cleanupTimeout);
-            
-            // Su iOS WebView, usa window.location.href per forzare l'apertura
-            try {
-                window.location.href = appleMapURL;
-            } catch (error) {
-                console.log('Fallback to window.open for Apple Maps');
-                window.open(appleMapURL, '_system');
-                clearTimeout(safetyTimeout); // Pulisci il timeout se fallback
-            }
-            
-            showNotification('Apertura Apple Maps...', 'info');
             return;
         } else {
             console.log('Could not extract coordinates from URL, using fallback');
         }
     }
     
-    // Android e Desktop - comportamento originale
-    const isAndroid = /Android/i.test(navigator.userAgent);
-    
-    // Crea URL Google Maps standard HTTPS per Android/Desktop
-    let googleMapsUrl = mapsUrl;
-    
-    // Assicurati che sia un URL Google Maps HTTPS completo
-    if (!googleMapsUrl.startsWith('https://')) {
-        // Se non è un URL completo, assumiamo che sia già formattato correttamente
-        if (googleMapsUrl.startsWith('www.google.com/maps')) {
-            googleMapsUrl = 'https://' + googleMapsUrl;
+    // Android - comportamento Google Maps INVARIATO
+    if (isAndroidDevice) {
+        console.log('Android device detected, using Google Maps normally');
+        
+        // Crea URL Google Maps standard HTTPS
+        let googleMapsUrl = mapsUrl;
+        
+        // Assicurati che sia un URL Google Maps HTTPS completo
+        if (!googleMapsUrl.startsWith('https://')) {
+            if (googleMapsUrl.startsWith('www.google.com/maps')) {
+                googleMapsUrl = 'https://' + googleMapsUrl;
+            }
         }
-    }
-    
-    console.log('Final Google Maps URL:', googleMapsUrl);
-    
-    if (isAndroid) {
-        console.log('Android device detected, opening with _system target');
+        
+        console.log('Final Google Maps URL for Android:', googleMapsUrl);
         window.open(googleMapsUrl, '_system');
         showNotification('Apertura Google Maps...', 'info');
-    } else {
-        // Per desktop, apri in una nuova scheda
+        return;
+    }
+    
+    // Desktop - comportamento INVARIATO
+    if (!isIOSDevice && !isAndroidDevice) {
         console.log('Desktop device detected, opening in new tab');
+        
+        // Crea URL Google Maps standard HTTPS
+        let googleMapsUrl = mapsUrl;
+        
+        // Assicurati che sia un URL Google Maps HTTPS completo
+        if (!googleMapsUrl.startsWith('https://')) {
+            if (googleMapsUrl.startsWith('www.google.com/maps')) {
+                googleMapsUrl = 'https://' + googleMapsUrl;
+            }
+        }
+        
+        console.log('Final Google Maps URL for Desktop:', googleMapsUrl);
         window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
         showNotification('Apertura mappa in corso...', 'info');
     }
@@ -5415,78 +5420,158 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-// Gestione ritorno dall'app Apple Maps su iOS
-if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+// Gestione ritorno dall'app Apple Maps SOLO su iOS
+const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+if (isIOSDevice) {
     console.log('iOS device detected - setting up Maps app return handlers');
     
-    // Quando la pagina torna visibile dopo aver aperto un'app esterna
-    document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'visible') {
-            console.log('App tornata in primo piano dopo app esterna');
-            
-            // Nascondi eventuali indicatori di caricamento
-            const loadingElements = document.querySelectorAll('.loading, .spinner, .loader');
-            loadingElements.forEach(el => {
-                el.style.display = 'none';
-            });
-            
-            // Nascondi notifiche di apertura mappe se ancora visibili
-            const notifications = document.querySelectorAll('.notification');
-            notifications.forEach(notification => {
-                if (notification.textContent.includes('Apple Maps') || 
-                    notification.textContent.includes('Apertura mappa')) {
-                    notification.remove();
-                }
-            });
-            
-            // Riattiva le interazioni dell'interfaccia
-            document.body.style.pointerEvents = 'auto';
-            
-            // Re-inizializza Feather icons se necessario
-            if (typeof feather !== 'undefined') {
-                setTimeout(() => {
-                    feather.replace();
-                }, 100);
+    // Funzione per forzare il reset dello stato di loading SOLO iOS
+    function forceResetIOSLoadingState() {
+        // Doppio controllo per assicurarsi che siamo su iOS
+        if (!isIOSDevice) {
+            console.log('Not iOS device, skipping reset');
+            return;
+        }
+        
+        console.log('Forcing iOS WebView loading state reset');
+        
+        // Nascondi eventuali indicatori di caricamento
+        const loadingElements = document.querySelectorAll('.loading, .spinner, .loader');
+        loadingElements.forEach(el => {
+            el.style.display = 'none';
+        });
+        
+        // Nascondi notifiche di apertura mappe SOLO quelle di Apple Maps
+        const notifications = document.querySelectorAll('.notification');
+        notifications.forEach(notification => {
+            if (notification.textContent.includes('Apple Maps')) {
+                notification.remove();
             }
-        }
-    });
-    
-    // Gestione specifica per il ciclo di vita della pagina iOS
-    window.addEventListener('pageshow', function(event) {
-        if (event.persisted) {
-            console.log('Pagina ripristinata da cache - probabile ritorno da app esterna');
-            
-            // Nascondi eventuali indicatori di loading
-            const loadingElements = document.querySelectorAll('.loading, .spinner, .loader');
-            loadingElements.forEach(el => {
-                el.style.display = 'none';
-            });
-            
-            // Pulisci notifiche di mappe
-            const notifications = document.querySelectorAll('.notification');
-            notifications.forEach(notification => {
-                if (notification.textContent.includes('Apple Maps') || 
-                    notification.textContent.includes('Apertura mappa')) {
-                    notification.remove();
-                }
-            });
-        }
-    });
-    
-    // Gestione del focus della finestra
-    window.addEventListener('focus', function() {
-        console.log('Finestra tornata in focus');
+            // NON rimuovere notifiche generiche o di Google Maps per Android
+        });
         
-        // Riattiva le interazioni
+        // Riattiva le interazioni dell'interfaccia
         document.body.style.pointerEvents = 'auto';
+        document.body.style.opacity = '1';
         
-        // Re-inizializza icone se necessario
+        // Ferma eventuali animazioni di caricamento
+        const spinners = document.querySelectorAll('[class*="spin"], [class*="rotate"]');
+        spinners.forEach(spinner => {
+            spinner.style.animation = 'none';
+            spinner.style.display = 'none';
+        });
+        
+        // Re-inizializza Feather icons se necessario
         if (typeof feather !== 'undefined') {
             setTimeout(() => {
                 feather.replace();
             }, 100);
         }
+        
+        // Forza un reflow del DOM SOLO per iOS WebView
+        const isIOSWebView = window.webkit && window.webkit.messageHandlers;
+        if (isIOSWebView) {
+            document.body.style.display = 'none';
+            document.body.offsetHeight; // Force reflow
+            document.body.style.display = '';
+        }
+        
+        console.log('iOS loading state reset completed');
+    }
+    
+    // Timer di sicurezza SOLO per iOS
+    let resetTimer;
+    
+    function startSafetyTimer() {
+        // Non avviare il timer se non siamo su iOS
+        if (!isIOSDevice) return;
+        
+        if (resetTimer) clearInterval(resetTimer);
+        
+        resetTimer = setInterval(() => {
+            // Doppio controllo iOS
+            if (!isIOSDevice) {
+                clearInterval(resetTimer);
+                return;
+            }
+            
+            // Controlla se siamo in uno stato di loading infinito SOLO per iOS
+            const hasAppleMapsNotification = Array.from(document.querySelectorAll('.notification'))
+                .some(notification => notification.textContent.includes('Apple Maps'));
+            
+            if (hasAppleMapsNotification && document.visibilityState === 'visible') {
+                console.log('Detected iOS Apple Maps loading state, forcing reset');
+                forceResetIOSLoadingState();
+            }
+        }, 3000); // Controlla ogni 3 secondi
+    }
+    
+    function stopSafetyTimer() {
+        if (resetTimer) {
+            clearInterval(resetTimer);
+            resetTimer = null;
+        }
+    }
+    
+    // Event listeners SOLO per iOS
+    document.addEventListener('visibilitychange', function() {
+        // Verifica che siamo ancora su iOS
+        if (!isIOSDevice) return;
+        
+        if (document.visibilityState === 'visible') {
+            console.log('iOS app tornata in primo piano dopo app esterna');
+            
+            // Reset con delay specifici per iOS
+            setTimeout(() => {
+                forceResetIOSLoadingState();
+            }, 500);
+            
+            setTimeout(() => {
+                forceResetIOSLoadingState();
+            }, 1500);
+            
+            startSafetyTimer();
+            
+        } else {
+            stopSafetyTimer();
+        }
     });
+    
+    // PageShow specifico per iOS
+    window.addEventListener('pageshow', function(event) {
+        if (!isIOSDevice) return;
+        
+        console.log('iOS pageshow event - persisted:', event.persisted);
+        
+        forceResetIOSLoadingState();
+        startSafetyTimer();
+    });
+    
+    // Focus specifico per iOS
+    window.addEventListener('focus', function() {
+        if (!isIOSDevice) return;
+        
+        console.log('iOS finestra tornata in focus');
+        
+        setTimeout(() => {
+            forceResetIOSLoadingState();
+        }, 200);
+    });
+    
+    // PageHide specifico per iOS
+    window.addEventListener('pagehide', function() {
+        if (!isIOSDevice) return;
+        
+        console.log('iOS page hiding - opening external app');
+        stopSafetyTimer();
+    });
+    
+    // Reset iniziale SOLO per iOS
+    startSafetyTimer();
+    
+} else {
+    console.log('Non-iOS device detected - skipping iOS-specific Maps return handlers');
 }
 
 console.log('Regalbuto Heritage - Script loaded successfully');
