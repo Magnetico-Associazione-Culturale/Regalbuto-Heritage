@@ -2003,71 +2003,37 @@ function openInMapsApp(mapsUrl) {
             const lat = coordinatesMatch[1];
             const lon = coordinatesMatch[2];
             
-            // URL corretti per iOS Apple Maps
+            // Usa SOLO HTTP URL che funziona sempre su iOS
             const appleMapsHTTP = `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
-            const appleMapsScheme = `maps://?daddr=${lat},${lon}&dirflg=d`;
             
             console.log('Opening Apple Maps with HTTP URL:', appleMapsHTTP);
-            console.log('Alternative Maps scheme URL:', appleMapsScheme);
             
-            // Approccio semplificato per iOS
+            // Approccio semplice e diretto per iOS
             try {
                 // Salva stato prima dell'apertura
                 sessionStorage.setItem('mapsOpeningState', 'opening');
                 
-                // Prova prima con lo scheme nativo maps://
-                let opened = false;
+                console.log('Using direct window.location.href for iOS');
                 
-                try {
-                    // Crea link invisibile con scheme nativo
-                    const link = document.createElement('a');
-                    link.href = appleMapsScheme;
-                    link.style.display = 'none';
-                    document.body.appendChild(link);
-                    link.click();
-                    
-                    console.log('Native maps:// scheme attempted');
-                    opened = true;
-                    
-                    // Rimuovi il link
-                    setTimeout(() => {
-                        if (link && link.parentNode) {
-                            link.parentNode.removeChild(link);
-                        }
-                    }, 1000);
-                    
-                } catch (schemeError) {
-                    console.log('Native scheme failed:', schemeError);
-                    opened = false;
-                }
-                
-                // Se il scheme nativo fallisce, usa HTTP fallback
-                if (!opened) {
-                    setTimeout(() => {
-                        try {
-                            console.log('Using HTTP fallback with window.location.href');
-                            window.location.href = appleMapsHTTP;
-                        } catch (httpError) {
-                            console.log('HTTP fallback failed:', httpError);
-                            
-                            // Ultimo tentativo con window.open
-                            try {
-                                window.open(appleMapsHTTP, '_system');
-                            } catch (finalError) {
-                                console.log('All methods failed:', finalError);
-                            }
-                        }
-                    }, 500);
-                }
+                // Usa direttamente window.location.href - il metodo più affidabile per WebView iOS
+                window.location.href = appleMapsHTTP;
                 
                 // Pulisci lo stato dopo un timeout
                 setTimeout(() => {
                     sessionStorage.removeItem('mapsOpeningState');
-                }, 8000);
+                }, 5000);
                 
             } catch (error) {
                 console.log('Error opening Apple Maps:', error);
                 sessionStorage.removeItem('mapsOpeningState');
+                
+                // Fallback con window.open solo se location.href fallisce
+                try {
+                    console.log('Fallback with window.open');
+                    window.open(appleMapsHTTP, '_blank');
+                } catch (fallbackError) {
+                    console.log('All methods failed:', fallbackError);
+                }
             }
             
             showNotification('Apertura Apple Maps...', 'info');
@@ -2082,7 +2048,7 @@ function openInMapsApp(mapsUrl) {
                 });
                 // Pulisci anche lo stato di apertura
                 sessionStorage.removeItem('mapsOpeningState');
-            }, 4000);
+            }, 3000);
             
             return;
         } else {
