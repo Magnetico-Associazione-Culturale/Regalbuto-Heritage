@@ -6301,6 +6301,14 @@ button:focus,
 .header-info-btn, .info-close-btn, .close-btn { border-radius: 50% !important; }
 .audio-control-btn { border-radius: 50% !important; }
 
+/* Preserva sempre gli stili della bottom navigation */
+.bottom-nav {
+    background: var(--background-white) !important;
+    border-top: 1px solid var(--border-color) !important;
+    box-shadow: 0 -4px 15px var(--shadow-light) !important;
+    z-index: 1000 !important;
+}
+
 /* Correzioni base solo per iOS WebView durante i touch events */
 @supports (-webkit-touch-callout: none) {
     /* Elimina tap highlight universalmente su iOS */
@@ -6312,6 +6320,13 @@ button:focus,
     .btn, button, .nav-item, .monument-card, .filter-tab, .featured-card {
         -webkit-tap-highlight-color: transparent !important;
         -webkit-touch-callout: none !important;
+    }
+
+    /* Preserva sempre gli stili della bottom navigation su iOS */
+    .bottom-nav {
+        background: var(--background-white) !important;
+        border-top: 1px solid var(--border-color) !important;
+        box-shadow: 0 -4px 15px var(--shadow-light) !important;
     }
 
     /* Applica correzioni SOLO durante gli stati :active (touch events) */
@@ -6360,6 +6375,14 @@ button:focus,
         left: auto !important;
         transform: none !important;
     }
+
+    /* Preserva sempre gli stili della bottom navigation su iOS */
+    .bottom-nav {
+        background: var(--background-white) !important;
+        border-top: 1px solid var(--border-color) !important;
+        box-shadow: 0 -4px 15px var(--shadow-light) !important;
+        z-index: 1000 !important;
+    }
     
     /* Ottimizzazioni per il rendering hardware accelerato SOLO quando necessario */
     .monument-card:active, .btn:active {
@@ -6374,14 +6397,21 @@ button:focus,
 
 /* Disabilita completamente gli effetti hover su touch devices */
 @media (hover: none) and (pointer: coarse) {
-    /* Rimuovi TUTTI gli hover effects su dispositivi touch */
-    *:hover {
+    /* Rimuovi TUTTI gli hover effects su dispositivi touch ECCETTO elementi strutturali */
+    *:hover:not(.bottom-nav):not(.header):not(.section):not(body):not(html) {
         background: initial !important;
         color: initial !important;
         transform: initial !important;
         box-shadow: initial !important;
         opacity: initial !important;
         border-color: initial !important;
+    }
+
+    /* Preserva esplicitamente il background della bottom navigation */
+    .bottom-nav {
+        background: var(--background-white) !important;
+        border-top: 1px solid var(--border-color) !important;
+        box-shadow: 0 -4px 15px var(--shadow-light) !important;
     }
 
     /* Sostituisci hover con :active per touch feedback */
