@@ -151,15 +151,25 @@ document.addEventListener('DOMContentLoaded', function() {
     if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
         console.log('Applicando correzioni touch iOS semplificate...');
         
-        // Solo previeni il zoom doppio tap
-        let lastTouchEnd = 0;
+        // DEBUG: Listener per individuare la causa del flickering
+        document.addEventListener('touchstart', function(e) {
+            console.log('TOUCH START:', e.target.tagName, e.target.className);
+        }, { passive: true });
+        
         document.addEventListener('touchend', function(e) {
+            console.log('TOUCH END:', e.target.tagName, e.target.className);
+            
+            // Previeni il zoom doppio tap
             const now = (new Date()).getTime();
             if (now - lastTouchEnd <= 300) {
                 e.preventDefault();
+                console.log('DOUBLE TAP PREVENTED');
             }
             lastTouchEnd = now;
         }, false);
+        
+        // Solo previeni il zoom doppio tap
+        let lastTouchEnd = 0;
         
         // Ottimizzazione per il viewport meta tag
         const viewportMeta = document.querySelector('meta[name="viewport"]');

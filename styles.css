@@ -6350,43 +6350,38 @@ button:focus,
     }
 }
 
-/* Anti-flickering completo per iOS WebView */
+/* iOS anti-flickering - versione RADICALE per debug */
 @supports (-webkit-touch-callout: none) {
-    /* Previeni il bounce effect */
-    body {
-        -webkit-overflow-scrolling: touch !important;
-    }
-    
-    /* DISABILITA backdrop-filter su iOS per prevenire flickering */
+    /* DISABILITA TUTTO quello che può causare flickering */
     * {
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-    }
-    
-    /* Forza accelerazione hardware per tutti gli elementi interattivi */
-    *, *:before, *:after,
-    button, input, select, textarea, a, 
-    .nav-item, .btn, .monument-card, .featured-card,
-    .filter-tab, .hero-info-button, .close-btn {
         -webkit-tap-highlight-color: transparent !important;
         -webkit-touch-callout: none !important;
         -webkit-user-select: none !important;
         user-select: none !important;
-        touch-action: manipulation !important;
-        /* Forza accelerazione hardware per prevenire flickering */
-        will-change: transform !important;
-        transform: translateZ(0) !important;
-        -webkit-transform: translateZ(0) !important;
-        -webkit-backface-visibility: hidden !important;
-        backface-visibility: hidden !important;
     }
     
-    /* Previeni cambi di stato durante il tap */
-    button:active, .btn:active, 
-    .nav-item:active, .monument-card:active,
-    .filter-tab:active, .hero-info-button:active {
+    /* Forza NO CHANGES su tutti gli stati attivi */
+    *:active, *:focus, *:hover {
         background-color: inherit !important;
-        transform: translateZ(0) !important; /* Mantieni solo l'accelerazione hardware */
+        color: inherit !important;
+        border-color: inherit !important;
+        box-shadow: inherit !important;
+        transform: inherit !important;
+        opacity: inherit !important;
+        outline: none !important;
+    }
+    
+    /* Accelerazione hardware globale */
+    body, * {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+    
+    /* Impedisci qualsiasi transizione durante i tap */
+    *:active {
         transition: none !important;
+        -webkit-transition: none !important;
     }
 }
