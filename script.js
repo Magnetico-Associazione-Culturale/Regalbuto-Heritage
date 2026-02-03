@@ -147,41 +147,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Populate virtual tour locations dynamically
     populateVirtualTourLocations();
     
-    // Ottimizzazioni specifiche per iOS WebView touch events
+    // iOS WebView touch optimizations - SEMPLIFICATO per evitare flickering
     if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-        console.log('Applicando correzioni touch iOS...');
+        console.log('Applicando correzioni touch iOS semplificate...');
         
-        // Disabilita il comportamento touch predefinito per prevenire flickering
-        document.addEventListener('touchstart', function(e) {
-            // Non impedire il touch sui form elements
-            if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
-                const targetElement = e.target.closest('button, .btn, .nav-item, .monument-card');
-                if (targetElement) {
-                    // Aggiungi classe active per feedback visivo immediato
-                    targetElement.classList.add('ios-touch-active');
-                }
-            }
-        }, { passive: true });
-        
-        document.addEventListener('touchend', function(e) {
-            // Rimuovi classe active con delay per evitare flickering
-            const activeElements = document.querySelectorAll('.ios-touch-active');
-            activeElements.forEach(element => {
-                setTimeout(() => {
-                    element.classList.remove('ios-touch-active');
-                }, 150);
-            });
-        }, { passive: true });
-        
-        document.addEventListener('touchcancel', function(e) {
-            // Pulisci active states su cancel
-            const activeElements = document.querySelectorAll('.ios-touch-active');
-            activeElements.forEach(element => {
-                element.classList.remove('ios-touch-active');
-            });
-        }, { passive: true });
-        
-        // Previeni il zoom doppio tap che può causare flickering
+        // Solo previeni il zoom doppio tap
         let lastTouchEnd = 0;
         document.addEventListener('touchend', function(e) {
             const now = (new Date()).getTime();

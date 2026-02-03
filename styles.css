@@ -1787,7 +1787,7 @@ body.navigation-active {
     color: white !important;
     font-size: 18px !important;
     padding: 8px !important;
-    background: rgba(0, 0, 0, 0.1) !important;
+    background: rgba(0, 0, 0, 0.7) !important;
     border-radius: 50% !important;
     width: 32px !important;
     height: 32px !important;
@@ -1795,10 +1795,19 @@ body.navigation-active {
     line-height: 16px !important;
     top: 8px !important;
     right: 8px !important;
-    border: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
     cursor: pointer;
     display: block !important;
     visibility: visible !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    transition: background-color 0.2s ease !important;
+}
+
+/* Hover effect per il pulsante di chiusura */
+.gps-monument-popup .maplibregl-popup-close-button:hover {
+    background: rgba(0, 0, 0, 0.9) !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Force popup visibility - override any MapLibre defaults */
@@ -6298,17 +6307,7 @@ button:focus,
 /* ===== CORREZIONI iOS WEBVIEW - VERSIONE MINIMA E SICURA ===== */
 
 /* Solo le correzioni essenziali per eliminare il flickering */
-@supports (-webkit-touch-callout: none) {
-    /* Elimina solo il tap highlight su iOS - NIENT'ALTRO */
-    button, .btn, .nav-item, a {
-        -webkit-tap-highlight-color: transparent !important;
-    }
-
-    /* Previeni il bounce effect */
-    body {
-        -webkit-overflow-scrolling: touch !important;
-    }
-}
+/* Regola sostituita dalla versione completa alla fine del file */
 
 /* Disabilita hover effects su touch devices - SOLO per elementi interattivi */
 @media (hover: none) and (pointer: coarse) {
@@ -6348,5 +6347,46 @@ button:focus,
     .info-close-btn {
         top: 15px !important;
         right: 15px !important;
+    }
+}
+
+/* Anti-flickering completo per iOS WebView */
+@supports (-webkit-touch-callout: none) {
+    /* Previeni il bounce effect */
+    body {
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* DISABILITA backdrop-filter su iOS per prevenire flickering */
+    * {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    
+    /* Forza accelerazione hardware per tutti gli elementi interattivi */
+    *, *:before, *:after,
+    button, input, select, textarea, a, 
+    .nav-item, .btn, .monument-card, .featured-card,
+    .filter-tab, .hero-info-button, .close-btn {
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        touch-action: manipulation !important;
+        /* Forza accelerazione hardware per prevenire flickering */
+        will-change: transform !important;
+        transform: translateZ(0) !important;
+        -webkit-transform: translateZ(0) !important;
+        -webkit-backface-visibility: hidden !important;
+        backface-visibility: hidden !important;
+    }
+    
+    /* Previeni cambi di stato durante il tap */
+    button:active, .btn:active, 
+    .nav-item:active, .monument-card:active,
+    .filter-tab:active, .hero-info-button:active {
+        background-color: inherit !important;
+        transform: translateZ(0) !important; /* Mantieni solo l'accelerazione hardware */
+        transition: none !important;
     }
 }
