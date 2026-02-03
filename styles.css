@@ -6288,211 +6288,58 @@ button:focus,
     }
 }
 
-/* ===== CORREZIONI iOS WEBVIEW - ANTI-FLICKERING OTTIMIZZATE ===== */
+/* ===== CORREZIONI iOS WEBVIEW - VERSIONE MINIMA E SICURA ===== */
 
-/* Mantieni border-radius originali per tutti gli elementi */
-.btn { border-radius: 12px !important; }
-.btn-primary, .btn-secondary, .btn-outline { border-radius: 12px !important; }
-.nav-item { border-radius: 16px !important; }
-.filter-tab { border-radius: 25px !important; }
-.monument-card { border-radius: 16px !important; }
-.location-card { border-radius: 12px !important; }
-.featured-card { border-radius: 16px !important; }
-.header-info-btn, .info-close-btn, .close-btn { border-radius: 50% !important; }
-.audio-control-btn { border-radius: 50% !important; }
-
-/* Preserva sempre gli stili della bottom navigation */
-.bottom-nav {
-    background: var(--background-white) !important;
-    border-top: 1px solid var(--border-color) !important;
-    box-shadow: 0 -4px 15px var(--shadow-light) !important;
-    z-index: 1000 !important;
-}
-
-/* Correzioni base solo per iOS WebView durante i touch events */
+/* Solo le correzioni essenziali per eliminare il flickering */
 @supports (-webkit-touch-callout: none) {
-    /* Elimina tap highlight universalmente su iOS */
-    * {
+    /* Elimina solo il tap highlight su iOS - NIENT'ALTRO */
+    button, .btn, .nav-item, a {
         -webkit-tap-highlight-color: transparent !important;
     }
 
-    /* Mantieni gli stili base SENZA modifiche - solo rimuovi il tap highlight */
-    .btn, button, .nav-item, .monument-card, .filter-tab, .featured-card {
-        -webkit-tap-highlight-color: transparent !important;
-        -webkit-touch-callout: none !important;
-    }
-
-    /* Preserva sempre gli stili della bottom navigation su iOS */
-    .bottom-nav {
-        background: var(--background-white) !important;
-        border-top: 1px solid var(--border-color) !important;
-        box-shadow: 0 -4px 15px var(--shadow-light) !important;
-    }
-
-    /* Applica correzioni SOLO durante gli stati :active (touch events) */
-    button:active:not(.info-close-btn):not(.header-info-btn), 
-    .btn:active:not(.info-close-btn), 
-    .nav-item:active, 
-    .monument-card:active {
-        -webkit-user-select: none !important;
-        user-select: none !important;
-        touch-action: manipulation !important;
-        backface-visibility: hidden !important;
-        -webkit-backface-visibility: hidden !important;
-        transform: translateZ(0) scale(0.99) !important;
-        -webkit-transform: translateZ(0) scale(0.99) !important;
-        transition: transform 0.05s ease-out !important;
-        -webkit-transition: -webkit-transform 0.05s ease-out !important;
-    }
-
-    /* Previeni il "bounce" effect che può causare flickering */
+    /* Previeni il bounce effect */
     body {
         -webkit-overflow-scrolling: touch !important;
-        overflow-x: hidden !important;
     }
 }
 
-/* Media query per iOS devices - correzioni aggiuntive */
-@media screen and (-webkit-min-device-pixel-ratio: 1) {
-    /* iPhone/iPad specifico - solo elementi interattivi durante :active */
-    button:active:not(.info-close-btn), .btn:active, .nav-item:active, 
-    .monument-card:active, .location-card:active {
-        -webkit-focus-ring-color: rgba(0,0,0,0) !important;
-        outline: none !important;
-    }
-
-    /* Previeni il "bounce" effect che può causare flickering */
-    body {
-        -webkit-overflow-scrolling: touch !important;
-        overflow-x: hidden !important;
-    }
-
-    /* Correzioni per il pulsante X info su iOS */
-    .info-close-btn {
-        position: absolute !important;
-        top: 20px !important;
-        right: 20px !important;
-        left: auto !important;
-        transform: none !important;
-    }
-
-    /* Preserva sempre gli stili della bottom navigation su iOS */
-    .bottom-nav {
-        background: var(--background-white) !important;
-        border-top: 1px solid var(--border-color) !important;
-        box-shadow: 0 -4px 15px var(--shadow-light) !important;
-        z-index: 1000 !important;
-    }
-    
-    /* Ottimizzazioni per il rendering hardware accelerato SOLO quando necessario */
-    .monument-card:active, .btn:active {
-        will-change: transform !important;
-    }
-    
-    /* Rimuovi will-change quando non in uso per ottimizzare le performance */
-    .monument-card, .btn {
-        will-change: auto !important;
-    }
-}
-
-/* Disabilita completamente gli effetti hover su touch devices */
+/* Disabilita hover effects su touch devices - SOLO per elementi interattivi */
 @media (hover: none) and (pointer: coarse) {
-    /* Rimuovi TUTTI gli hover effects su dispositivi touch ECCETTO elementi strutturali */
-    *:hover:not(.bottom-nav):not(.header):not(.section):not(body):not(html) {
-        background: initial !important;
-        color: initial !important;
-        transform: initial !important;
-        box-shadow: initial !important;
-        opacity: initial !important;
-        border-color: initial !important;
-    }
-
-    /* Preserva esplicitamente il background della bottom navigation */
-    .bottom-nav {
-        background: var(--background-white) !important;
-        border-top: 1px solid var(--border-color) !important;
-        box-shadow: 0 -4px 15px var(--shadow-light) !important;
-    }
-
-    /* Sostituisci hover con :active per touch feedback */
-    button:active:not(.info-close-btn), .btn:active, .nav-item:active {
-        opacity: 0.85 !important;
-        transform: scale(0.99) !important;
-        transition: opacity 0.05s ease-out, transform 0.05s ease-out !important;
+    button:hover, .btn:hover, .nav-item:hover, a:hover {
+        background: initial;
+        color: initial;
+        transform: initial;
+        opacity: initial;
     }
 }
 
-/* iOS Safari/WebView specifico - SOLO per input elements */
-@supports (-webkit-appearance: none) {
-    /* Applica -webkit-appearance: none SOLO agli input, non ai button */
-    input[type="text"], input[type="email"], input[type="password"], 
-    input[type="number"], input[type="search"], input[type="file"],
-    select, textarea {
-        -webkit-appearance: none !important;
-        appearance: none !important;
-        border-radius: 0 !important;
-    }
-    
-    /* NON toccare i button - mantieni il loro aspetto nativo */
-}
-
-/* Specifiche correzioni per il pulsante X info */
+/* Correzioni specifiche per il pulsante X info */
 .info-close-btn {
     position: absolute !important;
     top: 20px !important;
     right: 20px !important;
     left: auto !important;
     z-index: 1000 !important;
-    /* Escludi dalle trasformazioni di scale */
-    transform: none !important;
 }
 
 .info-close-btn:active {
-    /* Solo un leggero feedback senza spostamento */
     opacity: 0.8 !important;
     transform: none !important;
 }
 
-/* Media query per schermi piccoli */
+/* Media query mobile per pulsante X */
 @media (max-width: 768px) {
     .info-close-btn {
         top: 15px !important;
         right: 15px !important;
-        left: auto !important;
-        position: absolute !important;
-        transform: none !important;
     }
 }
 
-/* Stili per la classe iOS touch active - feedback più leggero */
-.ios-touch-active {
-    opacity: 0.85 !important;
-    transform: scale(0.99) !important;
-    transition: opacity 0.05s ease-out, transform 0.05s ease-out !important;
-}
 
-/* Specifico per iOS WebView - font rendering ottimizzato */
-.ios-webview * {
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
-}
 
-/* Button isolation per iOS WebView */
-.ios-webview button, .ios-webview .btn {
-    position: relative !important;
-    isolation: isolate !important;
-}
 
-.ios-webview button::before,
-.ios-webview .btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: transparent;
-    z-index: -1;
-}
+
+
+
+
 
