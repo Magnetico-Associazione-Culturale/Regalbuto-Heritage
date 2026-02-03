@@ -2002,31 +2002,78 @@ function openInMapsApp(mapsUrl) {
         if (coordinatesMatch) {
             const lat = coordinatesMatch[1];
             const lon = coordinatesMatch[2];
+            
+            // Prova diversi URL scheme per iOS
             const appleMapURL = `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
+            const mapsSchemeURL = `maps://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
             
             console.log('Opening Apple Maps with URL:', appleMapURL);
+            console.log('Alternative Maps scheme URL:', mapsSchemeURL);
             
-            // NUOVO APPROCCIO per iOS: Usa iframe per evitare loading infinito
-            const iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = appleMapURL;
-            document.body.appendChild(iframe);
-            
-            // Rimuovi l'iframe dopo un breve periodo
-            setTimeout(() => {
-                if (iframe && iframe.parentNode) {
-                    iframe.parentNode.removeChild(iframe);
-                }
-            }, 2000);
-            
-            // Fallback specifico per iOS con window.open
-            setTimeout(() => {
+            // Nuovo approccio per iOS: prova multiple modalità
+            try {
+                // Salva stato prima dell'apertura
+                sessionStorage.setItem('mapsOpeningState', 'opening');
+                
+                // Metodo 1: Prova con maps:// scheme per iOS
+                const link = document.createElement('a');
+                link.href = mapsSchemeURL;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                
+                // Simula click per attivare lo scheme
+                const clickEvent = new MouseEvent('click', {
+                    view: window,
+                    bubbles: true,
+                    cancelable: true
+                });
+                
+                let opened = false;
+                
                 try {
-                    window.open(appleMapURL, '_system');
-                } catch (error) {
-                    console.log('iOS fallback failed:', error);
+                    link.dispatchEvent(clickEvent);
+                    opened = true;
+                    console.log('Maps scheme URL activated');
+                } catch (schemeError) {
+                    console.log('Maps scheme failed:', schemeError);
                 }
-            }, 1000);
+                
+                // Rimuovi il link
+                setTimeout(() => {
+                    if (link && link.parentNode) {
+                        link.parentNode.removeChild(link);
+                    }
+                }, 1000);
+                
+                // Metodo 2: Fallback con window.open se scheme fallisce
+                if (!opened) {
+                    setTimeout(() => {
+                        try {
+                            console.log('Trying window.open fallback');
+                            window.open(appleMapURL, '_system');
+                        } catch (openError) {
+                            console.log('window.open failed:', openError);
+                            
+                            // Metodo 3: Ultimo fallback con location.href
+                            try {
+                                console.log('Final fallback with location.href');
+                                window.location.href = appleMapURL;
+                            } catch (finalError) {
+                                console.log('All methods failed:', finalError);
+                            }
+                        }
+                    }, 1000);
+                }
+                
+                // Pulisci lo stato dopo un timeout
+                setTimeout(() => {
+                    sessionStorage.removeItem('mapsOpeningState');
+                }, 10000);
+                
+            } catch (error) {
+                console.log('Error opening Apple Maps:', error);
+                sessionStorage.removeItem('mapsOpeningState');
+            }
             
             showNotification('Apertura Apple Maps...', 'info');
             
@@ -2038,7 +2085,9 @@ function openInMapsApp(mapsUrl) {
                         notification.remove();
                     }
                 });
-            }, 3000);
+                // Pulisci anche lo stato di apertura
+                sessionStorage.removeItem('mapsOpeningState');
+            }, 5000);
             
             return;
         } else {
@@ -5521,6 +5570,18 @@ if (isIOSDevice) {
         
         if (document.visibilityState === 'visible') {
             console.log('iOS app tornata in primo piano dopo app esterna');
+            
+            // Controlla se stavamo aprendo Maps
+            const wasOpeningMaps = sessionStorage.getItem('mapsOpeningState');
+            if (wasOpeningMaps) {
+                console.log('Returning from Maps opening attempt');
+                sessionStorage.removeItem('mapsOpeningState');
+                
+                // Reset immediato per Maps
+                setTimeout(() => {
+                    forceResetIOSLoadingState();
+                }, 100);
+            }
             
             // Reset con delay specifici per iOS
             setTimeout(() => {
