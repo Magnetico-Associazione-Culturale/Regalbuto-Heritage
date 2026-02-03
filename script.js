@@ -1995,7 +1995,35 @@ function openInMapsApp(mapsUrl) {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const isMobile = isAndroid || isIOS;
     
-    // Crea URL Google Maps standard HTTPS
+    // Gestione specifica per iOS - converti a Apple Maps
+    if (isIOS) {
+        console.log('iOS device detected, converting to Apple Maps');
+        
+        // Estrai coordinate dall'URL Google Maps
+        const coordinatesMatch = mapsUrl.match(/destination=([0-9.-]+),([0-9.-]+)/);
+        if (coordinatesMatch) {
+            const lat = coordinatesMatch[1];
+            const lon = coordinatesMatch[2];
+            const appleMapURL = `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
+            
+            console.log('Opening Apple Maps with URL:', appleMapURL);
+            
+            // Su iOS WebView, usa window.location.href per forzare l'apertura
+            try {
+                window.location.href = appleMapURL;
+            } catch (error) {
+                console.log('Fallback to window.open for Apple Maps');
+                window.open(appleMapURL, '_system');
+            }
+            
+            showNotification('Apertura Apple Maps...', 'info');
+            return;
+        } else {
+            console.log('Could not extract coordinates from URL, using fallback');
+        }
+    }
+    
+    // Crea URL Google Maps standard HTTPS per Android/Desktop
     let googleMapsUrl = mapsUrl;
     
     // Assicurati che sia un URL Google Maps HTTPS completo
@@ -2008,18 +2036,17 @@ function openInMapsApp(mapsUrl) {
     
     console.log('Final Google Maps URL:', googleMapsUrl);
     
-    // Per dispositivi mobili, usa _system per tentare di aprire l'app nativa
-    if (isMobile) {
-        console.log('Mobile device detected, opening with _system target');
+    // Per Android, usa _system per tentare di aprire Google Maps
+    if (isAndroid) {
+        console.log('Android device detected, opening with _system target');
         window.open(googleMapsUrl, '_system');
+        showNotification('Apertura Google Maps...', 'info');
     } else {
         // Per desktop, apri in una nuova scheda
         console.log('Desktop device detected, opening in new tab');
         window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
+        showNotification('Apertura mappa in corso...', 'info');
     }
-    
-    // Mostra notifica all'utente
-    showNotification('Apertura mappa in corso...', 'info');
 }
 
 // Featured Card Functions (Home Page)
