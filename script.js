@@ -393,7 +393,14 @@ function switchTab(tabName) {
         
         // Initialize GPS map if switching to navigation tab
         if (tabName === 'navigazione') {
-            initializeGPSMap();
+            initializeGPSMap().then(() => {
+                // Resize the map after initialization to ensure proper rendering
+                if (gpsMap) {
+                    setTimeout(() => {
+                        gpsMap.resize();
+                    }, 300);
+                }
+            });
         }
         
         // Manage VR button visibility when switching to virtual tour
@@ -4343,7 +4350,20 @@ let monumentsData = []; // Global variable to store monument data
 
 // GPS Navigation Functions
 async function initializeGPSMap() {
-    if (gpsMap) return;
+    if (gpsMap) {
+        console.log('GPS Map already exists, resizing...');
+        gpsMap.resize();
+        return;
+    }
+    
+    console.log('Initializing GPS Map...');
+    
+    // Verify container exists
+    const container = document.getElementById('gps-map');
+    if (!container) {
+        console.error('GPS map container not found!');
+        return;
+    }
     
     try {
         // Initialize MapLibre GL JS map with CartoDB Positron style
@@ -4397,11 +4417,17 @@ async function initializeGPSMap() {
         
         // Wait for map to load
         gpsMap.on('load', async () => {
-            console.log('GPS Map loaded');
+            console.log('GPS Map loaded successfully');
+            gpsMap.resize(); // Ensure proper rendering
             await loadRouteData();
             setupRouteVisualization();
             await loadMonumentsOnMap();
             updateCheckpointsList();
+        });
+
+        // Add error handling
+        gpsMap.on('error', (e) => {
+            console.error('GPS Map error:', e);
         });
         
         // Handle geolocation events

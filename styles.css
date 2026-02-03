@@ -1087,6 +1087,9 @@ p {
     border-radius: 16px !important;
     overflow: hidden;
     box-shadow: 0 6px 25px var(--shadow-medium);
+    min-height: 400px; /* Assicura un'altezza minima */
+    width: 100%; /* Assicura larghezza completa */
+    position: relative; /* Importante per MapLibre */
 }
 
 /* Full Screen Map Styles */
