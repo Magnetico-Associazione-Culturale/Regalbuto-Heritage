@@ -4322,8 +4322,17 @@ let monumentsData = []; // Global variable to store monument data
 // GPS Navigation Functions
 async function initializeGPSMap() {
     if (gpsMap) {
-        console.log('GPS Map already exists, resizing...');
+        console.log('GPS Map already exists, resizing and checking monuments...');
         gpsMap.resize();
+        
+        // Check if monuments source exists, if not reload it
+        const monumentsSource = gpsMap.getSource('monuments');
+        if (!monumentsSource) {
+            console.log('Monuments source not found, reloading...');
+            await loadMonumentsOnMap();
+        } else {
+            console.log('Monuments source already exists');
+        }
         return;
     }
     
@@ -4651,44 +4660,63 @@ async function loadMonumentsOnMap() {
             }))
         };
         
-        // Add monuments source to map
-        gpsMap.addSource('monuments', {
-            type: 'geojson',
-            data: monumentsGeoJSON
-        });
+        // Add monuments source to map (check if it already exists)
+        const existingSource = gpsMap.getSource('monuments');
+        if (existingSource) {
+            console.log('Monuments source already exists, updating data...');
+            gpsMap.getSource('monuments').setData(monumentsGeoJSON);
+        } else {
+            console.log('Adding new monuments source to map...');
+            gpsMap.addSource('monuments', {
+                type: 'geojson',
+                data: monumentsGeoJSON
+            });
+        }
         
-        // Add monuments markers layer (same style as old checkpoints)
-        gpsMap.addLayer({
-            id: 'monuments-markers',
-            type: 'circle',
-            source: 'monuments',
-            paint: {
-                'circle-radius': 12,
-                'circle-color': '#ffd700', // Same yellow color as old checkpoints
-                'circle-stroke-color': '#4a5568', // Same dark stroke as old checkpoints
-                'circle-stroke-width': 3
-            }
-        });
-        
-        // Add monuments labels (same style as old checkpoints)
-        try {
+        // Add monuments markers layer (check if it already exists)
+        const existingMarkersLayer = gpsMap.getLayer('monuments-markers');
+        if (!existingMarkersLayer) {
+            console.log('Adding monuments markers layer...');
             gpsMap.addLayer({
-                id: 'monuments-labels',
-                type: 'symbol',
+                id: 'monuments-markers',
+                type: 'circle',
                 source: 'monuments',
-                layout: {
-                    'text-field': ['get', 'name'],
-                    'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
-                    'text-offset': [0, 2],
-                    'text-anchor': 'top',
-                    'text-size': 12 // Same size as old checkpoints
-                },
                 paint: {
-                    'text-color': '#2c2c2c', // Same color as old checkpoints
-                    'text-halo-color': '#ffffff',
-                    'text-halo-width': 2
+                    'circle-radius': 12,
+                    'circle-color': '#ffd700', // Same yellow color as old checkpoints
+                    'circle-stroke-color': '#4a5568', // Same dark stroke as old checkpoints
+                    'circle-stroke-width': 3
                 }
             });
+        } else {
+            console.log('Monuments markers layer already exists');
+        }
+        
+        // Add monuments labels (check if it already exists)
+        try {
+            const existingLabelsLayer = gpsMap.getLayer('monuments-labels');
+            if (!existingLabelsLayer) {
+                console.log('Adding monuments labels layer...');
+                gpsMap.addLayer({
+                    id: 'monuments-labels',
+                    type: 'symbol',
+                    source: 'monuments',
+                    layout: {
+                        'text-field': ['get', 'name'],
+                        'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+                        'text-offset': [0, 2],
+                        'text-anchor': 'top',
+                        'text-size': 12 // Same size as old checkpoints
+                    },
+                    paint: {
+                        'text-color': '#2c2c2c', // Same color as old checkpoints
+                        'text-halo-color': '#ffffff',
+                        'text-halo-width': 2
+                    }
+                });
+            } else {
+                console.log('Monuments labels layer already exists');
+            }
         } catch (error) {
             console.warn('Could not add monument text labels to map:', error.message);
         }
