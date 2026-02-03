@@ -6275,3 +6275,168 @@ button:focus,
     }
 }
 
+/* ===== CORREZIONI iOS WEBVIEW - ANTI-FLICKERING ===== */
+
+/* Correzioni iOS WebView per eliminare flickering */
+@supports (-webkit-touch-callout: none) {
+    /* Specifico per iOS - elimina flickering sui pulsanti */
+    button, .btn, .nav-item, .monument-card, .location-card, .quiz-option,
+    .expand-btn, .card-expand-btn, .play-pause, .audio-control-btn {
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        touch-action: manipulation !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+        transform: translateZ(0) !important;
+        -webkit-transform: translateZ(0) !important;
+        will-change: transform !important;
+    }
+
+    /* Elimina effetti hover su iOS che causano flickering */
+    button:hover, .btn:hover, .nav-item:hover {
+        -webkit-tap-highlight-color: transparent !important;
+        transition: none !important;
+    }
+
+    /* Stati touch specifici per iOS - più fluidi */
+    button:active, .btn:active {
+        transform: translateZ(0) scale(0.98) !important;
+        -webkit-transform: translateZ(0) scale(0.98) !important;
+        transition: transform 0.1s ease-out !important;
+        -webkit-transition: -webkit-transform 0.1s ease-out !important;
+    }
+
+    /* Correzioni per monument cards su iOS */
+    .monument-card {
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+    }
+
+    .monument-card:active {
+        transform: translateZ(0) scale(0.995) !important;
+        -webkit-transform: translateZ(0) scale(0.995) !important;
+    }
+
+    /* Correzioni per navigation items */
+    .nav-item {
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+    }
+
+    .nav-item:active {
+        transform: translateZ(0) scale(0.95) !important;
+        -webkit-transform: translateZ(0) scale(0.95) !important;
+    }
+
+    /* Eliminazione flickering per audio controls */
+    .audio-player-container button {
+        -webkit-tap-highlight-color: transparent !important;
+        outline: none !important;
+        border: none !important;
+    }
+
+    /* Correzioni per QR modal buttons */
+    #qr-modal button, .modal button {
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-appearance: none !important;
+    }
+
+    /* Prevenzione flickering per elementi interattivi */
+    .featured-card, .quiz-question label, .filter-tab {
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+    }
+}
+
+/* Correzioni aggiuntive per iOS WebView specificamente */
+@media screen and (-webkit-min-device-pixel-ratio: 1) {
+    /* iPhone/iPad specifico */
+    * {
+        -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+        -webkit-focus-ring-color: rgba(0,0,0,0) !important;
+        outline: none !important;
+    }
+
+    /* Previeni il "bounce" effect che può causare flickering */
+    body {
+        -webkit-overflow-scrolling: touch !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Ottimizzazioni per il rendering hardware accelerato */
+    .section {
+        -webkit-transform: translate3d(0,0,0) !important;
+        transform: translate3d(0,0,0) !important;
+    }
+}
+
+/* Disabilita completamente gli effetti hover su touch devices */
+@media (hover: none) and (pointer: coarse) {
+    /* Touch devices - elimina tutti gli hover effects */
+    .btn:hover, button:hover, .nav-item:hover, 
+    .monument-card:hover, .featured-card:hover {
+        background: initial !important;
+        color: initial !important;
+        transform: initial !important;
+        box-shadow: initial !important;
+        opacity: initial !important;
+    }
+
+    /* Sostituisci hover con active per touch */
+    .btn:active, button:active {
+        opacity: 0.8 !important;
+        transform: scale(0.98) !important;
+    }
+}
+
+/* Specifico per iOS Safari/WebView */
+@supports (-webkit-appearance: none) {
+    input, select, textarea, button {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        border-radius: 0 !important;
+    }
+    
+    /* Ripristina border-radius per i nostri elementi */
+    .btn, button {
+        border-radius: var(--border-radius) !important;
+    }
+}
+
+/* Stili per il feedback touch iOS ottimizzato */
+.ios-touch-active {
+    opacity: 0.8 !important;
+    transform: scale(0.98) !important;
+    transition: opacity 0.1s ease-out, transform 0.1s ease-out !important;
+}
+
+/* Specifico per iOS WebView - elimina tutti gli artefatti visivi */
+.ios-webview * {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+}
+
+.ios-webview button,
+.ios-webview .btn {
+    position: relative !important;
+    isolation: isolate !important;
+}
+
+.ios-webview button::before,
+.ios-webview .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    z-index: -1;
+}
+

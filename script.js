@@ -147,6 +147,65 @@ document.addEventListener('DOMContentLoaded', function() {
     // Populate virtual tour locations dynamically
     populateVirtualTourLocations();
     
+    // Ottimizzazioni specifiche per iOS WebView touch events
+    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+        console.log('Applicando correzioni touch iOS...');
+        
+        // Disabilita il comportamento touch predefinito per prevenire flickering
+        document.addEventListener('touchstart', function(e) {
+            // Non impedire il touch sui form elements
+            if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
+                const targetElement = e.target.closest('button, .btn, .nav-item, .monument-card');
+                if (targetElement) {
+                    // Aggiungi classe active per feedback visivo immediato
+                    targetElement.classList.add('ios-touch-active');
+                }
+            }
+        }, { passive: true });
+        
+        document.addEventListener('touchend', function(e) {
+            // Rimuovi classe active con delay per evitare flickering
+            const activeElements = document.querySelectorAll('.ios-touch-active');
+            activeElements.forEach(element => {
+                setTimeout(() => {
+                    element.classList.remove('ios-touch-active');
+                }, 150);
+            });
+        }, { passive: true });
+        
+        document.addEventListener('touchcancel', function(e) {
+            // Pulisci active states su cancel
+            const activeElements = document.querySelectorAll('.ios-touch-active');
+            activeElements.forEach(element => {
+                element.classList.remove('ios-touch-active');
+            });
+        }, { passive: true });
+        
+        // Previeni il zoom doppio tap che può causare flickering
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Ottimizzazione per il viewport meta tag
+        const viewportMeta = document.querySelector('meta[name="viewport"]');
+        if (viewportMeta) {
+            viewportMeta.setAttribute('content', 
+                'width=device-width, initial-scale=1.0, maximum-scale=1.0, ' +
+                'user-scalable=no, viewport-fit=cover, shrink-to-fit=no'
+            );
+        }
+        
+        // Aggiungi classe CSS per iOS-specific styling
+        document.documentElement.classList.add('ios-webview');
+        
+        console.log('Correzioni touch iOS applicate');
+    }
+    
     console.log('Regalbuto Heritage App initialized');
 });
 
