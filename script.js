@@ -2002,98 +2002,26 @@ function openInMapsApp(mapsUrl) {
         if (coordinatesMatch) {
             const lat = coordinatesMatch[1];
             const lon = coordinatesMatch[2];
+            const appleMapURL = `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
             
-            console.log('Attempting to open Apple Maps for coordinates:', lat, lon);
+            console.log('Opening Apple Maps with URL:', appleMapURL);
             
-            // Approccio 1: Prova a comunicare con il codice nativo iOS
-            if (window.webkit && window.webkit.messageHandlers) {
-                console.log('iOS native bridge detected, trying to send message');
+            // Torniamo al metodo originale che funzionava
+            // SOLO aggiungiamo la gestione dello stato per il loading infinito
+            try {
+                // Segna che stiamo aprendo Maps (per gestire il loading infinito)
+                sessionStorage.setItem('mapsOpeningState', 'opening');
+                sessionStorage.setItem('mapsOpeningTime', Date.now().toString());
                 
-                try {
-                    // Prova diversi nomi di handler che l'app iOS potrebbe avere
-                    const handlers = ['mapsHandler', 'navigationHandler', 'openMaps', 'externalURL'];
-                    
-                    for (const handlerName of handlers) {
-                        if (window.webkit.messageHandlers[handlerName]) {
-                            console.log('Found native handler:', handlerName);
-                            window.webkit.messageHandlers[handlerName].postMessage({
-                                action: 'openMaps',
-                                latitude: parseFloat(lat),
-                                longitude: parseFloat(lon),
-                                url: `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`
-                            });
-                            
-                            showNotification('Apertura Apple Maps...', 'info');
-                            setTimeout(() => {
-                                const notifications = document.querySelectorAll('.notification');
-                                notifications.forEach(notification => {
-                                    if (notification.textContent.includes('Apple Maps')) {
-                                        notification.remove();
-                                    }
-                                });
-                            }, 3000);
-                            return;
-                        }
-                    }
-                    
-                    console.log('No suitable native handlers found');
-                } catch (nativeError) {
-                    console.log('Native bridge failed:', nativeError);
-                }
+                // Usa il metodo originale: window.location.href
+                window.location.href = appleMapURL;
+                
+            } catch (error) {
+                console.log('Fallback to window.open for Apple Maps');
+                window.open(appleMapURL, '_system');
             }
             
-            // Approccio 2: Prova con Android bridge se disponibile (potrebbe essere un hybrid app)
-            if (window.Android && window.Android.openExternalURL) {
-                console.log('Android bridge detected, trying to use it');
-                try {
-                    const appleMapsURL = `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
-                    window.Android.openExternalURL(appleMapsURL);
-                    
-                    showNotification('Apertura Apple Maps...', 'info');
-                    setTimeout(() => {
-                        const notifications = document.querySelectorAll('.notification');
-                        notifications.forEach(notification => {
-                            if (notification.textContent.includes('Apple Maps')) {
-                                notification.remove();
-                            }
-                        });
-                    }, 3000);
-                    return;
-                } catch (androidError) {
-                    console.log('Android bridge failed:', androidError);
-                }
-            }
-            
-            // Approccio 3: Fallback - mostra messaggio con coordinate da copiare
-            console.log('No native bridges available, showing fallback');
-            
-            // Crea popup con coordinate
-            const coordinatesText = `${lat}, ${lon}`;
-            
-            if (confirm(`Impossibile aprire Apple Maps automaticamente.\n\nCoordinate: ${coordinatesText}\n\nVuoi copiare le coordinate negli appunti?`)) {
-                // Prova a copiare negli appunti
-                try {
-                    if (navigator.clipboard) {
-                        navigator.clipboard.writeText(coordinatesText);
-                        showNotification('Coordinate copiate negli appunti!', 'success');
-                    } else {
-                        // Fallback per clipboard
-                        const textArea = document.createElement('textarea');
-                        textArea.value = coordinatesText;
-                        document.body.appendChild(textArea);
-                        textArea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(textArea);
-                        showNotification('Coordinate copiate negli appunti!', 'success');
-                    }
-                } catch (clipboardError) {
-                    console.log('Clipboard failed:', clipboardError);
-                    showNotification(`Coordinate: ${coordinatesText}`, 'info');
-                }
-            } else {
-                showNotification(`Coordinate: ${coordinatesText}`, 'info');
-            }
-            
+            showNotification('Apertura Apple Maps...', 'info');
             return;
         } else {
             console.log('Could not extract coordinates from URL, using fallback');
@@ -5578,24 +5506,40 @@ if (isIOSDevice) {
             
             // Controlla se stavamo aprendo Maps
             const wasOpeningMaps = sessionStorage.getItem('mapsOpeningState');
+            const openingTime = sessionStorage.getItem('mapsOpeningTime');
+            
             if (wasOpeningMaps) {
                 console.log('Returning from Maps opening attempt');
-                sessionStorage.removeItem('mapsOpeningState');
                 
-                // Reset immediato per Maps
+                // Pulisci lo stato immediatamente
+                sessionStorage.removeItem('mapsOpeningState');
+                sessionStorage.removeItem('mapsOpeningTime');
+                
+                // Reset aggressivo per evitare loading infinito
                 setTimeout(() => {
                     forceResetIOSLoadingState();
-                }, 100);
+                    
+                    // Forza refresh della pagina se è passato poco tempo (probabile loading infinito)
+                    if (openingTime) {
+                        const timeDiff = Date.now() - parseInt(openingTime);
+                        if (timeDiff < 5000) { // Se sono passati meno di 5 secondi
+                            console.log('Quick return detected, forcing page refresh to clear loading state');
+                            // Usa un approccio meno invasivo: ricarica solo il contenuto
+                            window.location.hash = window.location.hash; // Trigger refresh senza perdere posizione
+                        }
+                    }
+                }, 200);
+                
+                // Reset aggiuntivo dopo un po'
+                setTimeout(() => {
+                    forceResetIOSLoadingState();
+                }, 1000);
             }
             
-            // Reset con delay specifici per iOS
+            // Reset standard con delay specifici per iOS
             setTimeout(() => {
                 forceResetIOSLoadingState();
             }, 500);
-            
-            setTimeout(() => {
-                forceResetIOSLoadingState();
-            }, 1500);
             
             startSafetyTimer();
             
