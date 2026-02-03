@@ -2003,52 +2003,96 @@ function openInMapsApp(mapsUrl) {
             const lat = coordinatesMatch[1];
             const lon = coordinatesMatch[2];
             
-            // Usa SOLO HTTP URL che funziona sempre su iOS
-            const appleMapsHTTP = `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
+            console.log('Attempting to open Apple Maps for coordinates:', lat, lon);
             
-            console.log('Opening Apple Maps with HTTP URL:', appleMapsHTTP);
-            
-            // Approccio semplice e diretto per iOS
-            try {
-                // Salva stato prima dell'apertura
-                sessionStorage.setItem('mapsOpeningState', 'opening');
+            // Approccio 1: Prova a comunicare con il codice nativo iOS
+            if (window.webkit && window.webkit.messageHandlers) {
+                console.log('iOS native bridge detected, trying to send message');
                 
-                console.log('Using direct window.location.href for iOS');
-                
-                // Usa direttamente window.location.href - il metodo più affidabile per WebView iOS
-                window.location.href = appleMapsHTTP;
-                
-                // Pulisci lo stato dopo un timeout
-                setTimeout(() => {
-                    sessionStorage.removeItem('mapsOpeningState');
-                }, 5000);
-                
-            } catch (error) {
-                console.log('Error opening Apple Maps:', error);
-                sessionStorage.removeItem('mapsOpeningState');
-                
-                // Fallback con window.open solo se location.href fallisce
                 try {
-                    console.log('Fallback with window.open');
-                    window.open(appleMapsHTTP, '_blank');
-                } catch (fallbackError) {
-                    console.log('All methods failed:', fallbackError);
+                    // Prova diversi nomi di handler che l'app iOS potrebbe avere
+                    const handlers = ['mapsHandler', 'navigationHandler', 'openMaps', 'externalURL'];
+                    
+                    for (const handlerName of handlers) {
+                        if (window.webkit.messageHandlers[handlerName]) {
+                            console.log('Found native handler:', handlerName);
+                            window.webkit.messageHandlers[handlerName].postMessage({
+                                action: 'openMaps',
+                                latitude: parseFloat(lat),
+                                longitude: parseFloat(lon),
+                                url: `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`
+                            });
+                            
+                            showNotification('Apertura Apple Maps...', 'info');
+                            setTimeout(() => {
+                                const notifications = document.querySelectorAll('.notification');
+                                notifications.forEach(notification => {
+                                    if (notification.textContent.includes('Apple Maps')) {
+                                        notification.remove();
+                                    }
+                                });
+                            }, 3000);
+                            return;
+                        }
+                    }
+                    
+                    console.log('No suitable native handlers found');
+                } catch (nativeError) {
+                    console.log('Native bridge failed:', nativeError);
                 }
             }
             
-            showNotification('Apertura Apple Maps...', 'info');
+            // Approccio 2: Prova con Android bridge se disponibile (potrebbe essere un hybrid app)
+            if (window.Android && window.Android.openExternalURL) {
+                console.log('Android bridge detected, trying to use it');
+                try {
+                    const appleMapsURL = `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
+                    window.Android.openExternalURL(appleMapsURL);
+                    
+                    showNotification('Apertura Apple Maps...', 'info');
+                    setTimeout(() => {
+                        const notifications = document.querySelectorAll('.notification');
+                        notifications.forEach(notification => {
+                            if (notification.textContent.includes('Apple Maps')) {
+                                notification.remove();
+                            }
+                        });
+                    }, 3000);
+                    return;
+                } catch (androidError) {
+                    console.log('Android bridge failed:', androidError);
+                }
+            }
             
-            // Nascondi la notifica dopo poco tempo per iOS
-            setTimeout(() => {
-                const notifications = document.querySelectorAll('.notification');
-                notifications.forEach(notification => {
-                    if (notification.textContent.includes('Apple Maps')) {
-                        notification.remove();
+            // Approccio 3: Fallback - mostra messaggio con coordinate da copiare
+            console.log('No native bridges available, showing fallback');
+            
+            // Crea popup con coordinate
+            const coordinatesText = `${lat}, ${lon}`;
+            
+            if (confirm(`Impossibile aprire Apple Maps automaticamente.\n\nCoordinate: ${coordinatesText}\n\nVuoi copiare le coordinate negli appunti?`)) {
+                // Prova a copiare negli appunti
+                try {
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(coordinatesText);
+                        showNotification('Coordinate copiate negli appunti!', 'success');
+                    } else {
+                        // Fallback per clipboard
+                        const textArea = document.createElement('textarea');
+                        textArea.value = coordinatesText;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        showNotification('Coordinate copiate negli appunti!', 'success');
                     }
-                });
-                // Pulisci anche lo stato di apertura
-                sessionStorage.removeItem('mapsOpeningState');
-            }, 3000);
+                } catch (clipboardError) {
+                    console.log('Clipboard failed:', clipboardError);
+                    showNotification(`Coordinate: ${coordinatesText}`, 'info');
+                }
+            } else {
+                showNotification(`Coordinate: ${coordinatesText}`, 'info');
+            }
             
             return;
         } else {
