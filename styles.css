@@ -295,7 +295,17 @@ p {
 
 /* Ensure info section has relative positioning */
 #info {
-    position: relative;
+    position: relative !important;
+    overflow-x: visible !important;
+}
+
+/* Ensure close button is positioned correctly */
+.info-close-btn {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    left: auto !important;
+    z-index: 1000 !important;
 }
 
 /* Info Grid Layout */
@@ -582,10 +592,13 @@ p {
     
     /* Mobile adjustments for info close button */
     .info-close-btn {
-        top: 15px;
-        right: 15px;
+        top: 15px !important;
+        right: 15px !important;
+        left: auto !important;
         width: 44px;
         height: 44px;
+        position: absolute !important;
+        transform: none !important;
     }
     
     .info-close-btn i {
@@ -6275,76 +6288,46 @@ button:focus,
     }
 }
 
-/* ===== CORREZIONI iOS WEBVIEW - ANTI-FLICKERING ===== */
+/* ===== CORREZIONI iOS WEBVIEW - ANTI-FLICKERING OTTIMIZZATE ===== */
 
-/* PRIMA DI TUTTO: Preserviamo tutti i border-radius originali */
+/* Mantieni border-radius originali per tutti gli elementi */
 .btn { border-radius: 12px !important; }
 .btn-primary, .btn-secondary, .btn-outline { border-radius: 12px !important; }
 .nav-item { border-radius: 16px !important; }
 .filter-tab { border-radius: 25px !important; }
-.header-info-btn, .info-close-btn, .close-btn { border-radius: 50% !important; }
 .monument-card { border-radius: 16px !important; }
 .location-card { border-radius: 12px !important; }
 .featured-card { border-radius: 16px !important; }
+.header-info-btn, .info-close-btn, .close-btn { border-radius: 50% !important; }
 .audio-control-btn { border-radius: 50% !important; }
-.tour-controls .btn { border-radius: 12px !important; }
-.map-monument-card .btn { border-radius: 12px !important; }
-.home-qr-section .btn { border-radius: 12px !important; }
-.experience-content .btn { border-radius: 12px !important; }
-.qr-actions .btn { border-radius: 12px !important; }
 
-/* Correzioni iOS WebView per eliminare flickering - solo per touch events */
+/* Correzioni base solo per iOS WebView durante i touch events */
 @supports (-webkit-touch-callout: none) {
-    /* Specifico per iOS - elimina flickering sui pulsanti SOLO durante touch */
-    button:active, .btn:active, .nav-item:active, .monument-card:active, 
-    .location-card:active, .quiz-option:active, .expand-btn:active, 
-    .card-expand-btn:active, .play-pause:active, .audio-control-btn:active {
+    /* Elimina tap highlight universalmente su iOS */
+    * {
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    /* Mantieni gli stili base SENZA modifiche - solo rimuovi il tap highlight */
+    .btn, button, .nav-item, .monument-card, .filter-tab, .featured-card {
         -webkit-tap-highlight-color: transparent !important;
         -webkit-touch-callout: none !important;
+    }
+
+    /* Applica correzioni SOLO durante gli stati :active (touch events) */
+    button:active:not(.info-close-btn):not(.header-info-btn), 
+    .btn:active:not(.info-close-btn), 
+    .nav-item:active, 
+    .monument-card:active {
         -webkit-user-select: none !important;
         user-select: none !important;
         touch-action: manipulation !important;
         backface-visibility: hidden !important;
         -webkit-backface-visibility: hidden !important;
-    }
-
-    /* Stati touch specifici per iOS - più fluidi, SOLO per :active */
-    button:active, .btn:active {
-        transform: translateZ(0) scale(0.98) !important;
-        -webkit-transform: translateZ(0) scale(0.98) !important;
-        transition: transform 0.1s ease-out !important;
-        -webkit-transition: -webkit-transform 0.1s ease-out !important;
-    }
-
-    .monument-card:active {
-        transform: translateZ(0) scale(0.995) !important;
-        -webkit-transform: translateZ(0) scale(0.995) !important;
-    }
-
-    .nav-item:active {
-        transform: translateZ(0) scale(0.95) !important;
-        -webkit-transform: translateZ(0) scale(0.95) !important;
-    }
-
-    /* Eliminazione flickering per audio controls */
-    .audio-player-container button {
-        -webkit-tap-highlight-color: transparent !important;
-    }
-
-    /* Correzioni per QR modal buttons */
-    #qr-modal button, .modal button {
-        -webkit-tap-highlight-color: transparent !important;
-        -webkit-appearance: none !important;
-    }
-}
-
-/* Correzioni aggiuntive per iOS WebView specificamente */
-@media screen and (-webkit-min-device-pixel-ratio: 1) {
-    /* iPhone/iPad specifico - solo elementi interattivi, non tutto */
-    button:active, .btn:active, .nav-item:active, .monument-card:active, .location-card:active {
-        -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
-        -webkit-focus-ring-color: rgba(0,0,0,0) !important;
-        outline: none !important;
+        transform: translateZ(0) scale(0.99) !important;
+        -webkit-transform: translateZ(0) scale(0.99) !important;
+        transition: transform 0.05s ease-out !important;
+        -webkit-transition: -webkit-transform 0.05s ease-out !important;
     }
 
     /* Previeni il "bounce" effect che può causare flickering */
@@ -6354,50 +6337,119 @@ button:focus,
     }
 }
 
-/* Disabilita completamente gli effetti hover su touch devices */
-@media (hover: none) and (pointer: coarse) {
-    /* Touch devices - elimina tutti gli hover effects ma mantieni gli stili base */
-    .btn:hover, button:hover, .nav-item:hover, 
-    .monument-card:hover, .featured-card:hover {
-        background: initial;
-        color: initial;
-        transform: initial;
-        opacity: initial;
+/* Media query per iOS devices - correzioni aggiuntive */
+@media screen and (-webkit-min-device-pixel-ratio: 1) {
+    /* iPhone/iPad specifico - solo elementi interattivi durante :active */
+    button:active:not(.info-close-btn), .btn:active, .nav-item:active, 
+    .monument-card:active, .location-card:active {
+        -webkit-focus-ring-color: rgba(0,0,0,0) !important;
+        outline: none !important;
+    }
+
+    /* Previeni il "bounce" effect che può causare flickering */
+    body {
+        -webkit-overflow-scrolling: touch !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Correzioni per il pulsante X info su iOS */
+    .info-close-btn {
+        position: absolute !important;
+        top: 20px !important;
+        right: 20px !important;
+        left: auto !important;
+        transform: none !important;
     }
     
-    /* NON toccare box-shadow e border per le card */
+    /* Ottimizzazioni per il rendering hardware accelerato SOLO quando necessario */
+    .monument-card:active, .btn:active {
+        will-change: transform !important;
+    }
     
-    /* Sostituisci hover con active per touch */
-    .btn:active, button:active {
-        opacity: 0.8 !important;
-        transform: scale(0.98) !important;
+    /* Rimuovi will-change quando non in uso per ottimizzare le performance */
+    .monument-card, .btn {
+        will-change: auto !important;
     }
 }
 
-/* Specifico per iOS Safari/WebView */
+/* Disabilita completamente gli effetti hover su touch devices */
+@media (hover: none) and (pointer: coarse) {
+    /* Rimuovi TUTTI gli hover effects su dispositivi touch */
+    *:hover {
+        background: initial !important;
+        color: initial !important;
+        transform: initial !important;
+        box-shadow: initial !important;
+        opacity: initial !important;
+        border-color: initial !important;
+    }
+
+    /* Sostituisci hover con :active per touch feedback */
+    button:active:not(.info-close-btn), .btn:active, .nav-item:active {
+        opacity: 0.85 !important;
+        transform: scale(0.99) !important;
+        transition: opacity 0.05s ease-out, transform 0.05s ease-out !important;
+    }
+}
+
+/* iOS Safari/WebView specifico - SOLO per input elements */
 @supports (-webkit-appearance: none) {
-    /* Solo per input standard, NON toccare card e filter-tab */
+    /* Applica -webkit-appearance: none SOLO agli input, non ai button */
     input[type="text"], input[type="email"], input[type="password"], 
-    input[type="search"], select, textarea {
+    input[type="number"], input[type="search"], input[type="file"],
+    select, textarea {
         -webkit-appearance: none !important;
         appearance: none !important;
         border-radius: 0 !important;
     }
+    
+    /* NON toccare i button - mantieni il loro aspetto nativo */
 }
 
-/* Stili per il feedback touch iOS ottimizzato */
-.ios-touch-active {
+/* Specifiche correzioni per il pulsante X info */
+.info-close-btn {
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    left: auto !important;
+    z-index: 1000 !important;
+    /* Escludi dalle trasformazioni di scale */
+    transform: none !important;
+}
+
+.info-close-btn:active {
+    /* Solo un leggero feedback senza spostamento */
     opacity: 0.8 !important;
-    transform: scale(0.98) !important;
-    transition: opacity 0.1s ease-out, transform 0.1s ease-out !important;
+    transform: none !important;
 }
 
-/* Specifico per iOS WebView - elimina tutti gli artefatti visivi */
-.ios-webview button,
-.ios-webview .btn {
+/* Media query per schermi piccoli */
+@media (max-width: 768px) {
+    .info-close-btn {
+        top: 15px !important;
+        right: 15px !important;
+        left: auto !important;
+        position: absolute !important;
+        transform: none !important;
+    }
+}
+
+/* Stili per la classe iOS touch active - feedback più leggero */
+.ios-touch-active {
+    opacity: 0.85 !important;
+    transform: scale(0.99) !important;
+    transition: opacity 0.05s ease-out, transform 0.05s ease-out !important;
+}
+
+/* Specifico per iOS WebView - font rendering ottimizzato */
+.ios-webview * {
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
     text-rendering: optimizeLegibility !important;
+}
+
+/* Button isolation per iOS WebView */
+.ios-webview button, .ios-webview .btn {
     position: relative !important;
     isolation: isolate !important;
 }
