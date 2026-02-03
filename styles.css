@@ -1090,6 +1090,10 @@ p {
     min-height: 400px; /* Assicura un'altezza minima */
     width: 100%; /* Assicura larghezza completa */
     position: relative; /* Importante per MapLibre */
+    display: block !important; /* Forza visibilità */
+    visibility: visible !important; /* Forza visibilità */
+    opacity: 1 !important; /* Forza opacità */
+    background: #f8f9fa; /* Background di fallback per debug */
 }
 
 /* Full Screen Map Styles */
@@ -6308,11 +6312,20 @@ button:focus,
 
 /* Disabilita hover effects su touch devices - SOLO per elementi interattivi */
 @media (hover: none) and (pointer: coarse) {
-    button:hover, .btn:hover, .nav-item:hover, a:hover {
+    button:hover:not(.maplibregl-ctrl-zoom-in):not(.maplibregl-ctrl-zoom-out), 
+    .btn:hover, .nav-item:hover, a:hover:not(.maplibregl-ctrl) {
         background: initial;
         color: initial;
         transform: initial;
         opacity: initial;
+    }
+    
+    /* PRESERVA la mappa e i suoi controlli */
+    #gps-map, #gps-map *, .maplibregl-map, .maplibregl-canvas-container,
+    .maplibregl-canvas, .maplibregl-ctrl, .maplibregl-ctrl-group {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 }
 
@@ -6337,12 +6350,3 @@ button:focus,
         right: 15px !important;
     }
 }
-
-
-
-
-
-
-
-
-

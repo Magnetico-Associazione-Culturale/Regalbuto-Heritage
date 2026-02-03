@@ -4365,6 +4365,25 @@ async function initializeGPSMap() {
         return;
     }
     
+    // Verify container is visible and has dimensions
+    const containerStyle = getComputedStyle(container);
+    console.log('Container dimensions:', {
+        width: container.offsetWidth,
+        height: container.offsetHeight,
+        display: containerStyle.display,
+        visibility: containerStyle.visibility,
+        opacity: containerStyle.opacity
+    });
+    
+    if (container.offsetWidth === 0 || container.offsetHeight === 0) {
+        console.warn('GPS map container has zero dimensions, forcing size...');
+        container.style.width = '100%';
+        container.style.height = '400px';
+        container.style.display = 'block';
+        container.style.visibility = 'visible';
+        container.style.opacity = '1';
+    }
+    
     try {
         // Initialize MapLibre GL JS map with CartoDB Positron style
         gpsMap = new maplibregl.Map({
@@ -4429,6 +4448,14 @@ async function initializeGPSMap() {
         gpsMap.on('error', (e) => {
             console.error('GPS Map error:', e);
         });
+        
+        // Force render after a timeout if map doesn't load
+        setTimeout(() => {
+            if (gpsMap && gpsMap.getContainer()) {
+                console.log('Forcing map resize after timeout...');
+                gpsMap.resize();
+            }
+        }, 2000);
         
         // Handle geolocation events
         geolocateControl.on('geolocate', (e) => {
