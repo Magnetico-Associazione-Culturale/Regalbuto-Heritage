@@ -251,23 +251,27 @@ p {
 
 /* Info section close button */
 .info-close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+    position: absolute !important;
+    top: 20px !important;
+    right: 20px !important;
+    left: auto !important; /* Forza reset left positioning */
     width: 48px;
     height: 48px;
     background: rgba(255, 255, 255, 0.95);
     border: 2px solid var(--border-color);
-    border-radius: 50%;
+    border-radius: 50% !important; /* Forza border-radius circolare */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+    z-index: 999 !important; /* Aumenta z-index per essere sempre visibile */
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    /* Esclude dalle trasformazioni iOS */
+    transform: none !important;
+    -webkit-transform: none !important;
 }
 
 .info-close-btn:hover {
@@ -874,7 +878,7 @@ p {
 .btn {
     padding: 1rem 2rem;
     border: none;
-    border-radius: 12px; /* Rounded corners */
+    border-radius: 12px !important; /* Forza border-radius - importante per iOS */
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -887,6 +891,7 @@ p {
     width: 100%;
     justify-content: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    overflow: hidden; /* Previene overflow che può rovinare border-radius */
 }
 
 /* Hero Actions Button Styling */
@@ -6279,7 +6284,7 @@ button:focus,
 
 /* Correzioni iOS WebView per eliminare flickering */
 @supports (-webkit-touch-callout: none) {
-    /* Specifico per iOS - elimina flickering sui pulsanti */
+    /* Specifico per iOS - elimina flickering sui pulsanti MA preserva border-radius */
     button, .btn, .nav-item, .monument-card, .location-card, .quiz-option,
     .expand-btn, .card-expand-btn, .play-pause, .audio-control-btn {
         -webkit-tap-highlight-color: transparent !important;
@@ -6289,9 +6294,10 @@ button:focus,
         touch-action: manipulation !important;
         backface-visibility: hidden !important;
         -webkit-backface-visibility: hidden !important;
-        transform: translateZ(0) !important;
-        -webkit-transform: translateZ(0) !important;
-        will-change: transform !important;
+        /* RIMUOVO le trasformazioni che rovinano border-radius */
+        /* transform: translateZ(0) !important; */
+        /* -webkit-transform: translateZ(0) !important; */
+        /* will-change: transform !important; */
     }
 
     /* Elimina effetti hover su iOS che causano flickering */
@@ -6300,34 +6306,39 @@ button:focus,
         transition: none !important;
     }
 
-    /* Stati touch specifici per iOS - più fluidi */
+    /* Stati touch specifici per iOS - usa opacity invece di scale */
     button:active, .btn:active {
-        transform: translateZ(0) scale(0.98) !important;
-        -webkit-transform: translateZ(0) scale(0.98) !important;
-        transition: transform 0.1s ease-out !important;
-        -webkit-transition: -webkit-transform 0.1s ease-out !important;
+        /* RIMUOVO scale che deforma i border-radius */
+        /* transform: translateZ(0) scale(0.98) !important; */
+        /* -webkit-transform: translateZ(0) scale(0.98) !important; */
+        opacity: 0.9 !important;
+        transition: opacity 0.1s ease-out !important;
     }
 
-    /* Correzioni per monument cards su iOS */
+    /* Correzioni per monument cards su iOS SENZA trasformazioni */
     .monument-card {
-        -webkit-transform: translateZ(0) !important;
-        transform: translateZ(0) !important;
+        /* RIMUOVO le trasformazioni che possono interferire */
+        /* -webkit-transform: translateZ(0) !important; */
+        /* transform: translateZ(0) !important; */
     }
 
     .monument-card:active {
-        transform: translateZ(0) scale(0.995) !important;
-        -webkit-transform: translateZ(0) scale(0.995) !important;
+        /* Usa opacity invece di scale */
+        opacity: 0.95 !important;
+        transition: opacity 0.1s ease-out !important;
     }
 
-    /* Correzioni per navigation items */
+    /* Correzioni per navigation items SENZA trasformazioni */
     .nav-item {
-        -webkit-transform: translateZ(0) !important;
-        transform: translateZ(0) !important;
+        /* RIMUOVO le trasformazioni */
+        /* -webkit-transform: translateZ(0) !important; */
+        /* transform: translateZ(0) !important; */
     }
 
     .nav-item:active {
-        transform: translateZ(0) scale(0.95) !important;
-        -webkit-transform: translateZ(0) scale(0.95) !important;
+        /* Usa opacity invece di scale */
+        opacity: 0.9 !important;
+        transition: opacity 0.1s ease-out !important;
     }
 
     /* Eliminazione flickering per audio controls */
@@ -6350,6 +6361,17 @@ button:focus,
         -webkit-user-select: none !important;
         backface-visibility: hidden !important;
         -webkit-backface-visibility: hidden !important;
+    }
+    
+    /* ESCLUDI completamente la mappa dalle trasformazioni iOS */
+    .map-container, .map-container *,
+    .mapboxgl-canvas, .maplibregl-canvas,
+    .mapboxgl-canvas-container, .maplibregl-canvas-container,
+    .mapboxgl-marker, .maplibregl-marker {
+        /* Forza nessuna trasformazione per elementi mappa */
+        transform: none !important;
+        -webkit-transform: none !important;
+        will-change: auto !important;
     }
 }
 
