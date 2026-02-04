@@ -6350,40 +6350,28 @@ button:focus,
     }
 }
 
-/* iOS anti-flickering - SOLUZIONE MIRATA basata su indizio navbar */
+/* iOS anti-flickering - SOLUZIONE: touch-action come la navbar */
 @supports (-webkit-touch-callout: none) {
-    /* 
-     * INDIZIO CHIAVE: La navbar NON lampeggia, tutto il resto SÌ
-     * SOLUZIONE: Applicare le stesse ottimizzazioni della navbar al contenuto
-     */
-    
-    /* FORCE COMPOSITING LAYER sul contenuto principale (come la navbar) */
-    body, html, .container, main, #app, 
-    .section, .hero-section, .monument-card, .location-card,
-    .featured-card, .filter-container {
-        -webkit-transform: translateZ(0) !important;
-        transform: translateZ(0) !important;
-        -webkit-backface-visibility: hidden !important;
-        backface-visibility: hidden !important;
-        will-change: transform !important;
-    }
-    
-    /* PREVENT TAP REPAINT (solo le basi necessarie) */
+    /* RIMUOVI tap highlights */
     * {
         -webkit-tap-highlight-color: transparent !important;
         -webkit-touch-callout: none !important;
     }
     
-    /* NON toccare la navbar - funziona già perfettamente */
-    .bottom-nav, .bottom-nav * {
-        will-change: auto !important; /* Mantieni comportamento attuale */
-        /* La navbar ha già il giusto compositing layer */
+    /* LA CHIAVE: touch-action manipulation come la navbar! */
+    body, html {
+        touch-action: manipulation !important;
     }
     
-    /* Force compositing anche sui contenitori di scroll */
-    .tab-content, .monuments-grid, .locations-grid {
-        -webkit-transform: translateZ(0) !important;
-        transform: translateZ(0) !important;
-        will-change: transform !important;
+    /* Applica touch-action a tutti gli elementi interattivi */
+    .section, .hero-section, .monument-card, .featured-card,
+    .filter-tab, .btn, button, a {
+        touch-action: manipulation !important;
+    }
+    
+    /* LEGGERA accelerazione hardware solo dove necessario */
+    .hero-section, .monument-card {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
 }
