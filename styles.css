@@ -6350,86 +6350,16 @@ button:focus,
     }
 }
 
-/* ===== iOS/iPadOS ANTI-FLICKERING - SOLUZIONE CHIRURGICA ===== */
-
-/* Disabilita tap highlights su tutto */
+/* iOS anti-flickering - Fix JavaScript senza interferenze */
 @supports (-webkit-touch-callout: none) {
     * {
         -webkit-tap-highlight-color: transparent !important;
-        -webkit-touch-callout: none !important;
-    }
-    
-    /* Mantieni selezionabilità dove necessario */
-    input, textarea, select, [contenteditable="true"] {
-        -webkit-user-select: text !important;
-        user-select: text !important;
-        -webkit-touch-callout: default !important;
     }
 }
 
-/* iOS Anti-Flickering - SOLO contenuto, MAI navigation */
-.ios-anti-flicker {
-    /* Applica compositing layer SOLO ai contenuti che lampeggiava */
-    -webkit-transform: translateZ(0) !important;
-    transform: translateZ(0) !important;
-    -webkit-backface-visibility: hidden !important;
-    backface-visibility: hidden !important;
-    will-change: transform !important;
-}
-
-/* Applica la classe ai singoli elementi che lampeggiava */
-.monument-card,
-.featured-card,
-.location-card,
-.hero-section,
-.content-section,
-.info-grid,
-.educational-block,
-.filter-container,
-.quiz-container,
-.results-container,
-.search-container {
-    /* Eredita anti-flickering quando necessario */
-    /* Sarà attivato tramite JavaScript solo su iOS WebView */
-}
-
-/* ASSICURA che navbar NON sia mai toccata dalla soluzione anti-flickering */
-.bottom-nav {
-    /* Forza comportamento originale navbar */
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    z-index: 1000 !important;
-    
-    /* NO transform properties che interferiscono */
-    -webkit-transform: none !important;
-    transform: none !important;
-    will-change: auto !important;
-    -webkit-backface-visibility: visible !important;
-    backface-visibility: visible !important;
-    
-    /* Mantieni proprietà originali */
-    background: var(--background-white) !important;
-    border-top: 1px solid var(--border-color) !important;
-    height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px)) !important;
-    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
-    touch-action: manipulation !important;
-    box-shadow: 0 -4px 15px var(--shadow-light) !important;
-}
-
-/* Assicura che la navbar resti in posizione anche nelle sezioni */
-#itinerario,
-.section.active {
-    /* Non interferire con navbar positioning */
-    position: relative;
-    padding-bottom: 80px; /* Spazio per navbar */
-    margin-bottom: 0;
-}
-
-/* Fix per sezioni che potrebbero spostare la navbar */
-.section {
-    /* NON applicare transform che interferisce con fixed positioning */
-    -webkit-transform: none !important;
-    transform: none !important;
+/* iOS anti-flickering - Fix JavaScript senza interferenze */
+@supports (-webkit-touch-callout: none) {
+    * {
+        -webkit-tap-highlight-color: transparent !important;
+    }
 }
