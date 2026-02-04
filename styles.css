@@ -6357,20 +6357,29 @@ button:focus,
     }
 }
 
-/* Fix flickering tramite JavaScript class (non interferisce con navbar) */
-.ios-webview * {
-    /* FORCE COMPOSITING LAYER su TUTTO il contenuto */
+/* Fix flickering REPLICANDO proprietà navbar/footer che funzionano */
+.ios-webview *:not(.bottom-nav):not(.bottom-nav *):not(.footer):not(.footer *) {
+    /* REPLICA esatta di navbar/footer properties */
+    position: relative !important;
+    z-index: 999 !important;
+    touch-action: manipulation !important;
     transform: translateZ(0) !important;
-    -webkit-transform: translateZ(0) !important;
     -webkit-backface-visibility: hidden !important;
     backface-visibility: hidden !important;
     will-change: transform !important;
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
 }
 
-/* PRESERVA navbar - override per mantenere funzionalità */
+/* PRESERVA navbar e footer ESATTAMENTE come sono (funzionano già) */
 .ios-webview .bottom-nav,
-.ios-webview .bottom-nav * {
-    will-change: auto !important;
-    transform: none !important;
-    -webkit-transform: none !important;
+.ios-webview .bottom-nav *,
+.ios-webview .footer,
+.ios-webview .footer * {
+    position: revert !important;
+    z-index: revert !important;
+    transform: revert !important;
+    will-change: revert !important;
+    touch-action: revert !important;
 }
