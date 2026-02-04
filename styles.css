@@ -6350,28 +6350,18 @@ button:focus,
     }
 }
 
-/* iOS anti-flickering - SOLUZIONE: touch-action come la navbar */
+/* iOS anti-flickering - Fix JavaScript senza interferenze */
 @supports (-webkit-touch-callout: none) {
-    /* RIMUOVI tap highlights */
     * {
         -webkit-tap-highlight-color: transparent !important;
-        -webkit-touch-callout: none !important;
     }
-    
-    /* LA CHIAVE: touch-action manipulation come la navbar! */
-    body, html {
-        touch-action: manipulation !important;
-    }
-    
-    /* Applica touch-action a tutti gli elementi interattivi */
-    .section, .hero-section, .monument-card, .featured-card,
-    .filter-tab, .btn, button, a {
-        touch-action: manipulation !important;
-    }
-    
-    /* LEGGERA accelerazione hardware solo dove necessario */
-    .hero-section, .monument-card {
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-    }
+}
+
+/* Fix flickering tramite JavaScript class (non interferisce con navbar) */
+.ios-webview .hero-section,
+.ios-webview .monument-card {
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform;
 }

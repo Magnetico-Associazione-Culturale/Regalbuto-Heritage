@@ -171,6 +171,31 @@ document.addEventListener('DOMContentLoaded', function() {
             );
         }
         
+        // NUOVO: Fix flickering JavaScript senza toccare CSS esistente
+        console.log('Applicando fix flickering iOS JavaScript-only...');
+        
+        // Applica touch-action manipulation agli elementi che non sono navbar
+        const elementsToFix = document.querySelectorAll('body, .section, .hero-section, .monument-card, .featured-card');
+        elementsToFix.forEach(element => {
+            // Solo se NON è parte della navbar
+            if (!element.closest('.bottom-nav')) {
+                element.style.touchAction = 'manipulation';
+                element.style.webkitTouchCallout = 'none';
+                element.style.webkitUserSelect = 'none';
+            }
+        });
+        
+        // Force hardware acceleration su contenuto principale (non navbar)
+        document.addEventListener('DOMContentLoaded', () => {
+            const contentElements = document.querySelectorAll('.hero-section, .monument-card, .section:not(.bottom-nav)');
+            contentElements.forEach(element => {
+                element.style.transform = 'translateZ(0)';
+                element.style.webkitBackfaceVisibility = 'hidden';
+            });
+            
+            console.log('Fix hardware acceleration applicato a', contentElements.length, 'elementi');
+        });
+        
         // Aggiungi classe CSS per iOS-specific styling
         document.documentElement.classList.add('ios-webview');
         
