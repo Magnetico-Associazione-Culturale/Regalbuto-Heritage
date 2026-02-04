@@ -147,65 +147,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Populate virtual tour locations dynamically
     populateVirtualTourLocations();
     
-    // Ottimizzazioni specifiche per iOS WebView touch events
-    if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-        console.log('Applicando correzioni touch iOS...');
-        
-        // Disabilita il comportamento touch predefinito per prevenire flickering
-        document.addEventListener('touchstart', function(e) {
-            // Non impedire il touch sui form elements
-            if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
-                const targetElement = e.target.closest('button, .btn, .nav-item, .monument-card');
-                if (targetElement) {
-                    // Aggiungi classe active per feedback visivo immediato
-                    targetElement.classList.add('ios-touch-active');
-                }
-            }
-        }, { passive: true });
-        
-        document.addEventListener('touchend', function(e) {
-            // Rimuovi classe active con delay per evitare flickering
-            const activeElements = document.querySelectorAll('.ios-touch-active');
-            activeElements.forEach(element => {
-                setTimeout(() => {
-                    element.classList.remove('ios-touch-active');
-                }, 150);
-            });
-        }, { passive: true });
-        
-        document.addEventListener('touchcancel', function(e) {
-            // Pulisci active states su cancel
-            const activeElements = document.querySelectorAll('.ios-touch-active');
-            activeElements.forEach(element => {
-                element.classList.remove('ios-touch-active');
-            });
-        }, { passive: true });
-        
-        // Previeni il zoom doppio tap che può causare flickering
-        let lastTouchEnd = 0;
-        document.addEventListener('touchend', function(e) {
-            const now = (new Date()).getTime();
-            if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-            }
-            lastTouchEnd = now;
-        }, false);
-        
-        // Ottimizzazione per il viewport meta tag
-        const viewportMeta = document.querySelector('meta[name="viewport"]');
-        if (viewportMeta) {
-            viewportMeta.setAttribute('content', 
-                'width=device-width, initial-scale=1.0, maximum-scale=1.0, ' +
-                'user-scalable=no, viewport-fit=cover, shrink-to-fit=no'
-            );
-        }
-        
-        // Aggiungi classe CSS per iOS-specific styling
-        document.documentElement.classList.add('ios-webview');
-        
-        console.log('Correzioni touch iOS applicate');
-    }
-    
     console.log('Regalbuto Heritage App initialized');
 });
 
@@ -394,15 +335,6 @@ function switchTab(tabName) {
         // Initialize GPS map if switching to navigation tab
         if (tabName === 'navigazione') {
             initializeGPSMap();
-            // Fix specifico iOS per mappa itinerario
-            if (typeof forceShowItinerarioMap === 'function') {
-                forceShowItinerarioMap();
-            }
-        } else {
-            // Nascondi mappa quando si esce dalla sezione navigazione (fix iOS)
-            if (typeof hideItinerarioMap === 'function') {
-                hideItinerarioMap();
-            }
         }
         
         // Manage VR button visibility when switching to virtual tour
@@ -2058,82 +1990,36 @@ async function openMapLocation(monumentId) {
 function openInMapsApp(mapsUrl) {
     console.log('Opening Maps with URL:', mapsUrl);
     
-    // Rilevamento più specifico per iOS e Android
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const isAndroidDevice = /Android/i.test(navigator.userAgent);
+    // Rileva il tipo di dispositivo
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isMobile = isAndroid || isIOS;
     
-    if (isIOSDevice) {
-        console.log('iOS device detected, converting to Apple Maps');
-        
-        // Estrai coordinate dall'URL Google Maps
-        const coordinatesMatch = mapsUrl.match(/destination=([0-9.-]+),([0-9.-]+)/);
-        if (coordinatesMatch) {
-            const lat = coordinatesMatch[1];
-            const lon = coordinatesMatch[2];
-            const appleMapURL = `http://maps.apple.com/?daddr=${lat},${lon}&dirflg=d`;
-            
-            console.log('Opening Apple Maps with URL:', appleMapURL);
-            
-            // Torniamo al metodo originale che funzionava
-            // SOLO aggiungiamo la gestione dello stato per il loading infinito
-            try {
-                // Segna che stiamo aprendo Maps (per gestire il loading infinito)
-                sessionStorage.setItem('mapsOpeningState', 'opening');
-                sessionStorage.setItem('mapsOpeningTime', Date.now().toString());
-                
-                // Usa il metodo originale: window.location.href
-                window.location.href = appleMapURL;
-                
-            } catch (error) {
-                console.log('Fallback to window.open for Apple Maps');
-                window.open(appleMapURL, '_system');
-            }
-            
-            showNotification('Apertura Apple Maps...', 'info');
-            return;
-        } else {
-            console.log('Could not extract coordinates from URL, using fallback');
+    // Crea URL Google Maps standard HTTPS
+    let googleMapsUrl = mapsUrl;
+    
+    // Assicurati che sia un URL Google Maps HTTPS completo
+    if (!googleMapsUrl.startsWith('https://')) {
+        // Se non è un URL completo, assumiamo che sia già formattato correttamente
+        if (googleMapsUrl.startsWith('www.google.com/maps')) {
+            googleMapsUrl = 'https://' + googleMapsUrl;
         }
     }
     
-    // Android - comportamento Google Maps INVARIATO
-    if (isAndroidDevice) {
-        console.log('Android device detected, using Google Maps normally');
-        
-        // Crea URL Google Maps standard HTTPS
-        let googleMapsUrl = mapsUrl;
-        
-        // Assicurati che sia un URL Google Maps HTTPS completo
-        if (!googleMapsUrl.startsWith('https://')) {
-            if (googleMapsUrl.startsWith('www.google.com/maps')) {
-                googleMapsUrl = 'https://' + googleMapsUrl;
-            }
-        }
-        
-        console.log('Final Google Maps URL for Android:', googleMapsUrl);
+    console.log('Final Google Maps URL:', googleMapsUrl);
+    
+    // Per dispositivi mobili, usa _system per tentare di aprire l'app nativa
+    if (isMobile) {
+        console.log('Mobile device detected, opening with _system target');
         window.open(googleMapsUrl, '_system');
-        showNotification('Apertura Google Maps...', 'info');
-        return;
+    } else {
+        // Per desktop, apri in una nuova scheda
+        console.log('Desktop device detected, opening in new tab');
+        window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
     }
     
-    // Desktop - comportamento INVARIATO
-    if (!isIOSDevice && !isAndroidDevice) {
-        console.log('Desktop device detected, opening in new tab');
-        
-        // Crea URL Google Maps standard HTTPS
-        let googleMapsUrl = mapsUrl;
-        
-        // Assicurati che sia un URL Google Maps HTTPS completo
-        if (!googleMapsUrl.startsWith('https://')) {
-            if (googleMapsUrl.startsWith('www.google.com/maps')) {
-                googleMapsUrl = 'https://' + googleMapsUrl;
-            }
-        }
-        
-        console.log('Final Google Maps URL for Desktop:', googleMapsUrl);
-        window.open(googleMapsUrl, '_blank', 'noopener,noreferrer');
-        showNotification('Apertura mappa in corso...', 'info');
-    }
+    // Mostra notifica all'utente
+    showNotification('Apertura mappa in corso...', 'info');
 }
 
 // Featured Card Functions (Home Page)
@@ -4355,43 +4241,10 @@ async function initializeGPSMap() {
     if (gpsMap) return;
     
     try {
-        // Controllo specifico iOS WebView
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        
-        // iOS WebView spesso ha problemi con WebGL
-        let mapOptions = {
+        // Initialize MapLibre GL JS map with CartoDB Positron style
+        gpsMap = new maplibregl.Map({
             container: 'gps-map',
-            center: [14.641, 37.650], // Regalbuto center
-            zoom: 14,
-            pitch: 0,
-            bearing: 0
-        };
-        
-        // Configurazione specifica per iOS
-        if (isIOS) {
-            console.log('🍎 iOS detected - using iOS-specific map configuration');
-            
-            // Verifica supporto WebGL
-            const canvas = document.createElement('canvas');
-            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            
-            if (!gl) {
-                console.warn('⚠️ WebGL not supported - using raster fallback');
-                // Fallback per dispositivi senza WebGL
-                mapOptions.style = 'https://demotiles.maplibre.org/style.json';
-                mapOptions.fadeDuration = 0; // Disabilita animazioni
-                mapOptions.crossSourceCollisions = false;
-            } else {
-                console.log('✅ WebGL supported on iOS');
-                mapOptions.preserveDrawingBuffer = true;
-                mapOptions.failIfMajorPerformanceCaveat = false;
-                mapOptions.antialias = false; // Migliore performance su iOS
-            }
-        }
-        
-        // Style configuration
-        if (!mapOptions.style) {
-            mapOptions.style = {
+            style: {
                 version: 8,
                 glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
                 sources: {
@@ -4412,11 +4265,12 @@ async function initializeGPSMap() {
                     type: 'raster',
                     source: 'carto-positron'
                 }]
-            };
-        }
-        
-        // Initialize MapLibre GL JS map
-        gpsMap = new maplibregl.Map(mapOptions);
+            },
+            center: [14.641, 37.650], // Regalbuto center
+            zoom: 14,
+            pitch: 0,
+            bearing: 0
+        });
         
         // Add navigation controls
         gpsMap.addControl(new maplibregl.NavigationControl({
@@ -4438,67 +4292,11 @@ async function initializeGPSMap() {
         
         // Wait for map to load
         gpsMap.on('load', async () => {
-            console.log('GPS Map loaded successfully');
-            
-            // Fix specifico iOS: forza refresh canvas
-            if (isIOS) {
-                setTimeout(() => {
-                    try {
-                        gpsMap.resize();
-                        gpsMap.redraw();
-                        console.log('✅ iOS map refresh completed');
-                        
-                        // Fix specifico per controlli MapLibre su iOS
-                        if (window.fixMapLibreControls && typeof window.fixMapLibreControls === 'function') {
-                            window.fixMapLibreControls();
-                        }
-                        if (window.fixMapZoomControls && typeof window.fixMapZoomControls === 'function') {
-                            window.fixMapZoomControls();
-                        }
-                    } catch (e) {
-                        console.warn('Map refresh failed:', e);
-                    }
-                }, 500);
-                
-                // Ulteriore fix per controlli dopo 1 secondo
-                setTimeout(() => {
-                    if (window.fixMapLibreControls && typeof window.fixMapLibreControls === 'function') {
-                        window.fixMapLibreControls();
-                    }
-                    if (window.fixMapZoomControls && typeof window.fixMapZoomControls === 'function') {
-                        window.fixMapZoomControls();
-                    }
-                }, 1000);
-            }
-            
+            console.log('GPS Map loaded');
             await loadRouteData();
             setupRouteVisualization();
             await loadMonumentsOnMap();
             updateCheckpointsList();
-        });
-        
-        // Gestione errori specifici iOS
-        gpsMap.on('error', (e) => {
-            console.error('Map error:', e);
-            
-            if (isIOS && e.error && e.error.message) {
-                console.log('🍎 iOS map error detected - attempting recovery');
-                
-                // Retry con configurazione semplificata per iOS
-                setTimeout(() => {
-                    try {
-                        if (gpsMap) {
-                            gpsMap.remove();
-                        }
-                        gpsMap = null;
-                        
-                        // Reinizializza con stile più semplice
-                        initializeSimpleIOSMap();
-                    } catch (retryError) {
-                        console.error('Map retry failed:', retryError);
-                    }
-                }, 1000);
-            }
         });
         
         // Handle geolocation events
@@ -4511,66 +4309,7 @@ async function initializeGPSMap() {
         
     } catch (error) {
         console.error('Error initializing GPS map:', error);
-        
-        // Se siamo su iOS e c'è un errore, prova con mappa semplificata
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        if (isIOS) {
-            console.log('🍎 Attempting iOS fallback map...');
-            try {
-                await initializeSimpleIOSMap();
-                return;
-            } catch (fallbackError) {
-                console.error('iOS fallback map failed:', fallbackError);
-            }
-        }
-        
         alert('Errore nell\'inizializzazione della mappa GPS. Riprova più tardi.');
-    }
-}
-
-// Fallback semplificato per iOS
-async function initializeSimpleIOSMap() {
-    try {
-        console.log('🔧 Initializing simplified iOS map...');
-        
-        gpsMap = new maplibregl.Map({
-            container: 'gps-map',
-            style: 'https://demotiles.maplibre.org/style.json', // Stile preconfigurato
-            center: [14.641, 37.650],
-            zoom: 14,
-            pitch: 0,
-            bearing: 0,
-            // Configurazione ottimizzata per iOS
-            fadeDuration: 0,
-            crossSourceCollisions: false,
-            preserveDrawingBuffer: true,
-            antialias: false,
-            failIfMajorPerformanceCaveat: false
-        });
-        
-        gpsMap.on('load', async () => {
-            console.log('✅ Simplified iOS map loaded');
-            
-            // Carica solo i dati essenziali
-            await loadRouteData();
-            await loadMonumentsOnMap();
-            updateCheckpointsList();
-            
-            // Force refresh
-            setTimeout(() => {
-                gpsMap.resize();
-                console.log('🔄 iOS map resized');
-            }, 1000);
-        });
-        
-        // Add basic controls
-        gpsMap.addControl(new maplibregl.NavigationControl(), 'top-right');
-        
-        console.log('🍎 iOS fallback map initialized');
-        
-    } catch (error) {
-        console.error('Simplified iOS map failed:', error);
-        throw error;
     }
 }
 
@@ -5616,187 +5355,5 @@ document.addEventListener('keydown', function(event) {
         }
     }
 });
-
-// Gestione ritorno dall'app Apple Maps SOLO su iOS
-const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-if (isIOSDevice) {
-    console.log('iOS device detected - setting up Maps app return handlers');
-    
-    // Funzione per forzare il reset dello stato di loading SOLO iOS
-    function forceResetIOSLoadingState() {
-        // Doppio controllo per assicurarsi che siamo su iOS
-        if (!isIOSDevice) {
-            console.log('Not iOS device, skipping reset');
-            return;
-        }
-        
-        console.log('Forcing iOS WebView loading state reset');
-        
-        // Nascondi eventuali indicatori di caricamento
-        const loadingElements = document.querySelectorAll('.loading, .spinner, .loader');
-        loadingElements.forEach(el => {
-            el.style.display = 'none';
-        });
-        
-        // Nascondi notifiche di apertura mappe SOLO quelle di Apple Maps
-        const notifications = document.querySelectorAll('.notification');
-        notifications.forEach(notification => {
-            if (notification.textContent.includes('Apple Maps')) {
-                notification.remove();
-            }
-            // NON rimuovere notifiche generiche o di Google Maps per Android
-        });
-        
-        // Riattiva le interazioni dell'interfaccia
-        document.body.style.pointerEvents = 'auto';
-        document.body.style.opacity = '1';
-        
-        // Ferma eventuali animazioni di caricamento
-        const spinners = document.querySelectorAll('[class*="spin"], [class*="rotate"]');
-        spinners.forEach(spinner => {
-            spinner.style.animation = 'none';
-            spinner.style.display = 'none';
-        });
-        
-        // Re-inizializza Feather icons se necessario
-        if (typeof feather !== 'undefined') {
-            setTimeout(() => {
-                feather.replace();
-            }, 100);
-        }
-        
-        // Forza un reflow del DOM SOLO per iOS WebView
-        const isIOSWebView = window.webkit && window.webkit.messageHandlers;
-        if (isIOSWebView) {
-            document.body.style.display = 'none';
-            document.body.offsetHeight; // Force reflow
-            document.body.style.display = '';
-        }
-        
-        console.log('iOS loading state reset completed');
-    }
-    
-    // Timer di sicurezza SOLO per iOS
-    let resetTimer;
-    
-    function startSafetyTimer() {
-        // Non avviare il timer se non siamo su iOS
-        if (!isIOSDevice) return;
-        
-        if (resetTimer) clearInterval(resetTimer);
-        
-        resetTimer = setInterval(() => {
-            // Doppio controllo iOS
-            if (!isIOSDevice) {
-                clearInterval(resetTimer);
-                return;
-            }
-            
-            // Controlla se siamo in uno stato di loading infinito SOLO per iOS
-            const hasAppleMapsNotification = Array.from(document.querySelectorAll('.notification'))
-                .some(notification => notification.textContent.includes('Apple Maps'));
-            
-            if (hasAppleMapsNotification && document.visibilityState === 'visible') {
-                console.log('Detected iOS Apple Maps loading state, forcing reset');
-                forceResetIOSLoadingState();
-            }
-        }, 3000); // Controlla ogni 3 secondi
-    }
-    
-    function stopSafetyTimer() {
-        if (resetTimer) {
-            clearInterval(resetTimer);
-            resetTimer = null;
-        }
-    }
-    
-    // Event listeners SOLO per iOS
-    document.addEventListener('visibilitychange', function() {
-        // Verifica che siamo ancora su iOS
-        if (!isIOSDevice) return;
-        
-        if (document.visibilityState === 'visible') {
-            console.log('iOS app tornata in primo piano dopo app esterna');
-            
-            // Controlla se stavamo aprendo Maps
-            const wasOpeningMaps = sessionStorage.getItem('mapsOpeningState');
-            const openingTime = sessionStorage.getItem('mapsOpeningTime');
-            
-            if (wasOpeningMaps) {
-                console.log('Returning from Maps opening attempt');
-                
-                // Pulisci lo stato immediatamente
-                sessionStorage.removeItem('mapsOpeningState');
-                sessionStorage.removeItem('mapsOpeningTime');
-                
-                // Reset aggressivo per evitare loading infinito
-                setTimeout(() => {
-                    forceResetIOSLoadingState();
-                    
-                    // Forza refresh della pagina se è passato poco tempo (probabile loading infinito)
-                    if (openingTime) {
-                        const timeDiff = Date.now() - parseInt(openingTime);
-                        if (timeDiff < 5000) { // Se sono passati meno di 5 secondi
-                            console.log('Quick return detected, forcing page refresh to clear loading state');
-                            // Usa un approccio meno invasivo: ricarica solo il contenuto
-                            window.location.hash = window.location.hash; // Trigger refresh senza perdere posizione
-                        }
-                    }
-                }, 200);
-                
-                // Reset aggiuntivo dopo un po'
-                setTimeout(() => {
-                    forceResetIOSLoadingState();
-                }, 1000);
-            }
-            
-            // Reset standard con delay specifici per iOS
-            setTimeout(() => {
-                forceResetIOSLoadingState();
-            }, 500);
-            
-            startSafetyTimer();
-            
-        } else {
-            stopSafetyTimer();
-        }
-    });
-    
-    // PageShow specifico per iOS
-    window.addEventListener('pageshow', function(event) {
-        if (!isIOSDevice) return;
-        
-        console.log('iOS pageshow event - persisted:', event.persisted);
-        
-        forceResetIOSLoadingState();
-        startSafetyTimer();
-    });
-    
-    // Focus specifico per iOS
-    window.addEventListener('focus', function() {
-        if (!isIOSDevice) return;
-        
-        console.log('iOS finestra tornata in focus');
-        
-        setTimeout(() => {
-            forceResetIOSLoadingState();
-        }, 200);
-    });
-    
-    // PageHide specifico per iOS
-    window.addEventListener('pagehide', function() {
-        if (!isIOSDevice) return;
-        
-        console.log('iOS page hiding - opening external app');
-        stopSafetyTimer();
-    });
-    
-    // Reset iniziale SOLO per iOS
-    startSafetyTimer();
-    
-} else {
-    console.log('Non-iOS device detected - skipping iOS-specific Maps return handlers');
-}
 
 console.log('Regalbuto Heritage - Script loaded successfully');
