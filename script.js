@@ -394,6 +394,10 @@ function switchTab(tabName) {
         // Initialize GPS map if switching to navigation tab
         if (tabName === 'navigazione') {
             initializeGPSMap();
+            // Fix specifico iOS per mappa itinerario
+            if (typeof forceShowItinerarioMap === 'function') {
+                forceShowItinerarioMap();
+            }
         }
         
         // Manage VR button visibility when switching to virtual tour

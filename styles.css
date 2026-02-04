@@ -1159,6 +1159,61 @@ p {
     box-shadow: none !important;
 }
 
+/* Fix specifico iOS per mappa fullscreen */
+@supports (-webkit-touch-callout: none) {
+    .fullscreen-map-container {
+        /* Forza visibilità container fullscreen su iOS */
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        position: relative !important;
+        /* Assicura dimensioni corrette */
+        height: 100vh !important;
+        width: 100vw !important;
+        min-height: 100vh !important;
+        max-height: 100vh !important;
+    }
+    
+    .fullscreen-map, #gps-map.fullscreen-map {
+        /* Forza visibilità mappa fullscreen su iOS */
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        height: 100vh !important;
+        width: 100vw !important;
+        min-height: 100vh !important;
+        /* Rimuove trasformazioni */
+        transform: none !important;
+        -webkit-transform: none !important;
+        /* Forza rendering layer */
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+        isolation: isolate !important;
+    }
+    
+    /* Assicura che la sezione navigazione sia visibile */
+    #navigazione.section {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+    
+    /* Fix per sezione navigazione fullscreen */
+    #navigazione.section .fullscreen-map-container {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        z-index: 1 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+    }
+}
+
 /* Map Overlay Controls */
 .map-overlay-controls {
     position: absolute;
