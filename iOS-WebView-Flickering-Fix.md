@@ -10,63 +10,36 @@
 - Il contenuto principale NON ha accelerazione hardware dedicata
 - iOS WebView fa repaint del contenuto ad ogni tap, ma non della navbar
 
-## ✅ SOLUZIONE IMPLEMENTATA E TESTATA (CSS Fix)
-
-**BREAKTHROUGH**: La navbar in basso NON lampeggia perché ha già un compositing layer dedicato!
-**SOLUZIONE**: Replicare le stesse proprietà di compositing su tutto il contenuto principale.
+## ✅ SOLUZIONE IMPLEMENTATA (CSS Fix)
 
 ```css
-/* iOS/iPadOS WebView Anti-Flickering - IMPLEMENTATO in styles.css */
+/* iOS anti-flickering - SOLUZIONE MIRATA basata su indizio navbar */
 @supports (-webkit-touch-callout: none) {
     /* FORCE COMPOSITING LAYER sul contenuto principale (come la navbar) */
-    .container, .section, .hero-section, .monument-card, 
-    .location-card, .featured-card, .filter-container,
-    .quiz-container, main, #main-content, body {
+    body, html, .container, main, #app, 
+    .section, .hero-section, .monument-card, .location-card,
+    .featured-card, .filter-container {
         -webkit-transform: translateZ(0) !important;
         transform: translateZ(0) !important;
         -webkit-backface-visibility: hidden !important;
         backface-visibility: hidden !important;
         will-change: transform !important;
-        -webkit-perspective: 1000px !important;
-        perspective: 1000px !important;
     }
     
     /* PREVENT TAP REPAINT */
     * {
         -webkit-tap-highlight-color: transparent !important;
         -webkit-touch-callout: none !important;
-        -webkit-user-select: none !important;
-        user-select: none !important;
     }
     
-    /* Mantieni selezionabilità dove necessario */
-    input, textarea, [contenteditable="true"], .selectable-text {
-        -webkit-user-select: text !important;
-        user-select: text !important;
-    }
-    
-    /* NON toccare navbar/header - funzionano già perfettamente */
-    .bottom-nav, .bottom-nav *, .top-header, .top-header *,
-    .site-footer, .site-footer * {
+    /* NON toccare la navbar - funziona già perfettamente */
+    .bottom-nav, .bottom-nav * {
         will-change: auto !important;
-    }
-    
-    /* Fix sezioni che switchano */
-    .section {
-        -webkit-transform: translate3d(0, 0, 0) !important;
-        transform: translate3d(0, 0, 0) !important;
-    }
-    
-    /* iOS WebView body optimization */
-    body {
-        -webkit-overflow-scrolling: touch !important;
-        overflow-scrolling: touch !important;
     }
 }
 ```
 
-**Status**: ✅ IMPLEMENTATO in styles.css - Ready per test iOS!
-**Test Required**: Verificare su Safari iOS/iPad che il flickering sia eliminato.
+**Status**: ✅ IMPLEMENTATO nel progetto, ready per test!
 
 ---
 
