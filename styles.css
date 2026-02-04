@@ -6357,29 +6357,9 @@ button:focus,
     }
 }
 
-/* Fix flickering REPLICANDO proprietà navbar/footer che funzionano */
-.ios-webview *:not(.bottom-nav):not(.bottom-nav *):not(.footer):not(.footer *) {
-    /* REPLICA esatta di navbar/footer properties */
-    position: relative !important;
-    z-index: 999 !important;
-    touch-action: manipulation !important;
-    transform: translateZ(0) !important;
-    -webkit-backface-visibility: hidden !important;
-    backface-visibility: hidden !important;
-    will-change: transform !important;
-    -webkit-touch-callout: none !important;
-    -webkit-user-select: none !important;
-    user-select: none !important;
-}
-
-/* PRESERVA navbar e footer ESATTAMENTE come sono (funzionano già) */
-.ios-webview .bottom-nav,
-.ios-webview .bottom-nav *,
-.ios-webview .footer,
-.ios-webview .footer * {
-    position: revert !important;
-    z-index: revert !important;
-    transform: revert !important;
-    will-change: revert !important;
-    touch-action: revert !important;
+/* iOS anti-flickering - Fix JavaScript senza interferenze */
+@supports (-webkit-touch-callout: none) {
+    * {
+        -webkit-tap-highlight-color: transparent !important;
+    }
 }

@@ -171,57 +171,8 @@ document.addEventListener('DOMContentLoaded', function() {
             );
         }
         
-        // NUOVO: Fix flickering REPLICANDO navbar e footer (che non hanno flickering!)
-        console.log('Applicando fix anti-flickering basato su navbar + footer...');
-        
-        // ANALISI: navbar e footer NON hanno flickering perché hanno:
-        // 1. z-index: 1000
-        // 2. position fixed/relative
-        // 3. touch-action: manipulation
-        // 4. background solido
-        
-        const applyAntiFlickeringFix = () => {
-            // Elementi che NON devono essere modificati (già funzionanti)
-            const excludeSelectors = [
-                '.bottom-nav', '.bottom-nav *',
-                '.footer', '.footer *', '.footer-content', '.footer-logos', '.footer-logo', '.footer-text'
-            ];
-            
-            // Seleziona TUTTO il contenuto principale
-            const allElements = document.querySelectorAll('body, body *');
-            let fixedCount = 0;
-            
-            allElements.forEach(element => {
-                // Skip se è navbar o footer (già funzionano)
-                const isExcluded = excludeSelectors.some(selector => 
-                    element.matches && element.matches(selector)
-                );
-                
-                if (!isExcluded && !element.closest('.bottom-nav') && !element.closest('.footer')) {
-                    // REPLICA proprietà di navbar/footer
-                    element.style.position = element.style.position || 'relative';
-                    element.style.zIndex = element.style.zIndex || '999';
-                    element.style.touchAction = 'manipulation';
-                    element.style.webkitTouchCallout = 'none';
-                    element.style.webkitUserSelect = 'none';
-                    
-                    // Hardware acceleration come navbar
-                    element.style.transform = 'translateZ(0)';
-                    element.style.webkitBackfaceVisibility = 'hidden';
-                    element.style.willChange = 'transform';
-                    
-                    fixedCount++;
-                }
-            });
-            
-            console.log(`Fix anti-flickering applicato a ${fixedCount} elementi (preservando navbar + footer)`);
-        };
-        
-        // Applica il fix in fasi multiple
-        document.addEventListener('DOMContentLoaded', applyAntiFlickeringFix);
-        setTimeout(applyAntiFlickeringFix, 100);
-        setTimeout(applyAntiFlickeringFix, 500);
-        setTimeout(applyAntiFlickeringFix, 1000); // Extra per elementi caricati dinamicamente
+        // Aggiungi classe CSS per iOS-specific styling
+        document.documentElement.classList.add('ios-webview');
         
         // Aggiungi classe CSS per iOS-specific styling
         document.documentElement.classList.add('ios-webview');
