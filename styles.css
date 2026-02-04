@@ -1140,6 +1140,32 @@ p {
         opacity: 1 !important;
         visibility: visible !important;
         display: block !important;
+        /* Fix specifici iOS per canvas WebGL */
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+        /* Forza rendering context */
+        image-rendering: -webkit-optimize-contrast !important;
+        image-rendering: crisp-edges !important;
+    }
+    
+    /* Fix per container canvas MapLibre su iOS */
+    .maplibregl-canvas-container, .mapboxgl-canvas-container {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        /* Assicura che non ci siano interferenze di rendering */
+        background-color: transparent !important;
+        overflow: visible !important;
+    }
+    
+    /* Fix specifici WebGL per iOS */
+    canvas[data-engine="webgl"], canvas[data-engine="webgl2"] {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        /* Forza hardware acceleration */
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
     }
 }
 

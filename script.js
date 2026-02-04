@@ -4355,10 +4355,43 @@ async function initializeGPSMap() {
     if (gpsMap) return;
     
     try {
-        // Initialize MapLibre GL JS map with CartoDB Positron style
-        gpsMap = new maplibregl.Map({
+        // Controllo specifico iOS WebView
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
+        // iOS WebView spesso ha problemi con WebGL
+        let mapOptions = {
             container: 'gps-map',
-            style: {
+            center: [14.641, 37.650], // Regalbuto center
+            zoom: 14,
+            pitch: 0,
+            bearing: 0
+        };
+        
+        // Configurazione specifica per iOS
+        if (isIOS) {
+            console.log('🍎 iOS detected - using iOS-specific map configuration');
+            
+            // Verifica supporto WebGL
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            
+            if (!gl) {
+                console.warn('⚠️ WebGL not supported - using raster fallback');
+                // Fallback per dispositivi senza WebGL
+                mapOptions.style = 'https://demotiles.maplibre.org/style.json';
+                mapOptions.fadeDuration = 0; // Disabilita animazioni
+                mapOptions.crossSourceCollisions = false;
+            } else {
+                console.log('✅ WebGL supported on iOS');
+                mapOptions.preserveDrawingBuffer = true;
+                mapOptions.failIfMajorPerformanceCaveat = false;
+                mapOptions.antialias = false; // Migliore performance su iOS
+            }
+        }
+        
+        // Style configuration
+        if (!mapOptions.style) {
+            mapOptions.style = {
                 version: 8,
                 glyphs: 'https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf',
                 sources: {
@@ -4379,12 +4412,11 @@ async function initializeGPSMap() {
                     type: 'raster',
                     source: 'carto-positron'
                 }]
-            },
-            center: [14.641, 37.650], // Regalbuto center
-            zoom: 14,
-            pitch: 0,
-            bearing: 0
-        });
+            };
+        }
+        
+        // Initialize MapLibre GL JS map
+        gpsMap = new maplibregl.Map(mapOptions);
         
         // Add navigation controls
         gpsMap.addControl(new maplibregl.NavigationControl({
@@ -4406,11 +4438,49 @@ async function initializeGPSMap() {
         
         // Wait for map to load
         gpsMap.on('load', async () => {
-            console.log('GPS Map loaded');
+            console.log('GPS Map loaded successfully');
+            
+            // Fix specifico iOS: forza refresh canvas
+            if (isIOS) {
+                setTimeout(() => {
+                    try {
+                        gpsMap.resize();
+                        gpsMap.redraw();
+                        console.log('✅ iOS map refresh completed');
+                    } catch (e) {
+                        console.warn('Map refresh failed:', e);
+                    }
+                }, 500);
+            }
+            
             await loadRouteData();
             setupRouteVisualization();
             await loadMonumentsOnMap();
             updateCheckpointsList();
+        });
+        
+        // Gestione errori specifici iOS
+        gpsMap.on('error', (e) => {
+            console.error('Map error:', e);
+            
+            if (isIOS && e.error && e.error.message) {
+                console.log('🍎 iOS map error detected - attempting recovery');
+                
+                // Retry con configurazione semplificata per iOS
+                setTimeout(() => {
+                    try {
+                        if (gpsMap) {
+                            gpsMap.remove();
+                        }
+                        gpsMap = null;
+                        
+                        // Reinizializza con stile più semplice
+                        initializeSimpleIOSMap();
+                    } catch (retryError) {
+                        console.error('Map retry failed:', retryError);
+                    }
+                }, 1000);
+            }
         });
         
         // Handle geolocation events
@@ -4423,7 +4493,66 @@ async function initializeGPSMap() {
         
     } catch (error) {
         console.error('Error initializing GPS map:', error);
+        
+        // Se siamo su iOS e c'è un errore, prova con mappa semplificata
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOS) {
+            console.log('🍎 Attempting iOS fallback map...');
+            try {
+                await initializeSimpleIOSMap();
+                return;
+            } catch (fallbackError) {
+                console.error('iOS fallback map failed:', fallbackError);
+            }
+        }
+        
         alert('Errore nell\'inizializzazione della mappa GPS. Riprova più tardi.');
+    }
+}
+
+// Fallback semplificato per iOS
+async function initializeSimpleIOSMap() {
+    try {
+        console.log('🔧 Initializing simplified iOS map...');
+        
+        gpsMap = new maplibregl.Map({
+            container: 'gps-map',
+            style: 'https://demotiles.maplibre.org/style.json', // Stile preconfigurato
+            center: [14.641, 37.650],
+            zoom: 14,
+            pitch: 0,
+            bearing: 0,
+            // Configurazione ottimizzata per iOS
+            fadeDuration: 0,
+            crossSourceCollisions: false,
+            preserveDrawingBuffer: true,
+            antialias: false,
+            failIfMajorPerformanceCaveat: false
+        });
+        
+        gpsMap.on('load', async () => {
+            console.log('✅ Simplified iOS map loaded');
+            
+            // Carica solo i dati essenziali
+            await loadRouteData();
+            await loadMonumentsOnMap();
+            updateCheckpointsList();
+            
+            // Force refresh
+            setTimeout(() => {
+                gpsMap.resize();
+                console.log('🔄 iOS map resized');
+            }, 1000);
+        });
+        
+        // Add basic controls
+        gpsMap.addControl(new maplibregl.NavigationControl(), 'top-right');
+        
+        console.log('🍎 iOS fallback map initialized');
+        
+    } catch (error) {
+        console.error('Simplified iOS map failed:', error);
+        throw error;
     }
 }
 

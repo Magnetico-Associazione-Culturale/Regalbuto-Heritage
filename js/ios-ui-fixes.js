@@ -268,17 +268,39 @@
         setTimeout(() => {
             fixMapVisibility();
             
+            // Force canvas refresh su iOS
+            const canvases = document.querySelectorAll('.maplibregl-canvas, .mapboxgl-canvas');
+            canvases.forEach(canvas => {
+                canvas.style.setProperty('opacity', '1', 'important');
+                canvas.style.setProperty('visibility', 'visible', 'important');
+                canvas.style.setProperty('display', 'block', 'important');
+                
+                // Force redraw
+                const context = canvas.getContext('webgl') || canvas.getContext('2d');
+                if (context && context.clear) {
+                    try {
+                        // Force a redraw
+                        context.clear(context.COLOR_BUFFER_BIT);
+                    } catch (e) {
+                        console.log('Canvas clear failed (normal):', e.message);
+                    }
+                }
+            });
+            
             // Trigger resize event per MapLibre
             if (window.gpsMap) {
                 try {
-                    window.gpsMap.resize();
-                    console.log('✅ Triggered map resize');
+                    setTimeout(() => {
+                        window.gpsMap.resize();
+                        window.gpsMap.redraw();
+                        console.log('✅ Triggered map resize and redraw');
+                    }, 200);
                 } catch (e) {
                     console.warn('Map resize failed:', e);
                 }
             }
             
-            console.log('✅ Forced itinerario map visibility');
+            console.log('✅ Forced itinerario map visibility with iOS fixes');
         }, 100);
     };
     
