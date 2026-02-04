@@ -6350,27 +6350,118 @@ button:focus,
     }
 }
 
-/* iOS anti-flickering - Fix JavaScript senza interferenze */
+/* ===== iOS/iPadOS WebView Anti-Flickering - SOLUZIONE COMPLETA ===== */
+
+/* Basato sull'analisi: navbar NON lampeggia, contenuto principale SI */
+/* Soluzione: Replica le proprietà di compositing della navbar su tutto il contenuto */
+
 @supports (-webkit-touch-callout: none) {
+    
+    /* FORCE COMPOSITING LAYER su tutti gli elementi principali */
+    /* Questi elementi ora avranno lo stesso trattamento della navbar */
+    .container,
+    .section,
+    .section.active,
+    .hero-section,
+    .content-section,
+    .monument-card,
+    .featured-card, 
+    .location-card,
+    .filter-container,
+    .quiz-container,
+    .pano-viewer,
+    .virtual-tour-container,
+    .info-grid,
+    .educational-block,
+    .timeline-container,
+    .search-container,
+    .results-container,
+    #main-content,
+    main,
+    body {
+        /* Crea compositing layer separato come la navbar */
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+        -webkit-backface-visibility: hidden !important;
+        backface-visibility: hidden !important;
+        will-change: transform !important;
+        
+        /* iOS WebView specific optimizations */
+        -webkit-perspective: 1000px !important;
+        perspective: 1000px !important;
+    }
+    
+    /* PREVENT TAP REPAINT su tutto il contenuto */
     * {
         -webkit-tap-highlight-color: transparent !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        user-select: none !important;
+    }
+    
+    /* Mantieni selezionabilità dove necessario */
+    input, textarea, [contenteditable="true"], .selectable-text {
+        -webkit-user-select: text !important;
+        user-select: text !important;
+    }
+    
+    /* NON toccare navbar e footer - funzionano già perfettamente */
+    .bottom-nav, .bottom-nav *,
+    .top-header, .top-header *,
+    .site-footer, .site-footer * {
+        will-change: auto !important;
+        /* Mantieni le loro proprietà originali */
+    }
+    
+    /* Fix specifico per sezioni che switchano */
+    .section {
+        -webkit-transform: translate3d(0, 0, 0) !important;
+        transform: translate3d(0, 0, 0) !important;
+    }
+    
+    /* iOS WebView body optimization */
+    body {
+        -webkit-overflow-scrolling: touch !important;
+        overflow-scrolling: touch !important;
+    }
+    
+    /* Assicurati che i controlli della mappa non vengano affetti */
+    #gps-map, #gps-map *, 
+    .maplibregl-map, .maplibregl-canvas-container,
+    .maplibregl-canvas, .maplibregl-ctrl, .maplibregl-ctrl-group {
+        -webkit-user-select: auto !important;
+        user-select: auto !important;
     }
 }
 
-/* Fix flickering tramite JavaScript class (non interferisce con navbar) */
-.ios-webview * {
-    /* FORCE COMPOSITING LAYER su TUTTO il contenuto */
-    transform: translateZ(0) !important;
-    -webkit-transform: translateZ(0) !important;
-    -webkit-backface-visibility: hidden !important;
-    backface-visibility: hidden !important;
-    will-change: transform !important;
+/* ===== DEBUG: Verifica Compositing Layers ===== */
+/* Decommentare solo per debug - lasciare commentato in produzione */
+/*
+@supports (-webkit-touch-callout: none) {
+    .container::before {
+        content: "✅ Compositing Layer Active";
+        position: fixed;
+        top: 80px;
+        right: 10px;
+        background: green;
+        color: white;
+        padding: 5px;
+        font-size: 10px;
+        z-index: 9999;
+        border-radius: 3px;
+    }
+    
+    .bottom-nav::after {
+        content: "🔵 Navbar Layer";
+        position: fixed;
+        bottom: 80px;
+        right: 10px;
+        background: blue;
+        color: white;
+        padding: 5px;
+        font-size: 10px;
+        z-index: 9999;
+        border-radius: 3px;
+    }
 }
-
-/* PRESERVA navbar - override per mantenere funzionalità */
-.ios-webview .bottom-nav,
-.ios-webview .bottom-nav * {
-    will-change: auto !important;
-    transform: none !important;
-    -webkit-transform: none !important;
-}
+*/
