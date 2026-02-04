@@ -260,6 +260,7 @@ p {
     background: rgba(255, 255, 255, 0.95);
     border: 2px solid var(--border-color);
     border-radius: 50% !important; /* Forza border-radius circolare */
+    -webkit-border-radius: 50% !important;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -272,6 +273,21 @@ p {
     /* Esclude dalle trasformazioni iOS */
     transform: none !important;
     -webkit-transform: none !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+}
+
+/* Override specifico iOS per pulsante chiusura */
+@supports (-webkit-touch-callout: none) {
+    .info-close-btn {
+        position: fixed !important; /* Usa fixed invece di absolute per iOS */
+        top: 20px !important;
+        right: 20px !important;
+        left: unset !important;
+        margin-left: 0 !important;
+        transform: translateX(0) !important;
+        -webkit-transform: translateX(0) !important;
+    }
 }
 
 .info-close-btn:hover {
@@ -879,6 +895,7 @@ p {
     padding: 1rem 2rem;
     border: none;
     border-radius: 12px !important; /* Forza border-radius - importante per iOS */
+    -webkit-border-radius: 12px !important; /* Webkit specifico */
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -892,6 +909,18 @@ p {
     justify-content: center;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     overflow: hidden; /* Previene overflow che può rovinare border-radius */
+    -webkit-appearance: none !important; /* Rimuove stile nativo iOS */
+    appearance: none !important;
+}
+
+/* Override aggressivo per iOS - forza border-radius su TUTTI i pulsanti */
+@supports (-webkit-touch-callout: none) {
+    button, .btn, input[type="button"], input[type="submit"] {
+        border-radius: 12px !important;
+        -webkit-border-radius: 12px !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+    }
 }
 
 /* Hero Actions Button Styling */
@@ -1079,6 +1108,39 @@ p {
     border-radius: 16px !important;
     overflow: hidden;
     box-shadow: 0 6px 25px var(--shadow-medium);
+    /* Assicura visibilità su iOS */
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}
+
+/* Fix specifico iOS per mappa */
+@supports (-webkit-touch-callout: none) {
+    .map-container, #gps-map {
+        /* Forza visibilità della mappa su iOS */
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        height: 400px !important; /* Forza altezza per iOS */
+        width: 100% !important;
+        /* Rimuove trasformazioni che possono nascondere la mappa */
+        transform: none !important;
+        -webkit-transform: none !important;
+        will-change: auto !important;
+        /* Assicura che la mappa non sia clippata */
+        overflow: visible !important;
+        /* Forza rendering layer */
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+        isolation: isolate !important;
+    }
+    
+    /* Assicura che canvas mappa siano visibili */
+    .mapboxgl-canvas, .maplibregl-canvas {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+    }
 }
 
 /* Full Screen Map Styles */
@@ -6418,15 +6480,29 @@ button:focus,
 
 /* Specifico per iOS Safari/WebView */
 @supports (-webkit-appearance: none) {
-    input, select, textarea, button {
+    input, select, textarea {
         -webkit-appearance: none !important;
         appearance: none !important;
         border-radius: 0 !important;
     }
     
-    /* Ripristina border-radius per i nostri elementi */
-    .btn, button {
-        border-radius: var(--border-radius) !important;
+    /* MANTIENE border-radius per pulsanti - NON sovrascrive */
+    button {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        /* RIMUOVO border-radius: 0 che rovina tutto */
+    }
+    
+    /* Forza border-radius per i nostri elementi */
+    .btn, button, .info-close-btn {
+        border-radius: 12px !important;
+        -webkit-border-radius: 12px !important;
+    }
+    
+    /* Override specifico per pulsante chiusura */
+    .info-close-btn {
+        border-radius: 50% !important;
+        -webkit-border-radius: 50% !important;
     }
 }
 
