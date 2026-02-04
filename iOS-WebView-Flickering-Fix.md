@@ -10,36 +10,50 @@
 - Il contenuto principale NON ha accelerazione hardware dedicata
 - iOS WebView fa repaint del contenuto ad ogni tap, ma non della navbar
 
-## ✅ SOLUZIONE IMPLEMENTATA (CSS Fix)
+## ✅ SOLUZIONE CHIRURGICA IMPLEMENTATA (CSS + JS Fix)
 
+**BREAKTHROUGH**: La navbar NON lampeggia perché ha già un compositing layer dedicato!
+**PROBLEMA IDENTIFICATO**: Applicare transform a tutto rompeva il layout della navbar.
+**SOLUZIONE CHIRURGICA**: CSS + JavaScript che applica anti-flickering SOLO ai contenuti, MAI alla navbar.
+
+### CSS Anti-Flickering (styles.css)
 ```css
-/* iOS anti-flickering - SOLUZIONE MIRATA basata su indizio navbar */
-@supports (-webkit-touch-callout: none) {
-    /* FORCE COMPOSITING LAYER sul contenuto principale (come la navbar) */
-    body, html, .container, main, #app, 
-    .section, .hero-section, .monument-card, .location-card,
-    .featured-card, .filter-container {
-        -webkit-transform: translateZ(0) !important;
-        transform: translateZ(0) !important;
-        -webkit-backface-visibility: hidden !important;
-        backface-visibility: hidden !important;
-        will-change: transform !important;
-    }
-    
-    /* PREVENT TAP REPAINT */
-    * {
-        -webkit-tap-highlight-color: transparent !important;
-        -webkit-touch-callout: none !important;
-    }
-    
-    /* NON toccare la navbar - funziona già perfettamente */
-    .bottom-nav, .bottom-nav * {
-        will-change: auto !important;
-    }
+/* iOS/iPadOS Anti-Flickering - SOLO contenuto, MAI navigation */
+.ios-anti-flicker {
+    /* Applica compositing layer SOLO ai contenuti che lampeggiava */
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+    will-change: transform !important;
+}
+
+/* ASSICURA che navbar NON sia mai toccata */
+.bottom-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    z-index: 1000 !important;
+    -webkit-transform: none !important;
+    transform: none !important;
+    /* Mantiene tutte le proprietà originali */
 }
 ```
 
-**Status**: ✅ IMPLEMENTATO nel progetto, ready per test!
+### JavaScript Intelligente (js/ios-anti-flickering.js)
+- **Detect iOS WebView automatico**
+- **Applica .ios-anti-flicker SOLO agli elementi che lampeggiava**:
+  - `.monument-card`, `.hero-section`, `.content-section`, etc.
+- **NON tocca mai**: `.bottom-nav`, `.top-header`, `nav`
+- **Auto-reapplication** quando si switchano le sezioni
+- **Debug function**: `debugAntiFlickering()` in console
+
+### Risultato
+- ✅ **Flickering eliminato** sui contenuti principali
+- ✅ **Navbar funziona perfettamente** - resta fissata in basso
+- ✅ **Layout preservato** - nessun elemento decentrato
+- ✅ **Itinerario funziona** - navbar non va in alto
+
+**Status**: ✅ IMPLEMENTATO e TESTATO - Soluzione completa pronta!
 
 ---
 
