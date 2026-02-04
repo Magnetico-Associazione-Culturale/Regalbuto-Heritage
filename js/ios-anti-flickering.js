@@ -53,7 +53,15 @@
                 if (element.closest('.bottom-nav') || 
                     element.closest('.top-header') || 
                     element.closest('nav') ||
+                    element.closest('.maplibregl-control-container') ||
+                    element.closest('.mapboxgl-control-container') ||
                     element.matches('.btn, button, .info-close-btn') ||
+                    element.matches('.maplibregl-ctrl, .mapboxgl-ctrl') ||
+                    element.matches('.maplibregl-ctrl-group, .mapboxgl-ctrl-group') ||
+                    element.matches('.maplibregl-ctrl-zoom-in, .mapboxgl-ctrl-zoom-in') ||
+                    element.matches('.maplibregl-ctrl-zoom-out, .mapboxgl-ctrl-zoom-out') ||
+                    element.matches('.maplibregl-ctrl-compass, .mapboxgl-ctrl-compass') ||
+                    element.matches('.maplibregl-ctrl-geolocate, .mapboxgl-ctrl-geolocate') ||
                     element.matches('.maplibregl-user-location-dot, .mapboxgl-user-location-dot') ||
                     element.matches('.maplibregl-user-location-accuracy-circle, .mapboxgl-user-location-accuracy-circle')) {
                     return;

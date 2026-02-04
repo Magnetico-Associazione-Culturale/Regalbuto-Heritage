@@ -4452,6 +4452,9 @@ async function initializeGPSMap() {
                         if (window.fixMapLibreControls && typeof window.fixMapLibreControls === 'function') {
                             window.fixMapLibreControls();
                         }
+                        if (window.fixMapZoomControls && typeof window.fixMapZoomControls === 'function') {
+                            window.fixMapZoomControls();
+                        }
                     } catch (e) {
                         console.warn('Map refresh failed:', e);
                     }
@@ -4461,6 +4464,9 @@ async function initializeGPSMap() {
                 setTimeout(() => {
                     if (window.fixMapLibreControls && typeof window.fixMapLibreControls === 'function') {
                         window.fixMapLibreControls();
+                    }
+                    if (window.fixMapZoomControls && typeof window.fixMapZoomControls === 'function') {
+                        window.fixMapZoomControls();
                     }
                 }, 1000);
             }

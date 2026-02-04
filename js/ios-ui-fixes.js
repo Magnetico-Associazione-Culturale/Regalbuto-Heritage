@@ -137,6 +137,35 @@
         }
     }
     
+    // Fix specifico per controlli zoom MapLibre
+    function fixMapZoomControls() {
+        if (!isIOS()) return;
+        
+        // Assicura visibilità controlli zoom
+        const zoomControls = document.querySelectorAll('.maplibregl-ctrl-group, .mapboxgl-ctrl-group, .maplibregl-ctrl-zoom-in, .mapboxgl-ctrl-zoom-in, .maplibregl-ctrl-zoom-out, .mapboxgl-ctrl-zoom-out');
+        zoomControls.forEach(control => {
+            control.style.setProperty('visibility', 'visible', 'important');
+            control.style.setProperty('opacity', '1', 'important');
+            control.style.setProperty('display', 'block', 'important');
+            control.style.setProperty('pointer-events', 'auto', 'important');
+            control.style.setProperty('position', 'relative', 'important');
+        });
+        
+        // Assicura container controlli
+        const controlContainers = document.querySelectorAll('.maplibregl-control-container, .mapboxgl-control-container');
+        controlContainers.forEach(container => {
+            container.style.setProperty('visibility', 'visible', 'important');
+            container.style.setProperty('opacity', '1', 'important');
+            container.style.setProperty('display', 'block', 'important');
+            container.style.setProperty('position', 'absolute', 'important');
+            container.style.setProperty('pointer-events', 'auto', 'important');
+        });
+        
+        if (zoomControls.length > 0) {
+            console.log('🔍 Fixed zoom controls visibility for iOS');
+        }
+    }
+
     // Fix specifico per pallino posizione utente (NON toccare i controlli di navigazione)
     function fixMapLibreControls() {
         if (!isIOS()) return;
@@ -161,6 +190,7 @@
         fixButtonBorderRadius();
         fixMapVisibility();
         fixMapLibreControls();
+        fixMapZoomControls();
     }
     
     // Osserva cambiamenti DOM per ri-applicare i fix
@@ -180,6 +210,12 @@
                             if (node.matches?.('button, .btn') || 
                                 node.querySelector?.('button, .btn')) {
                                 needsButtonFix = true;
+                            }
+                            
+                            // Check per nuovi controlli zoom
+                            if (node.matches?.('.maplibregl-ctrl-group, .mapboxgl-ctrl-group, .maplibregl-ctrl-zoom-in, .mapboxgl-ctrl-zoom-in, .maplibregl-ctrl-zoom-out, .mapboxgl-ctrl-zoom-out') ||
+                                node.querySelector?.('.maplibregl-ctrl-group, .mapboxgl-ctrl-group, .maplibregl-ctrl-zoom-in, .mapboxgl-ctrl-zoom-in, .maplibregl-ctrl-zoom-out, .mapboxgl-ctrl-zoom-out')) {
+                                needsMapControlsFix = true;
                             }
                             
                             // Check per nuovi controlli posizione utente (non controlli navigazione)
@@ -211,7 +247,10 @@
                 setTimeout(fixMapVisibility, 100);
             }
             if (needsMapControlsFix) {
-                setTimeout(fixMapLibreControls, 100);
+                setTimeout(() => {
+                    fixMapLibreControls();
+                    fixMapZoomControls();
+                }, 100);
             }
         });
         
@@ -221,8 +260,9 @@
         });
     }
     
-    // Esponi la funzione globalmente per chiamate esterne
+    // Esponi le funzioni globalmente per chiamate esterne
     window.fixMapLibreControls = fixMapLibreControls;
+    window.fixMapZoomControls = fixMapZoomControls;
 
     // Inizializza
     if (document.readyState === 'loading') {
