@@ -6350,17 +6350,40 @@ button:focus,
     }
 }
 
-/* iOS anti-flickering - SOLO le regole necessarie */
+/* iOS anti-flickering - SOLUZIONE MIRATA basata su indizio navbar */
 @supports (-webkit-touch-callout: none) {
-    /* Rimuovi tap highlights */
-    * {
-        -webkit-tap-highlight-color: transparent !important;
+    /* 
+     * INDIZIO CHIAVE: La navbar NON lampeggia, tutto il resto SÌ
+     * SOLUZIONE: Applicare le stesse ottimizzazioni della navbar al contenuto
+     */
+    
+    /* FORCE COMPOSITING LAYER sul contenuto principale (come la navbar) */
+    body, html, .container, main, #app, 
+    .section, .hero-section, .monument-card, .location-card,
+    .featured-card, .filter-container {
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+        -webkit-backface-visibility: hidden !important;
+        backface-visibility: hidden !important;
+        will-change: transform !important;
     }
     
-    /* Previeni selezione testo accidentale */
-    body {
-        -webkit-user-select: none !important;
-        user-select: none !important;
+    /* PREVENT TAP REPAINT (solo le basi necessarie) */
+    * {
+        -webkit-tap-highlight-color: transparent !important;
         -webkit-touch-callout: none !important;
+    }
+    
+    /* NON toccare la navbar - funziona già perfettamente */
+    .bottom-nav, .bottom-nav * {
+        will-change: auto !important; /* Mantieni comportamento attuale */
+        /* La navbar ha già il giusto compositing layer */
+    }
+    
+    /* Force compositing anche sui contenitori di scroll */
+    .tab-content, .monuments-grid, .locations-grid {
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+        will-change: transform !important;
     }
 }
