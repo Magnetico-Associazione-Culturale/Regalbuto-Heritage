@@ -147,22 +147,51 @@ document.addEventListener('DOMContentLoaded', function() {
     // Populate virtual tour locations dynamically
     populateVirtualTourLocations();
     
-    // iOS WebView touch optimizations - SOLO viewport fix
+    // Ottimizzazioni specifiche per iOS WebView touch events
     if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-        console.log('Applicando correzioni viewport iOS...');
+        console.log('Applicando correzioni touch iOS...');
         
-        /* 
-         * NOTA: Il flickering sui tap in iOS WebView è un problema nativo che richiede
-         * configurazione a livello app nativa. Soluzioni CSS/JS non sono efficaci.
-         * 
-         * Possibili soluzioni native:
-         * 1. webView.isOpaque = false
-         * 2. webView.backgroundColor = UIColor.clear
-         * 3. Disabilitare hardware acceleration temporaneamente
-         * 4. Usare WKWebView invece di UIWebView
-         */
+        // Disabilita il comportamento touch predefinito per prevenire flickering
+        document.addEventListener('touchstart', function(e) {
+            // Non impedire il touch sui form elements
+            if (!['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) {
+                const targetElement = e.target.closest('button, .btn, .nav-item, .monument-card');
+                if (targetElement) {
+                    // Aggiungi classe active per feedback visivo immediato
+                    targetElement.classList.add('ios-touch-active');
+                }
+            }
+        }, { passive: true });
         
-        // Solo ottimizzazione viewport - il flickering è un problema WebView nativo
+        document.addEventListener('touchend', function(e) {
+            // Rimuovi classe active con delay per evitare flickering
+            const activeElements = document.querySelectorAll('.ios-touch-active');
+            activeElements.forEach(element => {
+                setTimeout(() => {
+                    element.classList.remove('ios-touch-active');
+                }, 150);
+            });
+        }, { passive: true });
+        
+        document.addEventListener('touchcancel', function(e) {
+            // Pulisci active states su cancel
+            const activeElements = document.querySelectorAll('.ios-touch-active');
+            activeElements.forEach(element => {
+                element.classList.remove('ios-touch-active');
+            });
+        }, { passive: true });
+        
+        // Previeni il zoom doppio tap che può causare flickering
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+        
+        // Ottimizzazione per il viewport meta tag
         const viewportMeta = document.querySelector('meta[name="viewport"]');
         if (viewportMeta) {
             viewportMeta.setAttribute('content', 
@@ -170,50 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 'user-scalable=no, viewport-fit=cover, shrink-to-fit=no'
             );
         }
-        
-        // NUOVO: Fix flickering JavaScript COMPLETO senza toccare navbar
-        console.log('Applicando fix flickering iOS JavaScript POTENZIATO...');
-        
-        // FASE 1: Applica subito ai elementi principali
-        const immediateElements = document.querySelectorAll('body, html, main, .container');
-        immediateElements.forEach(element => {
-            if (!element.closest('.bottom-nav')) {
-                element.style.transform = 'translateZ(0)';
-                element.style.webkitTransform = 'translateZ(0)';
-                element.style.webkitBackfaceVisibility = 'hidden';
-                element.style.backfaceVisibility = 'hidden';
-                element.style.willChange = 'transform';
-                element.style.touchAction = 'manipulation';
-                element.style.webkitTouchCallout = 'none';
-                element.style.webkitUserSelect = 'none';
-            }
-        });
-        
-        // FASE 2: Applica a TUTTO il contenuto quando DOM è pronto
-        const applyFlickeringFix = () => {
-            // Seleziona TUTTI gli elementi visibili eccetto navbar
-            const allElements = document.querySelectorAll('*:not(.bottom-nav):not(.bottom-nav *)');
-            let fixedCount = 0;
-            
-            allElements.forEach(element => {
-                // Escludi elementi della navbar
-                if (!element.closest('.bottom-nav')) {
-                    element.style.transform = 'translateZ(0)';
-                    element.style.webkitTransform = 'translateZ(0)';
-                    element.style.webkitBackfaceVisibility = 'hidden';
-                    element.style.backfaceVisibility = 'hidden';
-                    element.style.willChange = 'transform';
-                    fixedCount++;
-                }
-            });
-            
-            console.log('Fix anti-flickering applicato a', fixedCount, 'elementi (navbar esclusa)');
-        };
-        
-        // Applica quando DOM è pronto + ritardo per elementi caricati dinamicamente
-        document.addEventListener('DOMContentLoaded', applyFlickeringFix);
-        setTimeout(applyFlickeringFix, 100);
-        setTimeout(applyFlickeringFix, 500);
         
         // Aggiungi classe CSS per iOS-specific styling
         document.documentElement.classList.add('ios-webview');
@@ -408,27 +393,7 @@ function switchTab(tabName) {
         
         // Initialize GPS map if switching to navigation tab
         if (tabName === 'navigazione') {
-            console.log('=== SWITCHING TO NAVIGATION TAB ===');
-            initializeGPSMap().then(() => {
-                console.log('GPS Map initialization completed');
-                // Resize the map after initialization to ensure proper rendering
-                if (gpsMap) {
-                    setTimeout(() => {
-                        console.log('Resizing GPS map...');
-                        gpsMap.resize();
-                        
-                        // Force reload monuments after resize
-                        console.log('Force reloading monuments...');
-                        loadMonumentsOnMap().then(() => {
-                            console.log('Monuments force reload completed');
-                        }).catch(error => {
-                            console.error('Error in force reload monuments:', error);
-                        });
-                    }, 300);
-                }
-            }).catch(error => {
-                console.error('Error initializing GPS map:', error);
-            });
+            initializeGPSMap();
         }
         
         // Manage VR button visibility when switching to virtual tour
@@ -4378,57 +4343,7 @@ let monumentsData = []; // Global variable to store monument data
 
 // GPS Navigation Functions
 async function initializeGPSMap() {
-    if (gpsMap) {
-        console.log('GPS Map already exists, resizing and checking monuments...');
-        gpsMap.resize();
-        
-        // Wait for map to be ready, then check monuments
-        if (gpsMap.isStyleLoaded()) {
-            console.log('Map style is loaded, checking monuments...');
-            const monumentsSource = gpsMap.getSource('monuments');
-            if (!monumentsSource) {
-                console.log('Monuments source not found, reloading...');
-                await loadMonumentsOnMap();
-            } else {
-                console.log('Monuments source already exists');
-            }
-        } else {
-            console.log('Map style not loaded yet, waiting for style.load event...');
-            gpsMap.once('styledata', async () => {
-                console.log('Style loaded, now loading monuments...');
-                await loadMonumentsOnMap();
-            });
-        }
-        return;
-    }
-    
-    console.log('Initializing GPS Map...');
-    
-    // Verify container exists
-    const container = document.getElementById('gps-map');
-    if (!container) {
-        console.error('GPS map container not found!');
-        return;
-    }
-    
-    // Verify container is visible and has dimensions
-    const containerStyle = getComputedStyle(container);
-    console.log('Container dimensions:', {
-        width: container.offsetWidth,
-        height: container.offsetHeight,
-        display: containerStyle.display,
-        visibility: containerStyle.visibility,
-        opacity: containerStyle.opacity
-    });
-    
-    if (container.offsetWidth === 0 || container.offsetHeight === 0) {
-        console.warn('GPS map container has zero dimensions, forcing size...');
-        container.style.width = '100%';
-        container.style.height = '400px';
-        container.style.display = 'block';
-        container.style.visibility = 'visible';
-        container.style.opacity = '1';
-    }
+    if (gpsMap) return;
     
     try {
         // Initialize MapLibre GL JS map with CartoDB Positron style
@@ -4482,45 +4397,12 @@ async function initializeGPSMap() {
         
         // Wait for map to load
         gpsMap.on('load', async () => {
-            console.log('GPS Map loaded successfully');
-            gpsMap.resize(); // Ensure proper rendering
-            
-            // Wait a bit more to ensure everything is ready
-            setTimeout(async () => {
-                try {
-                    console.log('Loading route data...');
-                    await loadRouteData();
-                    console.log('Route data loaded successfully');
-                    
-                    console.log('Setting up route visualization...');
-                    setupRouteVisualization();
-                    console.log('Route visualization setup complete');
-                    
-                    console.log('Loading monuments on map...');
-                    await loadMonumentsOnMap();
-                    console.log('Monuments loaded on map successfully');
-                    
-                    console.log('Updating checkpoints list...');
-                    updateCheckpointsList();
-                    console.log('Checkpoints list updated');
-                } catch (error) {
-                    console.error('Error during map initialization:', error);
-                }
-            }, 500); // Wait 500ms after map load
+            console.log('GPS Map loaded');
+            await loadRouteData();
+            setupRouteVisualization();
+            await loadMonumentsOnMap();
+            updateCheckpointsList();
         });
-
-        // Add error handling
-        gpsMap.on('error', (e) => {
-            console.error('GPS Map error:', e);
-        });
-        
-        // Force render after a timeout if map doesn't load
-        setTimeout(() => {
-            if (gpsMap && gpsMap.getContainer()) {
-                console.log('Forcing map resize after timeout...');
-                gpsMap.resize();
-            }
-        }, 2000);
         
         // Handle geolocation events
         geolocateControl.on('geolocate', (e) => {
@@ -4565,27 +4447,13 @@ function createOptimallyPositionedPopup(coordinates, content, map) {
 
 async function loadRouteData() {
     try {
-        console.log('Fetching route GeoJSON data...');
         const response = await fetch('data/test_itinerario_turistico.geojson');
-        
-        if (!response.ok) {
-            throw new Error(`Failed to fetch route data: ${response.status} ${response.statusText}`);
-        }
-        
         const data = await response.json();
         routeData = data;
-        console.log('Route GeoJSON loaded successfully:', data);
         
         // Load monuments data for checkpoints (since Points are no longer in GeoJSON)
-        console.log('Fetching monuments JSON data...');
         const monumentsResponse = await fetch('data/monuments.json');
-        
-        if (!monumentsResponse.ok) {
-            throw new Error(`Failed to fetch monuments data: ${monumentsResponse.status} ${monumentsResponse.statusText}`);
-        }
-        
         const monumentsData = await monumentsResponse.json();
-        console.log('Monuments JSON loaded successfully:', monumentsData.length, 'monuments');
         
         // Create checkpoints from monuments.json instead of GeoJSON Points
         checkpoints = [];
@@ -4621,20 +4489,15 @@ async function loadRouteData() {
 function setupRouteVisualization() {
     if (!gpsMap || !routeData) {
         console.warn('GPS map or route data not available for route visualization');
-        console.log('GPS map:', !!gpsMap, 'Route data:', !!routeData);
         return;
     }
     
     try {
-        console.log('Setting up route visualization...');
-        console.log('Route data features:', routeData.features?.length);
-        
         // Add route source
         gpsMap.addSource('route', {
             type: 'geojson',
             data: routeData
         });
-        console.log('Route source added to map');
         
         // Add route line layer
         gpsMap.addLayer({
@@ -4652,7 +4515,6 @@ function setupRouteVisualization() {
                 'line-opacity': 0.8
             }
         });
-        console.log('Route line layer added to map');
         
         console.log('Route visualization setup completed successfully');
         
@@ -4675,33 +4537,17 @@ function setupRouteVisualization() {
 }
 
 async function loadMonumentsOnMap() {
-    console.log('=== LOAD MONUMENTS ON MAP STARTED ===');
-    
     if (!gpsMap) {
         console.warn('GPS map not available for monuments loading');
         return;
     }
     
-    console.log('GPS map is available, force loading monuments...');
-    console.log('Map loaded state:', gpsMap.loaded());
-    console.log('Map style loaded state:', gpsMap.isStyleLoaded());
-    
-    // Force proceed regardless of style load state for debugging
-    console.log('Forcing monuments loading regardless of style state...');
-    
     try {
         console.log('Loading monuments on map...');
         
         // Load monuments data from JSON
-        console.log('Fetching monuments data for map markers...');
         const response = await fetch('data/monuments.json');
-        
-        if (!response.ok) {
-            throw new Error(`Failed to fetch monuments data: ${response.status} ${response.statusText}`);
-        }
-        
         const monumentsData = await response.json();
-        console.log('Monuments data fetched successfully:', monumentsData.length, 'monuments');
         
         // Filter monuments that have valid coordinates
         const validMonuments = monumentsData.filter(monument => 
@@ -4735,100 +4581,44 @@ async function loadMonumentsOnMap() {
             }))
         };
         
-        // Add monuments source to map (check if it already exists)
-        const existingSource = gpsMap.getSource('monuments');
-        console.log('Existing monuments source:', existingSource);
+        // Add monuments source to map
+        gpsMap.addSource('monuments', {
+            type: 'geojson',
+            data: monumentsGeoJSON
+        });
         
-        if (existingSource) {
-            console.log('Monuments source already exists, updating data...');
-            try {
-                gpsMap.getSource('monuments').setData(monumentsGeoJSON);
-                console.log('Monument data updated successfully');
-            } catch (error) {
-                console.error('Error updating monument data:', error);
-                // If update fails, remove and re-add
-                try {
-                    gpsMap.removeSource('monuments');
-                    console.log('Removed existing monuments source');
-                } catch (removeError) {
-                    console.error('Error removing existing source:', removeError);
-                }
-                
-                gpsMap.addSource('monuments', {
-                    type: 'geojson',
-                    data: monumentsGeoJSON
-                });
-                console.log('Re-added monuments source');
+        // Add monuments markers layer (same style as old checkpoints)
+        gpsMap.addLayer({
+            id: 'monuments-markers',
+            type: 'circle',
+            source: 'monuments',
+            paint: {
+                'circle-radius': 12,
+                'circle-color': '#ffd700', // Same yellow color as old checkpoints
+                'circle-stroke-color': '#4a5568', // Same dark stroke as old checkpoints
+                'circle-stroke-width': 3
             }
-        } else {
-            console.log('Adding new monuments source to map...');
-            try {
-                gpsMap.addSource('monuments', {
-                    type: 'geojson',
-                    data: monumentsGeoJSON
-                });
-                console.log('New monuments source added successfully');
-            } catch (error) {
-                console.error('Error adding monuments source:', error);
-                return; // Exit if we can't add the source
-            }
-        }
+        });
         
-        // Add monuments markers layer (check if it already exists)
-        const existingMarkersLayer = gpsMap.getLayer('monuments-markers');
-        console.log('Existing markers layer:', existingMarkersLayer);
-        
-        if (!existingMarkersLayer) {
-            console.log('Adding monuments markers layer...');
-            try {
-                gpsMap.addLayer({
-                    id: 'monuments-markers',
-                    type: 'circle',
-                    source: 'monuments',
-                    paint: {
-                        'circle-radius': 12,
-                        'circle-color': '#ffd700', // Same yellow color as old checkpoints
-                        'circle-stroke-color': '#4a5568', // Same dark stroke as old checkpoints
-                        'circle-stroke-width': 3
-                    }
-                });
-                console.log('Monuments markers layer added successfully');
-            } catch (error) {
-                console.error('Error adding monuments markers layer:', error);
-            }
-        } else {
-            console.log('Monuments markers layer already exists');
-        }
-        
-        // Verify layer was added
-        const verifyLayer = gpsMap.getLayer('monuments-markers');
-        console.log('Verify monuments-markers layer exists:', !!verifyLayer);
-        
-        // Add monuments labels (check if it already exists)
+        // Add monuments labels (same style as old checkpoints)
         try {
-            const existingLabelsLayer = gpsMap.getLayer('monuments-labels');
-            if (!existingLabelsLayer) {
-                console.log('Adding monuments labels layer...');
-                gpsMap.addLayer({
-                    id: 'monuments-labels',
-                    type: 'symbol',
-                    source: 'monuments',
-                    layout: {
-                        'text-field': ['get', 'name'],
-                        'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
-                        'text-offset': [0, 2],
-                        'text-anchor': 'top',
-                        'text-size': 12 // Same size as old checkpoints
-                    },
-                    paint: {
-                        'text-color': '#2c2c2c', // Same color as old checkpoints
-                        'text-halo-color': '#ffffff',
-                        'text-halo-width': 2
-                    }
-                });
-            } else {
-                console.log('Monuments labels layer already exists');
-            }
+            gpsMap.addLayer({
+                id: 'monuments-labels',
+                type: 'symbol',
+                source: 'monuments',
+                layout: {
+                    'text-field': ['get', 'name'],
+                    'text-font': ['Open Sans Regular', 'Arial Unicode MS Regular'],
+                    'text-offset': [0, 2],
+                    'text-anchor': 'top',
+                    'text-size': 12 // Same size as old checkpoints
+                },
+                paint: {
+                    'text-color': '#2c2c2c', // Same color as old checkpoints
+                    'text-halo-color': '#ffffff',
+                    'text-halo-width': 2
+                }
+            });
         } catch (error) {
             console.warn('Could not add monument text labels to map:', error.message);
         }
@@ -4916,27 +4706,6 @@ async function loadMonumentsOnMap() {
         }
         
         console.log('Monuments loaded successfully on map');
-        
-        // Debug: Check if source and layers are properly loaded
-        setTimeout(() => {
-            const source = gpsMap.getSource('monuments');
-            const markersLayer = gpsMap.getLayer('monuments-markers');
-            const labelsLayer = gpsMap.getLayer('monuments-labels');
-            
-            console.log('=== MONUMENTS DEBUG INFO ===');
-            console.log('Source exists:', !!source);
-            console.log('Markers layer exists:', !!markersLayer);
-            console.log('Labels layer exists:', !!labelsLayer);
-            
-            if (source && source._data) {
-                console.log('Source data:', source._data);
-                console.log('Number of features:', source._data.features ? source._data.features.length : 'No features');
-            }
-            
-            // Force map repaint
-            gpsMap.triggerRepaint();
-            console.log('Map repaint triggered');
-        }, 1000);
         
     } catch (error) {
         console.error('Error loading monuments on map:', error);

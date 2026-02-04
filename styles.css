@@ -295,17 +295,7 @@ p {
 
 /* Ensure info section has relative positioning */
 #info {
-    position: relative !important;
-    overflow-x: visible !important;
-}
-
-/* Ensure close button is positioned correctly */
-.info-close-btn {
-    position: absolute !important;
-    top: 20px !important;
-    right: 20px !important;
-    left: auto !important;
-    z-index: 1000 !important;
+    position: relative;
 }
 
 /* Info Grid Layout */
@@ -592,13 +582,10 @@ p {
     
     /* Mobile adjustments for info close button */
     .info-close-btn {
-        top: 15px !important;
-        right: 15px !important;
-        left: auto !important;
+        top: 15px;
+        right: 15px;
         width: 44px;
         height: 44px;
-        position: absolute !important;
-        transform: none !important;
     }
     
     .info-close-btn i {
@@ -1087,13 +1074,6 @@ p {
     border-radius: 16px !important;
     overflow: hidden;
     box-shadow: 0 6px 25px var(--shadow-medium);
-    min-height: 400px; /* Assicura un'altezza minima */
-    width: 100%; /* Assicura larghezza completa */
-    position: relative; /* Importante per MapLibre */
-    display: block !important; /* Forza visibilità */
-    visibility: visible !important; /* Forza visibilità */
-    opacity: 1 !important; /* Forza opacità */
-    background: #f8f9fa; /* Background di fallback per debug */
 }
 
 /* Full Screen Map Styles */
@@ -1787,7 +1767,7 @@ body.navigation-active {
     color: white !important;
     font-size: 18px !important;
     padding: 8px !important;
-    background: rgba(0, 0, 0, 0.7) !important;
+    background: rgba(0, 0, 0, 0.1) !important;
     border-radius: 50% !important;
     width: 32px !important;
     height: 32px !important;
@@ -1795,19 +1775,10 @@ body.navigation-active {
     line-height: 16px !important;
     top: 8px !important;
     right: 8px !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border: none !important;
     cursor: pointer;
     display: block !important;
     visibility: visible !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
-    transition: background-color 0.2s ease !important;
-}
-
-/* Hover effect per il pulsante di chiusura */
-.gps-monument-popup .maplibregl-popup-close-button:hover {
-    background: rgba(0, 0, 0, 0.9) !important;
-    transform: scale(1.05) !important;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Force popup visibility - override any MapLibre defaults */
@@ -6304,62 +6275,168 @@ button:focus,
     }
 }
 
-/* ===== CORREZIONI iOS WEBVIEW - VERSIONE MINIMA E SICURA ===== */
+/* ===== CORREZIONI iOS WEBVIEW - ANTI-FLICKERING ===== */
 
-/* Solo le correzioni essenziali per eliminare il flickering */
-/* Regola sostituita dalla versione completa alla fine del file */
+/* Correzioni iOS WebView per eliminare flickering */
+@supports (-webkit-touch-callout: none) {
+    /* Specifico per iOS - elimina flickering sui pulsanti */
+    button, .btn, .nav-item, .monument-card, .location-card, .quiz-option,
+    .expand-btn, .card-expand-btn, .play-pause, .audio-control-btn {
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        user-select: none !important;
+        touch-action: manipulation !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+        transform: translateZ(0) !important;
+        -webkit-transform: translateZ(0) !important;
+        will-change: transform !important;
+    }
 
-/* Disabilita hover effects su touch devices - SOLO per elementi interattivi */
+    /* Elimina effetti hover su iOS che causano flickering */
+    button:hover, .btn:hover, .nav-item:hover {
+        -webkit-tap-highlight-color: transparent !important;
+        transition: none !important;
+    }
+
+    /* Stati touch specifici per iOS - più fluidi */
+    button:active, .btn:active {
+        transform: translateZ(0) scale(0.98) !important;
+        -webkit-transform: translateZ(0) scale(0.98) !important;
+        transition: transform 0.1s ease-out !important;
+        -webkit-transition: -webkit-transform 0.1s ease-out !important;
+    }
+
+    /* Correzioni per monument cards su iOS */
+    .monument-card {
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+    }
+
+    .monument-card:active {
+        transform: translateZ(0) scale(0.995) !important;
+        -webkit-transform: translateZ(0) scale(0.995) !important;
+    }
+
+    /* Correzioni per navigation items */
+    .nav-item {
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+    }
+
+    .nav-item:active {
+        transform: translateZ(0) scale(0.95) !important;
+        -webkit-transform: translateZ(0) scale(0.95) !important;
+    }
+
+    /* Eliminazione flickering per audio controls */
+    .audio-player-container button {
+        -webkit-tap-highlight-color: transparent !important;
+        outline: none !important;
+        border: none !important;
+    }
+
+    /* Correzioni per QR modal buttons */
+    #qr-modal button, .modal button {
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-appearance: none !important;
+    }
+
+    /* Prevenzione flickering per elementi interattivi */
+    .featured-card, .quiz-question label, .filter-tab {
+        -webkit-tap-highlight-color: transparent !important;
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+    }
+}
+
+/* Correzioni aggiuntive per iOS WebView specificamente */
+@media screen and (-webkit-min-device-pixel-ratio: 1) {
+    /* iPhone/iPad specifico */
+    * {
+        -webkit-tap-highlight-color: rgba(0,0,0,0) !important;
+        -webkit-focus-ring-color: rgba(0,0,0,0) !important;
+        outline: none !important;
+    }
+
+    /* Previeni il "bounce" effect che può causare flickering */
+    body {
+        -webkit-overflow-scrolling: touch !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Ottimizzazioni per il rendering hardware accelerato */
+    .section {
+        -webkit-transform: translate3d(0,0,0) !important;
+        transform: translate3d(0,0,0) !important;
+    }
+}
+
+/* Disabilita completamente gli effetti hover su touch devices */
 @media (hover: none) and (pointer: coarse) {
-    button:hover:not(.maplibregl-ctrl-zoom-in):not(.maplibregl-ctrl-zoom-out), 
-    .btn:hover, .nav-item:hover, a:hover:not(.maplibregl-ctrl) {
-        background: initial;
-        color: initial;
-        transform: initial;
-        opacity: initial;
+    /* Touch devices - elimina tutti gli hover effects */
+    .btn:hover, button:hover, .nav-item:hover, 
+    .monument-card:hover, .featured-card:hover {
+        background: initial !important;
+        color: initial !important;
+        transform: initial !important;
+        box-shadow: initial !important;
+        opacity: initial !important;
+    }
+
+    /* Sostituisci hover con active per touch */
+    .btn:active, button:active {
+        opacity: 0.8 !important;
+        transform: scale(0.98) !important;
+    }
+}
+
+/* Specifico per iOS Safari/WebView */
+@supports (-webkit-appearance: none) {
+    input, select, textarea, button {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        border-radius: 0 !important;
     }
     
-    /* PRESERVA la mappa e i suoi controlli */
-    #gps-map, #gps-map *, .maplibregl-map, .maplibregl-canvas-container,
-    .maplibregl-canvas, .maplibregl-ctrl, .maplibregl-ctrl-group {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
+    /* Ripristina border-radius per i nostri elementi */
+    .btn, button {
+        border-radius: var(--border-radius) !important;
     }
 }
 
-/* Correzioni specifiche per il pulsante X info */
-.info-close-btn {
-    position: absolute !important;
-    top: 20px !important;
-    right: 20px !important;
-    left: auto !important;
-    z-index: 1000 !important;
-}
-
-.info-close-btn:active {
+/* Stili per il feedback touch iOS ottimizzato */
+.ios-touch-active {
     opacity: 0.8 !important;
-    transform: none !important;
+    transform: scale(0.98) !important;
+    transition: opacity 0.1s ease-out, transform 0.1s ease-out !important;
 }
 
-/* Media query mobile per pulsante X */
-@media (max-width: 768px) {
-    .info-close-btn {
-        top: 15px !important;
-        right: 15px !important;
-    }
+/* Specifico per iOS WebView - elimina tutti gli artefatti visivi */
+.ios-webview * {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
 }
 
-/* iOS anti-flickering - Fix JavaScript senza interferenze */
-@supports (-webkit-touch-callout: none) {
-    * {
-        -webkit-tap-highlight-color: transparent !important;
-    }
+.ios-webview button,
+.ios-webview .btn {
+    position: relative !important;
+    isolation: isolate !important;
 }
 
-/* iOS anti-flickering - Fix JavaScript senza interferenze */
-@supports (-webkit-touch-callout: none) {
-    * {
-        -webkit-tap-highlight-color: transparent !important;
-    }
+.ios-webview button::before,
+.ios-webview .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    z-index: -1;
 }
+
