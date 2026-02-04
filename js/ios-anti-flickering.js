@@ -53,11 +53,7 @@
                 if (element.closest('.bottom-nav') || 
                     element.closest('.top-header') || 
                     element.closest('nav') ||
-                    element.closest('.map-container') ||
-                    element.closest('.maplibregl-control-container') ||
-                    element.closest('.mapboxgl-control-container') ||
                     element.matches('.btn, button, .info-close-btn') ||
-                    element.matches('.maplibregl-ctrl, .mapboxgl-ctrl') ||
                     element.matches('.maplibregl-user-location-dot, .mapboxgl-user-location-dot') ||
                     element.matches('.maplibregl-user-location-accuracy-circle, .mapboxgl-user-location-accuracy-circle')) {
                     return;

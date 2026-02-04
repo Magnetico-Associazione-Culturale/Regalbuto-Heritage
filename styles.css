@@ -1158,23 +1158,31 @@ p {
         overflow: visible !important;
     }
     
-    /* ESCLUDI controlli MapLibre dalle trasformazioni per evitare problemi posizionamento */
-    .maplibregl-control-container,
-    .mapboxgl-control-container,
-    .maplibregl-ctrl,
-    .mapboxgl-ctrl,
-    .maplibregl-ctrl-geolocate,
-    .mapboxgl-ctrl-geolocate,
+    /* ESCLUDI solo il pallino posizione utente dalle trasformazioni iOS */
     .maplibregl-user-location-dot,
     .mapboxgl-user-location-dot,
     .maplibregl-user-location-accuracy-circle,
     .mapboxgl-user-location-accuracy-circle {
-        /* Rimuovi tutte le trasformazioni che possono interferire */
+        /* Rimuovi trasformazioni solo per posizione utente */
         transform: none !important;
         -webkit-transform: none !important;
         will-change: auto !important;
+    }
+    
+    /* ASSICURA posizionamento corretto controlli navigazione */
+    .maplibregl-control-container,
+    .mapboxgl-control-container {
         position: absolute !important;
-        /* Mantieni posizionamento nativo */
+        pointer-events: auto !important;
+    }
+    
+    .maplibregl-ctrl-top-right,
+    .mapboxgl-ctrl-top-right {
+        top: 10px !important;
+        right: 10px !important;
+        left: auto !important;
+        bottom: auto !important;
+        position: absolute !important;
     }
     
     /* Fix specifici WebGL per iOS */

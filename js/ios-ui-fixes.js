@@ -119,26 +119,16 @@
                 canvas.style.setProperty('display', 'block', 'important');
             });
             
-            // Fix specifico per controlli MapLibre (posizione utente)
-            const mapControls = document.querySelectorAll('.maplibregl-control-container, .mapboxgl-control-container, .maplibregl-ctrl, .mapboxgl-ctrl');
-            mapControls.forEach(control => {
-                control.style.setProperty('transform', 'none', 'important');
-                control.style.setProperty('-webkit-transform', 'none', 'important');
-                control.style.setProperty('will-change', 'auto', 'important');
-                control.style.setProperty('position', 'absolute', 'important');
-            });
-            
-            // Fix specifico per pallino posizione utente
+            // Fix specifico per pallino posizione utente SOLO
             const userLocationElements = document.querySelectorAll('.maplibregl-user-location-dot, .mapboxgl-user-location-dot, .maplibregl-user-location-accuracy-circle, .mapboxgl-user-location-accuracy-circle');
             userLocationElements.forEach(element => {
                 element.style.setProperty('transform', 'none', 'important');
                 element.style.setProperty('-webkit-transform', 'none', 'important');
                 element.style.setProperty('will-change', 'auto', 'important');
-                element.style.setProperty('position', 'absolute', 'important');
             });
             
-            if (mapControls.length > 0 || userLocationElements.length > 0) {
-                console.log('✅ Fixed MapLibre controls positioning for iOS');
+            if (userLocationElements.length > 0) {
+                console.log('✅ Fixed user location dot positioning for iOS');
             }
             
             console.log('✅ Applied map visibility fixes for iOS');
@@ -147,32 +137,22 @@
         }
     }
     
-    // Fix specifico per controlli dinamici MapLibre  
+    // Fix specifico per pallino posizione utente (NON toccare i controlli di navigazione)
     function fixMapLibreControls() {
         if (!isIOS()) return;
         
-        // Monitora la creazione dinamica di controlli MapLibre
-        const mapControls = document.querySelectorAll('.maplibregl-control-container, .mapboxgl-control-container, .maplibregl-ctrl, .mapboxgl-ctrl');
+        // Fix SOLO per il pallino posizione utente, NON i controlli di navigazione
         const userLocationElements = document.querySelectorAll('.maplibregl-user-location-dot, .mapboxgl-user-location-dot, .maplibregl-user-location-accuracy-circle, .mapboxgl-user-location-accuracy-circle');
-        
-        // Fix controls
-        mapControls.forEach(control => {
-            control.style.setProperty('transform', 'none', 'important');
-            control.style.setProperty('-webkit-transform', 'none', 'important');
-            control.style.setProperty('will-change', 'auto', 'important');
-            control.style.setProperty('position', 'absolute', 'important');
-        });
         
         // Fix user location elements
         userLocationElements.forEach(element => {
             element.style.setProperty('transform', 'none', 'important');
             element.style.setProperty('-webkit-transform', 'none', 'important');
             element.style.setProperty('will-change', 'auto', 'important');
-            element.style.setProperty('position', 'absolute', 'important');
         });
         
-        if (mapControls.length > 0 || userLocationElements.length > 0) {
-            console.log('🗺️ Fixed dynamic MapLibre controls positioning for iOS');
+        if (userLocationElements.length > 0) {
+            console.log('🗺️ Fixed user location dot positioning for iOS');
         }
     }
 
@@ -202,9 +182,9 @@
                                 needsButtonFix = true;
                             }
                             
-                            // Check per nuovi controlli MapLibre
-                            if (node.matches?.('.maplibregl-control-container, .mapboxgl-control-container, .maplibregl-ctrl, .mapboxgl-ctrl, .maplibregl-user-location-dot, .mapboxgl-user-location-dot') ||
-                                node.querySelector?.('.maplibregl-control-container, .mapboxgl-control-container, .maplibregl-ctrl, .mapboxgl-ctrl, .maplibregl-user-location-dot, .mapboxgl-user-location-dot')) {
+                            // Check per nuovi controlli posizione utente (non controlli navigazione)
+                            if (node.matches?.('.maplibregl-user-location-dot, .mapboxgl-user-location-dot, .maplibregl-user-location-accuracy-circle, .mapboxgl-user-location-accuracy-circle') ||
+                                node.querySelector?.('.maplibregl-user-location-dot, .mapboxgl-user-location-dot, .maplibregl-user-location-accuracy-circle, .mapboxgl-user-location-accuracy-circle')) {
                                 needsMapControlsFix = true;
                             }
                             
