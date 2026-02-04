@@ -1158,6 +1158,25 @@ p {
         overflow: visible !important;
     }
     
+    /* ESCLUDI controlli MapLibre dalle trasformazioni per evitare problemi posizionamento */
+    .maplibregl-control-container,
+    .mapboxgl-control-container,
+    .maplibregl-ctrl,
+    .mapboxgl-ctrl,
+    .maplibregl-ctrl-geolocate,
+    .mapboxgl-ctrl-geolocate,
+    .maplibregl-user-location-dot,
+    .mapboxgl-user-location-dot,
+    .maplibregl-user-location-accuracy-circle,
+    .mapboxgl-user-location-accuracy-circle {
+        /* Rimuovi tutte le trasformazioni che possono interferire */
+        transform: none !important;
+        -webkit-transform: none !important;
+        will-change: auto !important;
+        position: absolute !important;
+        /* Mantieni posizionamento nativo */
+    }
+    
     /* Fix specifici WebGL per iOS */
     canvas[data-engine="webgl"], canvas[data-engine="webgl2"] {
         opacity: 1 !important;

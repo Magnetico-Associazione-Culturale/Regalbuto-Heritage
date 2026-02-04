@@ -119,16 +119,68 @@
                 canvas.style.setProperty('display', 'block', 'important');
             });
             
+            // Fix specifico per controlli MapLibre (posizione utente)
+            const mapControls = document.querySelectorAll('.maplibregl-control-container, .mapboxgl-control-container, .maplibregl-ctrl, .mapboxgl-ctrl');
+            mapControls.forEach(control => {
+                control.style.setProperty('transform', 'none', 'important');
+                control.style.setProperty('-webkit-transform', 'none', 'important');
+                control.style.setProperty('will-change', 'auto', 'important');
+                control.style.setProperty('position', 'absolute', 'important');
+            });
+            
+            // Fix specifico per pallino posizione utente
+            const userLocationElements = document.querySelectorAll('.maplibregl-user-location-dot, .mapboxgl-user-location-dot, .maplibregl-user-location-accuracy-circle, .mapboxgl-user-location-accuracy-circle');
+            userLocationElements.forEach(element => {
+                element.style.setProperty('transform', 'none', 'important');
+                element.style.setProperty('-webkit-transform', 'none', 'important');
+                element.style.setProperty('will-change', 'auto', 'important');
+                element.style.setProperty('position', 'absolute', 'important');
+            });
+            
+            if (mapControls.length > 0 || userLocationElements.length > 0) {
+                console.log('✅ Fixed MapLibre controls positioning for iOS');
+            }
+            
             console.log('✅ Applied map visibility fixes for iOS');
         } else {
             console.log('Navigation not active - skipping map fixes');
         }
     }
     
+    // Fix specifico per controlli dinamici MapLibre  
+    function fixMapLibreControls() {
+        if (!isIOS()) return;
+        
+        // Monitora la creazione dinamica di controlli MapLibre
+        const mapControls = document.querySelectorAll('.maplibregl-control-container, .mapboxgl-control-container, .maplibregl-ctrl, .mapboxgl-ctrl');
+        const userLocationElements = document.querySelectorAll('.maplibregl-user-location-dot, .mapboxgl-user-location-dot, .maplibregl-user-location-accuracy-circle, .mapboxgl-user-location-accuracy-circle');
+        
+        // Fix controls
+        mapControls.forEach(control => {
+            control.style.setProperty('transform', 'none', 'important');
+            control.style.setProperty('-webkit-transform', 'none', 'important');
+            control.style.setProperty('will-change', 'auto', 'important');
+            control.style.setProperty('position', 'absolute', 'important');
+        });
+        
+        // Fix user location elements
+        userLocationElements.forEach(element => {
+            element.style.setProperty('transform', 'none', 'important');
+            element.style.setProperty('-webkit-transform', 'none', 'important');
+            element.style.setProperty('will-change', 'auto', 'important');
+            element.style.setProperty('position', 'absolute', 'important');
+        });
+        
+        if (mapControls.length > 0 || userLocationElements.length > 0) {
+            console.log('🗺️ Fixed dynamic MapLibre controls positioning for iOS');
+        }
+    }
+
     // Applica fix quando DOM è ready
     function applyFixes() {
         fixButtonBorderRadius();
         fixMapVisibility();
+        fixMapLibreControls();
     }
     
     // Osserva cambiamenti DOM per ri-applicare i fix
@@ -138,6 +190,7 @@
         const observer = new MutationObserver(function(mutations) {
             let needsButtonFix = false;
             let needsMapFix = false;
+            let needsMapControlsFix = false;
             
             mutations.forEach(mutation => {
                 if (mutation.addedNodes.length > 0) {
@@ -147,6 +200,12 @@
                             if (node.matches?.('button, .btn') || 
                                 node.querySelector?.('button, .btn')) {
                                 needsButtonFix = true;
+                            }
+                            
+                            // Check per nuovi controlli MapLibre
+                            if (node.matches?.('.maplibregl-control-container, .mapboxgl-control-container, .maplibregl-ctrl, .mapboxgl-ctrl, .maplibregl-user-location-dot, .mapboxgl-user-location-dot') ||
+                                node.querySelector?.('.maplibregl-control-container, .mapboxgl-control-container, .maplibregl-ctrl, .mapboxgl-ctrl, .maplibregl-user-location-dot, .mapboxgl-user-location-dot')) {
+                                needsMapControlsFix = true;
                             }
                             
                             // Check per elementi mappa (incluso fullscreen)
@@ -171,6 +230,9 @@
             if (needsMapFix) {
                 setTimeout(fixMapVisibility, 100);
             }
+            if (needsMapControlsFix) {
+                setTimeout(fixMapLibreControls, 100);
+            }
         });
         
         observer.observe(document.body, {
@@ -179,6 +241,9 @@
         });
     }
     
+    // Esponi la funzione globalmente per chiamate esterne
+    window.fixMapLibreControls = fixMapLibreControls;
+
     // Inizializza
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {

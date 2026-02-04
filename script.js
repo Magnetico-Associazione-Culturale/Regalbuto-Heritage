@@ -4447,10 +4447,22 @@ async function initializeGPSMap() {
                         gpsMap.resize();
                         gpsMap.redraw();
                         console.log('✅ iOS map refresh completed');
+                        
+                        // Fix specifico per controlli MapLibre su iOS
+                        if (window.fixMapLibreControls && typeof window.fixMapLibreControls === 'function') {
+                            window.fixMapLibreControls();
+                        }
                     } catch (e) {
                         console.warn('Map refresh failed:', e);
                     }
                 }, 500);
+                
+                // Ulteriore fix per controlli dopo 1 secondo
+                setTimeout(() => {
+                    if (window.fixMapLibreControls && typeof window.fixMapLibreControls === 'function') {
+                        window.fixMapLibreControls();
+                    }
+                }, 1000);
             }
             
             await loadRouteData();
