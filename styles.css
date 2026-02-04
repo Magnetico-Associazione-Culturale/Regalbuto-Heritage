@@ -6358,10 +6358,19 @@ button:focus,
 }
 
 /* Fix flickering tramite JavaScript class (non interferisce con navbar) */
-.ios-webview .hero-section,
-.ios-webview .monument-card {
-    transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    will-change: transform;
+.ios-webview * {
+    /* FORCE COMPOSITING LAYER su TUTTO il contenuto */
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+    will-change: transform !important;
+}
+
+/* PRESERVA navbar - override per mantenere funzionalità */
+.ios-webview .bottom-nav,
+.ios-webview .bottom-nav * {
+    will-change: auto !important;
+    transform: none !important;
+    -webkit-transform: none !important;
 }
