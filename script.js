@@ -171,8 +171,49 @@ document.addEventListener('DOMContentLoaded', function() {
             );
         }
         
-        // Aggiungi classe CSS per iOS-specific styling
-        document.documentElement.classList.add('ios-webview');
+        // NUOVO: Fix flickering JavaScript COMPLETO senza toccare navbar
+        console.log('Applicando fix flickering iOS JavaScript POTENZIATO...');
+        
+        // FASE 1: Applica subito ai elementi principali
+        const immediateElements = document.querySelectorAll('body, html, main, .container');
+        immediateElements.forEach(element => {
+            if (!element.closest('.bottom-nav')) {
+                element.style.transform = 'translateZ(0)';
+                element.style.webkitTransform = 'translateZ(0)';
+                element.style.webkitBackfaceVisibility = 'hidden';
+                element.style.backfaceVisibility = 'hidden';
+                element.style.willChange = 'transform';
+                element.style.touchAction = 'manipulation';
+                element.style.webkitTouchCallout = 'none';
+                element.style.webkitUserSelect = 'none';
+            }
+        });
+        
+        // FASE 2: Applica a TUTTO il contenuto quando DOM è pronto
+        const applyFlickeringFix = () => {
+            // Seleziona TUTTI gli elementi visibili eccetto navbar
+            const allElements = document.querySelectorAll('*:not(.bottom-nav):not(.bottom-nav *)');
+            let fixedCount = 0;
+            
+            allElements.forEach(element => {
+                // Escludi elementi della navbar
+                if (!element.closest('.bottom-nav')) {
+                    element.style.transform = 'translateZ(0)';
+                    element.style.webkitTransform = 'translateZ(0)';
+                    element.style.webkitBackfaceVisibility = 'hidden';
+                    element.style.backfaceVisibility = 'hidden';
+                    element.style.willChange = 'transform';
+                    fixedCount++;
+                }
+            });
+            
+            console.log('Fix anti-flickering applicato a', fixedCount, 'elementi (navbar esclusa)');
+        };
+        
+        // Applica quando DOM è pronto + ritardo per elementi caricati dinamicamente
+        document.addEventListener('DOMContentLoaded', applyFlickeringFix);
+        setTimeout(applyFlickeringFix, 100);
+        setTimeout(applyFlickeringFix, 500);
         
         // Aggiungi classe CSS per iOS-specific styling
         document.documentElement.classList.add('ios-webview');

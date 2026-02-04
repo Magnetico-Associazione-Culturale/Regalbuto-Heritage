@@ -6357,9 +6357,20 @@ button:focus,
     }
 }
 
-/* iOS anti-flickering - Fix JavaScript senza interferenze */
-@supports (-webkit-touch-callout: none) {
-    * {
-        -webkit-tap-highlight-color: transparent !important;
-    }
+/* Fix flickering tramite JavaScript class (non interferisce con navbar) */
+.ios-webview * {
+    /* FORCE COMPOSITING LAYER su TUTTO il contenuto */
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+    will-change: transform !important;
+}
+
+/* PRESERVA navbar - override per mantenere funzionalità */
+.ios-webview .bottom-nav,
+.ios-webview .bottom-nav * {
+    will-change: auto !important;
+    transform: none !important;
+    -webkit-transform: none !important;
 }
