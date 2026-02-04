@@ -52,73 +52,77 @@
         
         console.log('🗺️ iOS detected - fixing map visibility...');
         
-        const mapContainer = document.querySelector('.map-container');
-        const gpsMap = document.querySelector('#gps-map');
-        const fullscreenMapContainer = document.querySelector('.fullscreen-map-container');
-        const fullscreenMap = document.querySelector('.fullscreen-map');
-        const navigazioneSection = document.querySelector('#navigazione.section');
+        // Check se siamo nella sezione navigazione attiva
+        const navigazioneSection = document.querySelector('#navigazione.section.active');
+        const isNavigationActive = navigazioneSection !== null;
         
-        // Fix per mappa normale
-        if (mapContainer) {
-            mapContainer.style.setProperty('opacity', '1', 'important');
-            mapContainer.style.setProperty('visibility', 'visible', 'important');
-            mapContainer.style.setProperty('display', 'block', 'important');
-            mapContainer.style.setProperty('height', '400px', 'important');
+        console.log('Navigation section active:', isNavigationActive);
+        
+        if (isNavigationActive) {
+            // Solo se navigazione è attiva, applica fix
+            const mapContainer = document.querySelector('.map-container');
+            const gpsMap = document.querySelector('#gps-map');
+            const fullscreenMapContainer = document.querySelector('.fullscreen-map-container');
+            const fullscreenMap = document.querySelector('.fullscreen-map');
+            
+            // Fix per mappa normale
+            if (mapContainer) {
+                mapContainer.style.setProperty('opacity', '1', 'important');
+                mapContainer.style.setProperty('visibility', 'visible', 'important');
+                mapContainer.style.setProperty('display', 'block', 'important');
+                mapContainer.style.setProperty('height', '400px', 'important');
+            }
+            
+            // Fix per GPS map normale
+            if (gpsMap) {
+                gpsMap.style.setProperty('opacity', '1', 'important');
+                gpsMap.style.setProperty('visibility', 'visible', 'important');
+                gpsMap.style.setProperty('display', 'block', 'important');
+                if (gpsMap.classList.contains('fullscreen-map')) {
+                    gpsMap.style.setProperty('height', '100vh', 'important');
+                    gpsMap.style.setProperty('width', '100vw', 'important');
+                } else {
+                    gpsMap.style.setProperty('height', '400px', 'important');
+                }
+            }
+            
+            // Fix specifici per mappa fullscreen (sezione itinerario)
+            if (fullscreenMapContainer) {
+                fullscreenMapContainer.style.setProperty('opacity', '1', 'important');
+                fullscreenMapContainer.style.setProperty('visibility', 'visible', 'important');
+                fullscreenMapContainer.style.setProperty('display', 'block', 'important');
+                fullscreenMapContainer.style.setProperty('height', '100vh', 'important');
+                fullscreenMapContainer.style.setProperty('width', '100vw', 'important');
+                console.log('✅ Fixed fullscreen map container for iOS');
+            }
+            
+            // Fix per fullscreen map
+            if (fullscreenMap || (gpsMap && gpsMap.classList.contains('fullscreen-map'))) {
+                const targetMap = fullscreenMap || gpsMap;
+                targetMap.style.setProperty('opacity', '1', 'important');
+                targetMap.style.setProperty('visibility', 'visible', 'important');
+                targetMap.style.setProperty('display', 'block', 'important');
+                targetMap.style.setProperty('height', '100vh', 'important');
+                targetMap.style.setProperty('width', '100vw', 'important');
+                // Forza layer rendering
+                targetMap.style.setProperty('-webkit-transform', 'translateZ(0)', 'important');
+                targetMap.style.setProperty('transform', 'translateZ(0)', 'important');
+                targetMap.style.setProperty('isolation', 'isolate', 'important');
+                console.log('✅ Fixed fullscreen map for iOS');
+            }
+            
+            // Fix per canvas mappa
+            const canvases = document.querySelectorAll('.mapboxgl-canvas, .maplibregl-canvas');
+            canvases.forEach(canvas => {
+                canvas.style.setProperty('opacity', '1', 'important');
+                canvas.style.setProperty('visibility', 'visible', 'important');
+                canvas.style.setProperty('display', 'block', 'important');
+            });
+            
+            console.log('✅ Applied map visibility fixes for iOS');
+        } else {
+            console.log('Navigation not active - skipping map fixes');
         }
-        
-        // Fix per GPS map normale
-        if (gpsMap) {
-            gpsMap.style.setProperty('opacity', '1', 'important');
-            gpsMap.style.setProperty('visibility', 'visible', 'important');
-            gpsMap.style.setProperty('display', 'block', 'important');
-            gpsMap.style.setProperty('height', '400px', 'important');
-            gpsMap.style.setProperty('width', '100%', 'important');
-        }
-        
-        // Fix specifici per mappa fullscreen (sezione itinerario)
-        if (fullscreenMapContainer) {
-            fullscreenMapContainer.style.setProperty('opacity', '1', 'important');
-            fullscreenMapContainer.style.setProperty('visibility', 'visible', 'important');
-            fullscreenMapContainer.style.setProperty('display', 'block', 'important');
-            fullscreenMapContainer.style.setProperty('height', '100vh', 'important');
-            fullscreenMapContainer.style.setProperty('width', '100vw', 'important');
-            fullscreenMapContainer.style.setProperty('min-height', '100vh', 'important');
-            console.log('✅ Fixed fullscreen map container for iOS');
-        }
-        
-        // Fix per fullscreen map
-        if (fullscreenMap || (gpsMap && gpsMap.classList.contains('fullscreen-map'))) {
-            const targetMap = fullscreenMap || gpsMap;
-            targetMap.style.setProperty('opacity', '1', 'important');
-            targetMap.style.setProperty('visibility', 'visible', 'important');
-            targetMap.style.setProperty('display', 'block', 'important');
-            targetMap.style.setProperty('height', '100vh', 'important');
-            targetMap.style.setProperty('width', '100vw', 'important');
-            targetMap.style.setProperty('min-height', '100vh', 'important');
-            // Forza layer rendering
-            targetMap.style.setProperty('-webkit-transform', 'translateZ(0)', 'important');
-            targetMap.style.setProperty('transform', 'translateZ(0)', 'important');
-            targetMap.style.setProperty('isolation', 'isolate', 'important');
-            console.log('✅ Fixed fullscreen map for iOS');
-        }
-        
-        // Fix per sezione navigazione
-        if (navigazioneSection) {
-            navigazioneSection.style.setProperty('opacity', '1', 'important');
-            navigazioneSection.style.setProperty('visibility', 'visible', 'important');
-            navigazioneSection.style.setProperty('display', 'block', 'important');
-            console.log('✅ Fixed navigation section for iOS');
-        }
-        
-        // Fix per canvas mappa
-        const canvases = document.querySelectorAll('.mapboxgl-canvas, .maplibregl-canvas');
-        canvases.forEach(canvas => {
-            canvas.style.setProperty('opacity', '1', 'important');
-            canvas.style.setProperty('visibility', 'visible', 'important');
-            canvas.style.setProperty('display', 'block', 'important');
-        });
-        
-        console.log('✅ Applied map visibility fixes for iOS');
     }
     
     // Applica fix quando DOM è ready
@@ -251,19 +255,18 @@
             return;
         }
         
+        // Check se siamo effettivamente nella sezione navigazione
+        const navigazioneSection = document.querySelector('#navigazione.section.active');
+        if (!navigazioneSection) {
+            console.log('Navigation section not active - skipping force map');
+            return;
+        }
+        
         console.log('🔧 Forcing itinerario map visibility on iOS...');
         
         // Forza tutti gli elementi della mappa
         setTimeout(() => {
             fixMapVisibility();
-            
-            // Double-check specifico per sezione navigazione
-            const navigazioneSection = document.querySelector('#navigazione');
-            if (navigazioneSection) {
-                navigazioneSection.style.display = 'block';
-                navigazioneSection.style.visibility = 'visible';
-                navigazioneSection.style.opacity = '1';
-            }
             
             // Trigger resize event per MapLibre
             if (window.gpsMap) {
@@ -277,6 +280,51 @@
             
             console.log('✅ Forced itinerario map visibility');
         }, 100);
+    };
+    
+    // Funzione per nascondere la mappa quando si esce dalla sezione itinerario
+    window.hideItinerarioMap = function() {
+        if (!isIOS()) {
+            console.log('Not iOS - hide itinerario map not needed');
+            return;
+        }
+        
+        console.log('🔒 Hiding itinerario map on iOS...');
+        
+        // Nascondi elementi mappa fullscreen
+        const fullscreenMapContainer = document.querySelector('.fullscreen-map-container');
+        const fullscreenMap = document.querySelector('.fullscreen-map');
+        const gpsMap = document.querySelector('#gps-map');
+        const navigazioneSection = document.querySelector('#navigazione.section');
+        
+        if (fullscreenMapContainer) {
+            fullscreenMapContainer.style.removeProperty('opacity');
+            fullscreenMapContainer.style.removeProperty('visibility');
+            fullscreenMapContainer.style.removeProperty('display');
+        }
+        
+        if (fullscreenMap) {
+            fullscreenMap.style.removeProperty('opacity');
+            fullscreenMap.style.removeProperty('visibility');
+            fullscreenMap.style.removeProperty('display');
+        }
+        
+        if (gpsMap && gpsMap.classList.contains('fullscreen-map')) {
+            gpsMap.style.removeProperty('opacity');
+            gpsMap.style.removeProperty('visibility');
+            gpsMap.style.removeProperty('display');
+            gpsMap.style.removeProperty('height');
+            gpsMap.style.removeProperty('width');
+        }
+        
+        // Assicurati che la sezione navigazione segua le regole CSS standard
+        if (navigazioneSection && !navigazioneSection.classList.contains('active')) {
+            navigazioneSection.style.removeProperty('opacity');
+            navigazioneSection.style.removeProperty('visibility');
+            navigazioneSection.style.removeProperty('display');
+        }
+        
+        console.log('✅ Hidden itinerario map');
     };
     
 })();

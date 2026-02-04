@@ -398,6 +398,11 @@ function switchTab(tabName) {
             if (typeof forceShowItinerarioMap === 'function') {
                 forceShowItinerarioMap();
             }
+        } else {
+            // Nascondi mappa quando si esce dalla sezione navigazione (fix iOS)
+            if (typeof hideItinerarioMap === 'function') {
+                hideItinerarioMap();
+            }
         }
         
         // Manage VR button visibility when switching to virtual tour
